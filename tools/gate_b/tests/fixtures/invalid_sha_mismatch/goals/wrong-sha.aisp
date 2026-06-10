@@ -1,0 +1,19 @@
+𝔸5.1.goal.wrong-sha@2026-06-10
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜wrong-sha
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/wrong-sha.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/wrong-sha.lean
+  sha≜0000000000000000000000000000000000000000000000000000000000000000
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -1,0 +1,19 @@
+𝔸5.1.goal.bad-status@2026-06-10
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜bad-status
+  phase≜translate
+  status≜done
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/bad-status.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜∅
+  sha≜∅
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

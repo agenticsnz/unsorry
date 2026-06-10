@@ -1,0 +1,9 @@
+𝔸5.1.tr.nat-zero-add.agent-beta@2026-06-10
+γ≔unsorry.translation
+⟦Ω:Tr⟧{goal≜nat-zero-add; agent≜agent-beta}
+⟦Σ:Stmt⟧{
+  stmt≜∀m∈ℕ:0+m≡m
+}
+⟦Γ:Provenance⟧{src≜backlog/nat-zero-add.md; independent≜⊤}
+⟦Λ:Norm⟧{norm≜tools/fidelity}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

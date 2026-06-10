@@ -1,0 +1,20 @@
+𝔸5.1.goal.prosey@2026-06-10
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜prosey
+  phase≜translate
+  status≜open
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/prosey.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜∅
+  sha≜∅
+  stmt≜"for all natural numbers n and m the sum n plus m equals the sum m plus n exactly as stated here in plain english prose"
+}
+⟦Ε⟧⟨δ≜0.20;τ≜◊⁻⟩

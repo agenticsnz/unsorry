@@ -1,0 +1,19 @@
+𝔸5.1.goal.nat-zero-add@2026-06-10
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜nat-zero-add
+  phase≜translate
+  status≜translated
+  difficulty≜0
+}
+⟦Σ:Source⟧{
+  src≜backlog/nat-zero-add.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜∅
+  sha≜73026be938ddd22261b6c55a2a5843465916f04559e06406d91b71b414b797a8
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

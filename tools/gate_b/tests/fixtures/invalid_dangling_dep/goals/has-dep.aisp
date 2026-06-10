@@ -1,0 +1,19 @@
+𝔸5.1.goal.has-dep@2026-06-10
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜has-dep
+  phase≜translate
+  status≜open
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/has-dep.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨ghost-goal⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜∅
+  sha≜∅
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -1,0 +1,12 @@
+𝔸5.1.decomp.nat-add-comm-hard.agent-alpha@2026-06-10
+γ≔unsorry.decomposition
+⟦Ω:Decomp⟧{parent≜nat-add-comm-hard; agent≜agent-alpha}
+⟦Σ:Subs⟧{
+  sub₁≜⟨id≜nat-add-zero-right,stmt≜∀x₁∈ℕ:x₁+0≡x₁⟩
+  sub₂≜⟨id≜nat-add-succ-right,stmt≜∀x₁,x₂∈ℕ:x₁+(x₂+1)≡(x₁+x₂)+1⟩
+}
+⟦Γ:Edges⟧{
+  Post(sub₁)⊆Pre(parent); Post(sub₂)⊆Pre(parent)
+}
+⟦Λ:Requeue⟧{∀s∈subs:goal(s)≫status≔open}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

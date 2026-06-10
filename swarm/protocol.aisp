@@ -1,0 +1,82 @@
+𝔸5.1.unsorry.protocol@2026-06-10
+γ≔unsorry.swarm.contract
+ρ≔⟨records,claims,fidelity,affinity,loop,gates,budgets⟩
+⊢kernel.only.oracle∧repo.only.infra∧artifacts.machine.validated
+
+;; ─── Ω: FOUNDATION ───
+⟦Ω:Foundation⟧{
+  oracle≜lean.kernel; ∀x∈library:⊢kernel(x)
+  infra≜git; queue≜repo; judge≜∅
+  GateA⊨soundness; GateB⊨hygiene; GateB⊬library
+  ∀a∈{goal,claim,translation,decomp,index}:AISP(a)∧validate(a)
+  branch(main)↦protected; branch(claims)↦unprotected
+  ∀s∈Σ:∃!μ:Mean(s,CTX)≡μ    ;; anti-drift: symbols never change meaning
+}
+
+;; ─── Σ: RECORD TYPES ───
+⟦Σ:Records⟧{
+  Id≜[a-z0-9][a-z0-9-]*
+  Goal≜⟨id:Id,phase:{translate,prove},status:{open,flagged,translated,blocked,proved},difficulty:Fin 6,src:Path,deps:List⟨Id⟩,lean:Path?,sha:Hash?⟩
+  Claim≜⟨goal:Id,agent:Id,ts:UTC,ttl:ℕ⟩
+  Translation≜⟨goal:Id,agent:Id,stmt:AISP⟩
+  Decomp≜⟨parent:Id,agent:Id,subs:List⟨⟨id:Id,stmt:AISP⟩⟩,edges:List⟨Post⊆Pre⟩⟩
+  Index≜⟨sha:Hash,goal:Id,name:𝕊,stmt:AISP,tags:𝒫(𝕊),use:ℕ,aff:ℝ⟩
+  paths≜⟨goals/⟨id⟩.aisp,goals/⟨id⟩.lean,claims/⟨goal⟩.⟨agent⟩.aisp,translations/⟨goal⟩.⟨agent⟩.aisp,decompositions/⟨parent⟩.⟨agent⟩.aisp,library/index/⟨sha⟩.aisp⟩
+  phase≡prove⇒lean≢∅; phase≡translate⇒lean≡∅
+  status∈{translated,proved}⇒sha≢∅; sha≜SHA256(norm(stmt))
+}
+
+;; ─── Γ: CLAIM SEMANTICS ───
+⟦Γ:Claims⟧{
+  claim≜push(claims/⟨goal⟩.⟨agent⟩.aisp→branch(claims))
+  reject(push)⇒fetch≫rebase≫(∃competing⇒log(collision)∧select(next))
+  ttl≜7200; 600≤ttl≤86400; now>ts+ttl⇒expired
+  reap(expired)≜cron(≤900s); ttl≥4×cron
+  phase≡translate⇒|live(goal)|≤2∧distinct(agents)∧agent∉translated(goal)
+  phase≡prove⇒|live(goal)|≤1
+  claimable(g)⇔status(g)≡open∧|live(g)|<cap(phase(g))
+  release≜rm(claim)∧push
+}
+
+;; ─── Γ: STATEMENT FIDELITY ───
+⟦Γ:Fidelity⟧{
+  ∀g:phase(g)≡translate⇒∃a,b:a≢b∧tr(g,a)∧tr(g,b)
+  translator⊬read(translations/⟨g⟩.*)    ;; independence is a contract rule
+  match≜diff(norm(tr_a),norm(tr_b))≡∅
+  match⇒status(g)≔translated∧sha(g)≔SHA256(norm(tr_a))
+  ¬match⇒status(g)≔flagged⇒await(human)
+  norm≜α-rename∘canonical-symbols∘ws-collapse    ;; tools/fidelity
+  fp_target<0.20; fp≥0.20⇒fallback(single-translation∧lean-backtranslate)
+}
+
+;; ─── Γ: AFFINITY & SELECTION ───
+⟦Γ:Affinity⟧{
+  ⊕(merge)⇒aff[pattern]+=1
+  ⊖(fail)⇒aff[pattern]-=10
+  aff<τ_v⇒skip∧requeue(decomposition); τ_v≜−5
+  select≜argmax_{g:claimable}(aff(g),−gap(g,library))
+  gap≜|deps(g)∖proved|
+}
+
+;; ─── Λ: AGENT LOOP ───
+⟦Λ:Loop⟧{
+  cycle≜pull≫select≫claim≫work≫verify≫checkin
+  work≜match phase[translate↦tr(g,self),prove↦proof(g)]
+  verify≜match phase[translate↦validate(tr),prove↦lake.build∧axiom.audit]
+  checkin≜⊕→PR(main)≫GateA∧GateB≫automerge
+  checkin≜⊖→commit(decomp)∧release(claim)∧⊖(pattern)
+  session≜load(swarm/protocol.aisp)≫load(swarm/AI_GUIDE.md)≫cycle*
+  budget≜⟨turns≤40,wall≤1800s,attempts≤2⟩; spent(budget)⇒release∧exit
+}
+
+;; ─── Χ: ERROR ALGEBRA ───
+⟦Χ:Errors⟧{
+  ε_malformed≜⟨¬validate(a),GateB.reject∧⊘⟩
+  ε_expired≜⟨now>ts+ttl,reap⟩
+  ε_collision≜⟨reject(push),select(next)⟩
+  ε_flagged≜⟨¬match,await(human)⟩
+  ε_budget≜⟨spent(budget),release∧exit⟩
+  ε_gate_a≜⟨sorryAx∨axiom∉whitelist,⊘∧decomp⟩
+}
+
+⟦Ε⟧⟨δ≜0.65;φ≜90;τ≜◊⁺;⊢wf⟩

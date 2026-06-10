@@ -1,0 +1,19 @@
+𝔸5.1.goal.no-lean@2026-06-10
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜no-lean
+  phase≜prove
+  status≜open
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/no-lean.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/no-lean.lean
+  sha≜∅
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
