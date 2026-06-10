@@ -1,0 +1,151 @@
+{
+  "run_id": "phase1-run-001",
+  "date": "2026-06-10",
+  "trial": "Phase-1 swarm W4 (prove cycle): 3 prover agents driving `claude` (sonnet) to write Lean proofs, self-verify locally (lake build UnsorryLibrary --wfail + axiom_audit), and open Gate-A/Gate-B auto-merge PRs",
+  "agents": [
+    {
+      "id": "prover-alpha",
+      "model": "sonnet",
+      "role": "prover",
+      "cycles_run": 8
+    },
+    {
+      "id": "prover-bravo",
+      "model": "sonnet",
+      "role": "prover",
+      "cycles_run": 2
+    },
+    {
+      "id": "prover-charlie",
+      "model": "sonnet",
+      "role": "prover",
+      "cycles_run": 1
+    }
+  ],
+  "metrics": {
+    "claim_attempts": 11,
+    "collisions": 0,
+    "collision_rate": 0.0,
+    "proofs_attempted": 5,
+    "proofs_merged": 3,
+    "merge_rate": 0.6,
+    "prove_failures": 6,
+    "coordination_errors": 0,
+    "gate_a_failures_on_merged_path": 0
+  },
+  "merged_prove_prs": [
+    {
+      "pr": 70,
+      "goal": "and-comm-imp",
+      "name": "and_comm_imp_thm",
+      "agent": "prover-bravo",
+      "merge_commit": "1aadb16077a7",
+      "merged_at": "2026-06-10T05:30:53Z",
+      "gate_a": "SUCCESS"
+    },
+    {
+      "pr": 72,
+      "goal": "int-add-neg",
+      "name": "int_add_neg_thm",
+      "agent": "prover-alpha",
+      "merge_commit": "c2d4bda40b71",
+      "merged_at": "2026-06-10T06:19:48Z",
+      "gate_a": "SUCCESS"
+    },
+    {
+      "pr": 74,
+      "goal": "int-neg-neg",
+      "name": "int_neg_neg_thm",
+      "agent": "prover-alpha",
+      "merge_commit": "6eb92482ae50",
+      "merged_at": "2026-06-10T06:47:44Z",
+      "gate_a": "SUCCESS"
+    }
+  ],
+  "open_redundant_prove_prs": [
+    {
+      "pr": 71,
+      "goal": "and-comm-imp",
+      "agent": "prover-bravo",
+      "head": "bc2059bb",
+      "mergeable": "CONFLICTING",
+      "merge_state": "DIRTY",
+      "gate_a": "SUCCESS",
+      "note": "duplicate re-prove of already-merged goal (PR #70); all checks green, blocked purely by merge conflict against advanced main; left open, not a coordination error"
+    },
+    {
+      "pr": 73,
+      "goal": "int-add-neg",
+      "agent": "prover-alpha",
+      "head": "9af09f68",
+      "mergeable": "CONFLICTING",
+      "merge_state": "DIRTY",
+      "gate_a": "NONE",
+      "note": "duplicate-race re-prove of already-merged goal (PR #72); zero check-runs ever triggered AND conflicting; permanently blocked; left open, not a coordination error"
+    }
+  ],
+  "nonauthor_evidence": {
+    "goal": "int-neg-neg",
+    "name": "int_neg_neg_thm",
+    "pr": 74,
+    "agent_id": "prover-alpha",
+    "distinct_from_seed": true,
+    "merge_commit": "6eb92482ae507898f26349b44f11a49d885d24d2",
+    "proof_commit": "ae8cf63",
+    "proof_body": "theorem int_neg_neg_thm (n : Int) : -(-n) = n := Int.neg_neg n",
+    "library_module": "library/Unsorry/IntNegNeg.lean",
+    "index_entry": "library/index/de428d34a5ec356cde53158021c48abdb48b8ebb9bf82f9f7e9ba5d822e8b1db.aisp",
+    "novelty_check": "git log --all -S 'Int.neg_neg' -- library/ returns ONLY the proof commit ae8cf63 and its merge 6eb9248 — the proof body appears nowhere in history before this PR. The goals/int-neg-neg.lean seed stub never contained the proof term.",
+    "seed_authorship": "Every seed / backlog / translation / governance commit in history was authored by 'Chris Barlow' (cgbarlow@gmail.com / chris@idowork.co), 'Claude Fable 5' (noreply@anthropic.com), or 'unsorry-reaper[bot]'. No 'prover-*' id is or ever was a git author/committer.",
+    "github_author_caveat": "HONEST CAVEAT (ADR-007): the GitHub PR-author field on #74 shows the maintainer account 'cgbarlow', and the git author/committer of proof commit ae8cf63 is 'Chris Barlow <cgbarlow@gmail.com>'. This is because swarm contributors run under the maintainer's own GitHub identity (ADR-007), not a per-agent GitHub account. The SWARM identity is the AGENT_ID 'prover-alpha' recorded in the claim/commit trail — the commit subject is 'prove(int-neg-neg): int_neg_neg_thm by prover-alpha' and the metrics.jsonl claim/proved/pr-opened events carry agent='prover-alpha'. Both facts are stated plainly: the GitHub account is the maintainer; the agent identity is prover-alpha in the trail."
+  },
+  "library_growth": {
+    "library_modules_non_basic": 3,
+    "library_modules": [
+      "library/Unsorry/AndCommImp.lean",
+      "library/Unsorry/IntAddNeg.lean",
+      "library/Unsorry/IntNegNeg.lean"
+    ],
+    "index_entries": 4,
+    "index_entry_files": [
+      "library/index/fd07018f6365679b8d1f6c0c492de0f3bfc9e1eb611f17d10c32b58334f4e7e1.aisp",
+      "library/index/f4a4b6f0f3c6c4a52d7745f11e24ba7d2b0bfd7bafc838efa57f542f9d59bc5f.aisp",
+      "library/index/de428d34a5ec356cde53158021c48abdb48b8ebb9bf82f9f7e9ba5d822e8b1db.aisp",
+      "library/index/4c71a8b47b7aafffade842e201fc8f16bd9580b8ea18aba97244599d6bfc0ad8.aisp"
+    ],
+    "index_library_asymmetry": "4 index entries vs 3 proved library modules. The extra entry 4c71a8b4...aisp maps to goal nat-zero-lt-succ (status≜translated, NOT proved) and has NO corresponding proved library module — a pre-existing translated-goal index entry, not produced by this prove run. Flagged as a minor index/library asymmetry."
+  },
+  "goal_status_final": {
+    "total": 30,
+    "proved": 3,
+    "translated": 11,
+    "open": 16,
+    "proved_goals": [
+      "and-comm-imp",
+      "int-add-neg",
+      "int-neg-neg"
+    ]
+  },
+  "branch_protection": {
+    "required_status_checks": [
+      "gate-b",
+      "gate-a"
+    ],
+    "strict": false
+  },
+  "notes": [
+    "OBSERVABILITY GAP (declared, not estimated): prover-bravo's metrics.jsonl was UNOBSERVABLE — the file existed on /workspaces but could not be read because /tmp filled to 0MB (ENOSPC on the harness stdout-capture path) after bravo's cycle 2. Bravo's events therefore do NOT appear in the jsonl event stream. Bravo's contribution is reconstructed from its reported summary (cycles_run=2, failures=0, proved and-comm-imp, PRs #70/#71) and corroborated by ground truth (PR #70 merged with prover-bravo in the title). claim_attempts and prove_failures below fold in bravo's reported (not jsonl-observed) numbers; the split is itemized.",
+    "claim_attempts=11: 9 'claimed' events observed in jsonl (prover-alpha 8 + prover-charlie 1) PLUS 2 reported bravo prove cycles (jsonl unobservable). No 'collision' event appears in any observed jsonl.",
+    "collisions=0 / collision_rate=0.0: zero explicit 'collision' telemetry events across all observable jsonl. The 'release push rejected … rebasing from scratch' messages reported by bravo and charlie are RELEASE-BRANCH optimistic-concurrency races (the loser rebased and retried, then released the claim cleanly) — healthy swarm contention, not claim-cap collisions. No agent emitted a collision event; the claims layer never reported a cap-full withdrawal.",
+    "proofs_attempted=5: distinct (goal,agent) prove claims that ran a proof — (int-add-neg, prover-alpha), (int-neg-neg, prover-alpha), (int-sub-eq-add-neg, prover-alpha), (int-neg-neg, prover-charlie), (and-comm-imp, prover-bravo). prover-alpha re-claimed int-add-neg and int-neg-neg multiple times within the same (goal,agent) pair; those re-claims count toward claim_attempts but collapse to one distinct attempt each for the merge-rate denominator.",
+    "proofs_merged=3 (ground truth via gh): PR #70 (and-comm-imp/prover-bravo, merge 1aadb16077a7), #72 (int-add-neg/prover-alpha, merge c2d4bda40b71), #74 (int-neg-neg/prover-alpha, merge 6eb92482ae50). NOTE the merge-commit shas differ from the settle report's per-content shas (fd07018f…, f4a4b6f0…, de428d34…) — those are the proof-content shas used as index/library keys, NOT the squash-merge commits.",
+    "merge_rate=0.6 = proofs_merged(3) / proofs_attempted(5). The 2 distinct attempts that did not merge are int-sub-eq-add-neg (prover-alpha; never produced a passing local proof in budget — build-timeout, not bad math) and prover-charlie's int-neg-neg (failed local verify on both budget attempts; the goal was independently proved-and-merged by prover-alpha via #74). int-sub-eq-add-neg remains an OPEN claimable goal.",
+    "prove_failures=6: 'prove-failed' events where claude could not produce a locally-passing proof within the 2-attempt budget. prover-alpha 5 (int-add-neg ×2 — tmpfs ENOSPC before the TMPDIR relocation; int-neg-neg ×1 — race + fresh-worktree build timeout, already covered by merged #74; int-sub-eq-add-neg ×2 — bare-worktree mathlib rebuild timeout), prover-charlie 1 (int-neg-neg — sonnet proof miss + claims race). prover-bravo reported failures=0. All 6 failures released the claim cleanly and flagged the goal; none corrupted state, and none was a soundness rejection.",
+    "gate_a_failures_on_merged_path=0: all 3 merged prove PRs (#70, #72, #74) show gate-a=SUCCESS in statusCheckRollup. Local agent verify (lake build UnsorryLibrary --wfail + axiom_audit) MIRRORED CI gate-a on every merged path — zero false-confidence cases where a locally-verified proof failed CI gate-a. The prove failures were build/timeout/race at the agent's OWN local-verify step, never a green-local-then-red-CI divergence.",
+    "coordination_errors=0: zero failed Gate B runs on any prove PR; no double-claim beyond the live-claim cap (the two int-neg-neg claims — alpha + charlie — were sequential within the 2-live cap, and charlie released before the cap could breach); no protocol violation in branch histories. The two open/redundant PRs (#71 dup of #70, #73 dup of #72) are the expected fan-out artifact of agents re-selecting the highest-priority unproved goal while a prior prove PR was still pending auto-merge — claim markers are not persisted to main, so a goal stays claimable until its prove PR lands. Both were left open per observer instructions; neither is a coordination error.",
+    "INFRASTRUCTURE FINDING (product recommendation, no repo edits made): agent.sh's prove worktree is a bare `git worktree add … origin/main` with NO warmed .lake (gitignored), and agent.sh never runs `lake exe cache get` in the prove worktree before `lake build UnsorryLibrary --wfail`. So each local verification re-schedules all ~8486 mathlib modules from source and exceeds the per-attempt budget; this is the root cause of the int-sub-eq-add-neg and fresh-worktree int-neg-neg timeouts (NON-deterministic — the 2-attempt budget warms incrementally and sometimes finishes on attempt 2). CI gate-a masks this via leanprover/lean-action@v1 use-github-cache:true, which provisions oleans per checkout. A one-line `lake exe cache get` in open_pr_worktree (or before prove_local_verify) would make prove verification fast and deterministic. Flagged for Phase-1; NOT implemented (no repo edits permitted).",
+    "INFRASTRUCTURE FINDING (operator-level, no repo edits): the /tmp mount was a separate 7.8G tmpfs already ~100% full on arrival, dominated by two stale completed-Stage-4 red-team trees (/tmp/redteam-native-decide 5.7G, /tmp/redteam-admit 1.5G) belonging to other jobs. prover-alpha worked around it at the environment level (relocate clone/.lake/TMPDIR to the 64G root fs, warm oleans from ~/.cache/mathlib) and cycled successfully; prover-bravo and prover-charlie were HARD-BLOCKED after 2 and 1 cycles respectively when /tmp hit 0MB and the harness stdout-capture failed with ENOSPC. Recommendation: run W4 provers with clone+workdir+CLAUDE_CODE_TMPDIR on /workspaces by default, or free /tmp before the run.",
+    "Proof quality: sonnet produced sound proofs on every merged module (int_neg_neg_thm := Int.neg_neg n; int_add_neg_thm := Int.add_right_neg n; and_comm_imp_thm := fun h => ⟨h.2, h.1⟩ over Mathlib.Logic.Basic). axiom_audit passed — no sorry / native_decide / admit, no axioms beyond propext/Classical.choice/Quot.sound. No proof was rejected for unsoundness; all 6 failures were build-time/timeout/race, not bad mathematics.",
+    "main HEAD at observation = 6eb92482ae507898f26349b44f11a49d885d24d2 (= PR #74 merge commit)."
+  ]
+}

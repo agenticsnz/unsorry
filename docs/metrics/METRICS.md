@@ -13,6 +13,7 @@ green before auto-merge, and no metric run is ever pushed directly to `main`.
 |---|---|---|---|
 | `phase0-run-001` | 2026-06-10 | Phase-0 swarm trial W2 (3 supervised agents + 1 sweep agent, 10 backlog goals) | [phase0-run-001.json](phase0-run-001.json) · [phase0-run-001.md](phase0-run-001.md) |
 | `gate-a-redteam-001` | 2026-06-10 | Gate A red team W3 (9 adversarial bypass vectors, real PRs) | [gate-a-redteam-001.md](gate-a-redteam-001.md) |
+| `phase1-run-001` | 2026-06-10 | Phase-1 swarm W4 (first prove cycle: 3 prover agents on sonnet; merge_rate 0.6, 3 proofs merged to the verified library, 0 gate-a failures on the merged path) | [phase1-run-001.json](phase1-run-001.json) · [phase1-run-001.md](phase1-run-001.md) |
 
 ## Machine-record JSON schema
 
@@ -52,3 +53,20 @@ Top-level fields of `phase0-run-NNN.json`:
 `fp_rate >= 0.20` trips the fidelity kill criterion (SPEC-003-D: "flag FP ≥ 20 % on
 identical-meaning pairs"). If tripped, the response is ADR-008: drop to single translation
 plus Lean back-translation.
+
+## Phase-1 prove-cycle `metrics` fields
+
+Prove-cycle runs (`phase1-run-NNN.json`) record proof production rather than translation, so
+they carry a different `metrics` block (Phase-0 translation fields do not apply):
+
+| Field | Type | Definition |
+|---|---|---|
+| `claim_attempts` | int | Count of `claimed` events (+ any `collision` events) across all provers' `metrics.jsonl`. Where a prover's jsonl is unobservable, its reported cycle count is folded in and the split is declared in `notes`. |
+| `collisions` | int | Explicit `collision` telemetry events (cap-full claim withdrawal). Release-branch optimistic-concurrency races that the loser resolved by rebase-and-retry are **not** collisions. |
+| `collision_rate` | number | `collisions / claim_attempts` (0 if no attempts). |
+| `proofs_attempted` | int | Distinct `(goal, agent)` prove claims that ran a proof (re-claims of the same pair collapse to one). |
+| `proofs_merged` | int | Merged prove PRs (titled `prove(<goal>): <name> by <agent>`), from `gh` ground truth. |
+| `merge_rate` | number | `proofs_merged / proofs_attempted`. |
+| `prove_failures` | int | `prove-failed` events — claude could not produce a locally-passing proof within the attempt budget. Not a soundness rejection unless `notes` says so. |
+| `coordination_errors` | int | Gate-B rejections + double-claims beyond the live-claim cap + protocol violations in branch histories. Expected 0; each instance described in `notes`. |
+| `gate_a_failures_on_merged_path` | int | Merged prove PRs whose `gate-a` required check was RED (proof passed the agent's local `lake build`+`axiom_audit` but CI disagreed). 0 means local verify mirrored CI; any >0 is a false-confidence finding described in `notes`. |
