@@ -101,6 +101,18 @@ def _live_other_agents(claims_dir: str, goal: str, agent: str, now: datetime):
     return others, live_self
 
 
+def _translation_agents(translations_dir: str, goal: str) -> list[str]:
+    """Sorted distinct agent ids with a translations/<goal>.<agent>.aisp."""
+    agents: set[str] = set()
+    directory = Path(translations_dir)
+    if directory.is_dir():
+        for path in directory.glob(f"{goal}.*.aisp"):
+            fields = split_claim_filename(path.name)
+            if fields is not None and fields[0] == goal:
+                agents.add(fields[1])
+    return sorted(agents)
+
+
 def cmd_ttl(_args):
     print(config.TTL_SECONDS)
 
@@ -118,7 +130,9 @@ def cmd_candidates(args):
 
     SPEC-007-A step 2: phase≡translate, status≡open, fewer than the cap of
     live claims by distinct other agents, no live claim by self, no existing
-    translation by self. Lexicographic goal-id order (step 3).
+    translation by self, and fewer than two distinct-agent translations on
+    main (two ⇒ the goal needs the step-1b sweep, not a third translation).
+    Lexicographic goal-id order (step 3).
     """
     goals_dir, claims_dir, translations_dir, agent = args[:4]
     now = _now(args[4] if len(args) > 4 else "")
@@ -131,10 +145,36 @@ def cmd_candidates(args):
             continue
         if (Path(translations_dir) / f"{goal}.{agent}.aisp").is_file():
             continue
+        if len(_translation_agents(translations_dir, goal)) >= 2:
+            continue
         others, live_self = _live_other_agents(claims_dir, goal, agent, now)
         if live_self or len(others) >= config.TRANSLATE_CLAIM_CAP:
             continue
         print(goal)
+
+
+def cmd_sweep(args):
+    """sweep <goals-dir> <translations-dir>
+
+    SPEC-007-A step 1b: open translate goals that already carry translations
+    by two or more distinct agents on main (the overlapping-PR race — no
+    check-in saw a sibling, so step 8 never ran for the goal). One line per
+    goal: `<goal> <agent-a> <agent-b> <count>` with the two
+    lexicographically-first agent ids and the distinct-agent count, in
+    lexicographic goal-id order.
+    """
+    goals_dir, translations_dir = args[:2]
+    for path in sorted(Path(goals_dir).glob("*.aisp")):
+        goal = path.stem
+        record = parse_record(path.read_text(encoding="utf-8"))
+        if record.fields.get("phase") != "translate":
+            continue
+        if record.fields.get("status") != "open":
+            continue
+        agents = _translation_agents(translations_dir, goal)
+        if len(agents) < 2:
+            continue
+        print(goal, agents[0], agents[1], len(agents))
 
 
 def cmd_claimable(args):
@@ -187,6 +227,7 @@ COMMANDS = {
     "now": cmd_now,
     "is-id": cmd_is_id,
     "candidates": cmd_candidates,
+    "sweep": cmd_sweep,
     "claimable": cmd_claimable,
     "rewrite-goal": cmd_rewrite_goal,
 }
@@ -275,6 +316,32 @@ validate_candidate_record() {
   python3 -m tools.gate_b validate "$tree" >/dev/null
 }
 
+# Fidelity convergence of two translation records (SPEC-007-A steps 1b/8):
+# diff them, rewrite the goal record in place — status≜translated + sha≜<sha>
+# on match, status≜flagged on mismatch, only those lines — and print the
+# outcome (matched|flagged). Pure given its inputs; used verbatim by
+# --self-test. Returns 1 when the fidelity tool itself errors.
+apply_convergence() {
+  local goal_record="$1" rec_a="$2" rec_b="$3"
+  local rc=0 sha
+  python3 -m tools.fidelity diff "$rec_a" "$rec_b" >/dev/null || rc=$?
+  case "$rc" in
+    0)
+      sha="$(python3 -m tools.fidelity sha "$rec_a")" || return 1
+      py_helper rewrite-goal "$goal_record" translated "$sha" || return 1
+      printf 'matched\n'
+      ;;
+    1)
+      py_helper rewrite-goal "$goal_record" flagged || return 1
+      printf 'flagged\n'
+      ;;
+    *)
+      log "fidelity diff errored (exit $rc) on $rec_a vs $rec_b"
+      return 1
+      ;;
+  esac
+}
+
 # --------------------------------------------------------------- environment
 
 resolve_agent_id() {
@@ -317,11 +384,18 @@ require_unsorry_origin() {
 
 # ------------------------------------------------------------------- metrics
 
+# emit_event <event> <goal> [<key> <value>]... — extra pairs land as extra
+# string fields between "agent" and "ts" (e.g. the converged outcome).
 emit_event() {
-  local event="$1" goal="$2" ts
+  local event="$1" goal="$2" ts extra=""
+  shift 2
+  while [ $# -ge 2 ]; do
+    extra="$extra, \"$1\": \"$2\""
+    shift 2
+  done
   ts="$(py_helper now)"
-  printf '{"event": "%s", "goal": "%s", "agent": "%s", "ts": "%s"}\n' \
-    "$event" "$goal" "$AGENT_ID" "$ts" >> "$UNSORRY_WORKDIR/metrics.jsonl"
+  printf '{"event": "%s", "goal": "%s", "agent": "%s"%s, "ts": "%s"}\n' \
+    "$event" "$goal" "$AGENT_ID" "$extra" "$ts" >> "$UNSORRY_WORKDIR/metrics.jsonl"
 }
 
 # ------------------------------------------------------------- git plumbing
@@ -365,6 +439,36 @@ main_translations_dir() {
     git archive origin/main translations | tar -x -C "$snap" || return 1
   fi
   printf '%s/translations\n' "$snap"
+}
+
+# A fresh worktree at <prwt> on <branch>, branched from origin/main (shared
+# by step 1b and steps 7–9).
+open_pr_worktree() {
+  local prwt="$1" branch="$2"
+  git worktree remove --force "$prwt" >/dev/null 2>&1 || true
+  git worktree add -q -B "$branch" "$prwt" origin/main
+}
+
+# Gate-B-validate the tree, commit the given paths (title doubles as the
+# commit message), push, open an auto-merge PR, clean up the worktree.
+submit_pr_tree() {
+  local prwt="$1" branch="$2" title="$3" body="$4"
+  shift 4
+  if ! python3 -m tools.gate_b validate "$prwt" >/dev/null; then
+    log "PR tree on $branch fails Gate B — not pushing"
+    return 1
+  fi
+  git -C "$prwt" add "$@" || return 1
+  git -C "$prwt" commit -q -m "$title" || return 1
+  git -C "$prwt" push -q origin "$branch" || return 1
+  (
+    cd "$prwt" || exit 1
+    gh pr create --base main --head "$branch" --title "$title" --body "$body" \
+      && gh pr merge --auto --squash "$branch"
+  ) || return 1
+  git worktree remove --force "$prwt" >/dev/null 2>&1 || true
+  git branch -q -D "$branch" >/dev/null 2>&1 || true
+  return 0
 }
 
 # ----------------------------------------------------------------- the cycle
@@ -440,6 +544,63 @@ $body"
   return 1
 }
 
+# Step 1b: converge one goal that already carries translations by two
+# distinct agents on origin/main (the overlapping-PR race: both translators
+# checked in before either PR merged, so neither saw a sibling and step 8
+# never ran). No claim is taken — convergence is deterministic janitor work
+# on already-public data, so a duplicate sweep by a racing agent produces a
+# byte-identical edit whose PR merges cleanly or fails fast; both harmless.
+converge_goal() {
+  local goal="$1" agent_a="$2" agent_b="$3" count="$4"
+  local branch="feature/goal-${goal}-converge-${AGENT_ID}"
+  local prwt="$UNSORRY_WORKDIR/converge-${goal}-${AGENT_ID}"
+  local outcome
+
+  open_pr_worktree "$prwt" "$branch" || return 1
+  outcome="$(apply_convergence "$prwt/goals/$goal.aisp" \
+    "$prwt/translations/${goal}.${agent_a}.aisp" \
+    "$prwt/translations/${goal}.${agent_b}.aisp")" \
+    || { log "fidelity convergence failed for $goal"; return 1; }
+
+  submit_pr_tree "$prwt" "$branch" \
+    "converge($goal): $outcome by $AGENT_ID" \
+    "Automated convergence sweep (SPEC-007-A step 1b): goal \`$goal\` carries translations by \`$agent_a\` and \`$agent_b\` merged in overlapping PRs, so neither check-in ran the step-8 fidelity diff. Outcome of \`python3 -m tools.fidelity diff\`: **$outcome**. Only the goal record is edited." \
+    goals || return 1
+  if [ "$count" -gt 2 ]; then
+    emit_event converged "$goal" outcome "$outcome" translations "$count"
+  else
+    emit_event converged "$goal" outcome "$outcome"
+  fi
+  log "opened convergence PR for $goal ($outcome) on $branch"
+  return 0
+}
+
+# Step 1b driver: sweep all goals needing convergence, at most once per goal
+# per session. With ≥ 3 distinct translations the two lexicographically-first
+# agents are diffed and the anomaly lands in the converged event.
+convergence_sweep() {
+  local translations_dir="$1"
+  local failures=0 goal agent_a agent_b count
+  while read -r goal agent_a agent_b count; do
+    [ -n "$goal" ] || continue
+    [ -n "${SWEPT[$goal]:-}" ] && continue
+    if [ "$DRY_RUN" -eq 1 ]; then
+      printf 'dry-run: would converge goal %s (translations by %s and %s of %s distinct)\n' \
+        "$goal" "$agent_a" "$agent_b" "$count"
+      continue
+    fi
+    if [ "$count" -gt 2 ]; then
+      log "anomaly: $goal has $count distinct translations — diffing $agent_a vs $agent_b"
+    fi
+    SWEPT[$goal]=1
+    if ! converge_goal "$goal" "$agent_a" "$agent_b" "$count"; then
+      log "convergence of $goal failed"
+      failures=$((failures + 1))
+    fi
+  done < <(py_helper sweep goals "$translations_dir")
+  [ "$failures" -eq 0 ]
+}
+
 # Steps 7–9: write the record on a branch from origin/main, converge if a
 # sibling translation exists, validate, push, open an auto-merge PR.
 check_in() {
@@ -447,10 +608,9 @@ check_in() {
   local branch="feature/goal-${goal}-tr-${AGENT_ID}"
   local prwt="$UNSORRY_WORKDIR/pr-${goal}-${AGENT_ID}"
   local record="$prwt/translations/${goal}.${AGENT_ID}.aisp"
-  local sibling="" candidate rc sha
+  local sibling="" candidate outcome
 
-  git worktree remove --force "$prwt" >/dev/null 2>&1 || true
-  git worktree add -q -B "$branch" "$prwt" origin/main || return 1
+  open_pr_worktree "$prwt" "$branch" || return 1
   mkdir -p "$prwt/translations" || return 1
   render_translation_record "$goal" "$AGENT_ID" "$stmt" "$(utc_today)" \
     > "$record" || return 1
@@ -464,47 +624,21 @@ check_in() {
     break
   done
   if [ -n "$sibling" ]; then
-    rc=0
-    python3 -m tools.fidelity diff "$record" "$sibling" >/dev/null || rc=$?
-    case "$rc" in
-      0)
-        sha="$(python3 -m tools.fidelity sha "$record")" || return 1
-        py_helper rewrite-goal "$prwt/goals/$goal.aisp" translated "$sha" || return 1
-        emit_event matched "$goal"
-        log "second translation of $goal matches — goal marked translated"
-        ;;
-      1)
-        py_helper rewrite-goal "$prwt/goals/$goal.aisp" flagged || return 1
-        emit_event flagged "$goal"
-        log "second translation of $goal mismatches — goal flagged"
-        ;;
-      *)
-        log "fidelity diff errored (exit $rc) for $goal"
-        return 1
-        ;;
+    outcome="$(apply_convergence "$prwt/goals/$goal.aisp" "$record" "$sibling")" \
+      || { log "fidelity convergence failed for $goal"; return 1; }
+    emit_event "$outcome" "$goal"
+    case "$outcome" in
+      matched) log "second translation of $goal matches — goal marked translated" ;;
+      flagged) log "second translation of $goal mismatches — goal flagged" ;;
     esac
   fi
 
-  if ! python3 -m tools.gate_b validate "$prwt" >/dev/null; then
-    log "PR tree for $goal fails Gate B — not pushing"
-    return 1
-  fi
-
-  git -C "$prwt" add translations goals || return 1
-  git -C "$prwt" commit -q -m "tr($goal): translation by $AGENT_ID" || return 1
-  git -C "$prwt" push -q origin "$branch" || return 1
-  (
-    cd "$prwt" || exit 1
-    gh pr create --base main --head "$branch" \
-      --title "tr($goal): translation by $AGENT_ID" \
-      --body "Automated Phase-0 translation of goal \`$goal\` by agent \`$AGENT_ID\` (ADR-007, SPEC-007-A). Statement provenance: \`backlog/$goal.md\`, independent translation per ⟦Γ:Fidelity⟧." \
-      && gh pr merge --auto --squash "$branch"
-  ) || return 1
+  submit_pr_tree "$prwt" "$branch" \
+    "tr($goal): translation by $AGENT_ID" \
+    "Automated Phase-0 translation of goal \`$goal\` by agent \`$AGENT_ID\` (ADR-007, SPEC-007-A). Statement provenance: \`backlog/$goal.md\`, independent translation per ⟦Γ:Fidelity⟧." \
+    translations goals || return 1
   emit_event pr-opened "$goal"
   log "opened auto-merge PR for $goal on $branch"
-
-  git worktree remove --force "$prwt" >/dev/null 2>&1 || true
-  git branch -q -D "$branch" >/dev/null 2>&1 || true
   return 0
 }
 
@@ -619,6 +753,49 @@ test_candidate_filtering() {
     > "$tree/translations/nat-add-comm.agent-self.aisp"
   got="$(py_helper candidates "$tree/goals" "$claims" "$tree/translations" agent-self "$T_AT")"
   [ -z "$got" ] || { log "  F: expected no candidates, got '$got'"; return 1; }
+
+  # G: two distinct-agent translations on main exclude the goal — it needs
+  # the step-1b sweep, not a third translation.
+  rm "$tree/translations"/nat-add-comm.*.aisp
+  render_translation_record nat-add-comm agent-other "∀n,m∈ℕ:n+m≡m+n" 2026-06-10 \
+    > "$tree/translations/nat-add-comm.agent-other.aisp"
+  render_translation_record nat-add-comm agent-more "∀n,m∈ℕ:m+n≡n+m" 2026-06-10 \
+    > "$tree/translations/nat-add-comm.agent-more.aisp"
+  got="$(py_helper candidates "$tree/goals" "$claims" "$tree/translations" agent-self "$T_AT")"
+  [ -z "$got" ] || { log "  G: expected no candidates, got '$got'"; return 1; }
+}
+
+test_sweep_detection() {
+  local tree got
+  tree="$(mktemp -d "$SESSION_TMP/sweep.XXXXXX")" || return 1
+  cp -R "$T_FIXTURES/valid_tree/goals" "$T_FIXTURES/valid_tree/translations" \
+    "$tree/" || return 1
+
+  # A: the fixture's only two-translation goal (nat-zero-add) is already
+  # status≜translated, and the open goal (nat-add-comm) has none — no sweep.
+  got="$(py_helper sweep "$tree/goals" "$tree/translations")"
+  [ -z "$got" ] || { log "  A: expected no sweep goals, got '$got'"; return 1; }
+
+  # B: one translation of the open goal — still nothing to converge.
+  render_translation_record nat-add-comm agent-beta "∀n,m∈ℕ:n+m≡m+n" 2026-06-10 \
+    > "$tree/translations/nat-add-comm.agent-beta.aisp"
+  got="$(py_helper sweep "$tree/goals" "$tree/translations")"
+  [ -z "$got" ] || { log "  B: expected no sweep goals, got '$got'"; return 1; }
+
+  # C: translations by two distinct agents — listed for convergence.
+  render_translation_record nat-add-comm agent-alpha "∀n,m∈ℕ:m+n≡n+m" 2026-06-10 \
+    > "$tree/translations/nat-add-comm.agent-alpha.aisp"
+  got="$(py_helper sweep "$tree/goals" "$tree/translations")"
+  [ "$got" = "nat-add-comm agent-alpha agent-beta 2" ] \
+    || { log "  C: expected 'nat-add-comm agent-alpha agent-beta 2', got '$got'"; return 1; }
+
+  # D: a third translation — still the two lexicographically-first agents,
+  # with the anomaly visible in the distinct-agent count.
+  render_translation_record nat-add-comm agent-zeta "∀n,m∈ℕ:n+m≡m+n" 2026-06-10 \
+    > "$tree/translations/nat-add-comm.agent-zeta.aisp"
+  got="$(py_helper sweep "$tree/goals" "$tree/translations")"
+  [ "$got" = "nat-add-comm agent-alpha agent-beta 3" ] \
+    || { log "  D: expected 'nat-add-comm agent-alpha agent-beta 3', got '$got'"; return 1; }
 }
 
 test_goal_rewrite() {
@@ -650,6 +827,48 @@ test_goal_rewrite() {
     || { log "  flagged rewrite touched lines other than status≜"; return 1; }
 }
 
+test_convergence_rewrite() {
+  # The exact step-1b/8 machinery: the fixture pair is α-equivalent, so the
+  # goal record converges to translated + the fidelity sha; a mismatching
+  # pair flags it and leaves sha≜∅ alone.
+  local src="$T_FIXTURES/valid_tree/goals/nat-add-comm.aisp"
+  local tr_a="$T_FIXTURES/valid_tree/translations/nat-zero-add.agent-alpha.aisp"
+  local tr_b="$T_FIXTURES/valid_tree/translations/nat-zero-add.agent-beta.aisp"
+  local sha="73026be938ddd22261b6c55a2a5843465916f04559e06406d91b71b414b797a8"
+  local tmp outcome
+  tmp="$(mktemp -d "$SESSION_TMP/converge.XXXXXX")" || return 1
+
+  # Matched: status and sha are both rewritten; nothing else changes.
+  cp "$src" "$tmp/matched.aisp"
+  outcome="$(apply_convergence "$tmp/matched.aisp" "$tr_a" "$tr_b")" \
+    || { log "  apply_convergence failed on the matched pair"; return 1; }
+  [ "$outcome" = "matched" ] \
+    || { log "  expected outcome 'matched', got '$outcome'"; return 1; }
+  grep -qxF "  status≜translated" "$tmp/matched.aisp" \
+    || { log "  status line not rewritten to translated"; return 1; }
+  grep -qxF "  sha≜$sha" "$tmp/matched.aisp" \
+    || { log "  sha line does not carry the fidelity sha"; return 1; }
+  diff <(grep -v -e 'status≜' -e 'sha≜' "$src") \
+       <(grep -v -e 'status≜' -e 'sha≜' "$tmp/matched.aisp") >/dev/null \
+    || { log "  convergence touched lines other than status≜/sha≜"; return 1; }
+
+  # Flagged: only the status line changes; sha≜∅ survives.
+  cp "$src" "$tmp/flagged.aisp"
+  render_translation_record nat-zero-add agent-zeta "∀n∈ℕ:n+0≡n" 2026-06-10 \
+    > "$tmp/zeta.aisp"
+  outcome="$(apply_convergence "$tmp/flagged.aisp" "$tr_a" "$tmp/zeta.aisp")" \
+    || { log "  apply_convergence failed on the mismatched pair"; return 1; }
+  [ "$outcome" = "flagged" ] \
+    || { log "  expected outcome 'flagged', got '$outcome'"; return 1; }
+  grep -qxF "  status≜flagged" "$tmp/flagged.aisp" \
+    || { log "  status line not rewritten to flagged"; return 1; }
+  grep -qxF "  sha≜∅" "$tmp/flagged.aisp" \
+    || { log "  sha line was modified in the flagged case"; return 1; }
+  diff <(grep -v -e 'status≜' "$src") \
+       <(grep -v -e 'status≜' "$tmp/flagged.aisp") >/dev/null \
+    || { log "  flagged convergence touched lines other than status≜"; return 1; }
+}
+
 test_record_validation() {
   # The exact step-6 machinery, against the fixture tree: a good statement
   # passes Gate B on a temp tree, quoted English prose does not (GB009).
@@ -670,7 +889,9 @@ run_self_tests() {
     test_claim_render_golden
     test_translation_render_golden
     test_candidate_filtering
+    test_sweep_detection
     test_goal_rewrite
+    test_convergence_rewrite
     test_record_validation
   )
   local failures=0 t
@@ -778,12 +999,16 @@ main() {
   log "agent $AGENT_ID starting (model=$UNSORRY_MODEL wall=${UNSORRY_WALL}s ttl=${UNSORRY_TTL}s)"
 
   declare -A HANDLED=()
+  declare -A SWEPT=()
   local overall=0 translations_dir candidates goal cand stmt cycle_failed
 
   while :; do
     # Step 1 — pull main, refresh the claims worktree.
     sync_repo || { log "repository sync failed"; exit 1; }
     translations_dir="$(main_translations_dir)" || exit 1
+
+    # Step 1b — convergence sweep: janitor work, claims nothing.
+    convergence_sweep "$translations_dir" || overall=1
 
     # Steps 2–3 — enumerate and select.
     candidates="$(select_candidates "$translations_dir")"
