@@ -190,6 +190,86 @@ def _proved_goals(library_dir: str) -> set[str]:
     return proved
 
 
+def _affinity(record) -> int:
+    """Goal affinity (⟦Γ:Affinity⟧, ADR-010). Absent or garbled ⇒ 0 — the
+    score is strictly advisory queue state, never trust-bearing, so a missing
+    or malformed value must degrade to neutral, never crash selection."""
+    raw = record.fields.get("aff")
+    if raw is None:
+        return 0
+    try:
+        return int(raw.strip())
+    except ValueError:
+        return 0
+
+
+def _deps(record) -> list[str]:
+    """Goal ids in deps≜⟨a,b,…⟩ (empty for ⟨⟩ or absent)."""
+    raw = record.fields.get("deps", "").strip()
+    inner = raw.strip("⟨⟩").strip()
+    return [d.strip() for d in inner.split(",") if d.strip()] if inner else []
+
+
+def _gap(record, proved: set) -> int:
+    """gap ≜ |deps(g) ∖ proved| — a goal's distance to the merged library
+    (ADR-010). Fewer unproved dependencies ⇒ closer ⇒ preferred."""
+    return sum(1 for dep in _deps(record) if dep not in proved)
+
+
+def _rank(candidates, proved: set) -> list[str]:
+    """Rank claimable goals (ADR-010 / SPEC-010-A): drop the non-viable
+    (affinity < τ_v — awaiting re-decomposition), then order by
+    (affinity desc, gap asc, id asc). ``candidates`` is a list of
+    (goal_id, record). The lexicographic id tie-break keeps trials
+    reproducible."""
+    scored = []
+    for goal, record in candidates:
+        affinity = _affinity(record)
+        if affinity < config.TAU_V:
+            continue  # below viability: skipped, re-queued for re-decomposition
+        scored.append((-affinity, _gap(record, proved), goal))
+    scored.sort()
+    return [goal for _, _, goal in scored]
+
+
+def cmd_aff_bump(args):
+    """aff-bump <goal.aisp> <delta> — add <delta> to the goal's aff field,
+    inserting ``aff≜<delta>`` after the sha≜ line if none exists yet
+    (⟦Γ:Affinity⟧ update; +1 on merge, -10 on a failed attempt)."""
+    path = Path(args[0])
+    delta = int(args[1])
+    record = parse_record(path.read_text(encoding="utf-8"))
+    new = _affinity(record) + delta
+    lines = path.read_text(encoding="utf-8").splitlines(keepends=True)
+    out = []
+    hit = 0
+    for line in lines:
+        stripped = line.lstrip()
+        indent = line[: len(line) - len(stripped)]
+        newline = "\n" if line.endswith("\n") else ""
+        if stripped.rstrip("\n").startswith("aff≜"):
+            hit += 1
+            out.append(f"{indent}aff≜{new}{newline}")
+        else:
+            out.append(line)
+    if hit == 0:  # insert after the sha≜ line
+        rebuilt = []
+        inserted = False
+        for line in out:
+            rebuilt.append(line)
+            stripped = line.lstrip()
+            if not inserted and stripped.rstrip("\n").startswith("sha≜"):
+                indent = line[: len(line) - len(stripped)]
+                rebuilt.append(f"{indent}aff≜{new}\n")
+                inserted = True
+        if not inserted:
+            sys.exit(f"py_helper: {path} has no sha≜ line to anchor aff")
+        out = rebuilt
+    elif hit > 1:
+        sys.exit(f"py_helper: {path} has {hit} aff≜ lines, expected ≤1")
+    path.write_text("".join(out), encoding="utf-8")
+
+
 def cmd_camel_name(args):
     """camel-name <goal-id> — print the CamelCase module name."""
     print(camel_name(args[0]))
@@ -215,11 +295,12 @@ def cmd_prove_candidates(args):
 
     SPEC-007-A prove step 2: goals with phase≡prove, status≡open, fewer than
     PROVE_CLAIM_CAP live claims by distinct other agents, no live claim by
-    self, and NOT already proved (no library/index entry). Lexicographic
-    goal-id order."""
+    self, and NOT already proved (no library/index entry). Ordered by
+    affinity-weighted, gap-based ranking (ADR-010 / SPEC-010-A)."""
     goals_dir, claims_dir, library_dir, agent = args[:4]
     now = _now(args[4] if len(args) > 4 else "")
     proved = _proved_goals(library_dir)
+    survivors = []
     for path in sorted(Path(goals_dir).glob("*.aisp")):
         goal = path.stem
         record = parse_record(path.read_text(encoding="utf-8"))
@@ -232,6 +313,8 @@ def cmd_prove_candidates(args):
         others, live_self = _live_other_agents(claims_dir, goal, agent, now)
         if live_self or len(others) >= config.PROVE_CLAIM_CAP:
             continue
+        survivors.append((goal, record))
+    for goal in _rank(survivors, proved):
         print(goal)
 
 
@@ -272,6 +355,12 @@ def cmd_attempts(_args):
     print(config.BUDGET_ATTEMPTS)
 
 
+def cmd_aff_delta(args):
+    """aff-delta merge|fail — print the affinity update for that event
+    (⟦Γ:Affinity⟧; +1 / -10), so the shell never hardcodes the constant."""
+    print(config.AFFINITY_MERGE if args[0] == "merge" else config.AFFINITY_FAIL)
+
+
 def cmd_now(_args):
     print(format_utc_z(datetime.now(timezone.utc)))
 
@@ -287,10 +376,13 @@ def cmd_candidates(args):
     live claims by distinct other agents, no live claim by self, no existing
     translation by self, and fewer than two distinct-agent translations on
     main (two ⇒ the goal needs the step-1b sweep, not a third translation).
-    Lexicographic goal-id order (step 3).
+    Ordered by affinity-weighted, gap-based ranking (ADR-010 / SPEC-010-A);
+    translate goals carry no deps and start at affinity 0, so the order
+    degenerates to lexicographic on a flat backlog.
     """
     goals_dir, claims_dir, translations_dir, agent = args[:4]
     now = _now(args[4] if len(args) > 4 else "")
+    survivors = []
     for path in sorted(Path(goals_dir).glob("*.aisp")):
         goal = path.stem
         record = parse_record(path.read_text(encoding="utf-8"))
@@ -305,6 +397,8 @@ def cmd_candidates(args):
         others, live_self = _live_other_agents(claims_dir, goal, agent, now)
         if live_self or len(others) >= config.TRANSLATE_CLAIM_CAP:
             continue
+        survivors.append((goal, record))
+    for goal in _rank(survivors, set()):
         print(goal)
 
 
@@ -386,6 +480,8 @@ COMMANDS = {
     "sweep": cmd_sweep,
     "claimable": cmd_claimable,
     "rewrite-goal": cmd_rewrite_goal,
+    "aff-bump": cmd_aff_bump,
+    "aff-delta": cmd_aff_delta,
     "camel-name": cmd_camel_name,
     "lean-stmt": cmd_lean_stmt,
     "lean-name": cmd_lean_name,
@@ -942,6 +1038,9 @@ check_in_proof() {
   py_helper render-index "$sha" "$goal" "$name" "$stmt" \
     > "$prwt/library/index/$sha.aisp" || return 1
   py_helper rewrite-goal "$prwt/goals/$goal.aisp" proved "$sha" || return 1
+  # ⊕ a merge reinforces the goal's pattern (+1 affinity, ADR-010); folds
+  # into the same gated prove PR.
+  py_helper aff-bump "$prwt/goals/$goal.aisp" "$(py_helper aff-delta merge)" || return 1
 
   submit_pr_tree "$prwt" "$(git -C "$prwt" rev-parse --abbrev-ref HEAD)" \
     "prove($goal): $name by $AGENT_ID" \
@@ -978,8 +1077,29 @@ prove_goal() {
     return 0
   fi
   emit_event prove-failed "$goal"
-  log "prove of $goal failed after $UNSORRY_ATTEMPTS attempt(s) — claim released, flagged"
+  demote_goal "$goal" || true
+  log "prove of $goal failed after $UNSORRY_ATTEMPTS attempt(s) — claim released, flagged, affinity -10"
   return 1
+}
+
+# ⊖ on a failed prove attempt, persist a -10 affinity penalty on the goal
+# (ADR-010): a small gated PR editing only goals/<goal>.aisp's aff field, so
+# the goal is deprioritised and, below τ_v, skipped pending re-decomposition
+# (Stage C). Editing a goal .aisp is not a Lean path, so Gate A short-circuits;
+# Gate B validates. Best-effort — a failed demote never blocks the cycle.
+demote_goal() {
+  local goal="$1" prwt branch
+  branch="$(feature_branch demote "$goal")" || return 1
+  prwt="$UNSORRY_WORKDIR/demote-${goal}-${AGENT_ID}"
+  open_pr_worktree "$prwt" "$branch" || return 1
+  if py_helper aff-bump "$prwt/goals/$goal.aisp" "$(py_helper aff-delta fail)"; then
+    submit_pr_tree "$prwt" "$branch" \
+      "affinity($goal): -10 after a failed prove attempt by $AGENT_ID" \
+      "Automated affinity penalty (ADR-010, SPEC-010-A): goal \`$goal\` resisted proof within budget, so its pattern is demoted by 10. Advisory queue state only — never trust-bearing." \
+      goals || true
+  fi
+  git worktree remove --force "$prwt" >/dev/null 2>&1 || true
+  git branch -q -D "$branch" >/dev/null 2>&1 || true
 }
 
 # Step 10: remove the claim file, commit, push. Re-entrant like claim_goal:
@@ -1569,6 +1689,132 @@ test_render_index_gateb() {
     || { log "  rendered index entry + proved goal failed Gate B"; return 1; }
 }
 
+# Set a prove goal's deps≜⟨⟩ to ⟨<csv>⟩ (test helper for gap ranking).
+set_goal_deps() {
+  local file="$1" csv="$2"
+  sed -i "s/  deps≜⟨⟩/  deps≜⟨$csv⟩/" "$file"
+}
+
+test_affinity_ranking() {
+  # ADR-010: order by (affinity desc, gap asc, id asc). Pure queue logic.
+  local tree claims got
+  tree="$(mktemp -d "$SESSION_TMP/affrank.XXXXXX")" || return 1
+  claims="$tree/claims"
+  mkdir -p "$claims" "$tree/library/index" || return 1
+  make_prove_goal "$tree" lo "theorem lo (n : Nat) : n + 0 = n" || return 1
+  make_prove_goal "$tree" hi "theorem hi (n : Nat) : 0 + n = n" || return 1
+  make_prove_goal "$tree" mid "theorem mid (n : Nat) : n * 1 = n" || return 1
+  py_helper aff-bump "$tree/goals/hi.aisp" 5 || return 1
+  py_helper aff-bump "$tree/goals/mid.aisp" 2 || return 1
+  # lo stays at affinity 0 (no aff field at all — degrades to 0).
+  got="$(py_helper prove-candidates "$tree/goals" "$claims" "$tree/library" agent-self "$T_AT")"
+  [ "$got" = "$(printf 'hi\nmid\nlo')" ] \
+    || { log "  affinity order: expected 'hi mid lo', got '$got'"; return 1; }
+
+  # Tie on affinity ⇒ lexicographic id. Give zzz and aaa equal affinity 5.
+  make_prove_goal "$tree" zzz "theorem zzz (n : Nat) : n * 0 = 0" || return 1
+  make_prove_goal "$tree" aaa "theorem aaa (n : Nat) : 0 ≤ n" || return 1
+  py_helper aff-bump "$tree/goals/zzz.aisp" 5 || return 1
+  py_helper aff-bump "$tree/goals/aaa.aisp" 5 || return 1
+  got="$(py_helper prove-candidates "$tree/goals" "$claims" "$tree/library" agent-self "$T_AT")"
+  # aff5: aaa, hi, zzz (lexicographic); then mid(2), then lo(0).
+  [ "$got" = "$(printf 'aaa\nhi\nzzz\nmid\nlo')" ] \
+    || { log "  tie-break: expected 'aaa hi zzz mid lo', got '$got'"; return 1; }
+}
+
+test_gap_ranking() {
+  # gap ≜ |deps ∖ proved|; smaller gap preferred even against lexicographic.
+  local tree claims got
+  tree="$(mktemp -d "$SESSION_TMP/gaprank.XXXXXX")" || return 1
+  claims="$tree/claims"
+  mkdir -p "$claims" "$tree/library/index" || return 1
+  make_prove_goal "$tree" aaa "theorem aaa (n : Nat) : n + 0 = n" || return 1
+  make_prove_goal "$tree" bbb "theorem bbb (n : Nat) : 0 + n = n" || return 1
+  set_goal_deps "$tree/goals/aaa.aisp" bbb   # aaa depends on bbb (gap 1)
+  # bbb has gap 0; both affinity 0. By (0, gap, id): bbb(gap0) before aaa(gap1)
+  # despite aaa < bbb lexicographically.
+  got="$(py_helper prove-candidates "$tree/goals" "$claims" "$tree/library" agent-self "$T_AT")"
+  [ "$got" = "$(printf 'bbb\naaa')" ] \
+    || { log "  gap order: expected 'bbb aaa', got '$got'"; return 1; }
+
+  # Once bbb is proved (index entry), aaa's gap drops to 0 — and bbb leaves the
+  # pool — so aaa is the sole candidate.
+  local sha
+  sha="$(py_helper lean-sha "$tree/goals/bbb.lean")" || return 1
+  py_helper render-index "$sha" bbb bbb "$(py_helper lean-stmt "$tree/goals/bbb.lean")" \
+    > "$tree/library/index/$sha.aisp" || return 1
+  got="$(py_helper prove-candidates "$tree/goals" "$claims" "$tree/library" agent-self "$T_AT")"
+  [ "$got" = "aaa" ] \
+    || { log "  post-proof gap: expected 'aaa', got '$got'"; return 1; }
+}
+
+test_viability_skip() {
+  # A goal below τ_v (−5) is skipped — non-viable, awaiting re-decomposition.
+  local tree claims got tau
+  tree="$(mktemp -d "$SESSION_TMP/viability.XXXXXX")" || return 1
+  claims="$tree/claims"
+  mkdir -p "$claims" "$tree/library/index" || return 1
+  tau="$(python3 -c 'import tools.gate_b.config as c; print(c.TAU_V)')" || return 1
+  [ "$tau" = "-5" ] || { log "  τ_v drifted from -5 (got $tau)"; return 1; }
+  make_prove_goal "$tree" ok "theorem ok (n : Nat) : n + 0 = n" || return 1
+  make_prove_goal "$tree" bad "theorem bad (n : Nat) : 0 + n = n" || return 1
+  py_helper aff-bump "$tree/goals/bad.aisp" -6 || return 1   # below τ_v
+  got="$(py_helper prove-candidates "$tree/goals" "$claims" "$tree/library" agent-self "$T_AT")"
+  [ "$got" = "ok" ] \
+    || { log "  viability: expected only 'ok' (bad below τ_v), got '$got'"; return 1; }
+  # Exactly at τ_v is still viable (the cut is strictly below) — but ranks
+  # below ok, since -5 < 0 affinity.
+  py_helper aff-bump "$tree/goals/bad.aisp" 1 || return 1    # -6 → -5
+  got="$(py_helper prove-candidates "$tree/goals" "$claims" "$tree/library" agent-self "$T_AT")"
+  [ "$got" = "$(printf 'ok\nbad')" ] \
+    || { log "  at τ_v should be viable but rank below ok; expected 'ok bad', got '$got'"; return 1; }
+}
+
+test_affinity_bump_math() {
+  # aff-bump inserts when absent, accumulates when present, and reflects the
+  # configured +1 / −10 deltas.
+  local tree merge fail
+  tree="$(mktemp -d "$SESSION_TMP/affbump.XXXXXX")" || return 1
+  make_prove_goal "$tree" g "theorem g (n : Nat) : n + 0 = n" || return 1
+  grep -q 'aff≜' "$tree/goals/g.aisp" \
+    && { log "  fresh goal should carry no aff field"; return 1; }
+  merge="$(py_helper aff-delta merge)" || return 1
+  fail="$(py_helper aff-delta fail)" || return 1
+  if [ "$merge" != "1" ] || [ "$fail" != "-10" ]; then
+    log "  deltas drifted: merge=$merge fail=$fail"
+    return 1
+  fi
+  py_helper aff-bump "$tree/goals/g.aisp" "$merge" || return 1   # absent → 1
+  grep -qxF "  aff≜1" "$tree/goals/g.aisp" \
+    || { log "  aff not inserted as 1"; return 1; }
+  py_helper aff-bump "$tree/goals/g.aisp" "$fail" || return 1    # 1 → -9
+  grep -qxF "  aff≜-9" "$tree/goals/g.aisp" \
+    || { log "  aff not accumulated to -9"; return 1; }
+  # The inserted aff line sits inside the artifact block; the tree still
+  # validates under Gate B (aff is an ignored advisory field).
+  mkdir -p "$tree/backlog" || return 1
+  printf '# g\n\nx\n' > "$tree/backlog/g.md"
+  python3 -m tools.gate_b validate "$tree" >/dev/null \
+    || { log "  goal with aff field failed Gate B"; return 1; }
+}
+
+test_affinity_degrades_on_garbage() {
+  # A garbled aff value must not crash selection — it degrades to 0 (advisory).
+  local tree claims got
+  tree="$(mktemp -d "$SESSION_TMP/affgarbage.XXXXXX")" || return 1
+  claims="$tree/claims"
+  mkdir -p "$claims" "$tree/library/index" || return 1
+  make_prove_goal "$tree" g "theorem g (n : Nat) : n + 0 = n" || return 1
+  make_prove_goal "$tree" h "theorem h (n : Nat) : 0 + n = n" || return 1
+  py_helper aff-bump "$tree/goals/h.aisp" 3 || return 1
+  # Corrupt g's aff to a non-integer; it must be read as 0, not error out.
+  sed -i 's/  sha≜∅/  sha≜∅\n  aff≜oops/' "$tree/goals/g.aisp"
+  got="$(py_helper prove-candidates "$tree/goals" "$claims" "$tree/library" agent-self "$T_AT")" \
+    || { log "  selection crashed on a garbled aff"; return 1; }
+  [ "$got" = "$(printf 'h\ng')" ] \
+    || { log "  garbled aff should rank as 0; expected 'h g', got '$got'"; return 1; }
+}
+
 run_self_tests() {
   local tests=(
     test_agent_id_generation
@@ -1590,6 +1836,11 @@ run_self_tests() {
     test_already_proved_excluded
     test_goal_proved_rewrite
     test_render_index_gateb
+    test_affinity_ranking
+    test_gap_ranking
+    test_viability_skip
+    test_affinity_bump_math
+    test_affinity_degrades_on_garbage
   )
   local failures=0 t
   for t in "${tests[@]}"; do

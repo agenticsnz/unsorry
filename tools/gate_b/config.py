@@ -17,8 +17,10 @@ REAPER_INTERVAL_SECONDS = 900
 TRANSLATE_CLAIM_CAP = 2
 PROVE_CLAIM_CAP = 1
 
-# ⟦Γ:Affinity⟧ — viability threshold
+# ⟦Γ:Affinity⟧ — viability threshold and update deltas
 TAU_V = -5
+AFFINITY_MERGE = 1  # +1 on a proven goal (⊕)
+AFFINITY_FAIL = -10  # -10 on a failed prove attempt (⊖); asymmetric, favours proven approaches
 
 # ⟦Λ:Loop⟧ — per-session budgets
 BUDGET_TURNS = 40

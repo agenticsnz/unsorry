@@ -6,7 +6,7 @@
 | **Initiative** | unsorry Phase 2 — open lemmas and target decomposition |
 | **Proposed By** | unsorry maintainers |
 | **Date** | 2026-06-10 |
-| **Status** | Proposed |
+| **Status** | Accepted |
 
 ## WH(Y) Decision Statement
 **In the context of** Phase 2, where the swarm must drive verified proofs toward a chosen unformalised target through a growing tree of decomposed sub-lemmas rather than chew through a flat Phase-1 backlog of ~20 independent one-liners,
@@ -74,3 +74,4 @@ Retain SPEC-007-A's first-in-id-order selection. Rejected because it is fit for 
 | Status | Approver | Date |
 |--------|----------|------|
 | Proposed | unsorry maintainers | 2026-06-10 |
+| Accepted | unsorry maintainers | 2026-06-10 |

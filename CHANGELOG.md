@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Phase-2 Stage B — affinity-weighted, gap-based goal selection (ADR-010, SPEC-010-A): selection now ranks claimable goals by (affinity desc, gap asc, id asc), skipping below-τ_v patterns; +1 affinity on a merge (folded into the prove PR), -10 on a failed attempt (a gated demote PR); affinity is an advisory `aff` field on goal records that degrades to 0 on absence/garbage. 5 new agent self-tests (24 total). ADR-010 Accepted
 - Phase-2 plan (proposed): [`docs/proposals/phase2-plan.md`](docs/proposals/phase2-plan.md), candidate-target shortlist [`docs/phase2-targets.md`](docs/phase2-targets.md), and three ADRs — ADR-009 (goal decomposition on prove-budget exhaustion), ADR-010 (affinity-weighted gap-based selection), ADR-011 (statement-binding gate, closing the meaningfulness gap the W3 red team exposed)
 - README: "Why this matters" and "The goal, honestly" — the purpose, value, and honest limits of the work, with Phase-2 links
 
