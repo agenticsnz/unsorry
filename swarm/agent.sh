@@ -127,52 +127,15 @@ def _translation_agents(translations_dir: str, goal: str) -> list[str]:
 # keyed by the content address of the goal's Lean statement.
 
 
-def camel_name(goal: str) -> str:
-    """CamelCase library-module name from a goal id (the contract Id grammar
-    is `[a-z0-9][a-z0-9-]*`): split on '-', capitalize each part, join.
-    `nat-add-comm-thm` → `NatAddCommThm`. Deterministic and reversible enough
-    to be unique (the goal-id grammar forbids the only collision sources)."""
-    parts = [p for p in goal.split("-") if p]
-    if not parts:
-        sys.exit(f"py_helper: empty goal id {goal!r}")
-    return "".join(p[:1].upper() + p[1:] for p in parts)
-
-
-def lean_statement(lean_text: str) -> str:
-    """The canonical statement string of a goal's Lean file: drop `import`
-    and `--` comment lines, take the `theorem`/`lemma` declaration, cut the
-    proof (everything from the body `:=` onward), and collapse every run of
-    whitespace to a single space (strip ends). The theorem name and full
-    signature are retained — this string IS the content the index addresses."""
-    body = "\n".join(
-        ln for ln in lean_text.splitlines()
-        if not ln.lstrip().startswith(("--", "import"))
-    )
-    match = re.search(r"\b(?:theorem|lemma)\b", body)
-    if match is None:
-        sys.exit("py_helper: goal .lean has no theorem/lemma declaration")
-    decl = body[match.start():]
-    cut = decl.find(":=")
-    if cut == -1:
-        sys.exit("py_helper: goal .lean theorem has no ':=' proof separator")
-    return re.sub(r"\s+", " ", decl[:cut]).strip()
-
-
-def lean_theorem_name(lean_text: str) -> str:
-    """The declared name of a goal's `theorem <name> …`/`lemma <name> …`."""
-    match = re.search(r"\b(?:theorem|lemma)\s+([A-Za-z_][A-Za-z0-9_']*)", lean_text)
-    if match is None:
-        sys.exit("py_helper: goal .lean has no named theorem/lemma")
-    return match.group(1)
-
-
-def lean_statement_sha(lean_text: str) -> str:
-    """Content address of a goal's Lean statement: sha256 (lowercase hex) of
-    the UTF-8 bytes of `lean_statement`. This is the prove-cycle analogue of
-    `tools.fidelity` statement_sha for translate goals (which have an AISP
-    canonical statement to address); a prove goal has only its Lean text, so
-    the index is keyed by the sha of that normalized statement string."""
-    return hashlib.sha256(lean_statement(lean_text).encode("utf-8")).hexdigest()
+# Lean goal-statement parsing is shared with the Gate A binding check
+# (tools/gate_a) via tools/lean_sig.py (DRY).
+from tools.lean_sig import (  # noqa: E402
+    camel_name,
+    foralltype as lean_foralltype,
+    statement as lean_statement,
+    statement_sha as lean_statement_sha,
+    theorem_name as lean_theorem_name,
+)
 
 
 def _proved_goals(library_dir: str) -> set[str]:
@@ -288,6 +251,11 @@ def cmd_lean_name(args):
 def cmd_lean_sha(args):
     """lean-sha <goal.lean> — print the content address of the statement."""
     print(lean_statement_sha(Path(args[0]).read_text(encoding="utf-8")))
+
+
+def cmd_lean_foralltype(args):
+    """lean-foralltype <goal.lean> — print the goal's ∀-closed type (ADR-011)."""
+    print(lean_foralltype(Path(args[0]).read_text(encoding="utf-8")))
 
 
 def cmd_prove_candidates(args):
@@ -602,6 +570,7 @@ COMMANDS = {
     "lean-stmt": cmd_lean_stmt,
     "lean-name": cmd_lean_name,
     "lean-sha": cmd_lean_sha,
+    "lean-foralltype": cmd_lean_foralltype,
     "prove-candidates": cmd_prove_candidates,
     "prove-claimable": cmd_prove_claimable,
     "render-index": cmd_render_index,
@@ -1129,8 +1098,13 @@ Fix the module so both pass. Write the corrected $target."
       err="(no file was written at $target)"
       continue
     fi
+    # ADR-011 statement binding: emit a kernel obligation asserting the proved
+    # theorem inhabits the GOAL's exact type. Built by prove_local_verify's
+    # --wfail build below (and by Gate A in CI), so a proof of a weakened or
+    # vacuous statement under the goal's name fails here, not just in review.
+    write_binding_module "$prwt" "$goal" "$camel" || { err="(could not emit binding obligation)"; continue; }
     if prove_local_verify "$prwt" "$camel"; then
-      log "proof of $goal verified locally (attempt $attempt)"
+      log "proof of $goal verified locally — statement bound (attempt $attempt)"
       return 0
     fi
     log "local verification of $goal failed (attempt $attempt)"
@@ -1138,6 +1112,22 @@ Fix the module so both pass. Write the corrected $target."
       && lake exe axiom_audit "Unsorry.$camel" ) 2>&1 | tail -n 40 )"
   done
   return 1
+}
+
+# ADR-011 / SPEC-011-A: write library/Unsorry/<Camel>Binding.lean — a kernel
+# obligation `theorem <name>_binding_check : <∀-goal-type> := <name>`. It
+# type-checks iff the proved theorem's type is definitionally equal to the
+# goal's stated type (a more-general proof still satisfies it via implicit
+# insertion; a weaker/vacuous one does not). Built under --wfail, so the kernel
+# itself performs the defeq binding — no metaprogram, no name clash.
+write_binding_module() {
+  local prwt="$1" goal="$2" camel="$3" name ftype
+  name="$(py_helper lean-name "$prwt/goals/$goal.lean")" || return 1
+  ftype="$(py_helper lean-foralltype "$prwt/goals/$goal.lean")" || return 1
+  {
+    printf 'import Unsorry.%s\n\n' "$camel"
+    printf 'theorem %s_binding_check : %s := %s\n' "$name" "$ftype" "$name"
+  } > "$prwt/library/Unsorry/${camel}Binding.lean"
 }
 
 # Prove steps 7–9: on a verified proof, compute the goal's Lean-statement
@@ -1161,6 +1151,10 @@ check_in_proof() {
   # ⊕ a merge reinforces the goal's pattern (+1 affinity, ADR-010); folds
   # into the same gated prove PR.
   py_helper aff-bump "$prwt/goals/$goal.aisp" "$(py_helper aff-delta merge)" || return 1
+  # The self-check binding (run_proof) is not committed: Gate A REGENERATES the
+  # binding obligation from the goal so a contributor cannot weaken or omit it
+  # (ADR-011, SPEC-011-A). Remove it from the PR tree.
+  rm -f "$prwt/library/Unsorry/${camel}Binding.lean"
 
   submit_pr_tree "$prwt" "$(git -C "$prwt" rev-parse --abbrev-ref HEAD)" \
     "prove($goal): $name by $AGENT_ID" \

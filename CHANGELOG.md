@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Phase-2 Stage D — statement-binding gate (ADR-011, SPEC-011-A): Gate A now regenerates, for every proved goal, a kernel obligation `theorem <name>_binding_check : <∀-goal-type> := <name>` and builds it under `--wfail`, so a proof of a weakened or vacuous statement under the goal's name (the #64 class) fails to inhabit the goal type and goes red. Non-bypassable (Gate A controls generation, not the contributor); covers decomposition sub-lemmas. `tools/lean_sig.py` extracted (shared Lean-signature parsing); 6 new tests
+
+
+### Added
+
 - Phase-2 Stage C — goal decomposition (ADR-009, SPEC-009-A): on prove-budget exhaustion the agent drives `claude` to split the parent into 2-8 sub-lemma goals (typed `Post⊆Pre` edges, depth ≤3), requeues them as `open` prove goals, and parks the parent `blocked`; an unblock sweep re-opens a parent once all its subs are proved. Soundness unchanged — the parent still closes only through Gate A. Gate B gains acyclicity + strictly-smaller guardrails; 3 new agent self-tests + 3 Gate B tests. ADR-009 Accepted
 
 

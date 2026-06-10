@@ -6,7 +6,7 @@
 | **Initiative** | unsorry Phase 2 — open lemmas and target decomposition |
 | **Proposed By** | unsorry maintainers |
 | **Date** | 2026-06-10 |
-| **Status** | Proposed |
+| **Status** | Accepted |
 
 ## WH(Y) Decision Statement
 **In the context of** Gate A — the soundness boundary that re-verifies every PR against the Lean kernel before it can merge to the verified library (ADR-006) — extended to Phase 2, where the swarm proves chosen *meaningful* targets and decomposes them into sub-lemmas rather than the Int/Nat one-liners of Phase 1,
@@ -73,3 +73,4 @@ Keep statement meaning on review, as for Phase 1. Acceptable when targets are `�
 | Status | Approver | Date |
 |--------|----------|------|
 | Proposed | unsorry maintainers | 2026-06-10 |
+| Accepted | unsorry maintainers | 2026-06-10 |

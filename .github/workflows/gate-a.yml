@@ -55,6 +55,15 @@ jobs:
           use-github-cache: true
           build-args: "UnsorryGoals"
 
+      # ADR-011 statement binding: Gate A REGENERATES the binding obligation for
+      # every proved goal from the goal's own statement, so a contributor can
+      # neither weaken nor omit it. The --wfail build below then type-checks the
+      # obligations — a proof of a weakened/vacuous statement under the goal's
+      # name fails to inhabit the goal type and goes red. (#64 class.)
+      - name: Generate statement-binding obligations
+        if: needs.detect.outputs.lean == 'true'
+        run: python3 -m tools.gate_a.check_statement_binding generate .
+
       - name: Library build — zero-warning bar (--wfail)
         if: needs.detect.outputs.lean == 'true'
         run: lake build UnsorryLibrary --wfail
