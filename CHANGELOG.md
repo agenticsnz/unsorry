@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First verified lemma `nat_zero_lt_succ` with content-addressed index entry `library/index/4c71a8b4….aisp` (goal `nat-zero-lt-succ`)
 - ADR-006 Gate A Soundness Enforcement; SPEC-006-A (axiom audit executable), SPEC-006-B (gate-a workflow)
 - `lake exe axiom_audit` — per-declaration transitive axiom audit (whitelist `propext`/`Classical.choice`/`Quot.sound`, `--allow-sorry` for goals); `AuditFixtures` adversarial lib + 16-assertion acceptance script `tools/gate_a/test_audit.sh`
+- **Gate A live**: `gate-a.yml` (always-report detect job; lean-action mathlib cache; `--wfail` library build; axiom audit; leanchecker kernel replay; audit self-test; textual lint belt; axiom-footprint artifact + sticky PR comment) — required status check on `main` alongside `gate-b` (ADR-005, ADR-006, SPEC-006-B)
 
 ## [0.3.0] - 2026-06-10
 

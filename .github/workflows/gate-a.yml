@@ -1,0 +1,128 @@
+name: gate-a
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  # Always runs and always reports — a path-filtered required check would
+  # leave non-Lean PRs permanently blocked on an "expected" status
+  # (SPEC-006-B). Detection is a job so `gate-a` itself can short-circuit.
+  detect:
+    runs-on: ubuntu-latest
+    outputs:
+      lean: ${{ steps.filter.outputs.lean }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            lean:
+              - 'library/**'
+              - 'goals/**/*.lean'
+              - 'lakefile.toml'
+              - 'lake-manifest.json'
+              - 'lean-toolchain'
+              - 'AxiomAudit/**'
+              - 'AuditFixtures/**'
+              - 'tools/gate_a/**'
+              - '.github/workflows/gate-a.yml'
+
+  gate-a:
+    needs: detect
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - name: Short-circuit (non-Lean change)
+        if: needs.detect.outputs.lean != 'true'
+        run: echo "No Lean-relevant paths touched — gate-a passes vacuously."
+
+      - uses: actions/checkout@v4
+        if: needs.detect.outputs.lean == 'true'
+        with:
+          fetch-depth: 0
+
+      - name: Build (lean-action, mathlib binary cache)
+        if: needs.detect.outputs.lean == 'true'
+        uses: leanprover/lean-action@v1
+        with:
+          use-github-cache: true
+          build-args: "UnsorryGoals"
+
+      - name: Library build — zero-warning bar (--wfail)
+        if: needs.detect.outputs.lean == 'true'
+        run: lake build UnsorryLibrary --wfail
+
+      - name: Axiom audit (authoritative)
+        if: needs.detect.outputs.lean == 'true'
+        run: |
+          set -euo pipefail
+          lib_modules=$(find library -name '*.lean' | sed 's|^library/||; s|/|.|g; s|\.lean$||')
+          goal_modules=$(find goals -name '*.lean' 2>/dev/null | sed 's|/|.|g; s|\.lean$||' || true)
+          : > axiom-report.json
+          if [ -n "$lib_modules" ]; then
+            # shellcheck disable=SC2086
+            lake exe axiom_audit $lib_modules | tee -a axiom-report.json
+          fi
+          if [ -n "$goal_modules" ]; then
+            # shellcheck disable=SC2086
+            lake exe axiom_audit --allow-sorry $goal_modules | tee -a axiom-report.json
+          fi
+
+      - name: Kernel replay (leanchecker)
+        if: needs.detect.outputs.lean == 'true'
+        run: |
+          set -euo pipefail
+          lib_modules=$(find library -name '*.lean' | sed 's|^library/||; s|/|.|g; s|\.lean$||')
+          # shellcheck disable=SC2086
+          lake env leanchecker $lib_modules
+
+      - name: Audit self-test (gate cannot rot silently)
+        if: needs.detect.outputs.lean == 'true'
+        run: ./tools/gate_a/test_audit.sh
+
+      - name: Textual lint on library diff (belt only — the audit is the bar)
+        if: needs.detect.outputs.lean == 'true' && github.event_name == 'pull_request'
+        run: |
+          set -euo pipefail
+          base="${{ github.event.pull_request.base.sha }}"
+          added=$(git diff "$base"...HEAD -- library/ | grep '^+' | grep -v '^+++' || true)
+          if echo "$added" | grep -nE '\b(sorry|admit|sorryAx|native_decide|axiom|unsafe|implemented_by|extern)\b|set_option[[:space:]]+autoImplicit[[:space:]]+true'; then
+            echo "::error::forbidden token added under library/ (see lines above)"
+            exit 1
+          fi
+
+      - name: Upload axiom footprint artifact
+        if: needs.detect.outputs.lean == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: axiom-report
+          path: axiom-report.json
+
+      - name: Sticky footprint comment
+        if: needs.detect.outputs.lean == 'true' && github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          {
+            echo '<!-- axiom-report -->'
+            echo '### Axiom footprint (Gate A)'
+            echo '```json'
+            cat axiom-report.json
+            echo '```'
+          } > comment.md
+          existing=$(gh api "repos/${{ github.repository }}/issues/$PR/comments" \
+            --jq '.[] | select(.body | startswith("<!-- axiom-report -->")) | .id' | head -1)
+          if [ -n "$existing" ]; then
+            gh api -X PATCH "repos/${{ github.repository }}/issues/comments/$existing" -F body=@comment.md >/dev/null
+          else
+            gh api "repos/${{ github.repository }}/issues/$PR/comments" -F body=@comment.md >/dev/null
+          fi
