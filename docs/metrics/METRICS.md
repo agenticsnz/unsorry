@@ -14,6 +14,7 @@ green before auto-merge, and no metric run is ever pushed directly to `main`.
 | `phase0-run-001` | 2026-06-10 | Phase-0 swarm trial W2 (3 supervised agents + 1 sweep agent, 10 backlog goals) | [phase0-run-001.json](phase0-run-001.json) · [phase0-run-001.md](phase0-run-001.md) |
 | `gate-a-redteam-001` | 2026-06-10 | Gate A red team W3 (9 adversarial bypass vectors, real PRs) | [gate-a-redteam-001.md](gate-a-redteam-001.md) |
 | `phase1-run-001` | 2026-06-10 | Phase-1 swarm W4 (first prove cycle: 3 prover agents on sonnet; merge_rate 0.6, 3 proofs merged to the verified library, 0 gate-a failures on the merged path) | [phase1-run-001.json](phase1-run-001.json) · [phase1-run-001.md](phase1-run-001.md) |
+| `checklist-evidence` | 2026-06-10 | Contributor-readiness checklist W5 (items (a)–(f) adversarially verified; body of the v1.0.0 release) | [checklist-evidence.md](checklist-evidence.md) |
 
 ## Machine-record JSON schema
 
