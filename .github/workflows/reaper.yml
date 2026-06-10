@@ -1,0 +1,56 @@
+name: reaper
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch: {}
+
+concurrency: reaper
+
+permissions:
+  contents: write
+
+jobs:
+  reap:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main (reaper code)
+        uses: actions/checkout@v4
+
+      - name: Checkout claims branch
+        uses: actions/checkout@v4
+        with:
+          ref: claims
+          path: claims-branch
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Reap expired claims
+        id: reap
+        run: |
+          set -euo pipefail
+          python3 -m tools.gate_b.reaper claims-branch --json | tee reap-report.json
+          {
+            echo "## Reaper run"
+            echo '```json'
+            cat reap-report.json
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "reaped=$(python3 -c "import json;print(len(json.load(open('reap-report.json'))['reaped']))")" >> "$GITHUB_OUTPUT"
+
+      - name: Commit and push removals
+        if: steps.reap.outputs.reaped != '0'
+        working-directory: claims-branch
+        run: |
+          set -euo pipefail
+          git config user.name "unsorry-reaper[bot]"
+          git config user.email "reaper@agents.unsorry.invalid"
+          git add -A claims/
+          git commit -m "reap: ${{ steps.reap.outputs.reaped }} expired claim(s)"
+          git push origin HEAD:claims || {
+            git pull --rebase origin claims
+            git push origin HEAD:claims
+          }

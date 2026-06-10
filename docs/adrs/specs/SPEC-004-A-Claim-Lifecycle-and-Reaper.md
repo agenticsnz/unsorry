@@ -24,6 +24,7 @@ Implements: [ADR-004](../ADR-004-Claims-Branch-First-Push-Wins.md) · Status: Li
 
 - Runs from the same package as the validator and **shares its TTL/claim-parsing logic** (DRY — one implementation of "is this claim expired").
 - CLI: `python -m tools.gate_b.reaper <claims-root> [--at ISO8601] [--dry-run] [--json]`. Exit 0 (nothing to reap or reaped OK), 1 (violations encountered), 2 (internal error).
+- The `claims` branch is an **orphan branch** holding only `claims/` (README + claim files) — no code, no docs. This keeps agent fetches and reaper checkouts tiny and makes the branch's purpose unmistakable. Reaper code always runs from `main` (scheduled workflows execute the default branch's definition), with the claims branch checked out into a subdirectory.
 - Scheduled workflow `reaper.yml`: cron every 15 min (`*/15 * * * *`), checks out the `claims` branch, runs the reaper, commits removals with message `reap: <n> expired claim(s)`, pushes. Reaped claim filenames + ages are written to the GitHub Actions run summary — this is the durable evidence trail for readiness-checklist item (c) (TTL reaping observed).
 - GitHub cron is best-effort (minutes of drift): TTL (7200 s) ≥ 4× interval (900 s) guarantees drift cannot cause premature reaps. The reaper never reaps a live claim; `--at` injects the clock in tests.
 - Concurrency guard: the workflow uses `concurrency: reaper` so two scheduled runs cannot race each other's push; on push rejection the run rebases once and retries, then gives up (next cron gets it).
