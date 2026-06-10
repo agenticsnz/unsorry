@@ -1,0 +1,4 @@
+# Python (tools/gate_b)
+__pycache__/
+*.py[cod]
+.pytest_cache/

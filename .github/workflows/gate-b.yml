@@ -1,0 +1,49 @@
+name: gate-b
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  gate-b:
+    # Required check: in-repo deterministic validator (ADR-003). Stdlib only;
+    # pytest is the sole test-time dependency.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Install test dependency
+        run: pip install pytest
+      - name: Gate B test suite
+        run: pytest tools/gate_b -q
+      - name: Validate repository tree
+        run: python3 -m tools.gate_b validate .
+
+  aisp-advisory:
+    # Advisory cross-check with the upstream generic AISP validator,
+    # pinned at 0.3.0 (ADR-003). Never blocks: continue-on-error.
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "20"
+      - name: Validate swarm contract
+        run: npx --yes aisp-validator@0.3.0 validate swarm/protocol.aisp
+      - name: Validate coordination records
+        run: |
+          found=0
+          while IFS= read -r -d '' record; do
+            found=1
+            echo "::group::${record}"
+            npx --yes aisp-validator@0.3.0 validate "${record}"
+            echo "::endgroup::"
+          done < <(find goals translations decompositions library/index \
+                     -name '*.aisp' -type f -print0 2>/dev/null)
+          if [ "${found}" -eq 0 ]; then
+            echo "no coordination records on this tree — nothing to validate"
+          fi
