@@ -180,3 +180,96 @@ def test_validating_valid_tree_100_times_under_one_second():
     for _ in range(100):
         assert validate_tree(VALID_TREE, at=clock) == []
     assert time.perf_counter() - start < 1.0
+
+
+# ---------------------------------------- decomposition guardrails (ADR-009)
+
+from tools.gate_b.validator import _has_cycle  # noqa: E402
+
+_DECOMP_TMPL = """𝔸5.1.decomp.{parent}.agent-x@2026-06-10
+γ≔unsorry.decomposition
+⟦Ω:Decomp⟧{{parent≜{parent}; agent≜agent-x}}
+⟦Σ:Subs⟧{{
+{subs}
+}}
+⟦Γ:Edges⟧{{
+{edges}
+}}
+⟦Λ:Requeue⟧{{∀s∈subs:goal(s)≫status≔open}}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
+"""
+
+_GOAL_TMPL = """𝔸5.1.goal.{id}@2026-06-10
+γ≔unsorry.goal
+⟦Ω:Goal⟧{{
+  id≜{id}
+  phase≜prove
+  status≜{status}
+  difficulty≜1
+}}
+⟦Σ:Source⟧{{
+  src≜{src}
+}}
+⟦Γ:Deps⟧{{
+  deps≜⟨⟩
+}}
+⟦Λ:Artifact⟧{{
+  lean≜goals/{id}.lean
+  sha≜∅
+}}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
+"""
+
+
+def _write_goal(tree: Path, gid: str, status: str = "open", src: str = "backlog/x.md"):
+    (tree / "goals").mkdir(parents=True, exist_ok=True)
+    (tree / "goals" / f"{gid}.aisp").write_text(
+        _GOAL_TMPL.format(id=gid, status=status, src=src), encoding="utf-8"
+    )
+    (tree / "goals" / f"{gid}.lean").write_text(
+        f"theorem {gid.replace('-', '_')} : True := by sorry\n", encoding="utf-8"
+    )
+    (tree / "backlog").mkdir(parents=True, exist_ok=True)
+    (tree / "backlog" / "x.md").write_text("# x\n\nx\n", encoding="utf-8")
+
+
+def test_has_cycle_unit():
+    assert not _has_cycle([("a", "p"), ("b", "p")])  # subs → parent: a DAG
+    assert _has_cycle([("a", "b"), ("b", "a")])  # 2-cycle
+    assert _has_cycle([("a", "b"), ("b", "c"), ("c", "a")])  # 3-cycle
+    assert not _has_cycle([])
+
+
+def test_decomposition_cycle_is_rejected(tmp_path):
+    tree = tmp_path / "t"
+    for gid in ("parent", "sa", "sb"):
+        _write_goal(tree, gid, src="decompositions/parent.agent-x.aisp")
+    (tree / "decompositions").mkdir(parents=True, exist_ok=True)
+    (tree / "decompositions" / "parent.agent-x.aisp").write_text(
+        _DECOMP_TMPL.format(
+            parent="parent",
+            subs="  sub₁≜⟨id≜sa,stmt≜∀x₁∈ℕ:x₁≡x₁⟩\n  sub₂≜⟨id≜sb,stmt≜∀x₁∈ℕ:x₁+0≡x₁⟩",
+            # a cycle among the subs: sub₁→sub₂→sub₁
+            edges="  Post(sub₁)⊆Pre(sub₂); Post(sub₂)⊆Pre(sub₁)",
+        ),
+        encoding="utf-8",
+    )
+    report = run_validate(tree)
+    assert any(v.code == "GB016" and "cycle" in v.message for v in report)
+
+
+def test_decomposition_sub_re_emitting_parent_is_rejected(tmp_path):
+    tree = tmp_path / "t"
+    _write_goal(tree, "parent", src="decompositions/parent.agent-x.aisp")
+    _write_goal(tree, "sb", src="decompositions/parent.agent-x.aisp")
+    (tree / "decompositions").mkdir(parents=True, exist_ok=True)
+    (tree / "decompositions" / "parent.agent-x.aisp").write_text(
+        _DECOMP_TMPL.format(
+            parent="parent",
+            subs="  sub₁≜⟨id≜parent,stmt≜∀x₁∈ℕ:x₁≡x₁⟩\n  sub₂≜⟨id≜sb,stmt≜∀x₁∈ℕ:x₁+0≡x₁⟩",
+            edges="  Post(sub₁)⊆Pre(parent); Post(sub₂)⊆Pre(parent)",
+        ),
+        encoding="utf-8",
+    )
+    report = run_validate(tree)
+    assert any(v.code == "GB016" and "re-emits the parent" in v.message for v in report)

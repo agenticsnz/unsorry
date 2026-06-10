@@ -361,6 +361,117 @@ def cmd_aff_delta(args):
     print(config.AFFINITY_MERGE if args[0] == "merge" else config.AFFINITY_FAIL)
 
 
+def cmd_max_decomp(args):
+    """max-decomp subs|depth — the decomposition fan-out / depth caps (ADR-009)."""
+    print(config.MAX_DECOMP_SUBS if args[0] == "subs" else config.MAX_DECOMP_DEPTH)
+
+
+def _goal_depth(record) -> int:
+    """Decomposition depth of a goal (advisory ⟦Λ:Artifact⟧ depth field; 0 if
+    absent/garbled). Seeded goals are depth 0; a sub is parent depth + 1."""
+    raw = record.fields.get("depth")
+    if raw is None:
+        return 0
+    try:
+        return max(0, int(raw.strip()))
+    except ValueError:
+        return 0
+
+
+def cmd_goal_depth(args):
+    """goal-depth <goal.aisp> — print the goal's decomposition depth."""
+    print(_goal_depth(parse_record(Path(args[0]).read_text(encoding="utf-8"))))
+
+
+def _subscript(n: int) -> str:
+    return str(n).translate(str.maketrans("0123456789", "₀₁₂₃₄₅₆₇₈₉"))
+
+
+def cmd_render_goal(args):
+    """render-goal <id> <status> <src> <lean-path> <depth> — a prove goal
+    record (the prove-phase shape the seed uses), with a depth field so
+    decomposition can cap recursion."""
+    gid, status, src, lean, depth = args[:5]
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    print(f"𝔸5.1.goal.{gid}@{today}")
+    print("γ≔unsorry.goal")
+    print("⟦Ω:Goal⟧{")
+    print(f"  id≜{gid}")
+    print("  phase≜prove")
+    print(f"  status≜{status}")
+    print("  difficulty≜1")
+    print("}")
+    print("⟦Σ:Source⟧{")
+    print(f"  src≜{src}")
+    print("}")
+    print("⟦Γ:Deps⟧{")
+    print("  deps≜⟨⟩")
+    print("}")
+    print("⟦Λ:Artifact⟧{")
+    print(f"  lean≜{lean}")
+    print("  sha≜∅")
+    print(f"  depth≜{depth}")
+    print("}")
+    print("⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩")
+
+
+def cmd_render_decomp(args):
+    """render-decomp <parent> <agent> <sub-id> <sub-stmt> [<sub-id> <sub-stmt>…]
+    — a SPEC-003-C decomposition record. Each sub gets an edge
+    Post(subN) ⊆ Pre(parent): every sub is a prerequisite of the parent (a
+    DAG; the parent still closes only through the kernel)."""
+    parent, agent = args[0], args[1]
+    pairs = args[2:]
+    subs = [(pairs[i], pairs[i + 1]) for i in range(0, len(pairs), 2)]
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    print(f"𝔸5.1.decomp.{parent}.{agent}@{today}")
+    print("γ≔unsorry.decomposition")
+    print(f"⟦Ω:Decomp⟧{{parent≜{parent}; agent≜{agent}}}")
+    print("⟦Σ:Subs⟧{")
+    for i, (sub_id, stmt) in enumerate(subs, 1):
+        print(f"  sub{_subscript(i)}≜⟨id≜{sub_id},stmt≜{stmt}⟩")
+    print("}")
+    print("⟦Γ:Edges⟧{")
+    edges = "; ".join(
+        f"Post(sub{_subscript(i)})⊆Pre(parent)" for i in range(1, len(subs) + 1)
+    )
+    print(f"  {edges}")
+    print("}")
+    print("⟦Λ:Requeue⟧{∀s∈subs:goal(s)≫status≔open}")
+    print("⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩")
+
+
+def cmd_unblockable(args):
+    """unblockable <goals-dir> <decompositions-dir> <library-dir> — list blocked
+    parent goals whose decomposition's sub-lemmas are ALL proved, so the parent
+    can be re-opened (ADR-009). One goal id per line, lexicographic."""
+    goals_dir, decomp_dir, library_dir = args[:3]
+    proved = _proved_goals(library_dir)
+    parents: dict = {}
+    ddir = Path(decomp_dir)
+    if ddir.is_dir():
+        for path in sorted(ddir.glob("*.aisp")):
+            record = parse_record(path.read_text(encoding="utf-8"))
+            parent = record.fields.get("parent")
+            if not parent:
+                continue
+            subs_block = record.block("Σ")
+            ids = (
+                set(re.findall(r"id≜([^,⟩\s]+)", subs_block.body))
+                if subs_block
+                else set()
+            )
+            parents.setdefault(parent, set()).update(ids)
+    for path in sorted(Path(goals_dir).glob("*.aisp")):
+        goal = path.stem
+        record = parse_record(path.read_text(encoding="utf-8"))
+        if record.fields.get("status") != "blocked":
+            continue
+        subs = parents.get(goal)
+        if subs and subs <= proved:
+            print(goal)
+
+
 def cmd_now(_args):
     print(format_utc_z(datetime.now(timezone.utc)))
 
@@ -482,6 +593,11 @@ COMMANDS = {
     "rewrite-goal": cmd_rewrite_goal,
     "aff-bump": cmd_aff_bump,
     "aff-delta": cmd_aff_delta,
+    "max-decomp": cmd_max_decomp,
+    "goal-depth": cmd_goal_depth,
+    "render-goal": cmd_render_goal,
+    "render-decomp": cmd_render_decomp,
+    "unblockable": cmd_unblockable,
     "camel-name": cmd_camel_name,
     "lean-stmt": cmd_lean_stmt,
     "lean-name": cmd_lean_name,
@@ -932,6 +1048,10 @@ check_in() {
 # (lake build --wfail ∧ axiom_audit ∧ check_library_options) steps.
 
 PROVE_PROMPT_FILE="swarm/prompts/prove.md"
+DECOMPOSE_PROMPT_FILE="swarm/prompts/decompose.md"
+# ADR-009 decomposition on prove failure is on by default; UNSORRY_DECOMPOSE=0
+# reverts to the Phase-1 demote-only failure path.
+PROVE_DECOMPOSE="${UNSORRY_DECOMPOSE:-1}"
 
 # Prove step 5: one claude call constrained to write the target Lean module.
 # --max-turns does not exist on claude 2.1.170 (the translate cycle dropped it
@@ -1077,8 +1197,114 @@ prove_goal() {
     return 0
   fi
   emit_event prove-failed "$goal"
-  demote_goal "$goal" || true
-  log "prove of $goal failed after $UNSORRY_ATTEMPTS attempt(s) — claim released, flagged, affinity -10"
+  # ADR-009: a budget-exhausted goal is decomposed into claimable sub-lemmas and
+  # parked `blocked`; the failed attempt now feeds the pool. If decomposition is
+  # not possible (depth cap, or claude produced no usable split), fall back to
+  # the ADR-010 affinity demote so the goal is at least deprioritised.
+  if [ "$PROVE_DECOMPOSE" -eq 1 ] && decompose_goal "$goal"; then
+    log "prove of $goal failed — decomposed into sub-lemmas, parent blocked (ADR-009)"
+  else
+    demote_goal "$goal" || true
+    log "prove of $goal failed after $UNSORRY_ATTEMPTS attempt(s) — claim released, flagged, affinity -10"
+  fi
+  return 1
+}
+
+# ADR-009 / SPEC-009-A: on prove-budget exhaustion, drive `claude` to split the
+# parent into 2..MAX_DECOMP_SUBS sub-lemmas, requeue each as a fresh open prove
+# goal (src = the decomposition record, depth = parent+1), and park the parent
+# `blocked`. Soundness is untouched: the parent only ever closes through Gate A
+# using the subs; a non-composing split just wastes effort. Returns 0 only if a
+# valid decomposition was committed as a PR; 1 (caller falls back to demote) if
+# the depth cap is hit, claude produced nothing usable, the subs do not
+# type-check, or any guardrail (≤ cap, strictly-smaller) rejects the split.
+decompose_goal() {
+  local goal="$1" depth maxdepth prwt branch stmt out i=0
+  depth="$(py_helper goal-depth "goals/$goal.aisp")" || return 1
+  maxdepth="$(py_helper max-decomp depth)" || return 1
+  if [ "$depth" -ge "$maxdepth" ]; then
+    log "decompose($goal): at depth $depth (cap $maxdepth) — not decomposing"
+    return 1
+  fi
+  stmt="$(py_helper lean-stmt "goals/$goal.lean")" || return 1
+
+  branch="$(feature_branch decompose "$goal")" || return 1
+  prwt="$UNSORRY_WORKDIR/decompose-${goal}-${AGENT_ID}"
+  open_pr_worktree "$prwt" "$branch" || return 1
+  if ! ( cd "$prwt" && lake exe cache get ) >/dev/null 2>&1; then
+    log "warning: 'lake exe cache get' failed in the decompose worktree for $goal"
+  fi
+
+  # Drive claude to propose sub-lemmas. Each `SUB:` line is a complete Lean
+  # theorem signature (no proof). Other lines are ignored.
+  out="$(cd "$prwt" && timeout "$UNSORRY_WALL" claude -p "$(cat "$DECOMPOSE_PROMPT_FILE")
+
+PARENT THEOREM (the goal that resisted proof):
+$stmt
+
+Output 2 to $(py_helper max-decomp subs) sub-lemma signatures, one per \`SUB:\` line." \
+    --model "$UNSORRY_MODEL" --output-format text --allowedTools "Read,Bash(lake build *),Bash(lake env *)" 2>/dev/null)"
+
+  # Materialise the proposed subs into the PR tree.
+  local -a sub_ids=() decomp_args=()
+  local subline substmt subid subnorm
+  while IFS= read -r subline; do
+    case "$subline" in
+      SUB:*) ;;
+      *) continue ;;
+    esac
+    substmt="$(printf '%s' "${subline#SUB:}" | sed 's/^[[:space:]]*//; s/[[:space:]]*$//')"
+    [ -n "$substmt" ] || continue
+    i=$((i + 1))
+    [ "$i" -le "$(py_helper max-decomp subs)" ] || break
+    subid="${goal}-s${i}"
+    printf 'import Mathlib\n\n%s := by\n  sorry\n' "$substmt" > "$prwt/goals/$subid.lean"
+    # Reject a sub whose statement is the parent's (strictly-smaller guard).
+    subnorm="$(py_helper lean-stmt "$prwt/goals/$subid.lean" 2>/dev/null)" || { i=$((i - 1)); rm -f "$prwt/goals/$subid.lean"; continue; }
+    if [ "$subnorm" = "$stmt" ]; then
+      log "decompose($goal): sub $i re-states the parent — dropped"
+      i=$((i - 1)); rm -f "$prwt/goals/$subid.lean"; continue
+    fi
+    py_helper render-goal "$subid" open "decompositions/$goal.$AGENT_ID.aisp" \
+      "goals/$subid.lean" "$((depth + 1))" > "$prwt/goals/$subid.aisp"
+    sub_ids+=("$subid")
+    decomp_args+=("$subid" "$subnorm")
+  done <<< "$out"
+
+  if [ "${#sub_ids[@]}" -lt 2 ]; then
+    log "decompose($goal): claude produced ${#sub_ids[@]} usable sub(s) (need ≥2) — falling back"
+    git worktree remove --force "$prwt" >/dev/null 2>&1 || true
+    git branch -q -D "$branch" >/dev/null 2>&1 || true
+    return 1
+  fi
+
+  py_helper render-decomp "$goal" "$AGENT_ID" "${decomp_args[@]}" \
+    > "$prwt/decompositions/$goal.$AGENT_ID.aisp" 2>/dev/null || {
+      mkdir -p "$prwt/decompositions" \
+      && py_helper render-decomp "$goal" "$AGENT_ID" "${decomp_args[@]}" \
+        > "$prwt/decompositions/$goal.$AGENT_ID.aisp"; }
+  py_helper rewrite-goal "$prwt/goals/$goal.aisp" blocked || return 1
+
+  # The sub statements must type-check as sorried goals (guardrail: a split that
+  # does not even parse is worthless). Build only the goals package.
+  if ! ( cd "$prwt" && lake build UnsorryGoals ) >/dev/null 2>&1; then
+    log "decompose($goal): sub-lemmas do not type-check — falling back to demote"
+    git worktree remove --force "$prwt" >/dev/null 2>&1 || true
+    git branch -q -D "$branch" >/dev/null 2>&1 || true
+    return 1
+  fi
+
+  if submit_pr_tree "$prwt" "$branch" \
+      "decompose($goal): ${#sub_ids[@]} sub-lemmas by $AGENT_ID" \
+      "Automated decomposition (ADR-009, SPEC-009-A): goal \`$goal\` resisted proof within budget, so it is split into ${#sub_ids[@]} claimable sub-lemmas (depth $((depth + 1))) and parked \`blocked\`. The parent re-opens once its subs are proved and still closes only through Gate A — the dependency edges are advisory, never a trust path." \
+      goals decompositions; then
+    emit_event decomposed "$goal"
+    git worktree remove --force "$prwt" >/dev/null 2>&1 || true
+    git branch -q -D "$branch" >/dev/null 2>&1 || true
+    return 0
+  fi
+  git worktree remove --force "$prwt" >/dev/null 2>&1 || true
+  git branch -q -D "$branch" >/dev/null 2>&1 || true
   return 1
 }
 
@@ -1815,6 +2041,81 @@ test_affinity_degrades_on_garbage() {
     || { log "  garbled aff should rank as 0; expected 'h g', got '$got'"; return 1; }
 }
 
+test_decomp_caps_and_depth() {
+  # max-decomp exposes the config caps; render-goal carries a depth field that
+  # goal-depth reads; an absent depth is 0 (ADR-009).
+  local tree
+  tree="$(mktemp -d "$SESSION_TMP/decdepth.XXXXXX")" || return 1
+  mkdir -p "$tree/goals" || return 1
+  [ "$(py_helper max-decomp subs)" = "8" ] \
+    || { log "  max-decomp subs drifted from 8"; return 1; }
+  [ "$(py_helper max-decomp depth)" = "3" ] \
+    || { log "  max-decomp depth drifted from 3"; return 1; }
+  make_prove_goal "$tree" base "theorem b (n : Nat) : n + 0 = n" || return 1
+  [ "$(py_helper goal-depth "$tree/goals/base.aisp")" = "0" ] \
+    || { log "  seeded goal should be depth 0"; return 1; }
+  py_helper render-goal kid open decompositions/base.agent-x.aisp goals/kid.lean 2 \
+    > "$tree/goals/kid.aisp" || return 1
+  [ "$(py_helper goal-depth "$tree/goals/kid.aisp")" = "2" ] \
+    || { log "  render-goal depth not read back as 2"; return 1; }
+}
+
+test_unblockable_detection() {
+  # A blocked parent whose decomposition subs are all proved is unblockable;
+  # if any sub is unproved, it is not (ADR-009).
+  local tree got sha1 sha2
+  tree="$(mktemp -d "$SESSION_TMP/unblock.XXXXXX")" || return 1
+  mkdir -p "$tree/goals" "$tree/decompositions" "$tree/library/index" "$tree/backlog" || return 1
+  make_prove_goal "$tree" parent "theorem p (a b : Nat) : a + b = b + a" || return 1
+  py_helper rewrite-goal "$tree/goals/parent.aisp" blocked || return 1
+  make_prove_goal "$tree" parent-s1 "theorem s1 (n : Nat) : n + 0 = n" || return 1
+  make_prove_goal "$tree" parent-s2 "theorem s2 (a b : Nat) : a + (b + 1) = (a + b) + 1" || return 1
+  py_helper render-decomp parent agent-x \
+    parent-s1 "$(py_helper lean-stmt "$tree/goals/parent-s1.lean")" \
+    parent-s2 "$(py_helper lean-stmt "$tree/goals/parent-s2.lean")" \
+    > "$tree/decompositions/parent.agent-x.aisp" || return 1
+
+  # No subs proved yet ⇒ parent not unblockable.
+  got="$(py_helper unblockable "$tree/goals" "$tree/decompositions" "$tree/library")"
+  [ -z "$got" ] || { log "  parent should not be unblockable yet, got '$got'"; return 1; }
+
+  # Prove only s1 ⇒ still not unblockable.
+  sha1="$(py_helper lean-sha "$tree/goals/parent-s1.lean")" || return 1
+  py_helper render-index "$sha1" parent-s1 s1 "$(py_helper lean-stmt "$tree/goals/parent-s1.lean")" \
+    > "$tree/library/index/$sha1.aisp" || return 1
+  got="$(py_helper unblockable "$tree/goals" "$tree/decompositions" "$tree/library")"
+  [ -z "$got" ] || { log "  one sub proved is not enough, got '$got'"; return 1; }
+
+  # Prove s2 too ⇒ now unblockable.
+  sha2="$(py_helper lean-sha "$tree/goals/parent-s2.lean")" || return 1
+  py_helper render-index "$sha2" parent-s2 s2 "$(py_helper lean-stmt "$tree/goals/parent-s2.lean")" \
+    > "$tree/library/index/$sha2.aisp" || return 1
+  got="$(py_helper unblockable "$tree/goals" "$tree/decompositions" "$tree/library")"
+  [ "$got" = "parent" ] || { log "  all subs proved ⇒ unblockable; got '$got'"; return 1; }
+}
+
+test_render_decomp_gateb() {
+  # A rendered decomposition record + its sub goal records validate under the
+  # real Gate B (acyclic, subs are known goals, none re-emits the parent).
+  local tree
+  tree="$(mktemp -d "$SESSION_TMP/decgateb.XXXXXX")" || return 1
+  mkdir -p "$tree/goals" "$tree/decompositions" "$tree/backlog" || return 1
+  make_prove_goal "$tree" parent "theorem p (a b : Nat) : a + b = b + a" || return 1
+  py_helper rewrite-goal "$tree/goals/parent.aisp" blocked || return 1
+  py_helper render-goal parent-s1 open decompositions/parent.agent-x.aisp \
+    goals/parent-s1.lean 1 > "$tree/goals/parent-s1.aisp" || return 1
+  printf 'theorem s1 (n : Nat) : n + 0 = n := by sorry\n' > "$tree/goals/parent-s1.lean"
+  py_helper render-goal parent-s2 open decompositions/parent.agent-x.aisp \
+    goals/parent-s2.lean 1 > "$tree/goals/parent-s2.aisp" || return 1
+  printf 'theorem s2 (a b : Nat) : a + b = b + a := by sorry\n' > "$tree/goals/parent-s2.lean"
+  py_helper render-decomp parent agent-x \
+    parent-s1 "forall n, n + 0 = n" parent-s2 "forall a b, a + b = b + a" \
+    > "$tree/decompositions/parent.agent-x.aisp" || return 1
+  printf '# parent\n\nx\n' > "$tree/backlog/parent.md"
+  python3 -m tools.gate_b validate "$tree" >/dev/null \
+    || { log "  rendered decomposition + subs failed Gate B"; return 1; }
+}
+
 run_self_tests() {
   local tests=(
     test_agent_id_generation
@@ -1841,6 +2142,9 @@ run_self_tests() {
     test_viability_skip
     test_affinity_bump_math
     test_affinity_degrades_on_garbage
+    test_decomp_caps_and_depth
+    test_unblockable_detection
+    test_render_decomp_gateb
   )
   local failures=0 t
   for t in "${tests[@]}"; do
@@ -1923,6 +2227,32 @@ select_prove_candidates() {
   done < <(py_helper prove-candidates goals "$CLAIMS_WT/claims" library "$AGENT_ID" "")
 }
 
+# ADR-009 unblock sweep: re-open any blocked parent whose decomposition's
+# sub-lemmas are now all proved, so an agent can claim the parent and prove its
+# own signature with the subs available as imports. A small gated PR per parent
+# (editing only the goal record's status, not a Lean path → Gate A
+# short-circuits). Best-effort and idempotent: a racing duplicate re-open
+# produces the same edit. Tracks parents swept this session to avoid re-trying.
+unblock_sweep() {
+  local parent prwt branch
+  while IFS= read -r parent; do
+    [ -n "$parent" ] || continue
+    [ -n "${SWEPT[$parent]:-}" ] && continue
+    SWEPT[$parent]=1
+    branch="$(feature_branch unblock "$parent")" || continue
+    prwt="$UNSORRY_WORKDIR/unblock-${parent}-${AGENT_ID}"
+    open_pr_worktree "$prwt" "$branch" || continue
+    if py_helper rewrite-goal "$prwt/goals/$parent.aisp" open; then
+      submit_pr_tree "$prwt" "$branch" \
+        "unblock($parent): sub-lemmas proved, re-opening (ADR-009)" \
+        "Automated re-open (ADR-009, SPEC-009-A): all of \`$parent\`'s decomposition sub-lemmas are proved, so the parent returns to \`open\` and can be proved with the subs as imports. It still closes only through Gate A." \
+        goals || true
+    fi
+    git worktree remove --force "$prwt" >/dev/null 2>&1 || true
+    git branch -q -D "$branch" >/dev/null 2>&1 || true
+  done < <(py_helper unblockable goals decompositions library)
+}
+
 main() {
   parse_args "$@"
   require_repo_root
@@ -1981,8 +2311,10 @@ main() {
     sync_repo || { log "repository sync failed"; exit 1; }
 
     # Steps 1b–3 — enumerate and select (mode-specific). The convergence
-    # sweep is a translate-only janitor step; prove has no analogue in Phase 1.
+    # sweep is a translate-only janitor step; the unblock sweep is its prove
+    # analogue (ADR-009): re-open blocked parents whose sub-lemmas are all proved.
     if [ "$PROVE" -eq 1 ]; then
+      unblock_sweep || overall=1
       candidates="$(select_prove_candidates)"
     else
       translations_dir="$(main_translations_dir)" || exit 1

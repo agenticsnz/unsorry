@@ -6,7 +6,7 @@
 | **Initiative** | unsorry Phase 2 — open lemmas and target decomposition |
 | **Proposed By** | unsorry maintainers |
 | **Date** | 2026-06-10 |
-| **Status** | Proposed |
+| **Status** | Accepted |
 
 ## WH(Y) Decision Statement
 **In the context of** Phase 2, where the swarm must drive verified proofs toward chosen unformalised targets by splitting goals that no single prove attempt can close — the compounding mechanism the design doc (§6, §Phasing) reserves for this phase but which Phase 1 deliberately deferred (SPEC-007-A prove step 11: a prove failure is just release + flag, "no decomposition"),
@@ -71,3 +71,4 @@ Delegate goal-splitting to a hosted planner/decomposer outside the repo. Rejecte
 | Status | Approver | Date |
 |--------|----------|------|
 | Proposed | unsorry maintainers | 2026-06-10 |
+| Accepted | unsorry maintainers | 2026-06-10 |

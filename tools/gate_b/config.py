@@ -22,6 +22,10 @@ TAU_V = -5
 AFFINITY_MERGE = 1  # +1 on a proven goal (⊕)
 AFFINITY_FAIL = -10  # -10 on a failed prove attempt (⊖); asymmetric, favours proven approaches
 
+# ⟦Σ:Records⟧ Decomp / ADR-009 — decomposition fan-out and depth guards
+MAX_DECOMP_SUBS = 8  # SPEC-003-C: at most 8 sub-lemmas per decomposition
+MAX_DECOMP_DEPTH = 3  # ADR-009: at most 3 levels of decomposition
+
 # ⟦Λ:Loop⟧ — per-session budgets
 BUDGET_TURNS = 40
 BUDGET_WALL_SECONDS = 1800

@@ -44,7 +44,29 @@ _RECORD_TYPES = {
 _SUB_RE = re.compile(r"(?P<label>sub[^≜\s;]*)≜⟨id≜(?P<id>[^,⟩\s]+)\s*,\s*stmt≜(?P<stmt>[^⟩]*)⟩")
 _EDGE_RE = re.compile(r"Post\((?P<src>[^)]*)\)\s*⊆\s*Pre\((?P<dst>[^)]*)\)")
 
-MAX_DECOMP_SUBS = 8
+MAX_DECOMP_SUBS = config.MAX_DECOMP_SUBS
+
+
+def _has_cycle(edges: list[tuple[str, str]]) -> bool:
+    """True if the directed edge set (src enables dst) contains a cycle.
+    Post(A)⊆Pre(B) means A is a prerequisite of B, i.e. an edge A→B; a
+    decomposition's dependency graph must be a DAG (ADR-009)."""
+    adj: dict[str, list[str]] = {}
+    for src, dst in edges:
+        adj.setdefault(src, []).append(dst)
+    WHITE, GREY, BLACK = 0, 1, 2
+    colour: dict[str, int] = {}
+
+    def visit(node: str) -> bool:
+        colour[node] = GREY
+        for nxt in adj.get(node, []):
+            c = colour.get(nxt, WHITE)
+            if c == GREY or (c == WHITE and visit(nxt)):
+                return True
+        colour[node] = BLACK
+        return False
+
+    return any(colour.get(n, WHITE) == WHITE and visit(n) for n in list(adj))
 
 
 @dataclass(frozen=True, order=True)
@@ -306,21 +328,32 @@ def _validate_decomposition(
         sub_id = sub.group("id")
         if not is_id(sub_id):
             report.add("GB016", path, f"sub id '{sub_id}' violates the Id grammar")
+            continue
+        # GB016 — a sub may not re-emit the parent (termination guard, ADR-009):
+        # a decomposition must produce strictly smaller goals.
+        if sub_id == parent:
+            report.add("GB016", path, f"sub '{sub_id}' re-emits the parent goal")
         elif known_goals is not None and sub_id not in known_goals:
             report.add(
                 "GB016", path, f"sub '{sub_id}' has no corresponding goal record"
             )
 
     edges_block = record.block("Γ")
+    edge_pairs: list[tuple[str, str]] = []
     for edge in _EDGE_RE.finditer(edges_block.body if edges_block else ""):
-        for endpoint in (edge.group("src"), edge.group("dst")):
-            if endpoint.strip() not in labels:
+        src, dst = edge.group("src").strip(), edge.group("dst").strip()
+        edge_pairs.append((src, dst))
+        for endpoint in (src, dst):
+            if endpoint not in labels:
                 report.add(
                     "GB016",
                     path,
-                    f"edge endpoint '{endpoint.strip()}' is neither 'parent' "
+                    f"edge endpoint '{endpoint}' is neither 'parent' "
                     "nor a declared sub",
                 )
+    # GB016 — the dependency edges must form a DAG (ADR-009).
+    if _has_cycle(edge_pairs):
+        report.add("GB016", path, "decomposition edges contain a dependency cycle")
 
 
 # -------------------------------------------------------------- index records
