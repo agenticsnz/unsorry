@@ -1,0 +1,89 @@
+{
+  "run_id": "phase0-run-001",
+  "date": "2026-06-10",
+  "agents": [
+    { "id": "trial-alpha", "model": "sonnet", "role": "supervisor-driven" },
+    { "id": "trial-bravo", "model": "sonnet", "role": "supervisor-driven" },
+    { "id": "trial-charlie", "model": "haiku", "role": "supervisor-driven" },
+    { "id": "trial-omega", "model": "sonnet", "role": "sweep" }
+  ],
+  "metrics": {
+    "claim_attempts": 39,
+    "collisions": 1,
+    "collision_rate": 0.0256,
+    "translations_merged": 24,
+    "prs_total": 38,
+    "gate_b_failures_on_first_attempt": 0,
+    "validator_pass_rate": 1.0,
+    "goals_matched": 7,
+    "goals_flagged": 1,
+    "fp_rate": 0.125,
+    "paraphrase_pairs_sha_equal": 1,
+    "coordination_errors": 0
+  },
+  "planted_pairs": [
+    {
+      "pair": ["nat-mul-comm", "nat-product-order"],
+      "shas": [
+        "ea25d3b66570cee36884afa57ac5d9610c7024375970862f59a61f85cf2f158f",
+        "ea25d3b66570cee36884afa57ac5d9610c7024375970862f59a61f85cf2f158f"
+      ],
+      "sha_equal": true,
+      "note": "Both paraphrases converged to the identical normalized statement (stmt ≜ ∀x,y∈ℕ: x·y ≡ y·x) — correct fidelity. Side effect: the goal set contains a semantic duplicate; dedup is a Phase-1 backlog-hygiene item."
+    },
+    {
+      "pair": ["nat-le-refl", "nat-leq-self"],
+      "shas": [
+        null,
+        "bdfe3dd848b46bccea996c934f1364aba281f41dc29a512c480beaa5e8bc5d84"
+      ],
+      "sha_equal": false,
+      "note": "nat-leq-self matched and converged; nat-le-refl is the trial's single flag (status≜flagged, sha≜∅). Both statements are elementary and known-true, so the flag is the false positive the planted pair was designed to expose."
+    },
+    {
+      "pair": ["nat-add-zero", "nat-zero-identity-add"],
+      "shas": [
+        "84f38b99bffeb579ae058bb65b3368d3f913cd52afc2a57a98a7dfa7ea87cca9",
+        null
+      ],
+      "sha_equal": false,
+      "note": "Indeterminate, not a mismatch: nat-zero-identity-add ended the trial status≜open with a single translation (trial-omega's, PR #45) — the sweep agent cannot converge against itself, so no final sha exists to compare. Counted as not-equal under the strict metric; the comparison is unobservable for this run."
+    }
+  ],
+  "reap": {
+    "run_url": "https://github.com/agenticsnz/unsorry/actions/runs/27250773072",
+    "removal_commit": "09ba7efe4f377603d81df285e70b8092c99e5852",
+    "reaped": [
+      {
+        "goal": "nat-le-trans",
+        "agent": "trial-dead",
+        "path": "claims/nat-le-trans.trial-dead.aisp",
+        "expired_for_seconds": 4502
+      }
+    ],
+    "kept": 0,
+    "unparsable": []
+  },
+  "pr_numbers": [
+    9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,
+    27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44,
+    45, 46
+  ],
+  "kill_criterion": {
+    "metric": "fp_rate",
+    "threshold": 0.2,
+    "value": 0.125,
+    "tripped": false
+  },
+  "notes": [
+    "collisions counts explicit 'collision' telemetry events only (1: trial-bravo on nat-le-trans, withdrew per contract). Claim-push races that the loser resolved by rebase-and-retry (trial-alpha x2, trial-bravo x4, trial-charlie several incl. one 3-attempt claim) emit no collision event and are visible only in supervisor stderr, so collision_rate undercounts raw contention; it measures cap-full withdrawals.",
+    "validator_pass_rate evidence: all 88 gate-b workflow runs in the repo concluded success, no run has run_attempt > 1, and statusCheckRollup shows gate-b=SUCCESS on every one of the 38 trial PRs (#9-#46).",
+    "Goal final states: 7 translated, 1 flagged (nat-le-refl), 2 open (nat-zero-identity-add, nat-zero-lt-succ — each holds one trial-omega translation and awaits a second independent translation; expected, not an error).",
+    "14 supervisor cycles exited 1 (alpha 5, bravo 4, charlie 5; never 3 consecutive) from a shared agent.sh defect: on feature-branch reuse after a prior cycle's rebase/auto-merge advanced the remote, the plain git push is rejected non-fast-forward and the cycle aborts. No repo state was corrupted and every retry recovered; not counted as coordination_errors per the definition (nothing rejected by Gate B, no cap breach, no protocol violation in branch histories). Fix candidate for Phase 1.",
+    "coordination_errors=0 verification: zero failed Gate B runs; reaper reported unparsable=[]; full claims-branch history (79 commits) never shows more than 2 concurrent live (unexpired) claims per goal (GB014 cap) nor two live claims by one agent (GB015); the expired trial-dead claim is why a second live claim on nat-le-trans remained legal until bravo's third attempt collided; main history contains only squash-merged PR commits during the trial.",
+    "Anomaly (logged by agent.sh, benign): nat-mul-comm accumulated 3 distinct translations before converging matched (converged event carries translations:\"3\") — sequential claims by all three supervised agents are within the 2-live-claim cap.",
+    "Trial-omega's converged_events capture duplicated its single converged line (capture artifact, not a double event); omega's 2 'claimed' events are included in claim_attempts.",
+    "Cross-check: claims-branch history holds 39 'claim:' commits = 38 agent claims (matching the 38 'claimed' telemetry events) + 1 planted trial-dead claim used as reap evidence.",
+    "PR #8 (fix: translation convergence sweep, SPEC-007-A) merged immediately before the trial; the omega sweep exercised it, converging nat-product-order (#44) left over from overlapping translation PRs."
+  ]
+}
