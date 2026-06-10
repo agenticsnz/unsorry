@@ -1,0 +1,23 @@
+name: agent-lint
+
+on:
+  pull_request:
+
+jobs:
+  agent-lint:
+    # SPEC-007-A quality bar: shellcheck-clean, bash -n clean, hermetic
+    # self-test green (temp dirs + injected clock; no network, no claude).
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Install shellcheck
+        run: sudo apt-get update && sudo apt-get install -y shellcheck
+      - name: shellcheck
+        run: shellcheck swarm/agent.sh
+      - name: bash syntax check
+        run: bash -n swarm/agent.sh
+      - name: agent self-test
+        run: ./swarm/agent.sh --self-test
