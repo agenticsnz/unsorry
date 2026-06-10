@@ -9,6 +9,16 @@
 4. α-renaming of bound variables to ``x₁,x₂,…`` in binding-occurrence order,
    respecting scope (inner binders shadow outer ones; free identifiers are
    untouched).
+5. Redundant-parenthesis elimination (added after phase0-run-001, whose only
+   two fidelity flags were paren-wrap false positives). Only provably
+   meaning-preserving round-paren groups are stripped, iterated to fixpoint:
+   whole-statement wraps, single IDENT/NUM wraps, directly-nested duplicates,
+   and a group that spans a binder's entire body to the end of its scope
+   (immediately after ``:``/``.`` and closing where the enclosing group or
+   statement ends — binder scope already runs that far). Interior grouping
+   like ``a+(b·c)`` is deliberately untouched (meaning-bearing under other
+   precedences), as are ``⟨⟩`` and all non-round brackets. Runs after
+   α-renaming so binder scopes are resolved against the original brackets.
 
 The result is a single UTF-8 line. ``statement_sha`` is the SHA-256 (lowercase
 hex) of the UTF-8 bytes of that line — the content address used for the
@@ -204,15 +214,87 @@ def _alpha_rename(text: str) -> str:
     return "".join(out)
 
 
+# ── redundant parentheses ────────────────────────────────────────────────────
+
+
+def _strip_redundant_parens(text: str) -> str:
+    """Remove provably-redundant round-paren groups (module docstring step 5).
+
+    One group per pass, iterated to fixpoint; unbalanced input is returned
+    untouched (malformed statements are the fidelity gate's flag path, not
+    ours to repair).
+    """
+    while True:
+        tokens = _tokenize(text)
+        match: dict[int, int] = {}
+        stack: list[int] = []
+        for idx, tok in enumerate(tokens):
+            if tok.kind != "SYM":
+                continue
+            if tok.text == "(":
+                stack.append(idx)
+            elif tok.text == ")":
+                if not stack:
+                    return text  # unbalanced: leave untouched
+                match[stack.pop()] = idx
+        if stack:
+            return text  # unbalanced: leave untouched
+
+        last = len(tokens) - 1
+
+        def scope_ends_after(j: int) -> bool:
+            return j == last or (
+                tokens[j + 1].kind == "SYM" and tokens[j + 1].text in _CLOSE
+            )
+
+        target: tuple[int, int] | None = None
+        for i, j in sorted(match.items()):
+            if i == 0 and j == last:  # whole statement
+                target = (i, j)
+            elif (  # one atom — but never application parens: P(x) ≠ Px
+                j - i == 2
+                and tokens[i + 1].kind in ("IDENT", "NUM")
+                and (
+                    i == 0
+                    or (
+                        tokens[i - 1].kind == "SYM"
+                        and tokens[i - 1].text not in _CLOSE
+                    )
+                )
+            ):
+                target = (i, j)
+            elif (  # directly-nested duplicate ((G)) → (G)
+                tokens[i + 1].kind == "SYM"
+                and tokens[i + 1].text == "("
+                and match.get(i + 1) == j - 1
+            ):
+                target = (i, j)
+            elif (  # binder body wrapped to the end of its scope
+                i > 0
+                and tokens[i - 1].kind == "SYM"
+                and tokens[i - 1].text in (":", ".")
+                and scope_ends_after(j)
+            ):
+                target = (i, j)
+            if target is not None:
+                break
+        if target is None:
+            return text
+        i, j = target
+        tokens = tokens[:i] + tokens[i + 1 : j] + tokens[j + 1 :]
+        text = "".join(tok.text for tok in tokens)
+
+
 # ── pipeline ─────────────────────────────────────────────────────────────────
 
 
 def normalize(stmt: str) -> str:
-    """Normalize a statement per SPEC-003-C (NFC → symbols → whitespace → α)."""
+    """Normalize per SPEC-003-C (NFC → symbols → whitespace → α → parens)."""
     text = unicodedata.normalize("NFC", stmt)
     text = apply_symbol_table(text)
     text = "".join(ch for ch in text if not ch.isspace())
-    return _alpha_rename(text)
+    text = _alpha_rename(text)
+    return _strip_redundant_parens(text)
 
 
 def line_sha(normalized_line: str) -> str:

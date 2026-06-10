@@ -32,7 +32,8 @@ Rules:
 1. NFC Unicode normalization; collapse all whitespace runs to none (symbols) or single space (where significant).
 2. Canonical symbol table: map alias glyphs to one representative (e.g. `→`/`⟶`, `≝`/`≜`, `x*y`/`x·y`) per the table shipped in `tools/fidelity/symbols.py`.
 3. α-rename bound variables to a canonical sequence (`x₁,x₂,…` in binding order).
-4. Output: single line, UTF-8.
+4. Redundant-parenthesis elimination (added after phase0-run-001, whose only two fidelity flags were paren-wrap false positives). Strips only provably meaning-preserving round-paren groups, to fixpoint: whole-statement wraps; single IDENT/NUM wraps **not** in application position (`P(x)` is never collapsed); directly-nested duplicates `((G))`; and a group spanning a binder's entire body to the end of its scope (immediately after `:`/`.`, closing where the enclosing group or statement ends). Interior grouping (`a+(b·c)`), `⟨⟩`, and all non-round brackets are untouched. Runs after α-renaming so scope resolution sees the original brackets.
+5. Output: single line, UTF-8.
 
 `sha ≜ SHA-256(hex, lowercase)` of the UTF-8 bytes of that single line. This same sha keys `library/index/<sha>.aisp`.
 

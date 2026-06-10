@@ -104,7 +104,9 @@ def test_exists_unique_binder() -> None:
 
 def test_shadowing_scope() -> None:
     # Inner binder of the same name shadows: each gets its own fresh name.
-    assert normalize("∀x:(P(x)∧∃x:Q(x))") == "∀x₁:(P(x₁)∧∃x₂:Q(x₂))"
+    # (The outer body wrap is stripped by step 5 — it spans the whole binder
+    # body to end-of-statement, which the binder scope covers anyway.)
+    assert normalize("∀x:(P(x)∧∃x:Q(x))") == "∀x₁:P(x₁)∧∃x₂:Q(x₂)"
 
 
 def test_free_identifiers_untouched() -> None:

@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜nat-zero-identity-add
   phase≜translate
-  status≜flagged
+  status≜translated
   difficulty≜0
 }
 ⟦Σ:Source⟧{
@@ -14,6 +14,6 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜∅
-  sha≜∅
+  sha≜84f38b99bffeb579ae058bb65b3368d3f913cd52afc2a57a98a7dfa7ea87cca9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
