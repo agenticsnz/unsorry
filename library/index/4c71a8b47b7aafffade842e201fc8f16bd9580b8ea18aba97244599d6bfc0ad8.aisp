@@ -1,0 +1,9 @@
+𝔸5.1.lemma.4c71a8b47b7a@2026-06-10
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜4c71a8b47b7aafffade842e201fc8f16bd9580b8ea18aba97244599d6bfc0ad8; goal≜nat-zero-lt-succ; name≜nat_zero_lt_succ}
+⟦Σ:Stmt⟧{
+  stmt≜∀x₁∈ℕ:0<(x₁+1)
+}
+⟦Γ:Tags⟧{tags≜⟨nat,order⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

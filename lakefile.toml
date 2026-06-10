@@ -1,0 +1,26 @@
+name = "unsorry"
+version = "0.4.0"
+keywords = ["math"]
+defaultTargets = ["UnsorryLibrary", "UnsorryGoals"]
+
+[leanOptions]
+pp.unicode.fun = true
+autoImplicit = false
+relaxedAutoImplicit = false
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.30.0"
+
+# The verified library: zero-sorry bar (built with --wfail in Gate A).
+[[lean_lib]]
+name = "UnsorryLibrary"
+srcDir = "library"
+globs = ["Unsorry.+"]
+
+# Open goals: sorries expected; audited with whitelist ∪ {sorryAx}.
+[[lean_lib]]
+name = "UnsorryGoals"
+srcDir = "."
+globs = ["goals.+"]

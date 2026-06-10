@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Lean 4 project: `lean-toolchain` pinned to `leanprover/lean4:v4.30.0`, `lakefile.toml` with two packages — `UnsorryLibrary` (verified, zero-sorry) and `UnsorryGoals` (sorries expected) — mathlib required at release tag `v4.30.0`, manifest committed (ADR-002, ADR-006)
+- First verified lemma `nat_zero_lt_succ` with content-addressed index entry `library/index/4c71a8b4….aisp` (goal `nat-zero-lt-succ`)
+- ADR-006 Gate A Soundness Enforcement; SPEC-006-A (axiom audit executable), SPEC-006-B (gate-a workflow)
+
 ## [0.3.0] - 2026-06-10
 
 ### Added

@@ -8,6 +8,14 @@ All development work must follow the protocols in [`docs/protocols.md`](docs/pro
 
 The optional Svelte `{@html}` protocol (§13) does not apply — there is no frontend.
 
+## Dev commands
+
+- `lake build` — build both packages (`UnsorryLibrary` = verified library under `library/`, zero-sorry bar; `UnsorryGoals` = open goals under `goals/`, sorries expected). Toolchain auto-installs via elan from `lean-toolchain`; mathlib arrives as a binary cache (`lake exe cache get` runs via the require hook — never build mathlib from source, ADR-002).
+- `lake build UnsorryLibrary --wfail` — the Gate A strictness bar locally.
+- `python3 -m tools.gate_b validate .` — Gate B locally.
+- `python3 -m pytest tools -q` — full Python test suite.
+- `./swarm/agent.sh --self-test` — agent loop self-tests.
+
 ## Key structural decisions
 
 - **Claims live on the dedicated unprotected `claims` branch**, never on `main` (ADR-004). First-push-wins via git's atomic non-fast-forward rejection.
