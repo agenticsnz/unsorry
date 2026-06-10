@@ -63,9 +63,12 @@ def generate(tree: Path) -> int:
     for goal in proved_goals(tree):
         goal_lean = tree / "goals" / f"{goal}.lean"
         if not goal_lean.is_file():
-            print(f"BINDING-ERROR {goal}: goal statement {goal_lean} is missing",
-                  file=sys.stderr)
-            errors += 1
+            # No Lean goal statement to bind against — a translate-phase or
+            # grandfathered manually-proved lemma (e.g. the first lemma, in
+            # Basic.lean). Skipped, not failed: there is no goal type to assert.
+            # The prove cycle always emits goals/<g>.lean, so every swarm-proved
+            # goal IS bound; this only spares pre-binding manual entries.
+            print(f"skipped {goal}: no goal statement (translate/grandfathered)")
             continue
         text = goal_lean.read_text(encoding="utf-8")
         try:

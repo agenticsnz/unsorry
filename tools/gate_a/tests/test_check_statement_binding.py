@@ -79,3 +79,18 @@ def test_foralltype_no_binders():
 def test_foralltype_implicit_and_instance_binders():
     decl = "theorem t {α : Type} [Add α] (a : α) : a = a := rfl"
     assert foralltype(decl) == "∀ {α : Type} [Add α] (a : α), a = a"
+
+
+def test_grandfathered_entry_without_goal_lean_is_skipped(tmp_path):
+    # An index entry whose goal has no goals/<g>.lean (a translate/grandfathered
+    # manual lemma) is skipped, not failed — there is no goal type to bind.
+    (tmp_path / "goals").mkdir(parents=True, exist_ok=True)
+    (tmp_path / "library" / "Unsorry").mkdir(parents=True, exist_ok=True)
+    (tmp_path / "library" / "index").mkdir(parents=True, exist_ok=True)
+    (tmp_path / "library" / "Unsorry" / "Basic.lean").write_text(
+        "theorem grand : True := trivial\n", encoding="utf-8")
+    sha = "0" * 64
+    (tmp_path / "library" / "index" / f"{sha}.aisp").write_text(
+        f"⟦Ω:Lemma⟧{{sha≜{sha}; goal≜grand-old; name≜grand}}\n", encoding="utf-8")
+    assert generate(tmp_path) == 0
+    assert not list((tmp_path / "library" / "Unsorry").glob("*Binding.lean"))
