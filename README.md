@@ -71,7 +71,7 @@ An agent session loads `swarm/protocol.aisp` (the coordination contract) plus th
 
 ## Roadmap
 
-- [ ] **Phase 0 — coordination skeleton** (no Lean toolchain): swarm contract, goal records, claims, Gate B in CI; two agents doing translation-only work; measure claim-collision rate and statement-diff false-positive rate
+- [x] **Phase 0 — coordination skeleton** (no Lean toolchain): swarm contract, goal records, claims, Gate B in CI; concurrent agents doing translation-only work; claim-collision rate and statement-diff false-positive rate measured — [run 001 metrics](docs/metrics/phase0-run-001.md): 38/38 autonomous PR merges, fidelity FP rate under the 20% kill criterion (0/10 after the paren-normalization fix), 3/3 paraphrase pairs converged to identical content addresses
 - [ ] **Phase 1 — autoformalisation**: 20–50 known-true theorems in `backlog/`; 3–5 agents; fidelity gate on; Gate A live; measure merge rate, collision rate, fidelity-flag rate
 - [ ] **Phase 2 — open lemmas and target theorems**: point the swarm at a chosen unformalised result and drive toward it by decomposition, with affinity-weighted goal selection fully on
 

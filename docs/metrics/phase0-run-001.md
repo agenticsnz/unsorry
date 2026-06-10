@@ -127,3 +127,43 @@ back-translation fallback) stays on the shelf.
 - The third paraphrase pair's sha comparison is unobservable (second translation never existed).
 - Failed cycles emit no failure event in `metrics.jsonl`; failure counts come from supervisor
   exit-code reports.
+
+---
+
+## Addendum — post-observation completion (same day)
+
+The observation above froze at the supervisors' cycle caps. The run was completed immediately
+afterwards; this addendum records the final state. The original numbers are left untouched as
+the at-observation record.
+
+### Completion runs
+
+A fourth identity, **trial-delta** (sonnet), ran the two leftover second translations:
+[PR #48](https://github.com/agenticsnz/unsorry/pull/48) (nat-zero-identity-add, converged in-PR)
+and [PR #49](https://github.com/agenticsnz/unsorry/pull/49) (nat-zero-lt-succ → `translated`).
+One delta cycle reproduced anomaly 1 (branch-reuse push rejection, retry recovered) —
+consistent with the trial's failure pattern.
+
+### Flag adjudication (the designed human-review path)
+
+Final decided state before adjudication: **8 translated + 2 flagged** (nat-le-refl,
+nat-zero-identity-add) — strict FP rate 2/10 = **0.20, exactly at the kill-criterion
+boundary**. Review of all flagged translation pairs found them identical up to α-renaming plus
+**one mechanical root cause: a redundant parenthesis wrap of the binder body**
+(`∀x∈ℕ:x≤x` vs `∀n∈ℕ:(n≤n)`).
+
+Resolution ([PR #50](https://github.com/agenticsnz/unsorry/pull/50)): normalization step 5 —
+redundant-paren elimination restricted to provably meaning-preserving groups (application
+parens `P(x)` never collapsed; 17 new tests including the exact trial pairs). Sha-drift audit:
+all 8 previously matched goals unchanged. Both flagged pairs re-diff to **MATCH**; goals
+resolved `translated` with agreed shas.
+
+### Final state
+
+| | |
+|---|---|
+| Goals decided | **10/10 translated**, 0 flagged, 0 open |
+| Post-fix fidelity FP rate | **0/10** |
+| Paraphrase pairs byte-equal | **3/3** (`ea25d3b6…`, `bdfe3dd8…`, `84f38b99…`) — every pair of independently-worded English statements converged to identical content addresses |
+| Kill criterion | **Not tripped** — at-boundary reading rendered moot by the root-cause fix; ADR-008 fallback stays shelved |
+| Anomalies 1/2/4 | Fix in flight: re-entrant cycle-state handling for `agent.sh` (branch-name uniqueness + hard-reset claims worktree per cycle) |

@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-06-10
+
+### Added
+
+- Phase-0 swarm trial run 001: four agent identities on two models, 39 claim cycles, 38 autonomous PR merges, TTL reap observed; metrics + evidence at `docs/metrics/phase0-run-001.{md,json}` (#47)
+- `docs/metrics/METRICS.md` — metric definitions and run index
+
+### Fixed
+
+- Translation convergence race under overlapping PRs — convergence sweep, SPEC-007-A step 1b (#8)
+- Fidelity normalizer false positives on redundant parentheses — normalization step 5; both trial flags adjudicated equivalent and resolved (#50)
+
+### Changed
+
+- All 10 Phase-0 backlog goals now `translated`; all 3 planted paraphrase pairs converged to byte-equal content addresses
+- README roadmap: Phase 0 ticked with metrics link
+
 ## [0.2.0] - 2026-06-10
 
 ### Added
