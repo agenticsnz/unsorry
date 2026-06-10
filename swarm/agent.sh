@@ -255,6 +255,19 @@ generate_agent_id() {
   printf '%s-%s\n' "$host" "$hex"
 }
 
+# Unique feature-branch name: feature/goal-<goal>-<kind>-<AGENT_ID>-<6 hex>.
+# The suffix makes cross-cycle branch-name collisions structurally impossible:
+# origin retains feature branches from failed (and merged) attempts, so a
+# retried cycle that reused the deterministic name was rejected
+# non-fast-forward by its own stale remote ref — the Phase-0 trial failure
+# mode. PR titles already identify goal + agent, so the name needs no
+# stability (SPEC-007-A).
+feature_branch() {
+  local kind="$1" goal="$2" hex
+  hex="$(od -An -N3 -tx1 /dev/urandom | tr -d ' \n')" || return 1
+  printf 'feature/goal-%s-%s-%s-%s\n' "$goal" "$kind" "$AGENT_ID" "$hex"
+}
+
 # Claim record per the SPEC-003-B template; header date = UTC date of ts.
 render_claim_record() {
   local goal="$1" agent="$2" ts="$3" ttl="$4"
@@ -420,12 +433,20 @@ ensure_claims_worktree() {
     ours="$(git rev-parse --path-format=absolute --git-common-dir)"
     [ "$theirs" = "$ours" ] \
       || die_config "$CLAIMS_WT belongs to another clone ($theirs)"
-    [ "$(git -C "$CLAIMS_WT" rev-parse --abbrev-ref HEAD)" = "claims" ] \
-      || die_config "$CLAIMS_WT is not checked out on the claims branch"
+    # A cycle that died mid-rebase leaves rebase state and a detached HEAD
+    # behind; recover instead of demanding manual cleanup (SPEC-007-A
+    # quality bar: cycle state is re-entrant).
+    git -C "$CLAIMS_WT" rebase --abort >/dev/null 2>&1 || true
+    if [ "$(git -C "$CLAIMS_WT" rev-parse --abbrev-ref HEAD)" != "claims" ]; then
+      git -C "$CLAIMS_WT" checkout -q -f claims \
+        || die_config "$CLAIMS_WT cannot be checked out on the claims branch"
+    fi
   else
     git worktree prune >/dev/null 2>&1 || true
     git worktree add -q "$CLAIMS_WT" claims || return 1
   fi
+  # Unconditional at every cycle start: whatever the previous cycle left
+  # behind (unpushed commits, dirty files), start from the true origin tip.
   git -C "$CLAIMS_WT" fetch -q origin claims || return 1
   git -C "$CLAIMS_WT" reset --hard -q origin/claims || return 1
 }
@@ -473,29 +494,32 @@ submit_pr_tree() {
 
 # ----------------------------------------------------------------- the cycle
 
-# Step 4: write + commit + push the claim; first-push-wins with rebase retry.
+# Step 4: write + commit + push the claim; first-push-wins with retry. The
+# loop is re-entrant (SPEC-007-A): every retry rebuilds the claim commit from
+# scratch on a freshly-fetched, hard-reset origin/claims tip — no incremental
+# rebase state to strand — and every exit path leaves the worktree hard-reset
+# to origin/claims, so a cycle that dies here never leaves unpushed local
+# commits behind for the next cycle.
 claim_goal() {
   local goal="$1"
   local file="claims/${goal}.${AGENT_ID}.aisp" ts attempt
-  ts="$(py_helper now)" || return 1
-  render_claim_record "$goal" "$AGENT_ID" "$ts" "$UNSORRY_TTL" \
-    > "$CLAIMS_WT/$file" || return 1
-  git -C "$CLAIMS_WT" add "$file" || return 1
-  git -C "$CLAIMS_WT" commit -q -m "claim: $goal $AGENT_ID" || return 1
-  for attempt in 1 2 3 4 5; do
+  for attempt in 1 2 3 4; do  # initial push + up to 3 from-scratch retries
+    if [ "$attempt" -gt 1 ]; then
+      log "claim push rejected for $goal (attempt $((attempt - 1))) — rebasing from scratch"
+      git -C "$CLAIMS_WT" fetch -q origin claims 2>/dev/null || continue
+      git -C "$CLAIMS_WT" reset --hard -q origin/claims || break
+      # Post-fetch recheck (step 4): withdraw when the cap filled meanwhile.
+      py_helper claimable "$CLAIMS_WT/claims" "$goal" "$AGENT_ID" || break
+    fi
+    ts="$(py_helper now)" || break
+    render_claim_record "$goal" "$AGENT_ID" "$ts" "$UNSORRY_TTL" \
+      > "$CLAIMS_WT/$file" || break
+    git -C "$CLAIMS_WT" add "$file" || break
+    git -C "$CLAIMS_WT" commit -q -m "claim: $goal $AGENT_ID" || break
     if git -C "$CLAIMS_WT" push -q origin claims 2>/dev/null; then
       emit_event claimed "$goal"
       log "claimed $goal (attempt $attempt)"
       return 0
-    fi
-    log "claim push rejected for $goal (attempt $attempt) — rebasing"
-    if ! git -C "$CLAIMS_WT" pull --rebase -q origin claims 2>/dev/null; then
-      # Add/add conflict: a live claim by self was pushed concurrently.
-      git -C "$CLAIMS_WT" rebase --abort >/dev/null 2>&1 || true
-      break
-    fi
-    if ! py_helper claimable "$CLAIMS_WT/claims" "$goal" "$AGENT_ID"; then
-      break
     fi
   done
   git -C "$CLAIMS_WT" reset --hard -q origin/claims
@@ -552,9 +576,9 @@ $body"
 # byte-identical edit whose PR merges cleanly or fails fast; both harmless.
 converge_goal() {
   local goal="$1" agent_a="$2" agent_b="$3" count="$4"
-  local branch="feature/goal-${goal}-converge-${AGENT_ID}"
-  local prwt="$UNSORRY_WORKDIR/converge-${goal}-${AGENT_ID}"
-  local outcome
+  local branch prwt outcome
+  branch="$(feature_branch converge "$goal")" || return 1
+  prwt="$UNSORRY_WORKDIR/converge-${goal}-${AGENT_ID}"
 
   open_pr_worktree "$prwt" "$branch" || return 1
   outcome="$(apply_convergence "$prwt/goals/$goal.aisp" \
@@ -605,9 +629,10 @@ convergence_sweep() {
 # sibling translation exists, validate, push, open an auto-merge PR.
 check_in() {
   local goal="$1" stmt="$2"
-  local branch="feature/goal-${goal}-tr-${AGENT_ID}"
-  local prwt="$UNSORRY_WORKDIR/pr-${goal}-${AGENT_ID}"
-  local record="$prwt/translations/${goal}.${AGENT_ID}.aisp"
+  local branch prwt record
+  branch="$(feature_branch tr "$goal")" || return 1
+  prwt="$UNSORRY_WORKDIR/pr-${goal}-${AGENT_ID}"
+  record="$prwt/translations/${goal}.${AGENT_ID}.aisp"
   local sibling="" candidate outcome
 
   open_pr_worktree "$prwt" "$branch" || return 1
@@ -642,31 +667,38 @@ check_in() {
   return 0
 }
 
-# Step 10: remove the claim file, commit, push (rebase retry on rejection).
+# Step 10: remove the claim file, commit, push. Re-entrant like claim_goal:
+# every retry rebuilds the release commit from scratch on a freshly-fetched,
+# hard-reset origin/claims tip, and the final-failure path also hard-resets —
+# a cycle never exits leaving unpushed local commits that strand the next run
+# (the Phase-0 trial failure mode after "release push rejected").
 release_claim() {
   local goal="$1"
   local file="claims/${goal}.${AGENT_ID}.aisp" attempt
-  git -C "$CLAIMS_WT" rm -q --ignore-unmatch "$file" || return 1
-  if ! git -C "$CLAIMS_WT" diff --cached --quiet; then
-    git -C "$CLAIMS_WT" commit -q -m "release: $goal $AGENT_ID" || return 1
-  fi
-  for attempt in 1 2 3; do
+  for attempt in 1 2 3 4; do  # initial push + up to 3 from-scratch retries
+    if [ "$attempt" -gt 1 ]; then
+      log "release push rejected for $goal (attempt $((attempt - 1))) — rebasing from scratch"
+      git -C "$CLAIMS_WT" fetch -q origin claims 2>/dev/null || continue
+      git -C "$CLAIMS_WT" reset --hard -q origin/claims || break
+    fi
+    git -C "$CLAIMS_WT" rm -q --ignore-unmatch "$file" || break
+    if ! git -C "$CLAIMS_WT" diff --cached --quiet; then
+      git -C "$CLAIMS_WT" commit -q -m "release: $goal $AGENT_ID" || break
+    fi
     if git -C "$CLAIMS_WT" push -q origin claims 2>/dev/null; then
       emit_event released "$goal"
       return 0
     fi
-    log "release push rejected for $goal (attempt $attempt) — rebasing"
-    if ! git -C "$CLAIMS_WT" pull --rebase -q origin claims 2>/dev/null; then
-      git -C "$CLAIMS_WT" rebase --abort >/dev/null 2>&1 || true
-      git -C "$CLAIMS_WT" reset --hard -q origin/claims
-    fi
   done
+  git -C "$CLAIMS_WT" reset --hard -q origin/claims
   log "warning: could not push release of $goal — the TTL will reap it"
   return 1
 }
 
 # --------------------------------------------------------------- self-tests
 # Hermetic: temp dirs only, injected clock, no network, no claude, no gh.
+# The push re-entrancy tests drive the real claim/release helpers against a
+# local bare origin (file:// transport) — still no network.
 
 T_FIXTURES="tools/gate_b/tests/fixtures"
 T_AT="2026-06-10T01:00:00Z"        # injected clock
@@ -882,6 +914,158 @@ test_record_validation() {
   fi
 }
 
+# Hermetic git identity for fixture repositories (never the user's config).
+fixture_git_id() {
+  git -C "$1" config user.email agent@unsorry.test \
+    && git -C "$1" config user.name agent-self \
+    && git -C "$1" config commit.gpgsign false
+}
+
+# Local bare-origin fixture for the push re-entrancy tests: $1/origin.git is
+# a bare remote whose default branch is claims, $1/seed is a second writer
+# used to move the remote tip, $1/clone is the agent's claims-worktree
+# stand-in (CLAIMS_WT). file:// transport only — no network, no gh.
+make_claims_fixture() {
+  local tmp="$1" ttl="$2"
+  git init -q --bare -b claims "$tmp/origin.git" || return 1
+  git init -q -b claims "$tmp/seed" || return 1
+  fixture_git_id "$tmp/seed" || return 1
+  git -C "$tmp/seed" remote add origin "$tmp/origin.git" || return 1
+  mkdir -p "$tmp/seed/claims" || return 1
+  render_claim_record goal-other agent-other "$T_OLD_TS" "$ttl" \
+    > "$tmp/seed/claims/goal-other.agent-other.aisp" || return 1
+  git -C "$tmp/seed" add claims || return 1
+  git -C "$tmp/seed" commit -q -m "seed claims" || return 1
+  git -C "$tmp/seed" push -q origin claims || return 1
+  git clone -q "$tmp/origin.git" "$tmp/clone" 2>/dev/null || return 1
+  fixture_git_id "$tmp/clone" || return 1
+}
+
+# Advance origin/claims from the seeder so $1/clone is stale — the exact
+# state a cycle that died mid push-retry leaves behind (remote tip newer
+# than the local claims state).
+advance_claims_remote() {
+  local tmp="$1" ttl="$2" goal="$3"
+  git -C "$tmp/seed" fetch -q origin claims || return 1
+  git -C "$tmp/seed" reset --hard -q FETCH_HEAD || return 1
+  render_claim_record "$goal" agent-other "$T_OLD_TS" "$ttl" \
+    > "$tmp/seed/claims/$goal.agent-other.aisp" || return 1
+  git -C "$tmp/seed" add claims || return 1
+  git -C "$tmp/seed" commit -q -m "advance: $goal" || return 1
+  git -C "$tmp/seed" push -q origin claims || return 1
+}
+
+test_feature_branch_names() {
+  local AGENT_ID=agent-self
+  local a b c tmp
+  a="$(feature_branch tr nat-add-comm)" || return 1
+  b="$(feature_branch tr nat-add-comm)" || return 1
+  c="$(feature_branch converge nat-add-comm)" || return 1
+  [[ "$a" =~ ^feature/goal-nat-add-comm-tr-agent-self-[0-9a-f]{6}$ ]] \
+    || { log "  '$a' does not match feature/goal-<goal>-tr-<agent>-<6 hex>"; return 1; }
+  [[ "$c" =~ ^feature/goal-nat-add-comm-converge-agent-self-[0-9a-f]{6}$ ]] \
+    || { log "  '$c' does not match feature/goal-<goal>-converge-<agent>-<6 hex>"; return 1; }
+  [ "$a" != "$b" ] \
+    || { log "  two cycles produced the same branch name '$a'"; return 1; }
+
+  # The trial regression: origin retains the previous attempt's tip under
+  # the deterministic name, so reusing it is rejected non-fast-forward while
+  # a suffixed name pushes cleanly without --force.
+  tmp="$(mktemp -d "$SESSION_TMP/brname.XXXXXX")" || return 1
+  git init -q --bare -b main "$tmp/origin.git" || return 1
+  git init -q -b main "$tmp/w" || return 1
+  fixture_git_id "$tmp/w" || return 1
+  git -C "$tmp/w" remote add origin "$tmp/origin.git" || return 1
+  printf 'one\n' > "$tmp/w/f" || return 1
+  git -C "$tmp/w" add f && git -C "$tmp/w" commit -q -m one || return 1
+  git -C "$tmp/w" push -q origin "main:feature/goal-nat-add-comm-tr-agent-self" \
+    || return 1
+  git -C "$tmp/w" checkout -q --orphan retry || return 1
+  printf 'two\n' > "$tmp/w/f" || return 1
+  git -C "$tmp/w" add f && git -C "$tmp/w" commit -q -m two || return 1
+  if git -C "$tmp/w" push -q origin \
+    "retry:feature/goal-nat-add-comm-tr-agent-self" 2>/dev/null; then
+    log "  push to the stale deterministic branch name was not rejected"
+    return 1
+  fi
+  git -C "$tmp/w" push -q origin "retry:$a" 2>/dev/null \
+    || { log "  push to the suffixed branch name failed"; return 1; }
+}
+
+test_claim_push_reentrancy() {
+  local AGENT_ID=agent-self UNSORRY_WORKDIR UNSORRY_TTL CLAIMS_WT
+  local tmp ttl
+  tmp="$(mktemp -d "$SESSION_TMP/claimpush.XXXXXX")" || return 1
+  ttl="$(py_helper ttl)" || return 1
+  UNSORRY_WORKDIR="$tmp" UNSORRY_TTL="$ttl" CLAIMS_WT="$tmp/clone"
+  make_claims_fixture "$tmp" "$ttl" || { log "  fixture setup failed"; return 1; }
+
+  # A: the remote tip moved after the clone last synced (the trial failure
+  # state) — the claim must land without manual cleanup.
+  advance_claims_remote "$tmp" "$ttl" goal-ahead \
+    || { log "  fixture advance failed"; return 1; }
+  claim_goal nat-add-comm \
+    || { log "  claim_goal did not recover from a stale clone"; return 1; }
+  git -C "$tmp/origin.git" ls-tree -r --name-only claims \
+    | grep -qx "claims/nat-add-comm.agent-self.aisp" \
+    || { log "  claim missing from the pushed origin/claims tip"; return 1; }
+  git -C "$tmp/origin.git" ls-tree -r --name-only claims \
+    | grep -qx "claims/goal-ahead.agent-other.aisp" \
+    || { log "  recovery clobbered the newer remote claim"; return 1; }
+  [ -z "$(git -C "$CLAIMS_WT" status --porcelain)" ] \
+    || { log "  claim recovery left the worktree dirty"; return 1; }
+  [ "$(git -C "$CLAIMS_WT" rev-parse claims)" = "$(git -C "$tmp/origin.git" rev-parse claims)" ] \
+    || { log "  local claims tip diverges from origin after claim"; return 1; }
+  grep -q '"event": "claimed", "goal": "nat-add-comm"' "$tmp/metrics.jsonl" \
+    || { log "  no claimed event emitted"; return 1; }
+
+  # B: final failure (origin unreachable) must fail closed — hard-reset
+  # worktree, no unpushed local commits stranded for the next cycle.
+  git -C "$CLAIMS_WT" remote set-url origin "$tmp/absent.git" || return 1
+  if claim_goal goal-unreach; then
+    log "  claim_goal reported success against an unreachable origin"
+    return 1
+  fi
+  [ -z "$(git -C "$CLAIMS_WT" status --porcelain)" ] \
+    || { log "  unreachable-origin failure left the worktree dirty"; return 1; }
+  [ "$(git -C "$CLAIMS_WT" rev-parse claims)" = "$(git -C "$CLAIMS_WT" rev-parse origin/claims)" ] \
+    || { log "  unreachable-origin failure stranded unpushed commits"; return 1; }
+}
+
+test_release_push_reentrancy() {
+  local AGENT_ID=agent-self UNSORRY_WORKDIR UNSORRY_TTL CLAIMS_WT
+  local tmp ttl
+  tmp="$(mktemp -d "$SESSION_TMP/releasepush.XXXXXX")" || return 1
+  ttl="$(py_helper ttl)" || return 1
+  UNSORRY_WORKDIR="$tmp" UNSORRY_TTL="$ttl" CLAIMS_WT="$tmp/clone"
+  make_claims_fixture "$tmp" "$ttl" || { log "  fixture setup failed"; return 1; }
+  claim_goal nat-add-comm || { log "  setup claim failed"; return 1; }
+
+  # Recreate the observed stranding: a previous cycle died after committing
+  # the release but before pushing it, and the remote tip moved on.
+  git -C "$CLAIMS_WT" rm -q claims/nat-add-comm.agent-self.aisp || return 1
+  git -C "$CLAIMS_WT" commit -q -m "release: nat-add-comm agent-self" || return 1
+  advance_claims_remote "$tmp" "$ttl" goal-ahead \
+    || { log "  fixture advance failed"; return 1; }
+
+  release_claim nat-add-comm \
+    || { log "  release_claim did not recover from stranded state"; return 1; }
+  if git -C "$tmp/origin.git" ls-tree -r --name-only claims \
+    | grep -qx "claims/nat-add-comm.agent-self.aisp"; then
+    log "  released claim still present on the origin/claims tip"
+    return 1
+  fi
+  git -C "$tmp/origin.git" ls-tree -r --name-only claims \
+    | grep -qx "claims/goal-ahead.agent-other.aisp" \
+    || { log "  recovery clobbered the newer remote claim"; return 1; }
+  [ -z "$(git -C "$CLAIMS_WT" status --porcelain)" ] \
+    || { log "  release recovery left the worktree dirty"; return 1; }
+  [ "$(git -C "$CLAIMS_WT" rev-parse claims)" = "$(git -C "$tmp/origin.git" rev-parse claims)" ] \
+    || { log "  local claims tip diverges from origin after release"; return 1; }
+  grep -q '"event": "released", "goal": "nat-add-comm"' "$tmp/metrics.jsonl" \
+    || { log "  no released event emitted"; return 1; }
+}
+
 run_self_tests() {
   local tests=(
     test_agent_id_generation
@@ -893,6 +1077,9 @@ run_self_tests() {
     test_goal_rewrite
     test_convergence_rewrite
     test_record_validation
+    test_feature_branch_names
+    test_claim_push_reentrancy
+    test_release_push_reentrancy
   )
   local failures=0 t
   for t in "${tests[@]}"; do
@@ -967,6 +1154,7 @@ main() {
   trap 'rm -rf "$SESSION_TMP"' EXIT
 
   if [ "$SELF_TEST" -eq 1 ]; then
+    require_cmd git  # the push re-entrancy tests use local bare fixtures
     run_self_tests
   fi
 
