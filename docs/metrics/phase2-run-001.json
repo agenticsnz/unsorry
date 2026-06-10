@@ -1,0 +1,108 @@
+{
+  "run_id": "phase2-run-001",
+  "date": "2026-06-10",
+  "trial": "First Phase-2 target run (Stage E). One prover agent (e-alpha, driving `claude`) ran the real swarm prove workflow scoped via `--goal nicomachus-sum-cubes` (PR #132 enabler) against the seeded Phase-2 target (PR #131). The exit condition was: the target proved on main with gate-a green. This is the first run of the full Phase-2 machinery (affinity ADR-010, decomposition ADR-009, statement-binding gate ADR-011) against a non-trivial, mathlib-absent target.",
+  "target": {
+    "goal": "nicomachus-sum-cubes",
+    "statement": "theorem nicomachus_sum_cubes (n : ℕ) : (∑ k ∈ Finset.range n, k ^ 3) = (∑ k ∈ Finset.range n, k) ^ 2",
+    "description": "Nicomachus's theorem: the sum of the first n cubes equals the square of the sum of the first n naturals (∑_{k<n} k³ = (∑_{k<n} k)²).",
+    "mathlib_absent": true,
+    "mathlib_absence_basis": "backlog/nicomachus-sum-cubes.md, verified against pinned mathlib v4.30.0: only the general Bernoulli power-sum `sum_range_pow` exists (a different statement). No named Nicomachus / sum-of-cubes identity in mathlib. Verified mathlib-absent BEFORE the run.",
+    "difficulty": 3
+  },
+  "agents": [
+    {
+      "id": "e-alpha",
+      "model": "claude",
+      "role": "prover",
+      "cycles_run": 1
+    }
+  ],
+  "exit_metric": {
+    "question": "Was a first lemma proved that was NOT already in mathlib?",
+    "target_reached": true,
+    "proof_path": "direct",
+    "decomposition_exercised": false,
+    "binding_held": true,
+    "verdict": "MET. nicomachus-sum-cubes — a mathlib-absent identity — is kernel-verified on main with gate-a green. This is the first non-trivial lemma the swarm has proved that did not already exist in mathlib."
+  },
+  "metrics": {
+    "target_proved": true,
+    "proof_path": "direct",
+    "decomposition_exercised": false,
+    "subs_total": 0,
+    "subs_proved": 0,
+    "binding_held": true,
+    "prove_prs_opened": 1,
+    "prove_prs_merged": 1,
+    "open_prs_remaining": 0,
+    "library_modules_added": 1,
+    "gate_a_failures_on_merged_path": 0,
+    "cycles_to_target": 1
+  },
+  "merged_prove_pr": {
+    "pr": 133,
+    "url": "https://github.com/agenticsnz/unsorry/pull/133",
+    "goal": "nicomachus-sum-cubes",
+    "name": "nicomachus_sum_cubes",
+    "agent": "e-alpha",
+    "merge_commit": "79c6f2cf4a157123945308c826b2b74d434b5143",
+    "merged_at": "2026-06-10T20:33:41Z",
+    "base": "main",
+    "merge_method": "squash (auto-merge enabled by cgbarlow)",
+    "index_sha": "1be96a4d1204f8f88c265846e3d4d5476a21442a6d0bb62ee9623108af5f7231",
+    "library_module": "library/Unsorry/NicomachusSumCubes.lean",
+    "checks": {
+      "gate-a": "pass (7m25s)",
+      "gate-b": "pass",
+      "agent-lint": "pass",
+      "aisp-advisory": "pass",
+      "detect": "pass"
+    }
+  },
+  "binding_obligation": {
+    "held": true,
+    "gate_a_job": 80657275950,
+    "basis": "Gate-A job 80657275950 (PR #133, merge commit 79c6f2c) succeeded on every load-bearing step, including 'Generate statement-binding obligations' (the proof really has the EXACT target type, ADR-011), 'Library build — zero-warning bar (--wfail)', 'Axiom audit (authoritative)', 'Kernel replay (leanchecker)', and 'Audit self-test (gate cannot rot silently)'. The binding obligation passed — the merged proof is of the exact seeded statement, not a weaker paraphrase.",
+    "gate_a_steps": [
+      {"step": "Build (lean-action, mathlib binary cache)", "conclusion": "success"},
+      {"step": "Generate statement-binding obligations", "conclusion": "success"},
+      {"step": "Library build — zero-warning bar (--wfail)", "conclusion": "success"},
+      {"step": "Axiom audit (authoritative)", "conclusion": "success"},
+      {"step": "Kernel replay (leanchecker)", "conclusion": "success"},
+      {"step": "Audit self-test (gate cannot rot silently)", "conclusion": "success"},
+      {"step": "Forbidden elaboration options in library", "conclusion": "success"},
+      {"step": "Textual lint on library diff", "conclusion": "success"}
+    ]
+  },
+  "decomposition": {
+    "exercised": false,
+    "sub_goals_total": 0,
+    "sub_goals_proved": 0,
+    "tree": "None. No `decompositions/` directory exists at this HEAD; no `goals/nicomachus-sum-cubes-s*.aisp` sub-goal files exist; no `decomposed` telemetry event was emitted. The target was proved DIRECTLY in one cycle, so the recompose path was never reached. goals/nicomachus-sum-cubes.aisp shows deps≡⟨⟩ (no dependencies) and status≡proved.",
+    "note": "This run exercised the BEST-CASE path (a): a non-trivial mathlib-absent target proved directly without decomposition. The decomposition machinery (Stage C, ADR-009) was AVAILABLE but NOT EXERCISED on this run — the direct proof landed first and met the exit condition, so the swarm stopped after 1 cycle. Decomposition remains untested end-to-end against a real target as of this run."
+  },
+  "soundness": {
+    "library_module": "library/Unsorry/NicomachusSumCubes.lean",
+    "forbidden_tactic_scan": "CLEAN — no sorry, admit, native_decide, or axiom in the library module (grep exit 1, no matches).",
+    "proof_shape": "Genuine ~24-line proof: induction on n; zero case by simp; succ case rewrites Finset.sum_range_succ twice + the IH, then case-splits on n; the succ-succ case sets S := ∑ k ∈ Finset.range (m+1), k, derives the triangular closed form S*2 = (m+1)*m from Finset.sum_range_id_mul_two, then a calc block expands (S + (m+1))^2 = S^2 + (m+1)^3 and closes with linarith. No shortcuts.",
+    "seed_stub_note": "goals/nicomachus-sum-cubes.lean still holds the original seed STUB ending in `sorry` (the unproved goal statement, by design). The REAL proof lives in library/Unsorry/NicomachusSumCubes.lean. The stub is not the proof."
+  },
+  "settle": {
+    "open_nicomachus_prs_remaining": 0,
+    "settle_loop_exit": "clean (reported 0 open nicomachus PRs; did not hit timeout)",
+    "stuck": "none"
+  },
+  "notes": [
+    "GROUND TRUTH: fresh clone at /workspaces/w9-observe, main HEAD = 79c6f2cf4a157123945308c826b2b74d434b5143 (prove(nicomachus-sum-cubes): nicomachus_sum_cubes by e-alpha (#133)). All numbers are computed from `gh` PR/job ground truth and the goals/index/library tree at this HEAD; the agent's metrics.jsonl was not relied on for any headline metric.",
+    "EXIT METRIC MET: nicomachus-sum-cubes is the first lemma proved by the swarm that was NOT already in mathlib. It has (a) a library/index entry [library/index/1be96a4d1204...aisp, goal≡nicomachus-sum-cubes], (b) a sorry-free library module [library/Unsorry/NicomachusSumCubes.lean], and (c) green gate-a on its merge commit 79c6f2c. The binding obligation held (statement-binding step success).",
+    "PROOF PATH = DIRECT (best case, path (a)): proved in one cycle, no decomposition. goals/nicomachus-sum-cubes.aisp deps≡⟨⟩, status≡proved, difficulty≡3. No decompositions/ dir, no -s* sub-goals, no `decomposed` event.",
+    "DECOMPOSITION NOT EXERCISED: subs_total=0, subs_proved=0. The Stage-C decomposition path (b) was available but never triggered because the direct proof landed first and met the exit condition. End-to-end decompose→recompose against a real target is therefore still UNTESTED after this run — recorded honestly as a coverage gap, not a success of that machinery.",
+    "BINDING GATE: this is the first Phase-2 target to clear the ADR-011 statement-binding gate in anger. Gate-A job 80657275950 'Generate statement-binding obligations' step = success, so the merged proof is of the EXACT seeded type (∑ k³ = (∑ k)²), not a weaker variant. Confirmed by reading the index .aisp stmt and the library module signature — both match the seed in backlog/nicomachus-sum-cubes.md.",
+    "PROVE-CYCLE COST: e-alpha reports a single cycle of ~30 min wall. claude prove attempt 1 failed/timed out; attempt 2 succeeded ('proof of nicomachus-sum-cubes verified locally — statement bound (attempt 2)'). The attempt-1 timeout ate most of the wall budget before attempt 2 landed. This is NOT a soundness failure — it is a single retry within the attempt budget; the merged proof is attempt 2.",
+    "CLAIM CONTENTION: e-alpha claimed on attempt 2 (initial claim push lost the release-branch race, re-pushed after rebase) — the same optimistic-concurrency pattern seen in phase1-run-002, not a collision. With a single agent there were no cross-agent duplicate PRs this run.",
+    "MERGE PROVENANCE: I did NOT merge PR #133. Auto-merge (squash) was enabled by cgbarlow; it merged automatically at 2026-06-10T20:33:41Z once CI passed. Merge commit 79c6f2c authored by Chris Barlow, committed by GitHub. Read-only observation throughout.",
+    "MATHLIB ABSENCE: re-confirmed from backlog/nicomachus-sum-cubes.md, which records the absence was verified against pinned mathlib v4.30.0 (only the general Bernoulli `sum_range_pow` exists). The target was verified mathlib-absent BEFORE the run, so proving it is a genuine new lemma, not a re-derivation of an existing mathlib result.",
+    "NOT MODIFIED: no PR merged, rebased, or edited; no repo file outside docs/metrics/ touched; no --admin used. Observation via fresh clone + `gh` queries only."
+  ]
+}
