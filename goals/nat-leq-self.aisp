@@ -1,0 +1,19 @@
+𝔸5.1.goal.nat-leq-self@2026-06-10
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜nat-leq-self
+  phase≜translate
+  status≜open
+  difficulty≜0
+}
+⟦Σ:Source⟧{
+  src≜backlog/nat-leq-self.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜∅
+  sha≜∅
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
