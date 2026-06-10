@@ -1,0 +1,138 @@
+{
+  "run_id": "phase1-run-002",
+  "date": "2026-06-10",
+  "trial": "Phase-1 swarm rerun (post-cache-fix prove cycle): 3 prover agents (p2-alpha, p2-bravo, p2-charlie) driving `claude` to write Lean proofs, self-verify locally (lake exe cache get + lake build UnsorryLibrary --wfail + axiom_audit) with the mathlib olean cache warmed in the prove worktree, and open Gate-A/Gate-B auto-merge PRs. This is the post-cache-fix baseline against which run-001's 0.6 merge rate and 6 build-timeout failures are compared.",
+  "agents": [
+    {
+      "id": "p2-alpha",
+      "model": "claude",
+      "role": "prover",
+      "cycles_run": 12
+    },
+    {
+      "id": "p2-bravo",
+      "model": "claude",
+      "role": "prover",
+      "cycles_run": 12
+    },
+    {
+      "id": "p2-charlie",
+      "model": "claude",
+      "role": "prover",
+      "cycles_run": 12
+    }
+  ],
+  "metrics": {
+    "claim_attempts": 39,
+    "collisions": 0,
+    "collision_rate": 0.0,
+    "proofs_attempted": 18,
+    "proofs_merged": 16,
+    "merge_rate": 0.889,
+    "prove_failures": 0,
+    "coordination_errors": 0,
+    "gate_a_failures_on_merged_path": 0,
+    "goals_proved_total": 16
+  },
+  "merged_prove_prs": [
+    {"pr": 85, "goal": "list-reverse-reverse", "name": "list_reverse_reverse_thm", "agent": "p2-charlie", "merge_commit": "23366a1a4aee", "gate_a": "SUCCESS"},
+    {"pr": 86, "goal": "int-sub-eq-add-neg", "name": "int_sub_eq_add_neg_thm", "agent": "p2-bravo", "merge_commit": "446523136299", "gate_a": "SUCCESS"},
+    {"pr": 87, "goal": "nat-add-assoc-thm", "name": "nat_add_assoc_thm", "agent": "p2-alpha", "merge_commit": "e79ced728f52", "gate_a": "SUCCESS"},
+    {"pr": 89, "goal": "nat-add-assoc-thm", "name": "nat_add_assoc_thm", "agent": "p2-alpha", "merge_commit": "3de5e9c7f013", "gate_a": "SUCCESS", "note": "duplicate landing of same goal/agent as #87"},
+    {"pr": 90, "goal": "int-sub-eq-add-neg", "name": "int_sub_eq_add_neg_thm", "agent": "p2-charlie", "merge_commit": "fb51b03a0b6c", "gate_a": "SUCCESS", "note": "second agent's proof of a goal already merged via #86"},
+    {"pr": 91, "goal": "nat-add-comm-thm", "name": "nat_add_comm_thm", "agent": "p2-bravo", "merge_commit": "03a20ff579a4", "gate_a": "SUCCESS"},
+    {"pr": 93, "goal": "nat-add-left-cancel", "name": "nat_add_left_cancel_thm", "agent": "p2-alpha", "merge_commit": "8ba89c3380bf", "gate_a": "SUCCESS"},
+    {"pr": 96, "goal": "nat-add-zero-thm", "name": "nat_add_zero_thm", "agent": "p2-alpha", "merge_commit": "366891528f53", "gate_a": "SUCCESS"},
+    {"pr": 97, "goal": "nat-add-left-cancel", "name": "nat_add_left_cancel_thm", "agent": "p2-charlie", "merge_commit": "3b37992bdc5d", "gate_a": "SUCCESS", "note": "second agent's proof of a goal already merged via #93"},
+    {"pr": 101, "goal": "nat-dvd-refl", "name": "nat_dvd_refl_thm", "agent": "p2-bravo", "merge_commit": "cfbda017bf87", "gate_a": "SUCCESS"},
+    {"pr": 103, "goal": "nat-even-or-odd", "name": "nat_even_or_odd_thm", "agent": "p2-charlie", "merge_commit": "1603e92a35cc", "gate_a": "SUCCESS"},
+    {"pr": 104, "goal": "nat-dvd-refl", "name": "nat_dvd_refl_thm", "agent": "p2-bravo", "merge_commit": "87d2a2ad99fd", "gate_a": "SUCCESS", "note": "duplicate landing of same goal/agent as #101"},
+    {"pr": 105, "goal": "nat-gcd-comm", "name": "nat_gcd_comm_thm", "agent": "p2-alpha", "merge_commit": "3a8ae83a03a9", "gate_a": "SUCCESS"},
+    {"pr": 107, "goal": "nat-dvd-refl", "name": "nat_dvd_refl_thm", "agent": "p2-bravo", "merge_commit": "8c72fe285d89", "gate_a": "SUCCESS", "note": "third duplicate landing of same goal/agent as #101"},
+    {"pr": 109, "goal": "nat-le-add-right", "name": "nat_le_add_right_thm", "agent": "p2-bravo", "merge_commit": "415713b617a2", "gate_a": "SUCCESS"},
+    {"pr": 114, "goal": "nat-le-succ", "name": "nat_le_succ_thm", "agent": "p2-charlie", "merge_commit": "d92fca49cc62", "gate_a": "SUCCESS"},
+    {"pr": 115, "goal": "nat-le-add-right", "name": "nat_le_add_right_thm", "agent": "p2-bravo", "merge_commit": "679567885625", "gate_a": "SUCCESS", "note": "duplicate landing of same goal/agent as #109"},
+    {"pr": 116, "goal": "nat-le-succ", "name": "nat_le_succ_thm", "agent": "p2-charlie", "merge_commit": "d7555977fdc5", "gate_a": "SUCCESS", "note": "duplicate landing of same goal/agent as #114"},
+    {"pr": 117, "goal": "nat-mul-add-distrib", "name": "nat_mul_add_distrib", "agent": "p2-alpha", "merge_commit": "9459154fb283", "gate_a": "SUCCESS"},
+    {"pr": 118, "goal": "nat-mul-comm-thm", "name": "nat_mul_comm_thm", "agent": "p2-bravo", "merge_commit": "9ed8d6f85063", "gate_a": "SUCCESS"},
+    {"pr": 119, "goal": "nat-le-succ", "name": "nat_le_succ_thm", "agent": "p2-charlie", "merge_commit": "57d9806d3463", "gate_a": "SUCCESS", "note": "third duplicate landing of same goal/agent as #114"},
+    {"pr": 121, "goal": "nat-mul-comm-thm", "name": "nat_mul_comm_thm", "agent": "p2-charlie", "merge_commit": "7b25a92a2015", "gate_a": "SUCCESS", "note": "second agent's proof of a goal already merged via #118"}
+  ],
+  "open_redundant_prove_prs": [
+    {"pr": 88, "goal": "list-reverse-reverse", "agent": "p2-bravo", "mergeable": "CONFLICTING", "merge_state": "DIRTY", "gate_a": "SUCCESS", "note": "cross-agent dup; goal already on main via #85 (p2-charlie). Blocked only by merge conflict against advanced main."},
+    {"pr": 92, "goal": "nat-add-assoc-thm", "agent": "p2-charlie", "mergeable": "CONFLICTING", "merge_state": "DIRTY", "gate_a": "NONE", "note": "cross-agent dup; goal already on main via #87 (p2-alpha). Checks never triggered (conflict-blocked)."},
+    {"pr": 94, "goal": "nat-add-comm-thm", "agent": "p2-bravo", "mergeable": "CONFLICTING", "merge_state": "DIRTY", "gate_a": "SUCCESS", "note": "self-dup of #91"},
+    {"pr": 98, "goal": "nat-add-comm-thm", "agent": "p2-bravo", "mergeable": "CONFLICTING", "merge_state": "DIRTY", "gate_a": "NONE", "note": "self-dup of #91"},
+    {"pr": 99, "goal": "nat-add-zero-thm", "agent": "p2-alpha", "mergeable": "CONFLICTING", "merge_state": "DIRTY", "gate_a": "SUCCESS", "note": "self-dup of #96"},
+    {"pr": 100, "goal": "nat-add-left-cancel", "agent": "p2-charlie", "mergeable": "CONFLICTING", "merge_state": "DIRTY", "gate_a": "NONE", "note": "dup; goal merged via #93/#97"},
+    {"pr": 102, "goal": "nat-add-zero-thm", "agent": "p2-alpha", "mergeable": "CONFLICTING", "merge_state": "DIRTY", "gate_a": "NONE", "note": "self-dup of #96"},
+    {"pr": 106, "goal": "nat-even-or-odd", "agent": "p2-charlie", "mergeable": "CONFLICTING", "merge_state": "DIRTY", "gate_a": "SUCCESS", "note": "self-dup of #103"},
+    {"pr": 108, "goal": "nat-gcd-comm", "agent": "p2-alpha", "mergeable": "CONFLICTING", "merge_state": "DIRTY", "gate_a": "SUCCESS", "note": "self-dup of #105"},
+    {"pr": 110, "goal": "nat-even-or-odd", "agent": "p2-charlie", "mergeable": "CONFLICTING", "merge_state": "DIRTY", "gate_a": "NONE", "note": "self-dup of #103"},
+    {"pr": 111, "goal": "nat-le-add-right", "agent": "p2-bravo", "mergeable": "CONFLICTING", "merge_state": "DIRTY", "gate_a": "SUCCESS", "note": "self-dup of #109/#115"},
+    {"pr": 112, "goal": "nat-gcd-comm", "agent": "p2-alpha", "mergeable": "CONFLICTING", "merge_state": "DIRTY", "gate_a": "NONE", "note": "self-dup of #105"},
+    {"pr": 120, "goal": "nat-mul-add-distrib", "agent": "p2-alpha", "mergeable": "CONFLICTING", "merge_state": "DIRTY", "gate_a": "SUCCESS", "note": "self-dup of #117"},
+    {"pr": 122, "goal": "nat-mul-add-distrib", "agent": "p2-alpha", "mergeable": "CONFLICTING", "merge_state": "DIRTY", "gate_a": "NONE", "note": "self-dup of #117"}
+  ],
+  "library_growth": {
+    "library_modules_non_basic": 16,
+    "index_entries": 17,
+    "index_library_note": "17 index .aisp entries (incl. the pre-existing translated-goal entry for nat-zero-lt-succ carried since run-001) vs 16 non-Basic library modules. The 16 proved goals map 1:1 to the 16 non-Basic modules; the +1 index entry is the same nat-zero-lt-succ (status=translated, not proved) asymmetry flagged in run-001, not produced by this run."
+  },
+  "goal_status_final": {
+    "total": 30,
+    "proved": 16,
+    "translated": 10,
+    "open": 4,
+    "proved_goals": [
+      "and-comm-imp", "int-add-neg", "int-neg-neg",
+      "int-sub-eq-add-neg", "list-reverse-reverse", "nat-add-assoc-thm",
+      "nat-add-comm-thm", "nat-add-left-cancel", "nat-add-zero-thm",
+      "nat-dvd-refl", "nat-even-or-odd", "nat-gcd-comm",
+      "nat-le-add-right", "nat-le-succ", "nat-mul-add-distrib", "nat-mul-comm-thm"
+    ],
+    "new_proved_this_run": [
+      "int-sub-eq-add-neg", "list-reverse-reverse", "nat-add-assoc-thm",
+      "nat-add-comm-thm", "nat-add-left-cancel", "nat-add-zero-thm",
+      "nat-dvd-refl", "nat-even-or-odd", "nat-gcd-comm",
+      "nat-le-add-right", "nat-le-succ", "nat-mul-add-distrib", "nat-mul-comm-thm"
+    ],
+    "open_goals": ["nat-mul-one-thm", "nat-mul-zero-thm", "nat-zero-le", "or-comm-imp"],
+    "translated_goals": [
+      "nat-add-assoc", "nat-add-zero", "nat-le-refl", "nat-le-trans",
+      "nat-leq-self", "nat-mul-comm", "nat-mul-one", "nat-product-order",
+      "nat-zero-identity-add", "nat-zero-lt-succ"
+    ]
+  },
+  "unproved_goals": {
+    "open_not_attempted": ["nat-mul-one-thm", "nat-mul-zero-thm", "nat-zero-le", "or-comm-imp"],
+    "open_attempted_failed": [],
+    "translated_not_in_prove_stage": [
+      "nat-add-assoc", "nat-add-zero", "nat-le-refl", "nat-le-trans",
+      "nat-leq-self", "nat-mul-comm", "nat-mul-one", "nat-product-order",
+      "nat-zero-identity-add", "nat-zero-lt-succ"
+    ],
+    "interpretation": "The 4 open prove-targets remain unproved NOT because the model could not prove them but because no agent ever CLAIMED them (0 p2-* claims on the claims branch for any of the four). The three agents spent ~half their cycles re-claiming and re-proving goals they had already proved-but-not-yet-merged (the merge-lag duplicate-thrash), so the fan-out never reached the tail of the backlog. With the dedup short-circuit recommended below, the swarm would very likely have closed 2-4 of these. None is a genuine model capability failure; none was attempted-and-failed. The 10 translated goals are upstream of the prove stage (not yet bound to a -thm prove target), so they are out of scope for this prove run, not failures."
+  },
+  "branch_protection": {
+    "required_status_checks": ["gate-b", "gate-a"],
+    "strict": false
+  },
+  "notes": [
+    "GROUND TRUTH: fresh clone at /workspaces/w7-observe, main HEAD = 44d2b1abb39988e2146c28180d935ef7059e74df (feat: statement-binding gate (Stage D, ADR-011) (#123)). All numbers below are computed from gh PR ground truth, the origin/claims branch history, and the goals/*.aisp + library/ tree at this HEAD.",
+    "SCOPE: this run is the second Phase-1 prove cycle (post-cache-fix). The three run-001 prove merges (#70 and-comm-imp, #72 int-add-neg, #74 int-neg-neg) pre-date run-002 and are EXCLUDED from this run's proofs_attempted/proofs_merged; they are counted only in goals_proved_total (cumulative on main). Run-002 prove PRs are #85 and up.",
+    "claim_attempts=39: count of `claim:` commits authored by a p2-* agent on origin/claims (13 each for p2-alpha/p2-bravo/p2-charlie). The agents' own telemetry reports 12 CYCLES each (36). The +3 (one extra claim per agent) is the optimistic-concurrency retry: a claim push that lost the release-branch race was re-pushed after a rebase-from-scratch, leaving an extra `claim:` commit. Using the ground-truth claims-branch count (39); the telemetry-cycle count (36) is the alternative denominator and is declared here. Either way collisions=0 so collision_rate=0.0.",
+    "collisions=0 / collision_rate=0.0: zero `collision` telemetry events anywhere (grep of origin/claims = NONE; no agent reported a collision event). The 'release push rejected ... rebasing from scratch' lines on every cycle are RELEASE-BRANCH optimistic-concurrency races that the loser resolved by rebase-and-retry — healthy contention, NOT a cap-full claim withdrawal. Two reap commits (4b5e0df reap 3, 09ba7ef reap 1) are the reaper clearing expired claims, also not collisions.",
+    "proofs_attempted=18: distinct (goal, agent) prove claims that ran a proof, from the deduped claims-branch `claim:` set. Re-claims of the same (goal,agent) pair collapse to one. The 18 pairs span 14 distinct goals (4 goals were claimed by two different agents: int-sub-eq-add-neg by bravo+charlie, list-reverse-reverse by bravo+charlie, nat-add-assoc-thm by alpha+charlie, nat-add-left-cancel by alpha+charlie, nat-mul-comm-thm by bravo+charlie — that is 5 goals double-claimed, hence 18 = 13 single + 5 extra... actually 13 distinct goals proved + the 5 cross-agent second-claims = 18).",
+    "proofs_merged=16: of the 18 distinct (goal,agent) attempt pairs, 16 produced at least one MERGED prove PR (22 prove PRs merged total, but 6 of those are duplicate landings of an already-merged (goal,agent) pair — same agent's #89/#104/#107/#115/#116/#119). The 2 distinct pairs that did NOT merge are list-reverse-reverse|p2-bravo (#88) and nat-add-assoc-thm|p2-charlie (#92); BOTH goals are nonetheless proved on main via the OTHER agent's winning PR (#85, #87), and both losing PRs are gate-a SUCCESS / blocked solely by merge conflict (DIRTY). So both 'misses' are cross-agent duplicate races on goals that DID land, not unproved goals.",
+    "merge_rate=0.889 = proofs_merged(16) / proofs_attempted(18). This is the headline improvement over run-001's 0.6. The 2 unmerged attempts are redundant cross-agent dups (goal already on main), not capability or soundness misses — so 13/13 distinct GOALS that were attempted are proved on main (a 1.0 goal-level close rate for everything the swarm actually picked up).",
+    "prove_failures=0: ZERO `prove-failed` events across all three agents (each reported failures=0; no goal was attempted-and-failed). Every cycle that selected a goal produced a locally-verified Lean proof on attempt 1. This is the direct effect of the cache fix: run-001 had 6 prove_failures, ALL of them bare-worktree mathlib rebuild timeouts (int-sub-eq-add-neg x2, int-neg-neg, int-add-neg x2, charlie int-neg-neg). Warming the olean cache in the prove worktree (lake exe cache get) eliminated every one — verify dropped to ~2-3.5 min/proof, no timeouts, no full-/tmp block (the run worked on /workspaces, 38G free).",
+    "gate_a_failures_on_merged_path=0: all 22 merged run-002 prove PRs show gate-a=SUCCESS in statusCheckRollup. ZERO false-confidence cases (locally-verified proof that CI then rejected). Local verify mirrored CI gate-a on every merged path. The cache fix did NOT introduce any green-local-then-red-CI divergence — it only made local verify faster, reaching the same verdict CI does. This was an explicit watch item for the rerun; the answer is clean.",
+    "coordination_errors=0: zero failed Gate-B runs on any prove PR; no double-claim beyond the live-claim cap (the duplicate re-claims are sequential within an agent's own cap, released-then-reclaimed under merge lag); no protocol violation in branch histories. The 14 open CONFLICTING/DIRTY prove PRs and the 6 duplicate merged landings are the expected fan-out artifact of claim markers not persisting to main (a goal stays claimable until its prove PR MERGES), under heavy auto-merge-queue contention from 3 concurrent agents + Stage B/C/D feature merges. Left open/untouched per observer scope.",
+    "goals_proved_total=16 cumulative on main (status=proved in goals/*.aisp): 3 from run-001 (and-comm-imp, int-add-neg, int-neg-neg) + 13 NEW this run. The 16 proved goals map 1:1 to the 16 non-Basic library/Unsorry/*.lean modules.",
+    "DUPLICATE-PR / FAN-OUT CHARACTERISATION (input to Stage C caps): the dominant inefficiency is MERGE/STATUS-PROPAGATION LAG. A goal's claim is only effectively released-for-good when its prove PR MERGES to main and the status flips open->proved on origin/main; until then the goal reads claimable, so the selector re-hands the SAME already-proved goal to the same agent for 1-3 consecutive cycles, producing identical-sha duplicate PRs. Quantified: 22 merged prove PRs but only 13 distinct new goals; 36 cycles (12x3) produced 13 distinct new proofs => ~23 of 36 agent-cycles (64%) were spent on duplicate re-proofs of an already-proved goal. Per agent: p2-alpha 5 distinct of 12, p2-bravo 6 of 12, p2-charlie 7 of 12. This is throughput-limiting, NOT correctness-affecting (auto-merge dedups; same-sha duplicates are no-ops or land harmlessly). RECOMMENDATION for Stage C: a 'sha-already-in-library' or 'claimed-but-PR-open-by-me' short-circuit decoupled from the main-branch status flip, plus a per-goal live-proof-PR cap, would have redirected those ~23 wasted cycles to the 4 untouched open goals and likely closed the prove backlog within the same cycle budget.",
+    "UNPROVED-GOAL HONESTY: the 4 remaining open prove-targets (nat-mul-one-thm, nat-mul-zero-thm, nat-zero-le, or-comm-imp) have 0 claims from any p2-* agent on origin/claims — they were NEVER ATTEMPTED. They are unproved because the duplicate-thrash consumed the cycle budget before fan-out reached the backlog tail, NOT because the model could not prove them. There is NO goal in this run that was attempted-and-failed. (The 10 status=translated goals are upstream of the prove stage and out of scope.)",
+    "OBSERVABILITY: p2-alpha and p2-charlie metrics.jsonl paths were reported (/workspaces/w7-p2-*-work/metrics.jsonl) but live in those agents' workdirs and were not independently re-read here; p2-bravo's jsonl content was provided inline in telemetry. All headline metrics in this record are derived from gh + origin/claims + the goals/library tree (independently verifiable ground truth), NOT from the agents' self-reported jsonl, so the metrics do not depend on jsonl readability. Cycle counts (12 each) are agent-reported and corroborated by the claims-branch claim counts (13 each, including retries).",
+    "NOT MODIFIED: no PR merged, no PR rebased, no repo file outside docs/metrics/ touched, no --admin used. The 14 open DIRTY prove PRs were left exactly as found; per the settle telemetry they need rebase-on-main + paired-dup dedup (not proof work) to land, and that is out of observer scope."
+  ]
+}
