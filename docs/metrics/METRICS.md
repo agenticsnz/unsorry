@@ -16,6 +16,7 @@ green before auto-merge, and no metric run is ever pushed directly to `main`.
 | `phase1-run-001` | 2026-06-10 | Phase-1 swarm W4 (first prove cycle: 3 prover agents on sonnet; merge_rate 0.6, 3 proofs merged to the verified library, 0 gate-a failures on the merged path) | [phase1-run-001.json](phase1-run-001.json) · [phase1-run-001.md](phase1-run-001.md) |
 | `phase1-run-002` | 2026-06-10 | Phase-1 swarm rerun (post-cache-fix prove baseline: 3 prover agents, 12 cycles each; merge_rate 0.889 (up from 0.6), 0 prove_failures (down from 6 build timeouts), 0 gate-a failures on the merged path; 13 new goals proved, library 3→16 modules; dominant cost is merge-lag duplicate fan-out (~64% of cycles)) | [phase1-run-002.json](phase1-run-002.json) · [phase1-run-002.md](phase1-run-002.md) |
 | `checklist-evidence` | 2026-06-10 | Contributor-readiness checklist W5 (items (a)–(f) adversarially verified; body of the v1.0.0 release) | [checklist-evidence.md](checklist-evidence.md) |
+| `gate-a-redteam-002` | 2026-06-10 | Gate A statement-binding red team (Stage D, ADR-011): 3 adversarial bypass vectors against the binding gate + 1 honest control, real PRs #124–#127; 3/3 attacks blocked at the regenerated binding obligation, 0 survivors, control passes gate-a — the round-001 statement-fidelity gap is now gated | [gate-a-redteam-002.md](gate-a-redteam-002.md) |
 
 ## Machine-record JSON schema
 
