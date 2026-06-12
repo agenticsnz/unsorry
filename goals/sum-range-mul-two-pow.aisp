@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-mul-two-pow
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,6 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/sum-range-mul-two-pow.lean
-  sha≜∅
+  sha≜eab96a0af1f5d7b3057d87636fb05b2ed3ea1c877df453db5baeb0e0115d98be
+  aff≜1
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
