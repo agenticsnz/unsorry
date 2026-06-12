@@ -8,6 +8,8 @@ All development work must follow the protocols in [`docs/protocols.md`](docs/pro
 
 The optional Svelte `{@html}` protocol (§13) does not apply — there is no frontend.
 
+**Always follow the merge protocols in [`docs/protocols.md`](docs/protocols.md) (§3–4)**: nothing merges without passing tests — in this repo, the required CI gates (Gate A soundness, Gate B hygiene) must be green; every change rides its own feature branch and PR (`feature/`, `fix/`, `docs/` naming; one logical change per branch; no direct commits to `main`); branches are cleaned up after merge. Merges to `main` are autonomous on green gates via squash auto-merge (ADR-005), except paths owned in `.github/CODEOWNERS` (the trust-bearing gate/tooling surfaces, ADR-019), which additionally require a human code-owner review.
+
 ## Dev commands
 
 - `lake build` — build both packages (`UnsorryLibrary` = verified library under `library/`, zero-sorry bar; `UnsorryGoals` = open goals under `goals/`, sorries expected). Toolchain auto-installs via elan from `lean-toolchain`; mathlib arrives as a binary cache (`lake exe cache get` runs via the require hook — never build mathlib from source, ADR-002).
