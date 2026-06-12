@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜three-cubes-div-nine
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,6 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/three-cubes-div-nine.lean
-  sha≜∅
+  sha≜9b0fe92e18d79e7729e23fa544a37a2530074349a05720ebbf6724f51ae17397
+  aff≜1
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
