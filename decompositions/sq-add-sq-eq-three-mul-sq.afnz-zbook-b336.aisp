@@ -1,0 +1,14 @@
+𝔸5.1.decomp.sq-add-sq-eq-three-mul-sq.afnz-zbook-b336@2026-06-13
+γ≔unsorry.decomposition
+⟦Ω:Decomp⟧{parent≜sq-add-sq-eq-three-mul-sq; agent≜afnz-zbook-b336}
+⟦Σ:Subs⟧{
+  sub₁≜⟨id≜sq-add-sq-eq-three-mul-sq-s1,sha≜974827e46bcf5a5920d1427f7336ad3ca458881b088e4b616240c02145552a5b⟩
+  sub₂≜⟨id≜sq-add-sq-eq-three-mul-sq-s2,sha≜bb44a42a6e25184267e2a0a7e30e5453c058afcdf374434bc5544bebca938173⟩
+  sub₃≜⟨id≜sq-add-sq-eq-three-mul-sq-s3,sha≜55067d075db958ffe968f4c6720aa3735561f7aa973e07a4854f576bb8126da5⟩
+  sub₄≜⟨id≜sq-add-sq-eq-three-mul-sq-s4,sha≜b0f73a52f602da47e38181ba949eb2a9ae114d21febd9958d885a2fafd779569⟩
+}
+⟦Γ:Edges⟧{
+  Post(sub₁)⊆Pre(parent); Post(sub₂)⊆Pre(parent); Post(sub₃)⊆Pre(parent); Post(sub₄)⊆Pre(parent)
+}
+⟦Λ:Requeue⟧{∀s∈subs:goal(s)≫status≔open}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
