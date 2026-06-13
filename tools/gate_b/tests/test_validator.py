@@ -14,6 +14,7 @@ from pathlib import Path
 
 import pytest
 
+from tools.gate_b import config
 from tools.gate_b.records import parse_utc_z
 from tools.gate_b.validator import validate_tree
 
@@ -408,3 +409,119 @@ def test_index_without_goal_file_is_grandfathered(tmp_path):
         if "library/index" in str(v.path) and v.code == "GB006"
     ]
     assert idx_sha == [], [str(v) for v in idx_sha]
+
+
+def test_index_optional_provenance_is_backward_compatible_and_validated(tmp_path):
+    tree = tmp_path / "t"
+    _write_goal(tree, "g1")
+    sha = _sub_sha(tree, "g1")
+    _write_index(tree, "g1", sha, name="g1")
+    path = tree / "library" / "index" / f"{sha}.aisp"
+
+    # Historical entry without provenance remains valid.
+    assert not [v for v in run_validate(tree) if v.code == "GB019"]
+
+    text = path.read_text(encoding="utf-8").replace(
+        "⟦Ε⟧",
+        "⟦Π:Provenance⟧{solver≜perttu; agent≜oma-2-c50d; "
+        "provider≜codex; model≜gpt-5.1-codex; effort≜xhigh; "
+        "attempts≜2; solve_s≜842}\n⟦Ε⟧",
+    )
+    path.write_text(text, encoding="utf-8")
+    assert not [v for v in run_validate(tree) if v.code == "GB019"]
+
+    path.write_text(text.replace("attempts≜2", "attempts≜zero"), encoding="utf-8")
+    assert any(v.code == "GB019" and "attempts" in v.message
+               for v in run_validate(tree))
+
+
+# ---------------------------------------------------------- proof-run records
+
+_RUN_ID = "20260613t120000000000z-1234abcd"
+
+
+def _write_proof_run(
+    tree: Path,
+    goal: str,
+    outcome: str,
+    *,
+    attempts: str = "2",
+    sha: str = "∅",
+    lessons: str | None = None,
+    lesson_sig: str | None = None,
+) -> Path:
+    agent = "oma-2-c50d"
+    path = tree / "proof-runs" / f"{goal}.{agent}.{_RUN_ID}.aisp"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    metrics = f"attempts≜{attempts}; solve_s≜90; ended≜2026-06-13T12:00:00Z"
+    if lessons is not None:
+        metrics += f"; lessons≜{lessons}"
+    lesson_block = "" if lesson_sig is None else f"⟦Δ:Lesson⟧{{sig≜{lesson_sig}}}\n"
+    path.write_text(
+        f"𝔸5.1.run.{goal}.{agent}.{_RUN_ID}@2026-06-13\n"
+        "γ≔unsorry.proof.run\n"
+        f"⟦Ω:Run⟧{{id≜{_RUN_ID}; goal≜{goal}; agent≜{agent}; "
+        f"outcome≜{outcome}}}\n"
+        "⟦Π:Provenance⟧{solver≜perttu; provider≜codex; "
+        "model≜gpt-5.1-codex; effort≜xhigh}\n"
+        f"⟦Λ:Metrics⟧{{{metrics}}}\n"
+        f"⟦Σ:Artifact⟧{{sha≜{sha}}}\n"
+        f"{lesson_block}"
+        "⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩\n",
+        encoding="utf-8",
+    )
+    return path
+
+
+def test_valid_proof_run_links_to_goal_and_proved_artifact(tmp_path):
+    tree = tmp_path / "t"
+    _write_goal(tree, "g1")
+    sha = _sub_sha(tree, "g1")
+    _write_index(tree, "g1", sha, name="g1")
+    _write_proof_run(tree, "g1", "proved", sha=sha)
+    assert not [v for v in run_validate(tree) if v.code == "GB020"]
+
+
+def test_failed_proof_run_requires_valid_attempts_and_empty_artifact(tmp_path):
+    tree = tmp_path / "t"
+    _write_goal(tree, "g1")
+    _write_proof_run(tree, "g1", "failed", attempts="zero", sha="a" * 64)
+    violations = [v for v in run_validate(tree) if v.code == "GB020"]
+    assert any("attempts" in v.message for v in violations)
+    assert any("requires sha≜∅" in v.message for v in violations)
+
+
+def test_valid_proof_run_with_lesson_telemetry_passes(tmp_path):
+    # ADR-024: a well-formed lessons count and a bounded sig are accepted.
+    tree = tmp_path / "t"
+    _write_goal(tree, "g1")
+    _write_proof_run(
+        tree, "g1", "failed", lessons="2", lesson_sig="unsolved goals ⊢ n + 0 = n"
+    )
+    assert not [v for v in run_validate(tree) if v.code == "GB020"]
+
+
+def test_non_integer_lessons_count_rejected(tmp_path):
+    tree = tmp_path / "t"
+    _write_goal(tree, "g1")
+    _write_proof_run(tree, "g1", "failed", lessons="lots", lesson_sig="x")
+    violations = [v for v in run_validate(tree) if v.code == "GB020"]
+    assert any("lessons" in v.message for v in violations)
+
+
+def test_empty_lesson_sig_rejected(tmp_path):
+    tree = tmp_path / "t"
+    _write_goal(tree, "g1")
+    _write_proof_run(tree, "g1", "failed", lesson_sig="")
+    violations = [v for v in run_validate(tree) if v.code == "GB020"]
+    assert any("non-empty sig" in v.message for v in violations)
+
+
+def test_oversized_lesson_sig_rejected(tmp_path):
+    tree = tmp_path / "t"
+    _write_goal(tree, "g1")
+    _write_proof_run(
+        tree, "g1", "failed", lesson_sig="z" * (config.LESSON_SIG_MAX + 1)
+    )
+    violations = [v for v in run_validate(tree) if v.code == "GB020"]
+    assert any("exceeds" in v.message for v in violations)

@@ -42,7 +42,7 @@ jobs:
             echo "::group::${record}"
             npx --yes aisp-validator@0.3.0 validate "${record}"
             echo "::endgroup::"
-          done < <(find goals translations decompositions library/index \
+          done < <(find goals translations decompositions library/index proof-runs \
                      -name '*.aisp' -type f -print0 2>/dev/null)
           if [ "${found}" -eq 0 ]; then
             echo "no coordination records on this tree — nothing to validate"

@@ -6,7 +6,7 @@
 
 ## What this is
 
-`unsorry` is a self-coordinating research swarm for formal mathematics. Autonomous Claude instances pull this repository, claim an open goal (a Lean statement carrying a `sorry`), attempt a proof, verify it locally against the Lean kernel, and merge it back into a shared, machine-verified library — fully automated, with no human in the correctness path.
+`unsorry` is a self-coordinating research swarm for formal mathematics. Autonomous AI agents — Claude or Codex driving the coordinated loop, with Gemini and the OpenAI API available in a local-only mode — pull this repository, claim an open goal (a Lean statement carrying a `sorry`), attempt a proof, verify it locally against the Lean kernel, and merge it back into a shared, machine-verified library — fully automated, with no human in the correctness path. Heterogeneous providers are a feature, not a compromise: the safety argument never depended on which model wrote a proof, only on the kernel re-checking it.
 
 ![](docs/unsorry-infographic.JPG)
 *Image credit: Adam Holt*
@@ -97,7 +97,10 @@ lake build                               # verify the current library locally
 ./swarm/agent.sh --prove --once          # claim a goal, prove it, open an auto-merge PR
 ```
 
-Full prerequisites, the agent flags, the unattended [supervisor](swarm/supervise.sh), the [targets board](docs/targets.md), and how to propose a target are in **[CONTRIBUTING.md](CONTRIBUTING.md)**.
+Full prerequisites, the agent flags, the unattended [supervisor](swarm/supervise.sh),
+the [targets board](docs/targets.md), the
+[community proof statistics](docs/leaderboard.md), and how to propose a target
+are in **[CONTRIBUTING.md](CONTRIBUTING.md)**.
 
 ## Roadmap
 

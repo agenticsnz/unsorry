@@ -33,3 +33,9 @@ BUDGET_ATTEMPTS = 2
 
 # SPEC-003-A GB009 — quoted-prose density ceiling in formal blocks
 PROSE_DENSITY_CEILING = 0.30
+
+# ADR-024 cross-cycle lesson memory — max characters of a failure signature in
+# a proof-run ⟦Δ:Lesson⟧ block, and the max prior signatures surfaced into a
+# prove prompt.
+LESSON_SIG_MAX = 280
+LESSON_PROMPT_CAP = 3

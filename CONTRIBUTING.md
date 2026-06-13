@@ -37,21 +37,39 @@ python3 -m tools.gate_b validate .       # check coordination artifacts (Gate B)
 ./swarm/agent.sh --prove --once          # claim a goal, prove it, open an auto-merge PR
 ```
 
-`--prove` claims an open `prove`-phase goal, drives `claude` to write a Lean proof,
-self-verifies it locally (`lake build --wfail` + the axiom audit) before opening a PR,
-and lets the gates decide. Other flags:
+`--prove` claims an open `prove`-phase goal, drives the selected provider to write
+a Lean proof, self-verifies it locally (`lake build --wfail` + the axiom audit)
+before opening a PR, and lets the gates decide. Use `--provider codex` to run
+both proof attempts and decomposition with Codex; Claude remains the default.
+Other flags:
 
 - `--translate-only` — run the Phase-0/1 formalisation loop instead of proving.
 - `--dry-run` — show what would be claimed without claiming.
 - `--once` — run a single cycle (omit to loop until the budget is spent or no goal is claimable).
-- `--prove-local --goal <id> --provider claude|codex` — test proof generation
-  and the full local verification in a preserved worktree without fetching,
-  claiming, pushing, or opening a PR.
+- `--prove-local [--goal <id>] --provider claude|codex|gemini|openai` — test proof
+  generation and full local verification in a preserved worktree without
+  fetching, claiming, pushing, or opening a PR. Without `--goal`, the script
+  automatically selects the highest-ranked open local target.
 - `--self-test` — check your setup (hermetic; no network, no `claude`).
 
-Gemini is not implemented yet. See
+Gemini and the OpenAI API provider are currently local-only. See
 [`docs/gemini-provider.md`](docs/gemini-provider.md) for the constrained
-local-first implementation and acceptance plan.
+production-enablement plan.
+
+Coordinated `--prove` pushes claims, feature branches, and PRs through `origin`,
+so it requires write access to the shared repository. From a fork without that
+access, use `--prove-local`; it works from committed local `HEAD` and performs
+no remote operations.
+
+Coordinated proof runs record optional leaderboard provenance in successful
+content-addressed library index entries and append one terminal fact under
+`proof-runs/` for proved, decomposed, or failed outcomes. The facts include the
+authenticated GitHub solver, swarm agent, provider, effective model when known,
+final effort, attempts, completion time, and local proof/verification duration.
+Override the credited GitHub handle with `UNSORRY_SOLVER`; historical work
+remains unknown rather than guessed. See the generated
+**[community proof statistics](docs/leaderboard.md)** and machine-readable
+`docs/metrics/community-stats.json`.
 
 For unattended runs, **[`./swarm/supervise.sh --prove --goal <id>`](swarm/supervise.sh)**
 wraps the agent loop with backoff across infrastructure outages, in-flight waits for

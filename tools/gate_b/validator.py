@@ -1,10 +1,11 @@
 """Gate B — the in-repo deterministic validator (ADR-003, SPEC-003-A/B/C/D).
 
-Validates the five coordination-record surfaces of a tree root:
+Validates the six coordination-record surfaces of a tree root:
 ``goals/``, ``claims/``, ``translations/``, ``decompositions/`` and
-``library/index/``. Absent directories are vacuously valid; nothing else in
-the tree is ever scanned. Hygiene only — Gate B can reject records, never
-admit anything into the library (that is Gate A's job).
+``library/index/``, plus append-only ``proof-runs/`` telemetry. Absent
+directories are vacuously valid; nothing else in the tree is ever scanned.
+Hygiene only — Gate B can reject records, never admit anything into the
+library (that is Gate A's job).
 """
 from __future__ import annotations
 
@@ -25,6 +26,7 @@ from .records import (
     is_id,
     is_sha256,
     parse_record,
+    parse_utc_z,
     parse_vector,
     prose_density,
 )
@@ -40,6 +42,7 @@ _RECORD_TYPES = {
     "translation": ("tr", "unsorry.translation"),
     "decomposition": ("decomp", "unsorry.decomposition"),
     "index": ("lemma", "unsorry.lemma.index"),
+    "proof-run": ("run", "unsorry.proof.run"),
 }
 
 # Subs reference their statement by content address, never inline: the record
@@ -49,6 +52,10 @@ _SUB_RE = re.compile(r"(?P<label>sub[^≜\s;]*)≜⟨id≜(?P<id>[^,⟩\s]+)\s*,
 _EDGE_RE = re.compile(r"Post\((?P<src>[^)]*)\)\s*⊆\s*Pre\((?P<dst>[^)]*)\)")
 
 MAX_DECOMP_SUBS = config.MAX_DECOMP_SUBS
+GITHUB_LOGIN_RE = re.compile(r"[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?")
+PROVENANCE_TOKEN_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9._:+/-]*")
+PROOF_RUN_OUTCOMES = ("proved", "decomposed", "failed")
+PROOF_RUN_ID_RE = re.compile(r"\d{8}t\d{12}z-[0-9a-f]{8}")
 
 
 def _has_cycle(edges: list[tuple[str, str]]) -> bool:
@@ -410,6 +417,135 @@ def _validate_index(path: Path, record: Record, report: _Report) -> None:
                 f"index sha does not match the statement in goals/{goal}.lean",
             )
 
+    # GB019 — optional proof provenance. Historical entries omit the block and
+    # remain valid; when present, its identity fields are complete and its
+    # telemetry is syntactically bounded. This metadata is leaderboard-only
+    # and never participates in proof admission or content addressing.
+    provenance = record.block("Π")
+    if provenance is None:
+        return
+    fields = record.fields
+    for key in ("solver", "agent", "provider"):
+        if not fields.get(key):
+            report.add("GB019", path, f"proof provenance requires '{key}'")
+    solver = fields.get("solver", "")
+    if solver and GITHUB_LOGIN_RE.fullmatch(solver) is None:
+        report.add("GB019", path, f"solver '{solver}' is not a GitHub handle")
+    for key in ("agent", "provider"):
+        value = fields.get(key, "")
+        if value and not is_id(value):
+            report.add("GB019", path, f"{key} '{value}' violates the Id grammar")
+    for key in ("model", "effort"):
+        value = fields.get(key, "")
+        if value and PROVENANCE_TOKEN_RE.fullmatch(value) is None:
+            report.add("GB019", path, f"{key} '{value}' is not a provenance token")
+    attempts = fields.get("attempts")
+    if attempts is not None and (not attempts.isdigit() or int(attempts) < 1):
+        report.add("GB019", path, f"attempts '{attempts}' is not a positive integer")
+    solve_s = fields.get("solve_s")
+    if solve_s is not None and not solve_s.isdigit():
+        report.add("GB019", path, f"solve_s '{solve_s}' is not a non-negative integer")
+
+
+# ---------------------------------------------------------- proof-run records
+
+
+def _validate_proof_run(
+    path: Path,
+    record: Record,
+    known_goals: set[str] | None,
+    report: _Report,
+) -> None:
+    _check_header(record, path, "proof-run", report)
+    _check_required_blocks(record, path, report)
+    _check_prose_density(record, path, report)
+
+    parts = path.stem.split(".")
+    if len(parts) != 3:
+        report.add(
+            "GB020",
+            path,
+            "filename must be '<goal-id>.<agent-id>.<run-id>.aisp'",
+        )
+        return
+    file_goal, file_agent, file_run = parts
+    fields = record.fields
+    for key, expected in (
+        ("goal", file_goal),
+        ("agent", file_agent),
+        ("id", file_run),
+    ):
+        if fields.get(key) != expected:
+            report.add(
+                "GB020",
+                path,
+                f"{key} field '{fields.get(key)}' does not match filename '{expected}'",
+            )
+
+    header = record.header
+    if header is not None and header.rtype == "run" and header.name != path.stem:
+        report.add(
+            "GB020",
+            path,
+            f"header name '{header.name}' does not match filename stem '{path.stem}'",
+        )
+    if not is_id(file_goal):
+        report.add("GB020", path, f"goal '{file_goal}' violates the Id grammar")
+    if not is_id(file_agent):
+        report.add("GB020", path, f"agent '{file_agent}' violates the Id grammar")
+    if PROOF_RUN_ID_RE.fullmatch(file_run) is None:
+        report.add("GB020", path, f"run id '{file_run}' is malformed")
+    if known_goals is not None and file_goal not in known_goals:
+        report.add("GB020", path, f"references unknown goal '{file_goal}'")
+
+    outcome = fields.get("outcome")
+    if outcome not in PROOF_RUN_OUTCOMES:
+        report.add("GB020", path, f"outcome '{outcome}' not in {PROOF_RUN_OUTCOMES}")
+    solver = fields.get("solver", "")
+    if GITHUB_LOGIN_RE.fullmatch(solver) is None:
+        report.add("GB020", path, f"solver '{solver}' is not a GitHub handle")
+    provider = fields.get("provider", "")
+    if not is_id(provider):
+        report.add("GB020", path, f"provider '{provider}' violates the Id grammar")
+    for key in ("model", "effort"):
+        value = fields.get(key)
+        if value and PROVENANCE_TOKEN_RE.fullmatch(value) is None:
+            report.add("GB020", path, f"{key} '{value}' is not a telemetry token")
+
+    attempts = fields.get("attempts", "")
+    if not attempts.isdigit() or int(attempts) < 1:
+        report.add("GB020", path, f"attempts '{attempts}' is not a positive integer")
+    solve_s = fields.get("solve_s", "")
+    if not solve_s.isdigit():
+        report.add("GB020", path, f"solve_s '{solve_s}' is not a non-negative integer")
+    if parse_utc_z(fields.get("ended", "")) is None:
+        report.add("GB020", path, f"ended '{fields.get('ended')}' is not ISO-8601 UTC")
+
+    sha = fields.get("sha")
+    if outcome == "proved":
+        if sha is None or not is_sha256(sha):
+            report.add("GB020", path, "outcome≡proved requires a SHA-256 artifact")
+        elif not (path.parent.parent / "library" / "index" / f"{sha}.aisp").is_file():
+            report.add("GB020", path, f"proved artifact library/index/{sha}.aisp is absent")
+    elif sha not in (None, EMPTY):
+        report.add("GB020", path, f"outcome≡{outcome} requires sha≜∅")
+
+    # ADR-024 optional lesson telemetry: a non-negative injected-lesson count and
+    # a bounded, non-empty failure signature. Advisory only — never a trust input.
+    lessons = fields.get("lessons")
+    if lessons is not None and not lessons.isdigit():
+        report.add("GB020", path, f"lessons '{lessons}' is not a non-negative integer")
+    if record.block("Δ") is not None:
+        sig = fields.get("sig", "")
+        if not sig:
+            report.add("GB020", path, "⟦Δ:Lesson⟧ requires a non-empty sig")
+        elif len(sig) > config.LESSON_SIG_MAX:
+            report.add(
+                "GB020",
+                path,
+                f"lesson sig length {len(sig)} exceeds {config.LESSON_SIG_MAX}",
+            )
+
 
 # -------------------------------------------------------------- claim records
 
@@ -606,6 +742,13 @@ def validate_tree(
         record = _read_record(path, report)
         if record is not None:
             _validate_index(path, record, report)
+
+    for path in _aisp_files(root / "proof-runs"):
+        record = _read_record(path, report)
+        if record is not None:
+            _validate_proof_run(
+                path, record, known_goals if goals_available else None, report
+            )
 
     claims_dir = root / "claims"
     if claims_dir.is_dir():
