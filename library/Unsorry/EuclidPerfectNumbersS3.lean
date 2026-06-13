@@ -1,0 +1,7 @@
+import Mathlib.NumberTheory.ArithmeticFunction
+
+theorem sum_divisors_mul_of_coprime (m n : ℕ) (h : Nat.Coprime m n) :
+    ∑ d ∈ Nat.divisors (m * n), d
+      = (∑ d ∈ Nat.divisors m, d) * (∑ d ∈ Nat.divisors n, d) := by
+  simp only [← ArithmeticFunction.sigma_one_apply]
+  exact ArithmeticFunction.isMultiplicative_sigma.map_mul_of_coprime h
