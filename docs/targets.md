@@ -4,16 +4,14 @@
 
 The unsorry worklist: theorems that are **already proven but not yet in mathlib**, vetted for absence and stated in Lean, waiting for an agent or a human to prove them. Claim one, open a PR, let the gates decide (see [Running an agent](../README.md#running-an-agent) and [ADR-012](adrs/ADR-012-Backlog-Sourcing.md)).
 
-**4 open · 85 proved · 92 total prove-goals.**
+**3 open · 87 proved · 92 total prove-goals.**
 
 | Goal | Status | Diff | Upstream | Source | Reference |
 |------|--------|:----:|----------|--------|-----------|
 | `euclid-perfect-numbers-s3` — euclid-perfect-numbers-s3 | open | 1 | — | — | — |
-| `sq-add-sq-eq-three-mul-sq-s2` — sq-add-sq-eq-three-mul-sq-s2 | open | 1 | — | — | — |
 | `sq-add-sq-eq-three-mul-sq-s4` — sq-add-sq-eq-three-mul-sq-s4 | open | 1 | — | — | — |
 | `sum-range-pow-seven-faulhaber-triangular` — For every natural n, 3·(sum of i⁷ for i in 0..n) = (sum of i for i in 0..n)²·(6·(sum of i for i in 0..n)²−4·(sum of i for i in 0..n)+1); i.e. ∑k⁷ = T²(6T²−4T+1)/3 where T = ∑k. The seventh-power sum as a pure polynomial in the triangular number. | open | 4 | — | classic identities (Faulhaber-in-T tower — the **capstone** odd-power rung; compounds on `sum-range-pow-seven-closed-form`) | Faulhaber's theorem for p=7: ∑k⁷ = (6T⁴−4T³+T²)/3 = T²(6T²−4T+1)/3. Knuth, "Johann Faulhaber and sums of powers", Math. Comp. 61 (1993). |
 | `euclid-perfect-numbers` — Euclid's theorem on perfect numbers: if $2^p - 1$ is prime (a Mersenne prime), then $2^{p-1} \cdot (2^p - 1)$ is perfect. | blocked | 3 | — | Euclid, Elements IX.36 | https://en.wikipedia.org/wiki/Euclid%E2%80%93Euler_theorem |
-| `fourth-power-mod-five` — The fourth power of any natural number not divisible by 5 leaves remainder 1 on division by 5: if n % 5 ≠ 0 then n⁴ % 5 = 1. | blocked | 3 | — | classic identities (fourth-power congruence tower — leaf; the Fermat case p=5) | Fermat's little theorem at the prime 5: a⁴ ≡ 1 (mod 5) for gcd(a,5)=1. Hardy & Wright, An Introduction to the Theory of Numbers. The mod-5 leaf that the others (mod 16, mod 3) do not cover. |
 | `sq-add-sq-eq-three-mul-sq` — The Diophantine equation $x^2 + y^2 = 3z^2$ has only the trivial solution $x=y=z=0$ in integers. | blocked | 4 | — | elementary number theory | Classic infinite descent argument modulo 3 showing that $3 \mid x$ and $3 \mid y$, which leads to infinite descent. |
 | `alternating-sum-naturals` — For every natural n, the sum over i in 0..n-1 of (-1)^i (i+1) equals -(n/2) if n is even and (n/2)+1 if n is odd (integer division over ℤ). | proved | 3 | [packet-ready](upstream/alternating-sum-naturals.md) | classic identities | Standard arithmetic alternating-series partial sums (1-2+3-4+...); tabulated in Hardy, Divergent Series, Ch. 1; elementary induction exercise in discrete-math texts. |
 | `and-comm-imp` — Conjunction commutes. | proved | 1 | — | — | — |
@@ -27,6 +25,7 @@ The unsorry worklist: theorems that are **already proven but not yet in mathlib*
 | `euclid-perfect-numbers-s5` — euclid-perfect-numbers-s5 | proved | 1 | — | — | — |
 | `euclid-perfect-numbers-s6` — euclid-perfect-numbers-s6 | proved | 1 | — | — | — |
 | `factorial-telescope-sum` — For every natural n, the sum over i in 0..n of i * (i!) equals (n+1)! - 1. | proved | 2 | [packet-ready](upstream/factorial-telescope-sum.md) | classic identities | Classic telescoping identity from i·i! = (i+1)! - i!; exercise in Graham, Knuth & Patashnik, Concrete Mathematics, 2nd ed., Ch. 2 (perturbation/telescoping). |
+| `fourth-power-mod-five` — The fourth power of any natural number not divisible by 5 leaves remainder 1 on division by 5: if n % 5 ≠ 0 then n⁴ % 5 = 1. | proved | 3 | — | classic identities (fourth-power congruence tower — leaf; the Fermat case p=5) | Fermat's little theorem at the prime 5: a⁴ ≡ 1 (mod 5) for gcd(a,5)=1. Hardy & Wright, An Introduction to the Theory of Numbers. The mod-5 leaf that the others (mod 16, mod 3) do not cover. |
 | `fourth-power-mod-five-s1` — fourth-power-mod-five-s1 | proved | 1 | — | — | — |
 | `fourth-power-mod-five-s2` — fourth-power-mod-five-s2 | proved | 1 | — | — | — |
 | `fourth-power-mod-three` — The fourth power of any natural number not divisible by 3 leaves remainder 1 on division by 3: if n % 3 ≠ 0 then n⁴ % 3 = 1. | proved | 2 | — | classic identities (fourth-power congruence tower — leaf; compounds on `sq-mod-three`) | Quadratic residues mod 3: n² ≡ 1 (mod 3) for 3∤n, hence n⁴ ≡ 1 (mod 3). Hardy & Wright, An Introduction to the Theory of Numbers. One power up from the proved `sq-mod-three`. |
@@ -74,6 +73,7 @@ The unsorry worklist: theorems that are **already proven but not yet in mathlib*
 | `prime-sq-mod-twenty-four` — The square of every prime p > 3 leaves remainder 1 on division by 24: if p is prime and p > 3 then p^2 % 24 = 1. | proved | 3 | — | classic identities (thread-B depth-chain mid; deps: odd-sq-mod-eight, sq-mod-three) | Classic chestnut "24 divides p² − 1 for every prime p > 3"; Sierpiński, Elementary Theory of Numbers; standard olympiad/intro-NT result via CRT from the mod-8 and mod-3 facts. |
 | `prime-sq-sub-sq-div-twenty-four` — For any two primes p, q both greater than 3, 24 divides p^2 - q^2 (stated over ℤ). | proved | 2 | — | classic identities (thread-B depth-chain root; deps: prime-sq-mod-twenty-four) | Standard corollary of "p² ≡ 1 (mod 24) for primes p > 3"; Sierpiński, Elementary Theory of Numbers; common olympiad exercise. |
 | `sq-add-sq-eq-three-mul-sq-s1` — sq-add-sq-eq-three-mul-sq-s1 | proved | 1 | — | — | — |
+| `sq-add-sq-eq-three-mul-sq-s2` — sq-add-sq-eq-three-mul-sq-s2 | proved | 1 | — | — | — |
 | `sq-add-sq-eq-three-mul-sq-s3` — sq-add-sq-eq-three-mul-sq-s3 | proved | 1 | — | — | — |
 | `sq-mod-three` — The square of any natural number not divisible by 3 leaves remainder 1 on division by 3: if n % 3 ≠ 0 then n^2 % 3 = 1. | proved | 2 | — | classic identities (thread-B depth-chain leaf) | Quadratic residues mod 3; Hardy & Wright, An Introduction to the Theory of Numbers (congruence preliminaries); standard elementary number theory. |
 | `sum-range-choose-mul-two-pow` — For every natural n, the sum over k in 0..n of C(n,k)·2ᵏ equals 3ⁿ; the binomial theorem at x=2: ∑C(n,k)2ᵏ = (1+2)ⁿ = 3ⁿ. | proved | 2 | — | classic identities (binomial-moment tower — the weighted row sum) | Specialisation of the binomial theorem (1+x)ⁿ = ∑C(n,k)xᵏ at x=2. Standard; Concrete Mathematics, Ch. 5. |
