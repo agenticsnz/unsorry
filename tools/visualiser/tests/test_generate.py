@@ -6,6 +6,7 @@ from pathlib import Path
 from tools.visualiser.generate import (
     build_graph,
     main,
+    parse_prove_log,
     render_json,
     render_markdown,
     render_mermaid,
@@ -131,3 +132,24 @@ def test_main_write_and_check(tmp_path, capsys):
 
 def test_main_modes_mutually_exclusive(tmp_path):
     assert main(["--write", "--json", str(tmp_path)]) == 2
+
+
+def test_parse_prove_log():
+    log = (
+        "2026-06-13\x00prove(cube-eq-triangular-sq-diff): cube_eq_triangular_sq_diff by claude-rmt-001 (#322)\n"
+        "2026-06-13\x00prove(euclid-perfect-numbers): perfect_of_mersenne_prime by p3-a1 (#370)\n"
+        "2026-06-12\x00prove(cube-eq-triangular-sq-diff): older by someone-else (#100)\n"  # newest wins
+        "2026-06-13\x00recompose(some-parent): assemble by oma-2-c50d (#371)\n"
+        "2026-06-13\x00docs: roll changelog (#215)\n"  # ignored
+    )
+    out = parse_prove_log(log)
+    assert out["cube-eq-triangular-sq-diff"] == ("claude-rmt-001", "322", "2026-06-13")
+    assert out["euclid-perfect-numbers"] == ("p3-a1", "370", "2026-06-13")
+    assert out["some-parent"] == ("oma-2-c50d", "371", "2026-06-13")
+    assert "docs" not in out
+
+
+def test_build_graph_without_git_is_clean(tmp_path):
+    # Fixture trees are not git checkouts → agent/pr stay None, no crash.
+    graph = build_graph(_repo(tmp_path))
+    assert all(n.agent is None and n.pr is None for n in graph.nodes)

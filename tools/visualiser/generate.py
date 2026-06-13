@@ -7,10 +7,14 @@ GitHub-native Mermaid ``flowchart`` so it renders in the browser with zero
 JavaScript; the interactive HTML surface (issue #371, Phase 2) consumes the same
 ``--json`` model.
 
-The generator is **pure over the in-repo AISP coordination records** — it reads
-``goals/``, ``decompositions/``, ``library/index/`` and ``proof-runs/`` and never
-shells out to git — so ``--check`` is a deterministic CI drift guard, mirroring
-``tools.sourcing.targets_board`` and ``tools.leaderboard``.
+The generator reads the in-repo AISP coordination records (``goals/``,
+``decompositions/``, ``library/index/``, ``proof-runs/``) for the graph and the
+recorded GitHub-solver/model provenance, and additionally resolves the solving
+**agent** and **PR** for each goal from the ``prove(…)`` / ``recompose(…)``
+squash-merge subjects (the per-goal PR convention, ADR-026). The git read is the
+only impurity and degrades to empty outside a checkout; because ``docs/graph.md``
+then tracks the proof-commit history it must be regenerated when proofs merge
+(as the targets board is) before ``--check`` is gated in CI.
 
 Usage::
 
@@ -23,6 +27,7 @@ from __future__ import annotations
 
 import json
 import re
+import subprocess
 import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -30,6 +35,7 @@ from pathlib import Path
 from tools.gate_b.records import parse_record
 from tools.leaderboard.generate import goals as _goals
 from tools.leaderboard.generate import proofs as _proofs
+from tools.leaderboard.generate import runs as _runs
 
 #: GitHub blob base for click-through links (goal statements live on ``main``).
 BLOB_BASE = "https://github.com/agenticsnz/unsorry/blob/main"
@@ -47,7 +53,18 @@ _DEFAULT_STYLE = ("unknown", "#edf2f7")
 #: Render order for status groupings (proved last so the eye lands on the work).
 _ORDER = {"open": 0, "blocked": 1, "flagged": 2, "translated": 3, "proved": 4}
 
+#: GitHub PR base for click-through links.
+PR_BASE = "https://github.com/agenticsnz/unsorry/pull"
+
 _SUB_ID_RE = re.compile(r"id≜([a-z0-9][a-z0-9-]*)")
+
+#: Squash-merge subject for a proof on `main`, e.g.
+#: ``prove(cube-eq-triangular-sq-diff): cube_eq_triangular_sq_diff by claude-rmt-001 (#322)``.
+#: ``recompose`` is the assembly verb behind a decomposed parent.
+_PROVE_SUBJECT_RE = re.compile(
+    r"^(?:prove|recompose)\((?P<goal>[a-z0-9][a-z0-9-]*)\):\s+\S+\s+by\s+"
+    r"(?P<agent>[a-z0-9][a-z0-9-]*)\s+\(#(?P<pr>\d+)\)"
+)
 
 
 @dataclass(frozen=True)
@@ -58,6 +75,8 @@ class Node:
     solver: str | None
     date: str | None
     model: str | None
+    agent: str | None = None
+    pr: str | None = None
 
 
 @dataclass(frozen=True)
@@ -94,21 +113,94 @@ def _decomposition_edges(root: Path) -> list[Edge]:
     return edges
 
 
+def parse_prove_log(text: str) -> dict[str, tuple[str, str, str | None]]:
+    """Map goal → (agent, pr, date) from ``git log`` ``date\\0subject`` lines.
+
+    The newest (first) ``prove(<goal>): … by <agent> (#PR)`` wins per goal — the
+    merge that flipped it to proved. Pure and testable; no git access here.
+    """
+    result: dict[str, tuple[str, str, str | None]] = {}
+    for line in text.splitlines():
+        date, _, subject = line.partition("\x00")
+        match = _PROVE_SUBJECT_RE.match(subject)
+        if match:
+            result.setdefault(
+                match.group("goal"),
+                (match.group("agent"), match.group("pr"), date or None),
+            )
+    return result
+
+
+def git_provenance(root: Path) -> dict[str, tuple[str, str, str | None]]:
+    """Resolve goal → (agent, pr, date) from the proof commits on the branch.
+
+    Reads the ``prove(...)`` / ``recompose(...)`` squash-merge subjects — the
+    authoritative record of *which agent* proved each goal via *which PR* (the
+    swarm's per-goal PR convention, ADR-026). Degrades to ``{}`` outside a git
+    checkout so the AISP-only path (and the fixture tests) stay green.
+    """
+    try:
+        proc = subprocess.run(
+            ["git", "-C", str(root), "log", "--no-merges", "--format=%cs%x00%s"],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+    except (OSError, ValueError):
+        return {}
+    if proc.returncode != 0:
+        return {}
+    return parse_prove_log(proc.stdout)
+
+
 def build_graph(root: Path) -> Graph:
-    """Assemble the proof graph from the AISP coordination records."""
+    """Assemble the proof graph from the AISP records and the proof commits.
+
+    "Who solved it" is resolved with a clear precedence: the solving **agent**,
+    **PR**, and merge **date** come from the ``prove(...)`` commit (ADR-026);
+    the GitHub **solver** and **model** come from the AISP provenance — the
+    content-addressed ``library/index`` record (preferred), falling back to a
+    successful ``proof-runs`` record. Anything not recorded stays unknown; the
+    generator never guesses (ADR-023).
+    """
     goal_records = _goals(root)
+    git_prov = git_provenance(root)
     by_goal = {proof.goal: proof for proof in _proofs(root, goal_records)}
-    nodes = tuple(
-        Node(
+    # Fallback: the best proved terminal run per goal (first wins; runs are sorted).
+    by_run: dict[str, object] = {}
+    for run in _runs(root, goal_records):
+        if run.outcome == "proved" and run.solver and run.solver != "unknown":
+            by_run.setdefault(run.goal, run)
+
+    def _prov(gid: str) -> tuple[str | None, str | None, str | None]:
+        """(solver, model, date) preferring the index, falling back to a run."""
+        idx = by_goal.get(gid)
+        solver = idx.solver if idx else None
+        model = idx.model if idx else None
+        date = (idx.date or None) if idx else None
+        if solver is None and (run := by_run.get(gid)) is not None:
+            solver = run.solver
+            model = run.model
+            date = date or (run.ended[:10] if run.ended else None)
+        return solver, model, date
+
+    def _node(goal) -> Node:
+        solver, model, aisp_date = _prov(goal.id)
+        agent = pr = git_date = None
+        if (g := git_prov.get(goal.id)) is not None:
+            agent, pr, git_date = g
+        return Node(
             id=goal.id,
             status=goal.status,
             difficulty=goal.difficulty,
-            solver=(p.solver if (p := by_goal.get(goal.id)) else None),
-            date=(p.date or None if (p := by_goal.get(goal.id)) else None),
-            model=(p.model if (p := by_goal.get(goal.id)) else None),
+            solver=solver,
+            model=model,
+            date=git_date or aisp_date,
+            agent=agent,
+            pr=pr,
         )
-        for goal in sorted(goal_records, key=lambda g: g.id)
-    )
+
+    nodes = tuple(_node(goal) for goal in sorted(goal_records, key=lambda g: g.id))
     known = {node.id for node in nodes}
     edges = tuple(
         edge
@@ -170,6 +262,8 @@ def render_markdown(graph: Graph) -> str:
         f"{counts[s]} {s}" for s in sorted(counts, key=lambda s: _ORDER.get(s, 9))
     )
     n_families = len({edge.parent for edge in graph.edges})
+    attributed = sum(1 for n in graph.nodes if n.status == "proved" and n.agent)
+    n_proved = counts.get("proved", 0)
 
     lines = [
         "# Proof graph",
@@ -183,6 +277,11 @@ def render_markdown(graph: Graph) -> str:
         f"**{len(graph.nodes)} goals — {summary}.** "
         f"{n_families} decomposition {'family' if n_families == 1 else 'families'} shown below; "
         "standalone goals are listed in the table.",
+        "",
+        f"Solving agent and PR are resolved from the `prove(…)` merge commits "
+        f"({attributed} of {n_proved} proved goals carry a per-goal prove-PR; the rest "
+        "predate that convention). GitHub solver and model come from the recorded AISP "
+        "provenance where present — never guessed (ADR-023).",
         "",
         "## Dependency lineage",
         "",
@@ -199,14 +298,15 @@ def render_markdown(graph: Graph) -> str:
         "",
         "## All goals",
         "",
-        "| Goal | Status | Difficulty | Solver / model | Proved |",
-        "| --- | --- | --- | --- | --- |",
+        "| Goal | Status | Difficulty | Agent | Solver / model | PR | Proved |",
+        "| --- | --- | --- | --- | --- | --- | --- |",
     ]
     for node in sorted(graph.nodes, key=lambda n: (_ORDER.get(n.status, 9), n.id)):
         link = f"[`{node.id}`]({BLOB_BASE}/goals/{node.id}.lean)"
+        pr = f"[#{node.pr}]({PR_BASE}/{node.pr})" if node.pr else "—"
         lines.append(
             f"| {link} | {node.status} | {node.difficulty or '—'} "
-            f"| {_provenance(node)} | {node.date or '—'} |"
+            f"| {node.agent or '—'} | {_provenance(node)} | {pr} | {node.date or '—'} |"
         )
     lines.append("")
     return "\n".join(lines)
@@ -214,7 +314,7 @@ def render_markdown(graph: Graph) -> str:
 
 def render_json(graph: Graph) -> str:
     payload = {
-        "source": "goals/, decompositions/, library/index/, proof-runs/",
+        "source": "goals/, decompositions/, library/index/, proof-runs/, prove(…) commits",
         "nodes": [asdict(node) for node in graph.nodes],
         "edges": [asdict(edge) for edge in graph.edges],
     }

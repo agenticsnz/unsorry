@@ -10,23 +10,39 @@ A V1 visualiser of the swarm proof graph (issue #371). One generator,
 / `--json` modes). No new data is introduced — the graph is assembled from the
 existing AISP coordination records.
 
-## Inputs (pure, no git)
+## Inputs
 
-| Record | Provides |
+| Source | Provides |
 |--------|----------|
 | `goals/*.aisp` | node id (file stem), `status`, `difficulty` |
 | `decompositions/*.aisp` | `parent`, decomposing `agent`, and `Σ:Subs` sub-goal ids — the **parent → sub-goal** lineage edges |
-| `library/index/*.aisp` | per-goal provenance (`solver`, `model`, header date) via `tools.leaderboard.generate.proofs` |
-| `proof-runs/*.aisp` | richer run telemetry, reused through the leaderboard loader |
+| `library/index/*.aisp` | recorded GitHub `solver`, `model`, header date (via `tools.leaderboard.generate.proofs`) |
+| `proof-runs/*.aisp` | successful-run `solver`/`model`/date — fallback when the index carries none (failed runs are ignored) |
+| `prove(…)` / `recompose(…)` git subjects | the solving **agent**, **PR**, and merge **date** (`git log`, ADR-026 per-goal PR convention) |
 
 Parsing reuses `tools.gate_b.records.parse_record`. Sub-goal ids are read from the
 `subᵢ≜⟨id≜…,sha≜…⟩` vectors. Edges whose endpoints are not real goals (stale
 decompositions) are dropped.
 
+### "Who solved it" precedence
+
+- **agent / PR / date** — from the `prove(<goal>): … by <agent> (#PR)` merge
+  commit (the authoritative per-goal record). Goals merged before that convention
+  (early/batch proofs) have no agent and report `—`.
+- **GitHub solver / model** — from the recorded AISP provenance only (index, then
+  a successful run); never inferred from git authorship (which identifies the
+  merger, not the solver) and never guessed (ADR-023).
+
+The git read (`parse_prove_log` is the pure, tested parser; `git_provenance`
+the thin wrapper) is the generator's only impurity and degrades to empty outside
+a checkout. Because `docs/graph.md` then tracks the proof-commit history, it must
+be regenerated when proofs merge — as the targets board already is — before the
+`--check` drift guard is wired into CI.
+
 ## Graph model
 
 ```text
-Node  = { id, status, difficulty, solver?, date?, model? }
+Node  = { id, status, difficulty, solver?, date?, model?, agent?, pr? }
 Edge  = { parent, child, agent? }     # parent → sub-goal
 Graph = { nodes, edges }
 ```
@@ -45,7 +61,8 @@ HTML page and the leaderboard) to share one feed.
    * a `click` directive per node linking to its Lean statement on `main`.
 3. **Legend.**
 4. **All goals** — a table of every goal: id (linked), status, difficulty,
-   solver/model, proved-on date. `—` where provenance is unknown.
+   solving **agent**, GitHub **solver / model**, **PR** (linked), proved-on date.
+   `—` where unknown.
 
 Node keys are sanitised (`g_` + `[^0-9a-z]→_`) because goal ids carry hyphens.
 
@@ -61,8 +78,10 @@ Node keys are sanitised (`g_` + `[^0-9a-z]→_`) because goal ids carry hyphens.
 
 `tools/visualiser/tests/test_generate.py` builds a fixture AISP tree (no network)
 and asserts: node assembly + provenance enrichment, decomposition edges, stale-edge
-dropping, Mermaid classes/clicks/edges, table completeness, JSON shape, and
-`--write`/`--check`/mutual-exclusion behaviour.
+dropping, Mermaid classes/clicks/edges, table completeness, JSON shape,
+`--write`/`--check`/mutual-exclusion behaviour, the pure `parse_prove_log`
+agent/PR/date parser (newest-wins, non-prove subjects ignored), and graceful
+degradation when the tree is not a git checkout.
 
 ## Deferred (Phase 2, issue #371)
 
