@@ -72,6 +72,12 @@ Requirement:
 Environment:
   UNSORRY_AGENT_ID  Swarm identity (default: ~/.unsorry/agent-id, created on first run)
   UNSORRY_SOLVER    GitHub handle credited for verified proofs (default: gh api user)
+  UNSORRY_SOLVER_NAME, UNSORRY_SOLVER_EMAIL
+                    Override the git commit author/committer the harness uses
+                    for its own commits (ADR-029). Default: the authenticated
+                    GitHub account's display name and no-reply email
+                    (<id>+<login>@users.noreply.github.com), so proofs link to
+                    a real profile even when local git config is unset
   UNSORRY_PROVIDER  Provider for --prove or --prove-local (default: claude)
   UNSORRY_MODEL     Model for claude calls (default: fable in --prove, else sonnet; ADR-013)
                     For openai: gpt-4o (default), gpt-4o-mini, o1, o3-mini, etc.;
@@ -961,6 +967,38 @@ resolve_solver() {
   [[ "$solver" =~ ^[A-Za-z0-9]([A-Za-z0-9-]{0,37}[A-Za-z0-9])?$ ]] \
     || die_config "UNSORRY_SOLVER '$solver' is not a valid GitHub handle"
   SOLVER="$solver"
+}
+
+# ADR-029 / SPEC-029-A: author the harness's own commits (proof PRs, claims,
+# telemetry) as the authenticated GitHub account so verified work links to a
+# real profile regardless of the operator's local git config. A fresh machine
+# often carries git's "Your Name <you@example.com>" placeholder, which GitHub
+# cannot attribute; the AISP `solver≜` field is still correct (it reads
+# `gh api user`), but the commit author is not. The GitHub no-reply email
+# `<id>+<login>@users.noreply.github.com` links to the account even when the
+# operator keeps their address private. The derived identity is applied through
+# git's own GIT_AUTHOR_*/GIT_COMMITTER_* variables, so every later `git commit`
+# inherits it without per-call-site changes. UNSORRY_SOLVER_NAME /
+# UNSORRY_SOLVER_EMAIL override the derived values; if no GitHub identity is
+# resolvable (offline, no override) it fails soft to the local git config
+# rather than blocking a proof.
+resolve_git_identity() {
+  local name="${UNSORRY_SOLVER_NAME:-}" email="${UNSORRY_SOLVER_EMAIL:-}"
+  if [ -z "$name" ] || [ -z "$email" ]; then
+    local fields login id ghname
+    fields="$(gh api user --jq '[.login, (.id|tostring), (.name // "")] | @tsv' 2>/dev/null)" || fields=""
+    IFS=$'\t' read -r login id ghname <<<"$fields"
+    if [ -n "$login" ] && [ -n "$id" ]; then
+      [ -z "$email" ] && email="${id}+${login}@users.noreply.github.com"
+      [ -z "$name" ] && name="${ghname:-$login}"
+    fi
+  fi
+  if [ -z "$name" ] || [ -z "$email" ]; then
+    log "warning: no GitHub commit identity resolved; using local git config for authorship"
+    return 0
+  fi
+  export GIT_AUTHOR_NAME="$name" GIT_AUTHOR_EMAIL="$email"
+  export GIT_COMMITTER_NAME="$name" GIT_COMMITTER_EMAIL="$email"
 }
 
 require_cmd() {
@@ -2217,6 +2255,41 @@ test_solver_resolution() {
     || { log "  authenticated GitHub solver was not resolved"; return 1; }
 }
 
+test_git_identity_resolution() {
+  local UNSORRY_SOLVER_NAME="" UNSORRY_SOLVER_EMAIL=""
+  local GIT_AUTHOR_NAME="" GIT_AUTHOR_EMAIL=""
+  local GIT_COMMITTER_NAME="" GIT_COMMITTER_EMAIL=""
+
+  # Derived from the authenticated account: no-reply email + display name.
+  gh() { [ "$1 $2 $3" = "api user --jq" ] && printf 'perttu\t201641\tPerttu Isotalo\n'; }
+  resolve_git_identity || { unset -f gh; return 1; }
+  unset -f gh
+  [ "$GIT_AUTHOR_EMAIL" = "201641+perttu@users.noreply.github.com" ] \
+    || { log "  derived no-reply email wrong: '$GIT_AUTHOR_EMAIL'"; return 1; }
+  [ "$GIT_AUTHOR_NAME" = "Perttu Isotalo" ] \
+    || { log "  derived name wrong: '$GIT_AUTHOR_NAME'"; return 1; }
+  [ "$GIT_COMMITTER_EMAIL" = "$GIT_AUTHOR_EMAIL" ] \
+    && [ "$GIT_COMMITTER_NAME" = "$GIT_AUTHOR_NAME" ] \
+    || { log "  committer identity not set to match author"; return 1; }
+
+  # A user with no display name falls back to the login.
+  GIT_AUTHOR_NAME=""; GIT_AUTHOR_EMAIL=""
+  gh() { [ "$1 $2 $3" = "api user --jq" ] && printf 'octocat\t583231\t\n'; }
+  resolve_git_identity || { unset -f gh; return 1; }
+  unset -f gh
+  [ "$GIT_AUTHOR_NAME" = "octocat" ] \
+    || { log "  empty GitHub name did not fall back to login: '$GIT_AUTHOR_NAME'"; return 1; }
+
+  # Explicit overrides win and must not consult gh.
+  UNSORRY_SOLVER_NAME="Team Bot"; UNSORRY_SOLVER_EMAIL="bot@example.org"
+  GIT_AUTHOR_NAME=""; GIT_AUTHOR_EMAIL=""
+  gh() { log "  gh must not be called when both overrides are set"; return 99; }
+  resolve_git_identity || { unset -f gh; return 1; }
+  unset -f gh
+  [ "$GIT_AUTHOR_EMAIL" = "bot@example.org" ] && [ "$GIT_AUTHOR_NAME" = "Team Bot" ] \
+    || { log "  explicit identity overrides were not honored"; return 1; }
+}
+
 test_claim_render_golden() {
   local golden="$T_FIXTURES/claims_valid/claims/nat-add-comm.agent-alpha.aisp" ttl
   ttl="$(py_helper ttl)" || return 1
@@ -3434,6 +3507,7 @@ run_self_tests() {
     test_agent_id_generation
     test_agent_id_validation
     test_solver_resolution
+    test_git_identity_resolution
     test_claim_render_golden
     test_translation_render_golden
     test_candidate_filtering
@@ -3797,6 +3871,7 @@ main() {
     esac
     gh auth status >/dev/null 2>&1 || die_config "gh is not authenticated"
     [ "$PROVE" -eq 1 ] && resolve_solver
+    [ "$PROVE" -eq 1 ] && resolve_git_identity
     [ "$PROVE" -eq 1 ] && require_cmd lake  # prove verify builds locally
   fi
 
