@@ -4,14 +4,12 @@
 
 The unsorry worklist: theorems that are **already proven but not yet in mathlib**, vetted for absence and stated in Lean, waiting for an agent or a human to prove them. Claim one, open a PR, let the gates decide (see [Running an agent](../README.md#running-an-agent) and [ADR-012](adrs/ADR-012-Backlog-Sourcing.md)).
 
-**9 open · 59 proved · 69 total prove-goals.**
+**7 open · 61 proved · 69 total prove-goals.**
 
 | Goal | Status | Diff | Upstream | Source | Reference |
 |------|--------|:----:|----------|--------|-----------|
-| `euclid-perfect-numbers-s1` — euclid-perfect-numbers-s1 | open | 1 | — | — | — |
 | `euclid-perfect-numbers-s2` — euclid-perfect-numbers-s2 | open | 1 | — | — | — |
 | `euclid-perfect-numbers-s3` — euclid-perfect-numbers-s3 | open | 1 | — | — | — |
-| `euclid-perfect-numbers-s6` — euclid-perfect-numbers-s6 | open | 1 | — | — | — |
 | `sq-add-sq-eq-three-mul-sq` — The Diophantine equation $x^2 + y^2 = 3z^2$ has only the trivial solution $x=y=z=0$ in integers. | open | 4 | — | elementary number theory | Classic infinite descent argument modulo 3 showing that $3 \mid x$ and $3 \mid y$, which leads to infinite descent. |
 | `sum-range-cube-even` — For every natural n, the sum of the cubes of the first n even numbers equals 2n²(n−1)²; i.e. (2·0)³+2³+4³+…+(2(n−1))³ = 2n²(n−1)². | open | 2 | — | classic identities (power-sum tower — compounds on `nicomachus-sum-cubes`) | Even-cube sums ∑(2k)³ = 8∑k³ = 8·(n(n−1)/2)²; immediate corollary of Nicomachus's theorem (∑k³ = (∑k)²) scaled by 8. CRC Standard Mathematical Tables (sums of powers); companion of the proved `sum-range-cube-odd`. |
 | `sum-range-pow-five-add-pow-seven` — For every natural n, (sum of i⁵ for i in 0..n) + (sum of i⁷ for i in 0..n) = 2·(sum of i for i in 0..n)⁴; i.e. ∑k⁵ + ∑k⁷ = 2(∑k)⁴ = 2T⁴ where T = n(n+1)/2 is the n-th triangular number. | open | 4 | — | classic identities (power-sum tower — the **crown**: compounds on `sum-range-pow-five-closed-form` + `sum-range-pow-seven-closed-form`) | A classic Faulhaber curiosity: the sum of the fifth- and seventh-power sums is exactly twice the fourth power of the triangular number, generalising Nicomachus's ∑k³ = (∑k)² = T² one octave up. Verified ∀ n; see Knuth, "Johann Faulhaber and sums of powers", Math. Comp. 61 (1993) for the triangular-number structure of odd-power sums. |
@@ -21,8 +19,10 @@ The unsorry worklist: theorems that are **already proven but not yet in mathlib*
 | `alternating-sum-naturals` — For every natural n, the sum over i in 0..n-1 of (-1)^i (i+1) equals -(n/2) if n is even and (n/2)+1 if n is odd (integer division over ℤ). | proved | 3 | [packet-ready](upstream/alternating-sum-naturals.md) | classic identities | Standard arithmetic alternating-series partial sums (1-2+3-4+...); tabulated in Hardy, Divergent Series, Ch. 1; elementary induction exercise in discrete-math texts. |
 | `and-comm-imp` — Conjunction commutes. | proved | 1 | — | — | — |
 | `binder-shape-canary` — A **Gate A regression fixture**, not a mathematical target. It carries the | proved | 1 | — | Gate A regression fixture (issue #231) | — |
+| `euclid-perfect-numbers-s1` — euclid-perfect-numbers-s1 | proved | 1 | — | — | — |
 | `euclid-perfect-numbers-s4` — euclid-perfect-numbers-s4 | proved | 1 | — | — | — |
 | `euclid-perfect-numbers-s5` — euclid-perfect-numbers-s5 | proved | 1 | — | — | — |
+| `euclid-perfect-numbers-s6` — euclid-perfect-numbers-s6 | proved | 1 | — | — | — |
 | `factorial-telescope-sum` — For every natural n, the sum over i in 0..n of i * (i!) equals (n+1)! - 1. | proved | 2 | [packet-ready](upstream/factorial-telescope-sum.md) | classic identities | Classic telescoping identity from i·i! = (i+1)! - i!; exercise in Graham, Knuth & Patashnik, Concrete Mathematics, 2nd ed., Ch. 2 (perturbation/telescoping). |
 | `int-add-neg` — Adding the negation of an integer yields zero. | proved | 1 | — | — | — |
 | `int-neg-neg` — Double negation of an integer is the identity. | proved | 1 | — | — | — |
