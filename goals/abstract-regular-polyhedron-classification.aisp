@@ -1,0 +1,19 @@
+𝔸5.1.goal.abstract-regular-polyhedron-classification@2026-06-13
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜abstract-regular-polyhedron-classification
+  phase≜prove
+  status≜open
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/abstract-regular-polyhedron-classification.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨platonic-schlafli-core⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/abstract-regular-polyhedron-classification.lean
+  sha≜∅
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
