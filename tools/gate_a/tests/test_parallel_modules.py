@@ -66,3 +66,26 @@ def test_replay_propagates_a_chunk_failure(tmp_path: Path):
         return completed(argv, returncode=1 if "Unsorry.Two" in argv else 0)
 
     assert replay(tmp_path, 2, runner) == 1
+
+
+def test_replay_is_serial_regardless_of_jobs(tmp_path: Path):
+    # leanchecker holds ~all of mathlib resident per process, so even two
+    # concurrent invocations OOM-kill a standard CI runner (exit 143 in the
+    # replay step, observed repo-wide after #264). Replay must run as a single
+    # serial leanchecker over every module, regardless of the --jobs request.
+    (tmp_path / "library" / "Unsorry").mkdir(parents=True)
+    for name in ("One", "Two", "Three", "Four", "Five"):
+        (tmp_path / "library" / "Unsorry" / f"{name}.lean").write_text("")
+
+    calls: list[tuple[str, ...]] = []
+
+    def runner(argv, **_kwargs):
+        argv = tuple(argv)
+        calls.append(argv)
+        return completed(argv, returncode=0)
+
+    assert replay(tmp_path, 4, runner) == 0
+    # one chunk → one leanchecker process → every module checked in it
+    assert len(calls) == 1
+    assert calls[0][:3] == ("lake", "env", "leanchecker")
+    assert {"Unsorry.One", "Unsorry.Five"} <= set(calls[0])

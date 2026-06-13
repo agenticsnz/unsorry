@@ -7,15 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.0] - 2026-06-13
+
+Catch-up release folding in the feature and infrastructure work merged since v1.6.2: heterogeneous proof providers (Codex coordinated; Gemini and the OpenAI API local-only), the proof-provenance leaderboard and cross-cycle lesson memory, and two Gate A fixes plus an agent claim-race fix. The sourced target batches and individual proofs in this window are content, not release-worthy on their own, and are listed here only for the record.
+
 ### Added
+
+- Cross-cycle lesson memory (ADR-024/SPEC-024-A): a failed or decomposed proof run now records a bounded, sanitised single-line failure *signature* in a `⟦Δ:Lesson⟧` block on its ADR-023 proof-run record, plus a `⟦Λ:Metrics⟧` `lessons≜<n>` count of how many prior lessons were injected into that run. Before each prove attempt, `run_proof` surfaces a goal's most-recent, de-duplicated prior failure signatures into the prove prompt (mirroring ADR-014 dependency reuse), so re-attempts across cycles and across agents avoid known dead ends instead of restarting blind. The whole feature is gated by `UNSORRY_LESSONS` (default on); with it off a run is byte-identical to pre-ADR-024 output, so its benefit can be A/B measured against the captured `lessons` telemetry. The lesson surface is advisory only and never participates in statement hashing, Gate A, proof status, affinity, or candidate ranking; Gate B `GB020` validates the optional fields, and the leaderboard ignores them.
 
 - Fourth sourced target batch (ADR-012) — the **power-sum tower**, a deliberately compounding set where each rung stands on the one below (difficulty 2–4): `sum-range-cube-even` (∑(2i)³ = 2n²(n−1)², a corollary of the proved `nicomachus-sum-cubes`), `sum-range-pow-six-closed-form` and `sum-range-pow-seven-closed-form` (Faulhaber p=6, p=7 — the next rungs above the proved p=2..p=5), and the **crown** `sum-range-pow-five-add-pow-seven` (∑k⁵+∑k⁷ = 2(∑k)⁴, depending on the p=5 and p=7 closed forms — a depth-1 stack within the batch). Every statement type-checks against the pinned mathlib (rev c5ea00351c28), is machine-absence-verified (the `i^6`/`i^7` flags adjudicated against Weierstrass-℘ / elliptic-curve code, not Faulhaber; mathlib carries only the general Bernoulli formula), and every identity was numerically verified before sourcing. Dependency edges (`deps≜`) wire the compounding so gap-selection routes the rungs before the crown. Fulfils cgbarlow's interest in how proofs stack toward harder, higher-value targets.
 
 ### Fixed
 
+- Gate A kernel replay (`leanchecker`) now runs serially instead of in parallel chunks (#294). `leanchecker` re-checks every declaration against the kernel and holds ~all of mathlib resident per process, so even the previous `min(jobs, 2)` cap ran two full mathlib images and OOM-killed the standard CI runner — the replay step died with exit 143, intermittently failing roughly half of every PR's Gate A after #264 set `--jobs 4`. Replay now uses one `leanchecker` over the whole library (the axiom audit keeps its parallelism — it was never the part that OOMs); a regression test asserts a single invocation regardless of `--jobs`.
+
+- Prove-mode claim recheck uses `PROVE_CLAIM_CAP` (cap 1), not the translate cap (#242). The post-rejection recheck in `claim_goal` called the translate-cap helper in both modes, so a live rival claim on the same goal could pass the cap-1 check and two agents would double-claim a prove goal (the #184/#185 race, reproduced live). The recheck is now mode-aware; a regression test plants a live same-goal rival claim and asserts prove mode withdraws while translate mode still claims under cap 2.
+
+- Proof retries now remove the agent-generated statement-binding helper from a failed verification attempt before invoking the provider again, preventing the strict provider path guard from misclassifying `*Binding.lean` as a forbidden Codex edit.
+
 - Gate A's regenerated binding obligation (ADR-011/SPEC-011-A) now carries the goal file's top-level `open …` commands, so a goal stated under `open Finset` (bare `range`, batch-3 shape) elaborates in its own namespace context instead of failing with `Unknown identifier`. Same fix mirrored in the agent loop's local self-verify (`write_binding_module`, new `lean-opens` helper); shared parsing in `tools.lean_sig.open_lines`. Surfaced by PR #259 (`sum-range-pentagonal-closed-form`); also unblocks `sum-range-sq-mul-choose`
 
 ### Added
+
+- Optional proof provenance, terminal-run telemetry, and deterministic community statistics (ADR-023): newly verified index entries record the GitHub solver, swarm agent, provider, effective model when available, final effort, attempts, and local solve time; append-only `proof-runs/` facts also retain decomposed and terminally failed runs. `python3 -m tools.leaderboard --write` derives leaderboard, success/failure and attempt rates, timing distributions, queue state, difficulty calibration, provider/model and effort-rung efficiency, daily cohorts, and unresolved-goal effort while preserving all earlier work as historical/unknown.
+
+- Provider fallback from `fable` to `opus` when `fable` is unavailable (#274), so a transient model outage degrades gracefully instead of failing the prove call.
 
 - Coordinated Codex proving: `./swarm/agent.sh --prove --provider codex` now uses Codex for proof attempts and decomposition while retaining the existing shared claims, local Lean verification, PR, and auto-merge lifecycle. Fork-only contributors continue to use the no-remote `--prove-local` path.
 

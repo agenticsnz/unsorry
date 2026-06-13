@@ -20,9 +20,10 @@ python3 -m tools.gate_b validate <tree-root> [--at ISO8601Z] [--goals-root PATH]
 - `--json` emits a deterministic, sorted, machine-readable report (the reaper
   consumes the GB013 signal from it).
 
-Only these top-level directories are scanned: `goals/`, `claims/`,
-`translations/`, `decompositions/`, `library/index/`. Absent directories are
-vacuously valid; `tools/`, `docs/`, `swarm/` and `.git/` are never entered.
+Only these record directories are scanned: `goals/`, `claims/`,
+`translations/`, `decompositions/`, `library/index/`, `proof-runs/`. Absent
+directories are vacuously valid; `tools/`, `docs/`, `swarm/` and `.git/` are
+never entered.
 
 ### Exit codes
 
@@ -54,6 +55,8 @@ vacuously valid; `tools/`, `docs/`, `swarm/` and `.git/` are never entered.
 | GB016 | translations, decompositions, claims | Goal references resolve: translation `goal` exists and is translate-phase; decomposition `parent`/subs/edges well-formed and resolve; claim `goal` exists (with `--goals-root`) |
 | GB017 | all records | Required blocks present: `⟦Ω⟧` and `⟦Ε⟧` |
 | GB018 | claims | Claims on a main-shaped tree: any file under `claims/` other than `README.md` when the tree has `goals/` (claims live only on the `claims` branch, ADR-004) |
+| GB019 | library/index | Optional proof-provenance block is well-formed: GitHub solver handle, agent/provider ids, token-safe model/effort, and integer attempts/solve time |
+| GB020 | proof-runs | Terminal run identity, goal link, outcome, attribution, attempts, elapsed time, completion timestamp, and optional proved artifact are well-formed |
 
 ## Constants
 

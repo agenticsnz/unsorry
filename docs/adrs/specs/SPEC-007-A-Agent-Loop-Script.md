@@ -31,6 +31,7 @@ Must be run from the repository root (script verifies `swarm/protocol.aisp` exis
 | Var | Default | Meaning |
 |---|---|---|
 | `UNSORRY_AGENT_ID` | contents of `~/.unsorry/agent-id` (created on first run: `<short-hostname>-<4 hex>`) | Swarm identity (ADR-007) |
+| `UNSORRY_SOLVER` | authenticated `gh api user` login | GitHub handle credited in new verified proof index entries |
 | `UNSORRY_PROVIDER` | `claude` | Provider for `--prove` or `--prove-local` |
 | `UNSORRY_MODEL` | `sonnet` for translation; `fable` for Claude prove; provider default for Codex; `gpt-4o` for OpenAI | Model for translation/proof calls |
 | `UNSORRY_WORKDIR` | `~/.unsorry/work` | Holds the claims-branch worktree and `metrics.jsonl` |

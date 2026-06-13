@@ -68,6 +68,7 @@ Requirement:
 
 Environment:
   UNSORRY_AGENT_ID  Swarm identity (default: ~/.unsorry/agent-id, created on first run)
+  UNSORRY_SOLVER    GitHub handle credited for verified proofs (default: gh api user)
   UNSORRY_PROVIDER  Provider for --prove or --prove-local (default: claude)
   UNSORRY_MODEL     Model for claude calls (default: fable in --prove, else sonnet; ADR-013)
                     For openai: gpt-4o (default), gpt-4o-mini, o1, o3-mini, etc.
@@ -99,6 +100,7 @@ py_helper() {
   python3 - "$@" <<'PY'
 import hashlib
 import re
+import secrets
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -337,14 +339,21 @@ def cmd_prove_claimable(args):
 
 
 def cmd_render_index(args):
-    """render-index <sha> <goal> <name> — print a library/index entry
+    """render-index <sha> <goal> <name> [--solver S --agent A --provider P
+    --model M --effort E --attempts N --solve-s N] — print an index entry
     (SPEC-007-A prove step on success). The statement is NOT embedded: it
     lives only in goals/<goal>.lean (the record grammar reserves {} for block
     delimiters and Lean statements contain braces); the sha is its content
     address and Gate B recomputes it from the goal file. Tags and metrics
     start empty (the affinity machine fills `use`/`aff` later; tags are
-    curated by humans)."""
+    curated by humans). Optional proof provenance is additive so historical
+    index entries remain valid."""
     sha, goal, name = args[:3]
+    provenance = {}
+    rest = args[3:]
+    for i, token in enumerate(rest):
+        if token.startswith("--") and i + 1 < len(rest):
+            provenance[token[2:]] = rest[i + 1]
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     print(f"𝔸5.1.lemma.{sha[:12]}@{today}")
     print("γ≔unsorry.lemma.index")
@@ -352,6 +361,85 @@ def cmd_render_index(args):
     print(f"⟦Σ:Source⟧{{src≜goals/{goal}.lean}}")
     print("⟦Γ:Tags⟧{tags≜⟨⟩}")
     print("⟦Λ:Meta⟧{use≜0; aff≜0}")
+    if all(provenance.get(key) for key in ("solver", "agent", "provider")):
+        fields = [
+            f"solver≜{provenance['solver']}",
+            f"agent≜{provenance['agent']}",
+            f"provider≜{provenance['provider']}",
+        ]
+        for key in ("model", "effort", "attempts", "solve-s"):
+            if provenance.get(key):
+                field = "solve_s" if key == "solve-s" else key
+                fields.append(f"{field}≜{provenance[key]}")
+        print(f"⟦Π:Provenance⟧{{{'; '.join(fields)}}}")
+    print("⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩")
+
+
+def cmd_run_id(_args):
+    moment = datetime.now(timezone.utc).strftime("%Y%m%dt%H%M%S%fz")
+    print(f"{moment}-{secrets.token_hex(4)}")
+
+
+#: AISP block/field delimiters and the quote char that must never appear inside
+#: a lesson signature: they would break record parsing or inflate the GB009
+#: quoted-prose density (ADR-024).
+_LESSON_STRIP = str.maketrans({c: None for c in "{};≜⟦⟧⟨⟩\""})
+
+
+def _lesson_signature(raw: str) -> str:
+    """Distil raw verifier output into one bounded, AISP-legal line (ADR-024).
+
+    Whitespace (including newlines) collapses to single spaces and the AISP
+    delimiters plus the quote char are removed, so the signature lives unquoted
+    inside ⟦Δ:Lesson⟧ without breaking the record grammar or counting toward
+    quoted-prose density. Lean error content that is not a delimiter (⊢, →, =,
+    identifiers) is preserved. Truncated to config.LESSON_SIG_MAX."""
+    collapsed = re.sub(r"\s+", " ", raw.translate(_LESSON_STRIP)).strip()
+    return collapsed[: config.LESSON_SIG_MAX]
+
+
+def cmd_lesson_sig(args):
+    """lesson-sig <raw> — print the sanitised single-line lesson signature of
+    the raw verifier text in argv[0] (ADR-024). Passed as an argument because
+    the py_helper heredoc occupies stdin."""
+    print(_lesson_signature(args[0] if args else ""))
+
+
+def cmd_render_run(args):
+    """render-run <run-id> <goal> <agent> <outcome> <solver> <provider>
+    <attempts> <solve-s> <sha-or-empty>
+    [--model M --effort E --lesson RAW --lessons-used N] — print one
+    append-only terminal proof-run fact. Difficulty and current goal state are
+    joined from goals/ by analytics instead of copied into every run. A
+    non-proved run may carry a bounded ⟦Δ:Lesson⟧ failure signature and a
+    lessons≜<n> count of prior lessons injected into it (ADR-024)."""
+    run_id, goal, agent, outcome, solver, provider, attempts, solve_s, sha = args[:9]
+    optional = {}
+    rest = args[9:]
+    for i, token in enumerate(rest):
+        if token.startswith("--") and i + 1 < len(rest):
+            optional[token[2:]] = rest[i + 1]
+    now = datetime.now(timezone.utc)
+    print(f"𝔸5.1.run.{goal}.{agent}.{run_id}@{now:%Y-%m-%d}")
+    print("γ≔unsorry.proof.run")
+    print(
+        f"⟦Ω:Run⟧{{id≜{run_id}; goal≜{goal}; agent≜{agent}; "
+        f"outcome≜{outcome}}}"
+    )
+    provenance = [f"solver≜{solver}", f"provider≜{provider}"]
+    for key in ("model", "effort"):
+        if optional.get(key):
+            provenance.append(f"{key}≜{optional[key]}")
+    print(f"⟦Π:Provenance⟧{{{'; '.join(provenance)}}}")
+    metrics = [f"attempts≜{attempts}", f"solve_s≜{solve_s}", f"ended≜{format_utc_z(now)}"]
+    used = optional.get("lessons-used")
+    if used not in (None, ""):
+        metrics.append(f"lessons≜{used}")
+    print(f"⟦Λ:Metrics⟧{{{'; '.join(metrics)}}}")
+    print(f"⟦Σ:Artifact⟧{{sha≜{sha or '∅'}}}")
+    sig = _lesson_signature(optional.get("lesson", ""))
+    if outcome != "proved" and sig:
+        print(f"⟦Δ:Lesson⟧{{sig≜{sig}}}")
     print("⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩")
 
 
@@ -500,6 +588,42 @@ def cmd_proved_deps(args):
         if lean.is_file():
             stmt = lean_statement(lean.read_text(encoding="utf-8"))
         print(f"Unsorry.{module}\t{name}\t{stmt}")
+
+
+def cmd_prove_lessons(args):
+    """prove-lessons <goal> <proof-runs-dir> [<cap>] — ADR-024 lesson reuse.
+    Print up to <cap> (default config.LESSON_PROMPT_CAP) prior failure
+    signatures for the goal, most recent first and de-duplicated, one per line.
+    Only failed and decomposed runs carrying a non-empty ⟦Δ:Lesson⟧ sig count;
+    proved runs never carry one. Advisory prompt context, never a trust input."""
+    goal = args[0]
+    runs_dir = Path(args[1])
+    cap = int(args[2]) if len(args) > 2 and args[2] else config.LESSON_PROMPT_CAP
+    if not runs_dir.is_dir():
+        return
+    entries = []
+    for path in sorted(runs_dir.glob(f"{goal}.*.aisp")):
+        record = parse_record(path.read_text(encoding="utf-8"))
+        if record.fields.get("goal") != goal:
+            continue
+        if record.fields.get("outcome") not in ("failed", "decomposed"):
+            continue
+        sig = record.fields.get("sig", "").strip()
+        if not sig:
+            continue
+        entries.append((record.fields.get("ended", ""), sig))
+    # ended is ISO-8601 UTC, so lexicographic desc == most-recent-first.
+    entries.sort(key=lambda e: e[0], reverse=True)
+    seen: set = set()
+    shown = 0
+    for _, sig in entries:
+        if sig in seen:
+            continue
+        seen.add(sig)
+        print(sig)
+        shown += 1
+        if shown >= cap:
+            break
 
 
 def cmd_unblockable(args):
@@ -659,6 +783,8 @@ COMMANDS = {
     "render-goal": cmd_render_goal,
     "render-decomp": cmd_render_decomp,
     "proved-deps": cmd_proved_deps,
+    "prove-lessons": cmd_prove_lessons,
+    "lesson-sig": cmd_lesson_sig,
     "unblockable": cmd_unblockable,
     "camel-name": cmd_camel_name,
     "lean-stmt": cmd_lean_stmt,
@@ -669,6 +795,8 @@ COMMANDS = {
     "prove-candidates": cmd_prove_candidates,
     "prove-claimable": cmd_prove_claimable,
     "render-index": cmd_render_index,
+    "run-id": cmd_run_id,
+    "render-run": cmd_render_run,
 }
 
 if len(sys.argv) < 2 or sys.argv[1] not in COMMANDS:
@@ -810,6 +938,17 @@ resolve_agent_id() {
   fi
   py_helper is-id "$id" || die_config "agent id '$id' violates the Id grammar"
   AGENT_ID="$id"
+}
+
+resolve_solver() {
+  local solver="${UNSORRY_SOLVER:-}"
+  if [ -z "$solver" ]; then
+    solver="$(gh api user --jq .login 2>/dev/null)" \
+      || die_config "cannot resolve GitHub solver handle; set UNSORRY_SOLVER"
+  fi
+  [[ "$solver" =~ ^[A-Za-z0-9]([A-Za-z0-9-]{0,37}[A-Za-z0-9])?$ ]] \
+    || die_config "UNSORRY_SOLVER '$solver' is not a valid GitHub handle"
+  SOLVER="$solver"
 }
 
 require_cmd() {
@@ -1193,6 +1332,12 @@ DECOMPOSE_PROMPT_FILE="swarm/prompts/decompose.md"
 # reverts to the Phase-1 demote-only failure path.
 PROVE_DECOMPOSE="${UNSORRY_DECOMPOSE:-1}"
 
+# ADR-024 cross-cycle lesson memory: surface prior failed/decomposed lesson
+# signatures into the prove prompt and record this run's own failure signature.
+# On by default; UNSORRY_LESSONS=0 makes a run byte-identical to pre-ADR-024
+# behaviour, so the feature can be A/B measured.
+UNSORRY_LESSONS="${UNSORRY_LESSONS:-1}"
+
 # ADR-013/ADR-015 model/effort policy. Proof-surface calls (prove, decompose)
 # default to the most capable model — success-per-attempt is the lever that
 # dominates time-to-proved on hard targets; the kernel and gates make model
@@ -1331,6 +1476,7 @@ call_claude_prove() {
     log "fable model not available, falling back to opus"
     model="opus"
   fi
+  PROOF_MODEL_USED="$model"
   
   ( cd "$workdir" \
     && timeout "$UNSORRY_WALL" claude -p "$prompt" \
@@ -1354,6 +1500,7 @@ call_codex_prove() {
   )
   [ -n "$UNSORRY_MODEL" ] && args+=(--model "$UNSORRY_MODEL")
   [ -n "$effort" ] && args+=(-c "model_reasoning_effort=\"$effort\"")
+  PROOF_MODEL_USED="${UNSORRY_MODEL:-}"
   PATH="/opt/homebrew/bin:/usr/local/bin:$PATH" \
     timeout "$UNSORRY_WALL" codex "${args[@]}" - <<<"$prompt"
 }
@@ -1363,6 +1510,7 @@ call_gemini_prove() {
   local -a eff=()
   [ -n "$effort" ] && eff=(--effort "$effort")
   local model="${UNSORRY_MODEL:-gemini-2.5-pro}"
+  PROOF_MODEL_USED="$model"
   ( cd "$workdir" \
     && timeout "$UNSORRY_WALL" gemini --skip-trust --yolo --allowed-mcp-server-names none -p "$prompt" \
          --model "$model" "${eff[@]}" --output-format text )
@@ -1374,6 +1522,7 @@ call_gemini_prove() {
 call_openai_prove() {
   local prompt="$1" workdir="$2" effort="$3"
   local model="${UNSORRY_MODEL:-gpt-4o}"
+  PROOF_MODEL_USED="$model"
   
   # Check for API key
   if [ -z "${OPENAI_API_KEY:-}" ]; then
@@ -1442,6 +1591,15 @@ call_provider_decompose() {
   esac
 }
 
+# Every proof attempt starts from provider-owned output only. Verification
+# creates the binding helper after the provider returns; remove residue from a
+# failed verification before the next provider call so the strict path guard
+# does not misattribute that agent-generated file to the provider.
+prepare_proof_attempt() {
+  local root="$1" target="$2" binding="$3"
+  rm -f "$root/$target" "$root/$binding"
+}
+
 # The provider receives a writable proof worktree, but the proof contract
 # permits exactly one changed path. Enforce that boundary after every model
 # call independently of provider-specific tool policy.
@@ -1483,10 +1641,18 @@ prove_local_verify() {
 # Prints nothing; returns 0 with the verified module in place, 1 on failure.
 run_proof() {
   local goal="$1" prwt="$2" camel="$3"
-  local stmt name target prompt attempt err=""
+  local stmt name target binding prompt attempt err="" proof_started
+  PROOF_MODEL_USED=""
+  PROOF_EFFORT_USED=""
+  PROOF_ATTEMPTS_USED=""
+  PROOF_SOLVE_SECONDS=""
+  PROOF_LAST_ERROR=""
+  PROOF_LESSONS_USED=""
+  proof_started="$(date +%s)"
   name="$(py_helper lean-name "$prwt/goals/$goal.lean")" || return 1
   stmt="$(py_helper lean-stmt "$prwt/goals/$goal.lean")" || return 1
   target="library/Unsorry/$camel.lean"
+  binding="library/Unsorry/${camel}Binding.lean"
   # The PR worktree is a fresh checkout with no .lake (it is gitignored), so
   # the mathlib oleans are absent and `lake build UnsorryLibrary --wfail` would
   # otherwise recompile all of mathlib from source and blow the attempt budget
@@ -1510,16 +1676,37 @@ THIS repository's library. Import their modules and use them; do not re-prove
 them. The import-tightness rule explicitly allows these Unsorry.* imports:
 $(printf '%s\n' "$deps_lines" | awk -F'\t' '{printf "- import %s\n    %s\n", $1, ($3 != "" ? $3 : "theorem " $2)}')"
   fi
+  # ADR-024 lesson reuse: surface prior failed/decomposed attempt signatures for
+  # THIS goal (merged onto origin/main, so cross-cycle and cross-agent) and count
+  # them for the run record. Gated by UNSORRY_LESSONS so the off-state matches
+  # pre-ADR-024 behaviour exactly.
+  local lessons_prompt="" lessons_lines
+  if [ "$UNSORRY_LESSONS" = 1 ]; then
+    lessons_lines="$(py_helper prove-lessons "$goal" "$prwt/proof-runs" 2>/dev/null)" || lessons_lines=""
+    if [ -n "$lessons_lines" ]; then
+      PROOF_LESSONS_USED="$(printf '%s\n' "$lessons_lines" | grep -c .)"
+      lessons_prompt="
+
+PRIOR FAILED ATTEMPTS (ADR-024) — earlier proof attempts on THIS goal failed
+with the local-verifier signatures below. Do NOT repeat these dead ends; choose
+a materially different approach:
+$(printf '%s\n' "$lessons_lines" | awk 'NF{print "- " $0}')"
+    else
+      PROOF_LESSONS_USED=0
+    fi
+  fi
   local eff_tok t0 dur probe_rc
   for attempt in $(seq 1 "$UNSORRY_ATTEMPTS"); do  # ADR-015 ladder, default 3
     eff_tok="$(provider_effort_for_attempt "$UNSORRY_PROVIDER" "$attempt" "$UNSORRY_EFFORT")"
+    PROOF_EFFORT_USED="$eff_tok"
+    PROOF_ATTEMPTS_USED="$attempt"
     log "prove attempt $attempt/$UNSORRY_ATTEMPTS for $goal (effort ${eff_tok:-default})"
     prompt="$(cat "$PROVE_PROMPT_FILE")
 $stmt
 
 Target module file (relative to repo root): $target
 Lean module name (for the audit): Unsorry.$camel
-Theorem name to re-state and prove: $name$deps_prompt"
+Theorem name to re-state and prove: $name$deps_prompt$lessons_prompt"
     if [ -n "$err" ]; then
       prompt="$prompt
 
@@ -1529,7 +1716,7 @@ output was:
 $err
 Fix the module so both pass. Write the corrected $target."
     fi
-    rm -f "$prwt/$target"
+    prepare_proof_attempt "$prwt" "$target" "$binding"
     t0="$(date +%s)"
     if ! call_provider_prove "$prompt" "$prwt" "$eff_tok" >/dev/null; then
       dur=$(( $(date +%s) - t0 ))
@@ -1547,6 +1734,7 @@ Fix the module so both pass. Write the corrected $target."
     fi
     if ! prove_target_only_changed "$prwt" "$target"; then
       log "provider path policy failed for $goal (attempt $attempt)"
+      PROOF_SOLVE_SECONDS=$(( $(date +%s) - proof_started ))
       return 1
     fi
     if [ ! -f "$prwt/$target" ]; then
@@ -1560,6 +1748,7 @@ Fix the module so both pass. Write the corrected $target."
     # vacuous statement under the goal's name fails here, not just in review.
     write_binding_module "$prwt" "$goal" "$camel" || { err="(could not emit binding obligation)"; continue; }
     if prove_local_verify "$prwt" "$camel"; then
+      PROOF_SOLVE_SECONDS=$(( $(date +%s) - proof_started ))
       log "proof of $goal verified locally — statement bound (attempt $attempt)"
       return 0
     fi
@@ -1567,6 +1756,10 @@ Fix the module so both pass. Write the corrected $target."
     err="$( ( cd "$prwt" && lake build UnsorryLibrary --wfail \
       && lake exe axiom_audit "Unsorry.$camel" ) 2>&1 | tail -n 40 )"
   done
+  PROOF_SOLVE_SECONDS=$(( $(date +%s) - proof_started ))
+  # ADR-024: the final attempt's verifier output becomes this run's lesson,
+  # consumed by write_proof_run_record on the failed/decomposed outcome.
+  PROOF_LAST_ERROR="$err"
   return 1
 }
 
@@ -1591,6 +1784,51 @@ write_binding_module() {
   } > "$prwt/library/Unsorry/${camel}Binding.lean"
 }
 
+# Persist one terminal proof-run fact in the same PR as its durable outcome.
+# Infrastructure failures are deliberately excluded: they provide no evidence
+# about goal or model performance (ADR-016). Runs that fail before a provider
+# attempt are also omitted because attempts≜0 is not comparable telemetry.
+write_proof_run_record() {
+  local prwt="$1" goal="$2" outcome="$3" sha="${4:-}"
+  local run_id path
+  [ -n "$PROOF_ATTEMPTS_USED" ] || return 0
+  [ -n "$PROOF_SOLVE_SECONDS" ] || return 0
+  run_id="$(py_helper run-id)" || return 1
+  path="proof-runs/$goal.$AGENT_ID.$run_id.aisp"
+  mkdir -p "$prwt/proof-runs" || return 1
+  local -a optional=()
+  [ -n "$PROOF_MODEL_USED" ] && optional+=(--model "$PROOF_MODEL_USED")
+  [ -n "$PROOF_EFFORT_USED" ] && optional+=(--effort "$PROOF_EFFORT_USED")
+  # ADR-024: record how many prior lessons this run consumed (the measurement
+  # hook) and, on a non-proved outcome, its own failure signature. render-run
+  # sanitises the raw error and omits an empty signature.
+  [ -n "$PROOF_LESSONS_USED" ] && optional+=(--lessons-used "$PROOF_LESSONS_USED")
+  if [ "$outcome" != proved ] && [ -n "$PROOF_LAST_ERROR" ]; then
+    optional+=(--lesson "$PROOF_LAST_ERROR")
+  fi
+  py_helper render-run "$run_id" "$goal" "$AGENT_ID" "$outcome" \
+    "$SOLVER" "$UNSORRY_PROVIDER" "$PROOF_ATTEMPTS_USED" \
+    "$PROOF_SOLVE_SECONDS" "$sha" "${optional[@]}" > "$prwt/$path"
+}
+
+# A proof budget may be genuinely exhausted even when the subsequent
+# decomposition call hits infrastructure. Preserve that evidence without
+# applying the ADR-010 demotion or pretending decomposition completed.
+check_in_failed_run_only() {
+  local goal="$1" prwt branch
+  branch="$(feature_branch telemetry "$goal")" || return 1
+  prwt="$UNSORRY_WORKDIR/telemetry-${goal}-${AGENT_ID}"
+  open_pr_worktree "$prwt" "$branch" || return 1
+  if write_proof_run_record "$prwt" "$goal" failed; then
+    submit_pr_tree "$prwt" "$branch" \
+      "chore: record failed proof run for $goal by $AGENT_ID" \
+      "Automated terminal-run telemetry (ADR-023, SPEC-023-A): proof attempts for \`$goal\` exhausted their budget, but the subsequent decomposition call hit an infrastructure failure. This records the proof evidence only; it does not demote, block, or otherwise change the goal." \
+      proof-runs || true
+  fi
+  git worktree remove --force "$prwt" >/dev/null 2>&1 || true
+  git branch -q -D "$branch" >/dev/null 2>&1 || true
+}
+
 # Prove steps 7–9: on a verified proof, compute the goal's Lean-statement
 # content address, write library/index/<sha>.aisp, flip the goal record to
 # status≜proved + sha≜<sha>, and open an auto-merge PR carrying the library
@@ -1600,12 +1838,22 @@ write_binding_module() {
 check_in_proof() {
   local goal="$1" prwt="$2" camel="$3"
   local name sha
+  local -a provenance=(
+    --solver "$SOLVER"
+    --agent "$AGENT_ID"
+    --provider "$UNSORRY_PROVIDER"
+    --effort "$PROOF_EFFORT_USED"
+    --attempts "$PROOF_ATTEMPTS_USED"
+    --solve-s "$PROOF_SOLVE_SECONDS"
+  )
+  [ -n "$PROOF_MODEL_USED" ] && provenance+=(--model "$PROOF_MODEL_USED")
   name="$(py_helper lean-name "$prwt/goals/$goal.lean")" || return 1
   sha="$(py_helper lean-sha "$prwt/goals/$goal.lean")" || return 1
 
   mkdir -p "$prwt/library/index" || return 1
-  py_helper render-index "$sha" "$goal" "$name" \
+  py_helper render-index "$sha" "$goal" "$name" "${provenance[@]}" \
     > "$prwt/library/index/$sha.aisp" || return 1
+  write_proof_run_record "$prwt" "$goal" proved "$sha" || return 1
   py_helper rewrite-goal "$prwt/goals/$goal.aisp" proved "$sha" || return 1
   # ⊕ a merge reinforces the goal's pattern (+1 affinity, ADR-010); folds
   # into the same gated prove PR.
@@ -1618,7 +1866,7 @@ check_in_proof() {
   submit_pr_tree "$prwt" "$(git -C "$prwt" rev-parse --abbrev-ref HEAD)" \
     "prove($goal): $name by $AGENT_ID" \
     "Automated Phase-1 proof of goal \`$goal\` by agent \`$AGENT_ID\` (ADR-006, ADR-007, SPEC-007-A). New library module \`library/Unsorry/$camel.lean\` re-states and proves \`$name\`; built with \`lake build UnsorryLibrary --wfail\` and audited with \`lake exe axiom_audit Unsorry.$camel\` (whitelist only). Index entry keyed by the content address of the goal's Lean statement." \
-    library goals || return 1
+    library goals proof-runs || return 1
   emit_event proved "$goal"
   emit_event pr-opened "$goal"
   log "opened auto-merge prove PR for $goal (sha ${sha:0:12})"
@@ -1669,6 +1917,7 @@ prove_goal() {
       return 1
     fi
     if [ "$drc" -eq 2 ]; then
+      check_in_failed_run_only "$goal" || true
       log "infrastructure failure during decompose of $goal — no demote (ADR-016)"
       return 2
     fi
@@ -1823,10 +2072,11 @@ Output 2 to $(py_helper max-decomp subs) sub-lemma signatures, one per \`SUB:\` 
     return 1
   fi
 
+  write_proof_run_record "$prwt" "$goal" decomposed || return 1
   if submit_pr_tree "$prwt" "$branch" \
       "decompose($goal): ${#sub_ids[@]} sub-lemmas by $AGENT_ID" \
       "Automated decomposition (ADR-009, SPEC-009-A): goal \`$goal\` resisted proof within budget, so it is split into ${#sub_ids[@]} claimable sub-lemmas (depth $((depth + 1))) and parked \`blocked\`. The parent re-opens once its subs are proved and still closes only through Gate A — the dependency edges are advisory, never a trust path." \
-      goals decompositions; then
+      goals decompositions proof-runs; then
     emit_event decomposed "$goal"
     git worktree remove --force "$prwt" >/dev/null 2>&1 || true
     git branch -q -D "$branch" >/dev/null 2>&1 || true
@@ -1848,10 +2098,12 @@ demote_goal() {
   prwt="$UNSORRY_WORKDIR/demote-${goal}-${AGENT_ID}"
   open_pr_worktree "$prwt" "$branch" || return 1
   if py_helper aff-bump "$prwt/goals/$goal.aisp" "$(py_helper aff-delta fail)"; then
-    submit_pr_tree "$prwt" "$branch" \
-      "affinity($goal): -10 after a failed prove attempt by $AGENT_ID" \
-      "Automated affinity penalty (ADR-010, SPEC-010-A): goal \`$goal\` resisted proof within budget, so its pattern is demoted by 10. Advisory queue state only — never trust-bearing." \
-      goals || true
+    if write_proof_run_record "$prwt" "$goal" failed; then
+      submit_pr_tree "$prwt" "$branch" \
+        "affinity($goal): -10 after a failed prove attempt by $AGENT_ID" \
+        "Automated affinity penalty (ADR-010, SPEC-010-A): goal \`$goal\` resisted proof within budget, so its pattern is demoted by 10. Advisory queue state only — never trust-bearing." \
+        goals proof-runs || true
+    fi
   fi
   git worktree remove --force "$prwt" >/dev/null 2>&1 || true
   git branch -q -D "$branch" >/dev/null 2>&1 || true
@@ -1914,6 +2166,21 @@ test_agent_id_validation() {
       return 1
     fi
   done
+}
+
+test_solver_resolution() {
+  local UNSORRY_SOLVER=perttu SOLVER=""
+  resolve_solver || return 1
+  [ "$SOLVER" = perttu ] \
+    || { log "  solver override was not used"; return 1; }
+
+  UNSORRY_SOLVER=""
+  SOLVER=""
+  gh() { [ "$1 $2 $3" = "api user --jq" ] && printf 'github-user\n'; }
+  resolve_solver || { unset -f gh; return 1; }
+  unset -f gh
+  [ "$SOLVER" = github-user ] \
+    || { log "  authenticated GitHub solver was not resolved"; return 1; }
 }
 
 test_claim_render_golden() {
@@ -2168,6 +2435,21 @@ test_prove_target_path_guard() {
     log "  extra provider edit was accepted"
     return 1
   fi
+}
+
+test_proof_attempt_cleanup() {
+  local tmp target="library/Unsorry/Goal.lean"
+  local binding="library/Unsorry/GoalBinding.lean"
+  tmp="$(mktemp -d "$SESSION_TMP/attempt-cleanup.XXXXXX")" || return 1
+  mkdir -p "$tmp/library/Unsorry" || return 1
+  printf 'failed proof\n' > "$tmp/$target"
+  printf 'generated binding\n' > "$tmp/$binding"
+
+  prepare_proof_attempt "$tmp" "$target" "$binding" || return 1
+  [ ! -e "$tmp/$target" ] \
+    || { log "  prior proof target survived attempt cleanup"; return 1; }
+  [ ! -e "$tmp/$binding" ] \
+    || { log "  prior binding helper survived attempt cleanup"; return 1; }
 }
 
 # Local bare-origin fixture for the push re-entrancy tests: $1/origin.git is
@@ -2570,6 +2852,116 @@ test_render_index_gateb() {
     || { log "  brace-statement index entry failed Gate B"; return 1; }
 }
 
+test_index_provenance_render() {
+  local sha got legacy
+  sha="$(printf 'a%.0s' {1..64})"
+  got="$(py_helper render-index "$sha" proof-goal proof_goal \
+    --solver perttu --agent oma-2-c50d --provider codex \
+    --model gpt-5.1-codex --effort xhigh --attempts 2 --solve-s 842)"
+  grep -qF '⟦Π:Provenance⟧{solver≜perttu; agent≜oma-2-c50d; provider≜codex; model≜gpt-5.1-codex; effort≜xhigh; attempts≜2; solve_s≜842}' \
+    <<<"$got" || { log "  rendered index provenance is missing or malformed"; return 1; }
+
+  legacy="$(py_helper render-index "$sha" proof-goal proof_goal)"
+  if grep -qF '⟦Π:Provenance⟧' <<<"$legacy"; then
+    log "  legacy index render unexpectedly gained provenance"
+    return 1
+  fi
+}
+
+test_proof_run_render() {
+  local got run_id sha
+  run_id="20260613t120000000000z-1234abcd"
+  sha="$(printf 'a%.0s' {1..64})"
+  got="$(py_helper render-run "$run_id" proof-goal oma-2-c50d proved \
+    perttu codex 2 842 "$sha" --model gpt-5.1-codex --effort xhigh)"
+  grep -qF "⟦Ω:Run⟧{id≜$run_id; goal≜proof-goal; agent≜oma-2-c50d; outcome≜proved}" \
+    <<<"$got" || { log "  rendered proof-run identity is missing"; return 1; }
+  grep -qF '⟦Λ:Metrics⟧{attempts≜2; solve_s≜842; ended≜' \
+    <<<"$got" || { log "  rendered proof-run metrics are missing"; return 1; }
+  grep -qF "⟦Σ:Artifact⟧{sha≜$sha}" \
+    <<<"$got" || { log "  rendered proof-run artifact is missing"; return 1; }
+  # ADR-024: a proved run never carries a lesson sig, even if one is passed.
+  grep -qF '⟦Δ:Lesson⟧' <<<"$got" \
+    && { log "  proved run leaked a lesson block"; return 1; }
+  grep -qF 'lessons≜' <<<"$got" \
+    && { log "  proved run emitted a lessons count it was not given"; return 1; }
+  # ADR-024: a failed run carries the injected-lesson count and a bounded sig.
+  got="$(py_helper render-run "$run_id" proof-goal oma-2-c50d failed \
+    perttu codex 3 900 "" --lessons-used 2 --lesson 'unsolved goals ⊢ n + 0 = n')"
+  grep -qF '; lessons≜2}' <<<"$got" \
+    || { log "  failed-run lessons count missing from metrics"; return 1; }
+  grep -qF '⟦Δ:Lesson⟧{sig≜unsolved goals ⊢ n + 0 = n}' <<<"$got" \
+    || { log "  failed-run lesson signature block missing"; return 1; }
+  # A delimiter-laden raw error is sanitised to a clean single-line sig.
+  got="$(py_helper render-run "$run_id" proof-goal oma-2-c50d failed \
+    perttu codex 1 5 "" --lesson "$(printf 'type mismatch\n{a};b≜c "q"')")"
+  grep -qF '⟦Δ:Lesson⟧{sig≜type mismatch abc q}' <<<"$got" \
+    || { log "  lesson sig was not sanitised: $got"; return 1; }
+}
+
+test_lesson_signature() {
+  # ADR-024: raw verifier output collapses to one bounded AISP-legal line;
+  # delimiters are stripped while Lean error content is preserved.
+  local got long
+  got="$(py_helper lesson-sig "$(printf 'error: unsolved goals\n⊢ n * 0 = 0\n{x};y≜z "q"')")"
+  case "$got" in
+    *'{'*|*'}'*|*';'*|*'"'*|*'≜'*|*'⟦'*|*'⟧'*)
+      log "  delimiter leaked into signature: '$got'"; return 1 ;;
+  esac
+  [ "$(printf '%s' "$got" | wc -l | tr -d ' ')" = 0 ] \
+    || { log "  signature is multi-line: '$got'"; return 1; }
+  printf '%s' "$got" | grep -q '⊢ n \* 0 = 0' \
+    || { log "  Lean error content lost: '$got'"; return 1; }
+  # Bounded length (config.LESSON_SIG_MAX = 280).
+  long="$(py_helper lesson-sig "$(printf 'x%.0s' {1..600})")"
+  [ "${#long}" -le 280 ] || { log "  signature not truncated: ${#long}"; return 1; }
+}
+
+_emit_run_record() {
+  # <dir> <goal> <agent> <run> <outcome> <ended> <sig> — write a minimal proof-run
+  # record with a controlled ended timestamp (render-run stamps now(), so the
+  # reader's recency ordering needs hand-authored timestamps to be testable).
+  local dir="$1" goal="$2" agent="$3" run="$4" outcome="$5" ended="$6" sig="$7"
+  {
+    printf '𝔸5.1.run.%s.%s.%s@2026-06-13\n' "$goal" "$agent" "$run"
+    printf 'γ≔unsorry.proof.run\n'
+    printf '⟦Ω:Run⟧{id≜%s; goal≜%s; agent≜%s; outcome≜%s}\n' "$run" "$goal" "$agent" "$outcome"
+    printf '⟦Λ:Metrics⟧{attempts≜3; solve_s≜100; ended≜%s}\n' "$ended"
+    printf '⟦Δ:Lesson⟧{sig≜%s}\n' "$sig"
+    printf '⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩\n'
+  } > "$dir/$goal.$agent.$run.aisp"
+}
+
+test_prove_lessons_surfacing() {
+  # ADR-024: prior failed/decomposed lessons for a goal surface most-recent
+  # first, de-duplicated and capped; proved runs never contribute.
+  local tree got dir
+  tree="$(mktemp -d "$SESSION_TMP/lessons.XXXXXX")" || return 1
+  dir="$tree/proof-runs"
+  mkdir -p "$dir" || return 1
+  _emit_run_record "$dir" g ag1 run-a failed     2026-06-13T12:00:00Z 'OLD unsolved goals A'
+  _emit_run_record "$dir" g ag2 run-b failed     2026-06-13T13:00:00Z 'NEW type mismatch B'
+  # Same sig as ag2 but more recent and decomposed — proves dedup + recency.
+  _emit_run_record "$dir" g ag3 run-c decomposed 2026-06-13T14:00:00Z 'NEW type mismatch B'
+  # A proved run must not contribute even when it carries a lesson block.
+  _emit_run_record "$dir" g ag4 run-d proved     2026-06-13T15:00:00Z 'should not appear'
+  # A different goal must not bleed in.
+  _emit_run_record "$dir" other ag5 run-e failed 2026-06-13T16:00:00Z 'OTHER goal sig'
+  got="$(py_helper prove-lessons g "$dir")"
+  [ "$got" = "$(printf 'NEW type mismatch B\nOLD unsolved goals A')" ] \
+    || { log "  prove-lessons wrong order/dedup: '$got'"; return 1; }
+  printf '%s' "$got" | grep -q 'should not appear' \
+    && { log "  proved-run lesson leaked"; return 1; }
+  printf '%s' "$got" | grep -q 'OTHER goal sig' \
+    && { log "  other goal's lesson leaked"; return 1; }
+  # Cap is honoured.
+  got="$(py_helper prove-lessons g "$dir" 1)"
+  [ "$got" = "NEW type mismatch B" ] || { log "  cap not honoured: '$got'"; return 1; }
+  # Missing dir is silent, not an error.
+  got="$(py_helper prove-lessons g "$tree/absent")" || { log "  missing dir errored"; return 1; }
+  [ -z "$got" ] || { log "  missing dir produced output: '$got'"; return 1; }
+}
+
 # Set a prove goal's deps≜⟨⟩ to ⟨<csv>⟩ (test helper for gap ranking).
 set_goal_deps() {
   local file="$1" csv="$2"
@@ -2922,6 +3314,7 @@ run_self_tests() {
   local tests=(
     test_agent_id_generation
     test_agent_id_validation
+    test_solver_resolution
     test_claim_render_golden
     test_translation_render_golden
     test_candidate_filtering
@@ -2933,6 +3326,7 @@ run_self_tests() {
     test_require_main_matches_origin
     test_provider_effort_ladder
     test_prove_target_path_guard
+    test_proof_attempt_cleanup
     test_feature_branch_names
     test_claim_push_reentrancy
     test_release_push_reentrancy
@@ -2945,6 +3339,8 @@ run_self_tests() {
     test_already_proved_excluded
     test_goal_proved_rewrite
     test_render_index_gateb
+    test_index_provenance_render
+    test_proof_run_render
     test_affinity_ranking
     test_gap_ranking
     test_viability_skip
@@ -2953,6 +3349,8 @@ run_self_tests() {
     test_decomp_caps_and_depth
     test_unblockable_detection
     test_proved_deps_surfacing
+    test_lesson_signature
+    test_prove_lessons_surfacing
     test_model_effort_policy
     test_effort_ladder
     test_infra_failure_classifier
@@ -2986,6 +3384,11 @@ GOAL_FILTER=""
 DRY_RUN=0
 SELF_TEST=0
 UNSORRY_PROVIDER="${UNSORRY_PROVIDER:-claude}"
+SOLVER=""
+PROOF_MODEL_USED=""
+PROOF_EFFORT_USED=""
+PROOF_ATTEMPTS_USED=""
+PROOF_SOLVE_SECONDS=""
 
 parse_args() {
   while [ $# -gt 0 ]; do
@@ -3232,6 +3635,7 @@ main() {
         ;;
     esac
     gh auth status >/dev/null 2>&1 || die_config "gh is not authenticated"
+    [ "$PROVE" -eq 1 ] && resolve_solver
     [ "$PROVE" -eq 1 ] && require_cmd lake  # prove verify builds locally
   fi
 

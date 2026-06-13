@@ -61,6 +61,16 @@ so it requires write access to the shared repository. From a fork without that
 access, use `--prove-local`; it works from committed local `HEAD` and performs
 no remote operations.
 
+Coordinated proof runs record optional leaderboard provenance in successful
+content-addressed library index entries and append one terminal fact under
+`proof-runs/` for proved, decomposed, or failed outcomes. The facts include the
+authenticated GitHub solver, swarm agent, provider, effective model when known,
+final effort, attempts, completion time, and local proof/verification duration.
+Override the credited GitHub handle with `UNSORRY_SOLVER`; historical work
+remains unknown rather than guessed. See the generated
+**[community proof statistics](docs/leaderboard.md)** and machine-readable
+`docs/metrics/community-stats.json`.
+
 For unattended runs, **[`./swarm/supervise.sh --prove --goal <id>`](swarm/supervise.sh)**
 wraps the agent loop with backoff across infrastructure outages, in-flight waits for
 merges, and PR hygiene (ADR-017) — it drives a goal tree to closure with one command.

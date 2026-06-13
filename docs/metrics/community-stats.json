@@ -1,0 +1,48 @@
+{
+  "contributors": [],
+  "coverage": {
+    "attributed_proofs": 0,
+    "historical_unknown_proofs": 62,
+    "proof_run_coverage": 0.0,
+    "successful_proofs_with_run_telemetry": 0,
+    "terminal_runs": 0,
+    "verified_proofs": 62
+  },
+  "daily": [],
+  "difficulty": [],
+  "effort": [],
+  "goal_effort": [],
+  "models": [],
+  "outcome_counts": {},
+  "outcomes": {
+    "attempt_yield": null,
+    "attempts": 0,
+    "failed_attempts": 0,
+    "failures": 0,
+    "median_solve_s": null,
+    "p90_solve_s": null,
+    "run_success_rate": null,
+    "runs": 0,
+    "successes": 0,
+    "successes_per_recorded_hour": null,
+    "total_solve_s": 0
+  },
+  "queue": {
+    "difficulty_counts": {
+      "0": 10,
+      "1": 40,
+      "2": 14,
+      "3": 11,
+      "4": 4
+    },
+    "goals": 79,
+    "status_counts": {
+      "blocked": 1,
+      "open": 7,
+      "proved": 61,
+      "translated": 10
+    }
+  },
+  "recent_runs": [],
+  "schema_version": 1
+}

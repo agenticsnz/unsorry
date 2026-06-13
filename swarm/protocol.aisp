@@ -20,7 +20,7 @@
   Claim≜⟨goal:Id,agent:Id,ts:UTC,ttl:ℕ⟩
   Translation≜⟨goal:Id,agent:Id,stmt:AISP⟩
   Decomp≜⟨parent:Id,agent:Id,subs:List⟨⟨id:Id,stmt:AISP⟩⟩,edges:List⟨Post⊆Pre⟩⟩
-  Index≜⟨sha:Hash,goal:Id,name:𝕊,stmt:AISP,tags:𝒫(𝕊),use:ℕ,aff:ℝ⟩
+  Index≜⟨sha:Hash,goal:Id,name:𝕊,tags:𝒫(𝕊),use:ℕ,aff:ℝ,solver:𝕊?,agent:Id?,provider:Id?,model:𝕊?,effort:𝕊?,attempts:ℕ?,solve_s:ℕ?⟩
   paths≜⟨goals/⟨id⟩.aisp,goals/⟨id⟩.lean,claims/⟨goal⟩.⟨agent⟩.aisp,translations/⟨goal⟩.⟨agent⟩.aisp,decompositions/⟨parent⟩.⟨agent⟩.aisp,library/index/⟨sha⟩.aisp⟩
   phase≡prove⇒lean≢∅; phase≡translate⇒lean≡∅
   status∈{translated,proved}⇒sha≢∅; sha≜SHA256(norm(stmt))
