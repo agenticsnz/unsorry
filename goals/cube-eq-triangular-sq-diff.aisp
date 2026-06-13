@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜cube-eq-triangular-sq-diff
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/cube-eq-triangular-sq-diff.lean
-  sha≜∅
-  aff≜-10
+  sha≜4302fd87a983f47d11f923ddf0524b51959e005d534e8c8c4e51e1aa09c9afb7
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
