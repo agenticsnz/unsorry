@@ -1,0 +1,19 @@
+𝔸5.1.goal.sum-range-cube-mul-choose@2026-06-13
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-range-cube-mul-choose
+  phase≜prove
+  status≜open
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-range-cube-mul-choose.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨sum-range-sq-mul-choose⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-range-cube-mul-choose.lean
+  sha≜∅
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
