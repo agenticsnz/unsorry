@@ -1,0 +1,19 @@
+𝔸5.1.goal.one-add-four-b-fourth-not-prime@2026-06-13
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜one-add-four-b-fourth-not-prime
+  phase≜prove
+  status≜open
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/one-add-four-b-fourth-not-prime.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/one-add-four-b-fourth-not-prime.lean
+  sha≜∅
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
