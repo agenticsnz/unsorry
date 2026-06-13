@@ -1,0 +1,19 @@
+𝔸5.1.goal.consecutive-triangular-eq-square@2026-06-13
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜consecutive-triangular-eq-square
+  phase≜prove
+  status≜open
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/consecutive-triangular-eq-square.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/consecutive-triangular-eq-square.lean
+  sha≜∅
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

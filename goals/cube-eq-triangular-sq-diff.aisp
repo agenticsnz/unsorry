@@ -1,0 +1,19 @@
+𝔸5.1.goal.cube-eq-triangular-sq-diff@2026-06-13
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜cube-eq-triangular-sq-diff
+  phase≜prove
+  status≜open
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/cube-eq-triangular-sq-diff.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨nicomachus-sum-cubes⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/cube-eq-triangular-sq-diff.lean
+  sha≜∅
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
