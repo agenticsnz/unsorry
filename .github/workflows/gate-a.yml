@@ -52,6 +52,25 @@ jobs:
         with:
           fetch-depth: 0
 
+      # Kernel replay (leanchecker) holds ~all of mathlib resident per process;
+      # as the library grows its peak RSS crept past the 7 GB standard-runner
+      # limit and the replay step took SIGTERM/143 (#370, the euclid recompose —
+      # ~4 min in, axiom audit clean, so resource exhaustion not a bad proof).
+      # Chunk size does not move the ceiling (the cost is the mathlib image, not
+      # the few library oleans in a chunk), so give leanchecker swap to page cold
+      # regions instead of OOM. The job uses ~10 of its 60 min, so paging is well
+      # within budget. /mnt has tens of GB free on GitHub-hosted ubuntu runners.
+      - name: Add swap headroom for leanchecker
+        if: needs.detect.outputs.lean == 'true'
+        run: |
+          sudo fallocate -l 12G /mnt/swapfile \
+            || sudo dd if=/dev/zero of=/mnt/swapfile bs=1M count=12288
+          sudo chmod 600 /mnt/swapfile
+          sudo mkswap /mnt/swapfile
+          sudo swapon /mnt/swapfile
+          echo "--- memory after adding swap ---"
+          free -h
+
       # ADR-018: goal statements are create-only — the pin against history.
       # Every other layer (binding regeneration, Gate B shas) derives from
       # goals/<id>.lean in THIS tree, so same-PR consistent tampering passes

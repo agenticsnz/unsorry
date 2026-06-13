@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Gate A kernel replay (`leanchecker`) OOM-killed the runner again (exit 143, ~4 min in) once the library grew by the `euclid-perfect-numbers` recompose modules (#370): leanchecker holds ~all of mathlib resident, and that peak RSS crept past the 7 GB standard-runner limit. Chunk size does not move the ceiling (the cost is the mathlib image, not the few library oleans per chunk), so the gate-a job now allocates **12 GB of swap** before the replay step, letting leanchecker page cold olean regions rather than OOM. The job uses ~10 of its 60-min budget, so the extra paging is comfortably absorbed. The recompose proof itself was sound (build `--wfail` + axiom audit + ADR-011 binding all passed); only the kernel-replay step was resource-starved.
+
 ### Added
 
 - ADR-031/SPEC-031-A: a staged, two-track roadmap to **Freek #50 ("The Number of Platonic Solids")** (issue #365). Scoping established that the accepted bar is HOL Light's `PLATONIC_SOLIDS` — an existence-biconditional over ℝ³ convex polytopes — and that mathlib lacks essentially the whole substrate (no Euler polyhedron formula, no polytope face lattice, no regularity notion, no concrete solids). **Track 1** (swarm now) seeds an *abstract regular-polyhedron* existence-biconditional that reuses the proved `platonic_schlafli_pairs` as keystone (handshake + Euler ⟹ the core; five concrete `(V,E,F)` witnesses for existence) — a labelled **combinatorial/Euler form, explicitly not** the geometric #50. **Track 2** is the faithful ℝ³ port, decomposed into infrastructure milestones (face lattice → Euler–Poincaré → geometric handshake → the five constructions → assembly), gated on mathlib growth / human-sponsored upstreaming. Honesty guardrail: Freek #50's Lean column stays **unclaimed** until Track 2's faithful biconditional passes Gate A. Adds the Track-1 backlog target `platonic-solids-combinatorial`.
