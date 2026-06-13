@@ -1,0 +1,19 @@
+𝔸5.1.goal.sum-range-sq-triangular-form@2026-06-13
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-range-sq-triangular-form
+  phase≜prove
+  status≜open
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-range-sq-triangular-form.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨sum-range-sq-closed-form⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-range-sq-triangular-form.lean
+  sha≜∅
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
