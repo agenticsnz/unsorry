@@ -4,11 +4,10 @@
 
 The unsorry worklist: theorems that are **already proven but not yet in mathlib**, vetted for absence and stated in Lean, waiting for an agent or a human to prove them. Claim one, open a PR, let the gates decide (see [Running an agent](../README.md#running-an-agent) and [ADR-012](adrs/ADR-012-Backlog-Sourcing.md)).
 
-**7 open · 91 proved · 99 total prove-goals.**
+**6 open · 92 proved · 99 total prove-goals.**
 
 | Goal | Status | Diff | Upstream | Source | Reference |
 |------|--------|:----:|----------|--------|-----------|
-| `six-dvd-three-consecutive` — For every natural n, 6 ∣ n(n+1)(n+2): the product of three consecutive integers is divisible by 6. | open | 2 | — | elementary number theory (product of k consecutive integers is divisible by k!) | Hardy & Wright, An Introduction to the Theory of Numbers, §6 — the k=3 case. mathlib has `Nat.factorial_dvd_descFactorial` but no standalone `6 ∣ n(n+1)(n+2)`. |
 | `sq-add-sq-eq-three-mul-sq-s4` — sq-add-sq-eq-three-mul-sq-s4 | open | 1 | — | — | — |
 | `sum-range-fib-even-index` — For every natural n, ∑_{i<n} F(2(i+1)) = F(2n+1) − 1: the sum of the first n even-indexed Fibonacci numbers F₂ + F₄ + ⋯ + F_{2n} equals F(2n+1) − 1. | open | 3 | — | Fibonacci identities | Vajda (1989), identity (6); Koshy, Thm 5.2. Companion to the odd-index sum `sum-range-fib-odd-index`, whose result it can reuse. |
 | `sum-range-fib-odd-index` — For every natural n, ∑_{i<n} F(2i+1) = F(2n): the sum of the first n odd-indexed Fibonacci numbers F₁ + F₃ + ⋯ + F_{2n−1} equals F(2n). | open | 2 | — | Fibonacci identities | Vajda, Fibonacci & Lucas Numbers and the Golden Section (1989), identity (5); Koshy, Fibonacci and Lucas Numbers with Applications, Thm 5.1. mathlib has single-term `Nat.fib_two_mul` and the all-index `Nat.fib_succ_eq_succ_sum`, but no odd-indexed Fibonacci sum. |
@@ -78,6 +77,7 @@ The unsorry worklist: theorems that are **already proven but not yet in mathlib*
 | `prime-fourth-power-mod-240` — The fourth power of every prime p > 5 leaves remainder 1 on division by 240: if p is prime and p > 5 then p⁴ % 240 = 1. | proved | 4 | — | classic identities (fourth-power congruence tower — **root**; deps: the mod-16, mod-3, mod-5 leaves) | Classic competition gem "240 ∣ p⁴ − 1 for every prime p > 5", one power up from the proved-here "24 ∣ p² − 1 for primes p > 3" (binto-labs, `prime-sq-mod-twenty-four`). 240 = 16·3·5; the result is CRT over the three coprime moduli. Sierpiński, Elementary Theory of Numbers; standard olympiad result. |
 | `prime-sq-mod-twenty-four` — The square of every prime p > 3 leaves remainder 1 on division by 24: if p is prime and p > 3 then p^2 % 24 = 1. | proved | 3 | — | classic identities (thread-B depth-chain mid; deps: odd-sq-mod-eight, sq-mod-three) | Classic chestnut "24 divides p² − 1 for every prime p > 3"; Sierpiński, Elementary Theory of Numbers; standard olympiad/intro-NT result via CRT from the mod-8 and mod-3 facts. |
 | `prime-sq-sub-sq-div-twenty-four` — For any two primes p, q both greater than 3, 24 divides p^2 - q^2 (stated over ℤ). | proved | 2 | — | classic identities (thread-B depth-chain root; deps: prime-sq-mod-twenty-four) | Standard corollary of "p² ≡ 1 (mod 24) for primes p > 3"; Sierpiński, Elementary Theory of Numbers; common olympiad exercise. |
+| `six-dvd-three-consecutive` — For every natural n, 6 ∣ n(n+1)(n+2): the product of three consecutive integers is divisible by 6. | proved | 2 | — | elementary number theory (product of k consecutive integers is divisible by k!) | Hardy & Wright, An Introduction to the Theory of Numbers, §6 — the k=3 case. mathlib has `Nat.factorial_dvd_descFactorial` but no standalone `6 ∣ n(n+1)(n+2)`. |
 | `sq-add-sq-eq-three-mul-sq-s1` — sq-add-sq-eq-three-mul-sq-s1 | proved | 1 | — | — | — |
 | `sq-add-sq-eq-three-mul-sq-s2` — sq-add-sq-eq-three-mul-sq-s2 | proved | 1 | — | — | — |
 | `sq-add-sq-eq-three-mul-sq-s3` — sq-add-sq-eq-three-mul-sq-s3 | proved | 1 | — | — | — |
