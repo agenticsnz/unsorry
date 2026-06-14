@@ -70,7 +70,7 @@ jobs:
     # Both profiles are 4 vCPU / 16 GB; the split is for isolation, not power.
     # The leanchecker replay stays serial on 16 GB (SPEC-006-B); sizing a profile
     # up (e.g. 8x32) in the Namespace UI would let replay re-parallelize.
-    runs-on: ${{ needs.detect.outputs.profile }}
+    runs-on: namespace-profile-unsorry-3
     timeout-minutes: 60
     steps:
       - name: Short-circuit (non-Lean change)
