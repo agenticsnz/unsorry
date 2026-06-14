@@ -1,19 +1,26 @@
 # Keep the proofs-and-contributors visualisation up to date (issue #371, ADR-032).
 #
-# Unlike the targets board, the visualisation's "who solved it" attribution is
-# derived from the `prove(<goal>): … by <agent> (#PR)` *squash-merge commit*,
-# which only exists on `main` AFTER a proof merges. So a PR-time `--check`
-# cannot include the goal a PR is about to prove (it would spuriously redden the
-# *next* PR). This runs **post-merge**: on every push to `main` that could change
-# the graph it runs `--check`, and on drift regenerates the two `docs/` outputs
-# and commits them straight back to `main` (the standard generated-artifact
-# exception — a single docs-only, `[skip ci]` commit, not a human/agent change).
+# Attribution ("who solved it") is derived from the `prove(<goal>): … by <agent>
+# (#PR)` *squash-merge commit*, which only exists on `main` AFTER a proof merges.
+# So a PR-time `--check` cannot include the goal a PR is about to prove (it would
+# spuriously redden the *next* PR). This runs **post-merge**: on every push to
+# `main` that could change the graph it runs `--check`, and on drift regenerates
+# the two `docs/` outputs and lands them through an auto-merging PR.
 #
-# Requirement (code-owner to confirm on review): the GitHub Actions token must be
-# permitted to push to `main`. If branch protection blocks the token push, either
-# allow `github-actions[bot]` to bypass for this path, or swap the final step for
-# a PAT-driven refresh PR (a `GITHUB_TOKEN`-opened PR would not trigger the
-# required checks, so a plain auto-PR cannot self-merge).
+# Why a PR and not a direct push (issue #371 follow-up): `main` is a protected
+# branch, so the bot pushing straight to it is declined ("protected branch hook
+# declined — required status checks are expected"), and concurrent merges also
+# produced non-fast-forward rejections. Under the old `git push origin HEAD:main`
+# step every refresh run failed and the visualisation never updated. This opens a
+# refresh PR and arms squash auto-merge instead, mirroring the upstream-packets
+# flow — the gates run on the PR and it merges itself once they are green.
+#
+# Token note: a branch pushed (and a PR opened) with the default GITHUB_TOKEN
+# does not trigger other workflows, so the gates would never run and auto-merge
+# would never fire. Set the UPSTREAM_PAT secret (the repo-scoped sponsor PAT,
+# already used by upstream-packets) so the refresh branch and PR flow through the
+# gates like any other change. Without it the PR is still opened; the gates can
+# be kicked by closing/reopening it.
 name: proofs-visualisation
 
 on:
@@ -35,6 +42,7 @@ concurrency:
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   refresh:
@@ -43,6 +51,9 @@ jobs:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           fetch-depth: 0 # full history — attribution reads the prove(…) commits
+          # PAT so the refresh branch push and PR trigger the gates (without it
+          # auto-merge can never fire); falls back to the default token.
+          token: ${{ secrets.UPSTREAM_PAT || github.token }}
       - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
           python-version: "3.12"
@@ -54,15 +65,28 @@ jobs:
           else
             echo "stale=true" >> "$GITHUB_OUTPUT"
           fi
-      - name: Regenerate and commit on drift
+      - name: Open an auto-merging refresh PR on drift (ADR-032)
         if: steps.check.outputs.stale == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.UPSTREAM_PAT || github.token }}
         run: |
           set -euo pipefail
           python3 -m tools.visualiser --write .
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          branch="auto/proofs-visualisation"
+          git switch -C "$branch"
           git add docs/proofs-contributors-visualisation.md docs/proofs-contributors-visualisation.html
-          # `[skip ci]` + the docs-only paths (outside this workflow's triggers)
-          # mean the refresh commit never re-fires CI.
-          git commit -m "docs: refresh proofs-contributors-visualisation [skip ci]"
-          git push origin HEAD:main
+          git diff --cached --quiet && { echo "nothing to refresh"; exit 0; }
+          git commit -m "docs: refresh proofs-contributors-visualisation"
+          # One long-lived refresh branch, force-updated each run, so concurrent
+          # merges never cause a non-fast-forward rejection.
+          git push --force-with-lease origin "$branch"
+          # Open the PR if none is open yet, then (re)arm squash auto-merge.
+          if ! gh pr view "$branch" --json number --jq .number >/dev/null 2>&1; then
+            gh pr create --base main --head "$branch" \
+              --title "docs: refresh proofs-contributors-visualisation" \
+              --body "Automated post-merge refresh of the proofs-and-contributors visualisation (issue #371, ADR-032). Regenerated by the proofs-visualisation workflow from the \`prove(…)\` squash-merge commits on \`main\`. Lands via squash auto-merge once the gates are green."
+          fi
+          gh pr merge --auto --squash "$branch" \
+            || echo "auto-merge not armed (set UPSTREAM_PAT so the refresh PR triggers the gates — see header note)"
