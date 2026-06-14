@@ -89,7 +89,12 @@ jobs:
     # jobs start in parallel.
     if: needs.detect.outputs.lean == 'true'
     runs-on: ${{ needs.detect.outputs.profile }}
-    timeout-minutes: 30
+    # 45 min, not 30: a COLD library build (~21 min and growing — no warm
+    # `.lake/build` cache, e.g. first run on a new cache prefix after a
+    # toolchain/mathlib bump) plus the cheap checks overran the old 30-min cap
+    # and the job was killed (#573). The ADR-045 cache keeps the warm path to
+    # ~minutes; this only adds headroom for the rare cold path.
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
@@ -196,7 +201,10 @@ jobs:
     needs: [detect, gate_a_prepare]
     if: needs.detect.outputs.active == 'true'
     runs-on: ${{ needs.detect.outputs.profile }}
-    timeout-minutes: 30
+    # 45 min, not 30: this job also does the cold library build (~21 min) before
+    # its incremental audit; the old 30-min cap killed it on a cold cache (#567).
+    # See gate-a-prepare and ADR-045.
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:

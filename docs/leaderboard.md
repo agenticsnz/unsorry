@@ -4,23 +4,23 @@
 
 Verified output comes from active `library/index` records plus archived index records only after their active copy has been retired; append-only terminal-run telemetry comes from `proof-runs/`. Rates cover only logged runs and never guess historical failures from Git history. Timing is contributor-reported local proof plus verification time.
 
-**121 verified proofs · 39 attributed · 82 historical/unknown · 115 logged terminal runs.**
+**121 verified proofs · 39 attributed · 82 historical/unknown · 117 logged terminal runs.**
 
 ## Efficiency Baseline
 
 | Metric | Value |
 |--------|------:|
 | Successful terminal runs | 35 |
-| Failed terminal runs | 80 |
+| Failed terminal runs | 82 |
 | Decomposed after failure | 12 |
-| Failed without decomposition | 68 |
-| Run success rate | 30.4% |
-| Provider attempts | 143 |
-| Failed attempts | 108 |
-| Attempt yield | 24.5% |
-| Recorded run time | 19h 36m |
-| Median / p90 run time | 4m 57s / 31m 42s |
-| Verified successes per recorded hour | 1.78 |
+| Failed without decomposition | 70 |
+| Run success rate | 29.9% |
+| Provider attempts | 147 |
+| Failed attempts | 112 |
+| Attempt yield | 23.8% |
+| Recorded run time | 20h 10m |
+| Median / p90 run time | 4m 57s / 31m 43s |
+| Verified successes per recorded hour | 1.74 |
 | Proofs with run telemetry | 35 (28.9%) |
 
 ## Work Queue
@@ -32,7 +32,7 @@ Verified output comes from active `library/index` records plus archived index re
 | Difficulty | Runs | Successes | Run success | Failed attempts | Median time |
 |-----------:|-----:|----------:|------------:|----------------:|------------:|
 | 1 | 37 | 12 | 32.4% | 36 | 5m 26s |
-| 2 | 43 | 10 | 23.3% | 40 | 4m 38s |
+| 2 | 45 | 10 | 22.2% | 44 | 4m 38s |
 | 3 | 20 | 9 | 45.0% | 19 | 5m 44s |
 | 4 | 14 | 4 | 28.6% | 12 | 5m 18s |
 | 5 | 1 | 0 | 0.0% | 1 | 31m 28s |
@@ -46,11 +46,11 @@ Verified output comes from active `library/index` records plus archived index re
 | `am-gm-three-cube-s2` | `blocked` | 1 | 2 | 4 | 43m 57s |
 | `cube-sum-ge-three-prod` | `blocked` | 2 | 2 | 4 | 17m 0s |
 | `am-gm-three-cube` | `blocked` | 3 | 2 | 4 | 16m 32s |
+| `cube-sum-ge-mul-sq` | `open` | 2 | 2 | 4 | 5m 47s |
 | `cube-eq-triangular-sq-diff` | `archived` | 2 | 1 | 3 | 14m 49s |
 | `nat-sq-lt-two-pow-s2` | `blocked` | 1 | 1 | 3 | 9m 15s |
 | `prod-one-sub-inv-sq-telescope` | `open` | 4 | 2 | 2 | 1h 4m |
 | `sum-icc-choose-hockey-stick-s1` | `open` | 1 | 2 | 2 | 1h 3m |
-| `abstract-regular-polyhedron-realizable-iff` | `open` | 4 | 2 | 2 | 45m 43s |
 
 ## Contributor Leaderboard
 
@@ -58,11 +58,11 @@ Rank uses credited verified proofs. Explicit `solver≜...` provenance wins; old
 
 | Rank | Contributor | Proof credit | Explicit | Inferred | Runs | Run success | Difficulty points | Score |
 |-----:|-------------|-------------:|---------:|---------:|-----:|------------:|------------------:|------:|
-| 1 | [@cgbarlow](https://github.com/cgbarlow) | 68 | 26 | 42 | 94 | 27.7% | 111 | 12800 |
+| 1 | [@cgbarlow](https://github.com/cgbarlow) | 68 | 26 | 42 | 95 | 27.4% | 111 | 12800 |
 | 2 | [@chat-bit-01](https://github.com/chat-bit-01) | 30 | 0 | 30 | 0 | — | 61 | 6850 |
 | 3 | [@binto](https://github.com/binto) | 9 | 0 | 9 | 0 | — | 19 | 2125 |
 | 4 | [@perttu](https://github.com/perttu) | 8 | 8 | 0 | 13 | 61.5% | 15 | 1700 |
-| 5 | [@adam91holt](https://github.com/adam91holt) | 4 | 4 | 0 | 7 | 0.0% | 6 | 700 |
+| 5 | [@adam91holt](https://github.com/adam91holt) | 4 | 4 | 0 | 8 | 0.0% | 6 | 700 |
 | 6 | [@OceanLi](https://github.com/OceanLi) | 1 | 0 | 1 | 0 | — | 3 | 325 |
 | 7 | [@yarcles](https://github.com/yarcles) | 1 | 1 | 0 | 1 | 100.0% | 1 | 125 |
 
@@ -81,13 +81,16 @@ Git add-author attribution covers 121 of 121 proof index files. It is used only 
 | `codex / unknown` | 5 | 16 | 31.2% | 21 | 2 | 4m 16s | 2.98 |
 | `manual / gpt-5.5` | 4 | 0 | — | 0 | 1 | — | — |
 | `gemini / gemini-3.1-pro-preview` | 3 | 4 | 75.0% | 3 | 1 | 5m 11s | 6.11 |
-| `openai / jackcloudman/Leanstral-2603-GGUF` | 0 | 3 | 0.0% | 3 | 1 | 31m 52s | 0.00 |
+| `openai / jackcloudman/Leanstral-2603-GGUF` | 0 | 4 | 0.0% | 4 | 1 | 31m 53s | 0.00 |
+| `codex / gpt-5.3-codex-spark` | 0 | 1 | 0.0% | 3 | 1 | 1m 34s | 0.00 |
 | `openai / leanstral-2603-sovereign` | 0 | 1 | 0.0% | 1 | 1 | 1m 22s | 0.00 |
 
 ## Recent Terminal Runs
 
 | Ended (UTC) | Goal | Solver | Provider / model | Outcome | Attempts | Failed attempts | Time |
 |-------------|------|--------|------------------|---------|---------:|----------------:|-----:|
+| `2026-06-14T23:47:26Z` | `cube-sum-ge-mul-sq` | [@adam91holt](https://github.com/adam91holt) | `codex / gpt-5.3-codex-spark` | `failed` | 3 | 3 | 1m 34s |
+| `2026-06-14T23:44:47Z` | `am-hm-two-var` | [@cgbarlow](https://github.com/cgbarlow) | `openai / jackcloudman/Leanstral-2603-GGUF` | `failed` | 1 | 1 | 31m 54s |
 | `2026-06-14T23:35:29Z` | `cube-mod-four` | [@cgbarlow](https://github.com/cgbarlow) | `openai / leanstral-2603` | `failed` | 1 | 1 | 3m 0s |
 | `2026-06-14T23:30:42Z` | `am-gm-three-cube-s2-s2` | [@cgbarlow](https://github.com/cgbarlow) | `openai / leanstral-2603` | `failed` | 1 | 1 | 34m 43s |
 | `2026-06-14T23:11:12Z` | `consecutive-cubes-diff-odd` | [@perttu](https://github.com/perttu) | `gemini / gemini-3.1-pro-preview` | `failed` | 3 | 3 | 15m 26s |
@@ -106,8 +109,6 @@ Git add-author attribution covers 121 of 121 proof index files. It is used only 
 | `2026-06-14T20:13:14Z` | `sum-icc-choose-hockey-stick-s3` | [@cgbarlow](https://github.com/cgbarlow) | `openai / leanstral-2603` | `failed` | 1 | 1 | 3m 5s |
 | `2026-06-14T20:08:13Z` | `sum-icc-choose-hockey-stick-s3` | [@cgbarlow](https://github.com/cgbarlow) | `openai / leanstral-2603` | `failed` | 1 | 1 | 2m 33s |
 | `2026-06-14T20:07:03Z` | `sum-icc-choose-hockey-stick-s2` | [@cgbarlow](https://github.com/cgbarlow) | `openai / leanstral-2603-sovereign` | `failed` | 1 | 1 | 1m 22s |
-| `2026-06-14T20:03:50Z` | `sum-icc-choose-hockey-stick-s2` | [@cgbarlow](https://github.com/cgbarlow) | `openai / leanstral-2603` | `failed` | 1 | 1 | 2m 44s |
-| `2026-06-14T19:59:10Z` | `sum-four-sq-ge-two-cross-s2` | [@cgbarlow](https://github.com/cgbarlow) | `openai / leanstral-2603` | `proved` | 1 | 0 | 8m 7s |
 
 ## Interpretation
 

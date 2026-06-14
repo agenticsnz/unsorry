@@ -1,12 +1,12 @@
 {
   "contributors": [
     {
-      "attempt_yield": 0.2364,
+      "attempt_yield": 0.2342,
       "avatar_url": "https://github.com/cgbarlow.png?size=96",
       "badges": {
         "difficulty": 111,
         "proofs": 68,
-        "success_rate_percent": 27.66
+        "success_rate_percent": 27.37
       },
       "credit_source_summary": "explicit + inferred",
       "credit_sources": [
@@ -17,14 +17,14 @@
       "difficulty_points": 111,
       "display_name": "@cgbarlow",
       "explicit_solver_proofs": 26,
-      "failed_attempts": 84,
+      "failed_attempts": 85,
       "github": "cgbarlow",
       "inferred_git_proofs": 42,
-      "median_solve_s": 300,
+      "median_solve_s": 303,
       "profile_url": "https://github.com/cgbarlow",
       "rank": 1,
-      "run_success_rate": 0.2766,
-      "runs": 94,
+      "run_success_rate": 0.2737,
+      "runs": 95,
       "score": 12800,
       "solver": "cgbarlow",
       "successes": 26,
@@ -133,14 +133,14 @@
       "difficulty_points": 6,
       "display_name": "@adam91holt",
       "explicit_solver_proofs": 4,
-      "failed_attempts": 7,
+      "failed_attempts": 10,
       "github": "adam91holt",
       "inferred_git_proofs": 0,
-      "median_solve_s": 131,
+      "median_solve_s": 130,
       "profile_url": "https://github.com/adam91holt",
       "rank": 5,
       "run_success_rate": 0.0,
-      "runs": 7,
+      "runs": 8,
       "score": 700,
       "solver": "adam91holt",
       "successes": 0,
@@ -205,7 +205,7 @@
       "verified_proofs": 1
     }
   ],
-  "generated_at": "2026-06-14T23:35:29Z",
+  "generated_at": "2026-06-14T23:47:26Z",
   "generated_from": "docs/metrics/community-stats.json",
   "historical_contributors": [
     {
@@ -334,7 +334,13 @@
     {
       "provider_model": "openai / jackcloudman/Leanstral-2603-GGUF",
       "run_success_rate": 0.0,
-      "runs": 3,
+      "runs": 4,
+      "verified_proofs": 0
+    },
+    {
+      "provider_model": "codex / gpt-5.3-codex-spark",
+      "run_success_rate": 0.0,
+      "runs": 1,
       "verified_proofs": 0
     },
     {
@@ -357,7 +363,7 @@
     "historical_unknown_proofs": 82,
     "inferred_git_proofs": 82,
     "proof_run_coverage": 0.2893,
-    "terminal_runs": 115,
+    "terminal_runs": 117,
     "uncredited_proofs": 0,
     "verified_proofs": 121
   }

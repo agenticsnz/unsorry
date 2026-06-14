@@ -43,6 +43,16 @@ A step added immediately after `actions/checkout` in all three Lean jobs:
 
 A re-run of a cancelled run hits the exact sha key and skips the build entirely.
 
+## Cold-build timeout headroom
+
+The cache keeps the warm path to ~minutes, but a **cold** build (no restorable `.lake/build` —
+the first run on a new cache prefix after a toolchain/mathlib bump, before any push-to-`main`
+run has saved a main-scoped cache) still recompiles the whole library (~21 min, growing with the
+active module count). `gate_a_prepare` and `gate_a_audit` therefore run with
+`timeout-minutes: 45` (not 30, which killed cold builds — #567/#573); `gate_a_replay` stays at
+60. The durable bound on cold-build time is ADR-041 archiving (keeping the active set small), not
+a larger timeout.
+
 ## Soundness invariants (unchanged)
 
 - Lake's content-hash traces recompile any module whose source changed — identical to local
