@@ -26,12 +26,16 @@ decompositions) are dropped.
 
 ### "Who solved it" precedence
 
-- **agent / PR / date** — from the `prove(<goal>): … by <agent> (#PR)` merge
-  commit (the authoritative per-goal record). Goals merged before that convention
-  (early/batch proofs) have no agent and report `—`.
-- **GitHub solver / model** — from the recorded AISP provenance only (index, then
-  a successful run); never inferred from git authorship (which identifies the
-  merger, not the solver) and never guessed (ADR-023).
+- **agent / PR / date / merged-by** — from the `prove(<goal>): … by <agent> (#PR)`
+  merge commit (the authoritative per-goal record); the merging GitHub user is the
+  commit author (`%an`, name only — squash-merge sets author to the merger).
+  Goals merged before that convention (early/batch proofs) carry none and report
+  `—` (we deliberately do **not** attribute them to the author of a later batch
+  commit such as a changelog roll).
+- **GitHub solver** — the recorded AISP login (index, then a successful run) where
+  present; otherwise the merging GitHub user from the prove commit. **model** —
+  recorded provenance only. Never inferred from git authorship as a *solver* claim
+  beyond the explicit merged-by fallback, and never guessed (ADR-023).
 
 The git read (`parse_prove_log` is the pure, tested parser; `git_provenance`
 the thin wrapper) is the generator's only impurity and degrades to empty outside

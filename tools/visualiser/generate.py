@@ -113,35 +113,52 @@ def _decomposition_edges(root: Path) -> list[Edge]:
     return edges
 
 
-def parse_prove_log(text: str) -> dict[str, tuple[str, str, str | None]]:
-    """Map goal → (agent, pr, date) from ``git log`` ``date\\0subject`` lines.
+@dataclass(frozen=True)
+class ProveCommit:
+    agent: str
+    pr: str
+    date: str | None
+    #: Display name of the commit author — the GitHub user who merged the PR
+    #: (squash-merge sets author to the merger; the committer is always GitHub).
+    merged_by: str | None
+
+
+def parse_prove_log(text: str) -> dict[str, ProveCommit]:
+    """Map goal → :class:`ProveCommit` from ``git log`` ``date\\0author\\0subject`` lines.
 
     The newest (first) ``prove(<goal>): … by <agent> (#PR)`` wins per goal — the
     merge that flipped it to proved. Pure and testable; no git access here.
     """
-    result: dict[str, tuple[str, str, str | None]] = {}
+    result: dict[str, ProveCommit] = {}
     for line in text.splitlines():
-        date, _, subject = line.partition("\x00")
+        date, _, rest = line.partition("\x00")
+        author, _, subject = rest.partition("\x00")
         match = _PROVE_SUBJECT_RE.match(subject)
         if match:
             result.setdefault(
                 match.group("goal"),
-                (match.group("agent"), match.group("pr"), date or None),
+                ProveCommit(
+                    agent=match.group("agent"),
+                    pr=match.group("pr"),
+                    date=date or None,
+                    merged_by=author or None,
+                ),
             )
     return result
 
 
-def git_provenance(root: Path) -> dict[str, tuple[str, str, str | None]]:
-    """Resolve goal → (agent, pr, date) from the proof commits on the branch.
+def git_provenance(root: Path) -> dict[str, ProveCommit]:
+    """Resolve goal → :class:`ProveCommit` from the proof commits on the branch.
 
     Reads the ``prove(...)`` / ``recompose(...)`` squash-merge subjects — the
-    authoritative record of *which agent* proved each goal via *which PR* (the
-    swarm's per-goal PR convention, ADR-026). Degrades to ``{}`` outside a git
-    checkout so the AISP-only path (and the fixture tests) stay green.
+    authoritative record of *which agent* proved each goal via *which PR*, and of
+    *which GitHub user* merged it (the commit author; ADR-026). Degrades to
+    ``{}`` outside a git checkout so the AISP-only path (and the fixture tests)
+    stay green.
     """
     try:
         proc = subprocess.run(
-            ["git", "-C", str(root), "log", "--no-merges", "--format=%cs%x00%s"],
+            ["git", "-C", str(root), "log", "--no-merges", "--format=%cs%x00%an%x00%s"],
             capture_output=True,
             text=True,
             check=False,
@@ -186,18 +203,21 @@ def build_graph(root: Path) -> Graph:
 
     def _node(goal) -> Node:
         solver, model, aisp_date = _prov(goal.id)
-        agent = pr = git_date = None
-        if (g := git_prov.get(goal.id)) is not None:
-            agent, pr, git_date = g
+        commit = git_prov.get(goal.id)
+        # Fill the solver gap with the GitHub user who merged the prove PR; keep
+        # an explicitly recorded AISP solver where present. Goals with no
+        # prove-PR (pre-convention) keep solver unknown.
+        if solver is None and commit is not None:
+            solver = commit.merged_by
         return Node(
             id=goal.id,
             status=goal.status,
             difficulty=goal.difficulty,
             solver=solver,
             model=model,
-            date=git_date or aisp_date,
-            agent=agent,
-            pr=pr,
+            date=(commit.date if commit else None) or aisp_date,
+            agent=commit.agent if commit else None,
+            pr=commit.pr if commit else None,
         )
 
     nodes = tuple(_node(goal) for goal in sorted(goal_records, key=lambda g: g.id))
@@ -247,8 +267,13 @@ def render_mermaid(graph: Graph) -> str:
     return "\n".join(lines)
 
 
+def _cell(value: str | None) -> str:
+    """Escape a free-text value (e.g. a git author name) for a table cell."""
+    return value.replace("|", "\\|") if value else "—"
+
+
 def _provenance(node: Node) -> str:
-    bits = [node.solver or "—"]
+    bits = [_cell(node.solver)]
     if node.model:
         bits.append(f"`{node.model}`")
     return " · ".join(bits)
@@ -278,10 +303,12 @@ def render_markdown(graph: Graph) -> str:
         f"{n_families} decomposition {'family' if n_families == 1 else 'families'} shown below; "
         "standalone goals are listed in the table.",
         "",
-        f"Solving agent and PR are resolved from the `prove(…)` merge commits "
-        f"({attributed} of {n_proved} proved goals carry a per-goal prove-PR; the rest "
-        "predate that convention). GitHub solver and model come from the recorded AISP "
-        "provenance where present — never guessed (ADR-023).",
+        f"Solving agent, PR and the GitHub user who merged it are resolved from the "
+        f"`prove(…)` merge commits ({attributed} of {n_proved} proved goals carry a "
+        "per-goal prove-PR; the rest predate that convention and are left blank). The "
+        "solver shows the recorded AISP login where present, otherwise the merging "
+        "GitHub user; the model comes from recorded provenance only — never guessed "
+        "(ADR-023).",
         "",
         "## Dependency lineage",
         "",
