@@ -3,10 +3,13 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import re
+
 from tools.visualiser.generate import (
     build_graph,
     main,
     parse_prove_log,
+    render_html,
     render_json,
     render_markdown,
     render_mermaid,
@@ -157,3 +160,33 @@ def test_build_graph_without_git_is_clean(tmp_path):
     # Fixture trees are not git checkouts → agent/pr stay None, no crash.
     graph = build_graph(_repo(tmp_path))
     assert all(n.agent is None and n.pr is None for n in graph.nodes)
+
+
+def test_render_html(tmp_path):
+    import json
+
+    html = render_html(build_graph(_repo(tmp_path)))
+    assert html.startswith("<!doctype html>")
+    assert '<pre class="mermaid">' in html and "flowchart LR" in html
+    assert 'call showDetail("parent-s1")' in html  # node click → detail panel
+    assert 'data-id="standalone"' in html  # every goal is a table row
+    assert "mermaid.esm.min.mjs" in html and 'securityLevel: "loose"' in html
+    assert re.search(r"__[A-Z]+__", html) is None  # no unreplaced placeholders
+    blob = html.split('id="graph-data">', 1)[1].split("</script>", 1)[0]
+    assert len(json.loads(blob)["nodes"]) == 4  # embedded model is valid JSON
+
+
+def test_main_html_stdout(tmp_path, capsys):
+    assert main(["--html", str(_repo(tmp_path))]) == 0
+    assert capsys.readouterr().out.startswith("<!doctype html>")
+
+
+def test_main_write_and_check_both_artifacts(tmp_path):
+    root = _repo(tmp_path)
+    assert main(["--write", str(root)]) == 0
+    assert (root / "docs" / "graph.md").exists()
+    assert (root / "docs" / "graph.html").exists()
+    assert main(["--check", str(root)]) == 0
+    # Drift in either artifact reddens the check.
+    (root / "docs" / "graph.html").write_text("stale", encoding="utf-8")
+    assert main(["--check", str(root)]) == 1

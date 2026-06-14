@@ -70,27 +70,47 @@ HTML page and the leaderboard) to share one feed.
 
 Node keys are sanitised (`g_` + `[^0-9a-z]→_`) because goal ids carry hyphens.
 
+## Output: `docs/graph.html` (Phase 2)
+
+A standalone interactive page generated from the same graph model:
+
+* the Mermaid forest rendered by **mermaid.js** (CDN ESM module) with the per-node
+  `click` rewired to a `call showDetail("<goal>")` JS callback (`securityLevel:
+  loose`);
+* a **detail panel** that, on node or row click, shows status, difficulty, agent,
+  solver, model, PR link, proved-on date, and a link to the Lean statement;
+* zoom in/out/reset over the scrollable diagram;
+* a **filterable table** of every goal (free-text over id/agent/solver + a status
+  selector), each row clickable;
+* the full graph model embedded as inline JSON (`#graph-data`) — the single feed
+  the panel/table read, ready for the leaderboard (#270) to share.
+
+Self-contained except for the mermaid ESM module; the browser renders it, GitHub
+shows source (view via Pages or locally).
+
 ## Modes
 
 * default → markdown to stdout
-* `--write [root]` → write `docs/graph.md` (creating `docs/` if absent)
-* `--check [root]` → exit 1 if `docs/graph.md` differs from a fresh render
+* `--html [root]` → interactive HTML to stdout
 * `--json [root]` → graph model as JSON
-* the three modes are mutually exclusive (exit 2 otherwise)
+* `--write [root]` → write **both** `docs/graph.md` and `docs/graph.html`
+  (creating `docs/` if absent)
+* `--check [root]` → exit 1 if **either** artifact differs from a fresh render
+* the modes are mutually exclusive (exit 2 otherwise)
 
 ## Tests
 
 `tools/visualiser/tests/test_generate.py` builds a fixture AISP tree (no network)
 and asserts: node assembly + provenance enrichment, decomposition edges, stale-edge
-dropping, Mermaid classes/clicks/edges, table completeness, JSON shape,
-`--write`/`--check`/mutual-exclusion behaviour, the pure `parse_prove_log`
-agent/PR/date parser (newest-wins, non-prove subjects ignored), and graceful
+dropping, Mermaid classes/clicks/edges, table completeness, JSON shape, HTML render
+(mermaid pre, `showDetail` callbacks, embedded-JSON validity, no unreplaced
+placeholders), `--html`/`--write`/`--check`/mutual-exclusion behaviour (both
+artifacts), the pure `parse_prove_log` agent/PR/date/merged-by parser, and graceful
 degradation when the tree is not a git checkout.
 
-## Deferred (Phase 2, issue #371)
+## Deferred (issue #371)
 
-* `docs/graph.html` — interactive page (mermaid.js) with a click-to-detail panel
-  (status, difficulty, solver, model, attempts, solve time, PR link, Lean
-  artifact), styled to integrate with the leaderboard (#270), consuming `--json`.
-* Wiring `tools.visualiser --check` into a CI workflow — lands via a separate
-  code-owner-reviewed PR (touches `.github/`, ADR-019).
+* Wiring `tools.visualiser --check` into a CI workflow and regenerating
+  `docs/graph.{md,html}` in the prove path (so the proof-commit-derived attribution
+  cannot drift) — lands via a separate code-owner-reviewed PR (touches `.github/`,
+  ADR-019).

@@ -4,6 +4,8 @@
 
 A visualiser for the swarm's proof graph (issue #371): every prove-goal, its status, the decomposition lineage that stacks sub-goals into their parents, and who solved each one. Click any node in the diagram to open its Lean statement.
 
+> An **interactive** version — pan/zoom, click-to-detail panel, filterable table — is generated alongside this file at [`docs/graph.html`](graph.html) (open it locally or via GitHub Pages; the browser renders it, GitHub shows the source).
+
 **102 goals — 2 open · 1 blocked · 10 translated · 89 proved.** 7 decomposition families shown below; standalone goals are listed in the table.
 
 Solving agent, PR and the GitHub user who merged it are resolved from the `prove(…)` merge commits (54 of 89 proved goals carry a per-goal prove-PR; the rest predate that convention and are left blank). The solver shows the recorded AISP login where present, otherwise the merging GitHub user; the model comes from recorded provenance only — never guessed (ADR-023).
