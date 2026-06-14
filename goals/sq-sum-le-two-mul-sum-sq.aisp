@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sq-sum-le-two-mul-sum-sq
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/sq-sum-le-two-mul-sum-sq.lean
-  sha≜∅
-  aff≜-10
+  sha≜1c82b0f5546fa19fd220112ece592d2e2879907038adc62fa48cda995e30c68b
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
