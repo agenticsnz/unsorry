@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-fib-even-index
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜3
 }
 ⟦Σ:Source⟧{
@@ -14,6 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/sum-range-fib-even-index.lean
-  sha≜∅
+  sha≜fe31b8b2df195f8e43ccb5fc6ebb02a2be28788b4de62da988ce0de89d37065a
+  aff≜1
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
