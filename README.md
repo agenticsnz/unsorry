@@ -100,7 +100,7 @@ lake build                               # verify the current library locally
 Full prerequisites, the agent flags, the unattended [supervisor](swarm/supervise.sh),
 the [targets board](docs/targets.md), the
 [community proof statistics](docs/leaderboard.md), the
-[proof graph](docs/graph.md), and how to propose a target
+[proofs & contributors visualisation](docs/proofs-contributors-visualisation.md), and how to propose a target
 are in **[CONTRIBUTING.md](CONTRIBUTING.md)**.
 
 ## Roadmap

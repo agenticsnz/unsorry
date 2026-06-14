@@ -20,7 +20,7 @@ as Freek #50 (#365),
 **we decided for** a generated visualiser tool (`tools/visualiser`) that is pure
 over the in-repo records (`goals/`, `decompositions/`, `library/index/`,
 `proof-runs/`) and emits, in V1, a GitHub-native Mermaid `flowchart` of the
-decomposition lineage plus a complete provenance table at `docs/graph.md`, with a
+decomposition lineage plus a complete provenance table at `docs/proofs-contributors-visualisation.md`, with a
 machine-readable `--json` graph model that a later interactive HTML surface and
 the leaderboard can share, gated for drift by a `--check` mode,
 **and neglected** shelling out to git for provenance (non-deterministic, would
@@ -35,7 +35,7 @@ JavaScript in the README, and serves as the shared data source for the leaderboa
 and the Freek-50 step ladder,
 **accepting that** V1 is static markdown (no in-page click-to-detail panel until
 Phase 2), goal provenance is only as complete as the index/run records (older
-proofs report unknown), and the `docs/graph.md` drift guard is not yet wired into
+proofs report unknown), and the `docs/proofs-contributors-visualisation.md` drift guard is not yet wired into
 CI because that touches the CODEOWNERS-protected `.github/` surface (ADR-019) and
 lands via a separate code-owner-reviewed PR.
 

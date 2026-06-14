@@ -39,7 +39,7 @@ decompositions) are dropped.
 
 The git read (`parse_prove_log` is the pure, tested parser; `git_provenance`
 the thin wrapper) is the generator's only impurity and degrades to empty outside
-a checkout. Because `docs/graph.md` then tracks the proof-commit history, it must
+a checkout. Because `docs/proofs-contributors-visualisation.md` then tracks the proof-commit history, it must
 be regenerated when proofs merge — as the targets board already is — before the
 `--check` drift guard is wired into CI.
 
@@ -54,7 +54,7 @@ Graph = { nodes, edges }
 `--json` emits `{ source, nodes, edges }` for Phase-2 consumers (the interactive
 HTML page and the leaderboard) to share one feed.
 
-## Output: `docs/graph.md`
+## Output: `docs/proofs-contributors-visualisation.md`
 
 1. **Header + summary** — total goals and per-status counts.
 2. **Dependency lineage** — a fenced ```` ```mermaid ```` `flowchart LR`:
@@ -70,7 +70,7 @@ HTML page and the leaderboard) to share one feed.
 
 Node keys are sanitised (`g_` + `[^0-9a-z]→_`) because goal ids carry hyphens.
 
-## Output: `docs/graph.html` (Phase 2)
+## Output: `docs/proofs-contributors-visualisation.html` (Phase 2)
 
 A standalone interactive page generated from the same graph model:
 
@@ -93,7 +93,7 @@ shows source (view via Pages or locally).
 * default → markdown to stdout
 * `--html [root]` → interactive HTML to stdout
 * `--json [root]` → graph model as JSON
-* `--write [root]` → write **both** `docs/graph.md` and `docs/graph.html`
+* `--write [root]` → write **both** `docs/proofs-contributors-visualisation.md` and `docs/proofs-contributors-visualisation.html`
   (creating `docs/` if absent)
 * `--check [root]` → exit 1 if **either** artifact differs from a fresh render
 * the modes are mutually exclusive (exit 2 otherwise)
@@ -111,6 +111,6 @@ degradation when the tree is not a git checkout.
 ## Deferred (issue #371)
 
 * Wiring `tools.visualiser --check` into a CI workflow and regenerating
-  `docs/graph.{md,html}` in the prove path (so the proof-commit-derived attribution
+  `docs/proofs-contributors-visualisation.{md,html}` in the prove path (so the proof-commit-derived attribution
   cannot drift) — lands via a separate code-owner-reviewed PR (touches `.github/`,
   ADR-019).

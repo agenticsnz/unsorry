@@ -12,16 +12,16 @@ The generator reads the in-repo AISP coordination records (``goals/``,
 recorded GitHub-solver/model provenance, and additionally resolves the solving
 **agent** and **PR** for each goal from the ``prove(…)`` / ``recompose(…)``
 squash-merge subjects (the per-goal PR convention, ADR-026). The git read is the
-only impurity and degrades to empty outside a checkout; because ``docs/graph.md``
-then tracks the proof-commit history it must be regenerated when proofs merge
-(as the targets board is) before ``--check`` is gated in CI.
+only impurity and degrades to empty outside a checkout; because the outputs then
+track the proof-commit history they must be regenerated when proofs merge (as the
+targets board is) before ``--check`` is gated in CI.
 
 Usage::
 
     python3 -m tools.visualiser [<repo-root>]            # markdown to stdout
     python3 -m tools.visualiser --json [<repo-root>]     # graph model as JSON
     python3 -m tools.visualiser --html [<repo-root>]     # interactive HTML to stdout
-    python3 -m tools.visualiser --write [<repo-root>]    # write docs/graph.{md,html}
+    python3 -m tools.visualiser --write [<repo-root>]    # write the docs/*.{md,html} pair
     python3 -m tools.visualiser --check [<repo-root>]    # CI drift check (both)
 """
 from __future__ import annotations
@@ -56,6 +56,10 @@ _ORDER = {"open": 0, "blocked": 1, "flagged": 2, "translated": 3, "proved": 4}
 
 #: GitHub PR base for click-through links.
 PR_BASE = "https://github.com/agenticsnz/unsorry/pull"
+
+#: Output filenames under ``docs/`` (markdown for GitHub, HTML for the browser).
+MD_NAME = "proofs-contributors-visualisation.md"
+HTML_NAME = "proofs-contributors-visualisation.html"
 
 _SUB_ID_RE = re.compile(r"id≜([a-z0-9][a-z0-9-]*)")
 
@@ -310,7 +314,7 @@ def render_markdown(graph: Graph) -> str:
         "who solved each one. Click any node in the diagram to open its Lean statement.",
         "",
         "> An **interactive** version — pan/zoom, click-to-detail panel, filterable table — "
-        "is generated alongside this file at [`docs/graph.html`](graph.html) "
+        f"is generated alongside this file at [`docs/{HTML_NAME}`]({HTML_NAME}) "
         "(open it locally or via GitHub Pages; the browser renders it, GitHub shows the source).",
         "",
         f"**{len(graph.nodes)} goals — {summary}.** "
@@ -571,11 +575,11 @@ def main(argv: list[str] | None = None) -> int:
         sys.stdout.write(render_html(graph))
         return 0
 
-    # `docs/graph.md` (markdown) and `docs/graph.html` (interactive) are written
-    # and drift-checked together — two renderings of the same graph.
+    # The markdown and interactive HTML renderings are written and drift-checked
+    # together — two views of the same graph.
     artifacts = [
-        (root / "docs" / "graph.md", render_markdown(graph) + "\n"),
-        (root / "docs" / "graph.html", render_html(graph)),
+        (root / "docs" / MD_NAME, render_markdown(graph) + "\n"),
+        (root / "docs" / HTML_NAME, render_html(graph)),
     ]
     if mode == "--write":
         for target, content in artifacts:

@@ -124,7 +124,7 @@ def test_json_shape(tmp_path):
 def test_main_write_and_check(tmp_path, capsys):
     root = _repo(tmp_path)
     assert main(["--write", str(root)]) == 0
-    assert (root / "docs" / "graph.md").exists()
+    assert (root / "docs" / "proofs-contributors-visualisation.md").exists()
     # Freshly written → check is clean.
     assert main(["--check", str(root)]) == 0
     # Mutate a goal → check reddens.
@@ -184,9 +184,9 @@ def test_main_html_stdout(tmp_path, capsys):
 def test_main_write_and_check_both_artifacts(tmp_path):
     root = _repo(tmp_path)
     assert main(["--write", str(root)]) == 0
-    assert (root / "docs" / "graph.md").exists()
-    assert (root / "docs" / "graph.html").exists()
+    assert (root / "docs" / "proofs-contributors-visualisation.md").exists()
+    assert (root / "docs" / "proofs-contributors-visualisation.html").exists()
     assert main(["--check", str(root)]) == 0
     # Drift in either artifact reddens the check.
-    (root / "docs" / "graph.html").write_text("stale", encoding="utf-8")
+    (root / "docs" / "proofs-contributors-visualisation.html").write_text("stale", encoding="utf-8")
     assert main(["--check", str(root)]) == 1
