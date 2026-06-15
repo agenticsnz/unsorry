@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜six-dvd-three-consecutive-int
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/six-dvd-three-consecutive-int.lean
-  sha≜∅
-  aff≜-10
+  sha≜7b83a02a18f7a57de296c6eab23c11c57891a6b9068c320cd21c25d38f40ab42
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
