@@ -6,9 +6,9 @@ A visualiser for the swarm's proof graph (issue #371): every prove-goal, its sta
 
 > An **interactive** version — pan/zoom, click-to-detail panel, filterable table — is generated alongside this file at [`docs/proofs-contributors-visualisation.html`](proofs-contributors-visualisation.html) (open it locally or via GitHub Pages; the browser renders it, GitHub shows the source).
 
-**760 goals — 498 open · 8 blocked · 10 translated · 106 proved · 138 archived.** 14 decomposition families shown below; standalone goals are listed in the table.
+**760 goals — 494 open · 8 blocked · 10 translated · 110 proved · 138 archived.** 14 decomposition families shown below; standalone goals are listed in the table.
 
-Solving agent, PR and the GitHub user who merged it are resolved from the `prove(…)` merge commits (103 of 106 proved goals carry a per-goal prove-PR; the rest predate that convention and are left blank). The solver shows the recorded AISP login where present, otherwise the merging GitHub user; the model comes from recorded provenance only — never guessed (ADR-023).
+Solving agent, PR and the GitHub user who merged it are resolved from the `prove(…)` merge commits (107 of 110 proved goals carry a per-goal prove-PR; the rest predate that convention and are left blank). The solver shows the recorded AISP login where present, otherwise the merging GitHub user; the model comes from recorded provenance only — never guessed (ADR-023).
 
 ## Dependency lineage
 
@@ -255,10 +255,8 @@ Legend: proved #c6f6d5 · open #e2e8f0 · blocked #feebc8 · flagged #fed7d7 · 
 | [`coprime-consec-tri`](https://github.com/agenticsnz/unsorry/blob/main/goals/coprime-consec-tri.lean) | open | 3 | — | — | — | — |
 | [`coprime-fib-sq-fib-succ`](https://github.com/agenticsnz/unsorry/blob/main/goals/coprime-fib-sq-fib-succ.lean) | open | 3 | — | — | — | — |
 | [`coprime-twopow-sub-one-two`](https://github.com/agenticsnz/unsorry/blob/main/goals/coprime-twopow-sub-one-two.lean) | open | 3 | — | — | — | — |
-| [`cube-mod-fortythree-mem`](https://github.com/agenticsnz/unsorry/blob/main/goals/cube-mod-fortythree-mem.lean) | open | 3 | — | — | — | — |
 | [`cube-mod-fourteen-mem`](https://github.com/agenticsnz/unsorry/blob/main/goals/cube-mod-fourteen-mem.lean) | open | 2 | — | — | — | — |
 | [`cube-mod-nineteen-mem`](https://github.com/agenticsnz/unsorry/blob/main/goals/cube-mod-nineteen-mem.lean) | open | 3 | — | — | — | — |
-| [`cube-mod-thirtyseven-mem`](https://github.com/agenticsnz/unsorry/blob/main/goals/cube-mod-thirtyseven-mem.lean) | open | 3 | — | — | — | — |
 | [`cube-mod-twentysix-mem`](https://github.com/agenticsnz/unsorry/blob/main/goals/cube-mod-twentysix-mem.lean) | open | 3 | — | — | — | — |
 | [`cube-of-sum-minus-cubes-div-by-sum`](https://github.com/agenticsnz/unsorry/blob/main/goals/cube-of-sum-minus-cubes-div-by-sum.lean) | open | 2 | — | — | — | — |
 | [`cube-sum-ge-three-prod-s2`](https://github.com/agenticsnz/unsorry/blob/main/goals/cube-sum-ge-three-prod-s2.lean) | open | 1 | — | — | — | — |
@@ -356,12 +354,10 @@ Legend: proved #c6f6d5 · open #e2e8f0 · blocked #feebc8 · flagged #fed7d7 · 
 | [`gcd-2n3-3n5-eq-one`](https://github.com/agenticsnz/unsorry/blob/main/goals/gcd-2n3-3n5-eq-one.lean) | open | 2 | — | — | — | — |
 | [`gcd-2n3-4n5-dvd-two`](https://github.com/agenticsnz/unsorry/blob/main/goals/gcd-2n3-4n5-dvd-two.lean) | open | 3 | — | — | — | — |
 | [`gcd-2pow-3pow-eq-one`](https://github.com/agenticsnz/unsorry/blob/main/goals/gcd-2pow-3pow-eq-one.lean) | open | 2 | — | — | — | — |
-| [`gcd-3n1-5n2-eq-one`](https://github.com/agenticsnz/unsorry/blob/main/goals/gcd-3n1-5n2-eq-one.lean) | open | 2 | — | — | — | — |
 | [`gcd-3n1-9n4-eq-one`](https://github.com/agenticsnz/unsorry/blob/main/goals/gcd-3n1-9n4-eq-one.lean) | open | 2 | — | — | — | — |
 | [`gcd-3n2-5n4-dvd-two`](https://github.com/agenticsnz/unsorry/blob/main/goals/gcd-3n2-5n4-dvd-two.lean) | open | 2 | — | — | — | — |
 | [`gcd-4n3-5n4-eq-one`](https://github.com/agenticsnz/unsorry/blob/main/goals/gcd-4n3-5n4-eq-one.lean) | open | 2 | — | — | — | — |
 | [`gcd-5n3-7n4-eq-one`](https://github.com/agenticsnz/unsorry/blob/main/goals/gcd-5n3-7n4-eq-one.lean) | open | 2 | — | — | — | — |
-| [`gcd-6n5-6n11-eq-one`](https://github.com/agenticsnz/unsorry/blob/main/goals/gcd-6n5-6n11-eq-one.lean) | open | 2 | — | — | — | — |
 | [`gcd-consec-odd-eq-one`](https://github.com/agenticsnz/unsorry/blob/main/goals/gcd-consec-odd-eq-one.lean) | open | 3 | — | — | — | — |
 | [`gcd-factorial-succ-eq-factorial`](https://github.com/agenticsnz/unsorry/blob/main/goals/gcd-factorial-succ-eq-factorial.lean) | open | 3 | — | — | — | — |
 | [`gcd-fib-add-two-eq-gcd-fib-succ`](https://github.com/agenticsnz/unsorry/blob/main/goals/gcd-fib-add-two-eq-gcd-fib-succ.lean) | open | 3 | — | — | — | — |
@@ -772,9 +768,11 @@ Legend: proved #c6f6d5 · open #e2e8f0 · blocked #feebc8 · flagged #fed7d7 · 
 | [`coprime-nsq2-nsq3`](https://github.com/agenticsnz/unsorry/blob/main/goals/coprime-nsq2-nsq3.lean) | proved | 2 | claude-rmt-001 | chat-bit-01 | [#945](https://github.com/agenticsnz/unsorry/pull/945) | 2026-06-15 |
 | [`coprime-succ-sq-add`](https://github.com/agenticsnz/unsorry/blob/main/goals/coprime-succ-sq-add.lean) | proved | 3 | claude-rmt-001 | chat-bit-01 | [#934](https://github.com/agenticsnz/unsorry/pull/934) | 2026-06-16 |
 | [`cube-mod-eighteen-mem`](https://github.com/agenticsnz/unsorry/blob/main/goals/cube-mod-eighteen-mem.lean) | proved | 3 | claude-rmt-001 | chat-bit-01 | [#784](https://github.com/agenticsnz/unsorry/pull/784) | 2026-06-15 |
+| [`cube-mod-fortythree-mem`](https://github.com/agenticsnz/unsorry/blob/main/goals/cube-mod-fortythree-mem.lean) | proved | 3 | 1367ab40f0b1-e413 | cgbarlow · `opus` | [#968](https://github.com/agenticsnz/unsorry/pull/968) | 2026-06-15 |
 | [`cube-mod-nine`](https://github.com/agenticsnz/unsorry/blob/main/goals/cube-mod-nine.lean) | proved | 2 | 1367ab40f0b1-e413 | cgbarlow · `opus` | [#620](https://github.com/agenticsnz/unsorry/pull/620) | 2026-06-15 |
 | [`cube-mod-thirteen-mem`](https://github.com/agenticsnz/unsorry/blob/main/goals/cube-mod-thirteen-mem.lean) | proved | 3 | 1367ab40f0b1-e413 | cgbarlow · `opus` | [#625](https://github.com/agenticsnz/unsorry/pull/625) | 2026-06-15 |
 | [`cube-mod-thirtyone-nonresidue-five`](https://github.com/agenticsnz/unsorry/blob/main/goals/cube-mod-thirtyone-nonresidue-five.lean) | proved | 3 | afnz-zbook-b336 | cgbarlow · `leanstral-2603` | [#777](https://github.com/agenticsnz/unsorry/pull/777) | 2026-06-15 |
+| [`cube-mod-thirtyseven-mem`](https://github.com/agenticsnz/unsorry/blob/main/goals/cube-mod-thirtyseven-mem.lean) | proved | 3 | 1367ab40f0b1-e413 | cgbarlow · `opus` | [#970](https://github.com/agenticsnz/unsorry/pull/970) | 2026-06-15 |
 | [`cube-mod-twentyone-mem`](https://github.com/agenticsnz/unsorry/blob/main/goals/cube-mod-twentyone-mem.lean) | proved | 2 | afnz-zbook-b336 | cgbarlow · `leanstral-2603` | [#844](https://github.com/agenticsnz/unsorry/pull/844) | 2026-06-15 |
 | [`cube-mod-twentyseven-mem`](https://github.com/agenticsnz/unsorry/blob/main/goals/cube-mod-twentyseven-mem.lean) | proved | 3 | afnz-zbook-b336 | cgbarlow · `leanstral-2603` | [#811](https://github.com/agenticsnz/unsorry/pull/811) | 2026-06-15 |
 | [`cube-sum-ge-three-prod-s1`](https://github.com/agenticsnz/unsorry/blob/main/goals/cube-sum-ge-three-prod-s1.lean) | proved | 1 | claude-rmt-001 | chat-bit-01 | [#698](https://github.com/agenticsnz/unsorry/pull/698) | 2026-06-15 |
@@ -811,12 +809,14 @@ Legend: proved #c6f6d5 · open #e2e8f0 · blocked #feebc8 · flagged #fed7d7 · 
 | [`gcd-2n1-2n7-dvd-six`](https://github.com/agenticsnz/unsorry/blob/main/goals/gcd-2n1-2n7-dvd-six.lean) | proved | 2 | claude-rmt-001 | chat-bit-01 | [#883](https://github.com/agenticsnz/unsorry/pull/883) | 2026-06-15 |
 | [`gcd-2n1-3n4-dvd-five`](https://github.com/agenticsnz/unsorry/blob/main/goals/gcd-2n1-3n4-dvd-five.lean) | proved | 3 | claude-rmt-001 | chat-bit-01 | [#881](https://github.com/agenticsnz/unsorry/pull/881) | 2026-06-15 |
 | [`gcd-2n5-3n7-eq-one`](https://github.com/agenticsnz/unsorry/blob/main/goals/gcd-2n5-3n7-eq-one.lean) | proved | 3 | claude-rmt-001 | chat-bit-01 | [#863](https://github.com/agenticsnz/unsorry/pull/863) | 2026-06-15 |
+| [`gcd-3n1-5n2-eq-one`](https://github.com/agenticsnz/unsorry/blob/main/goals/gcd-3n1-5n2-eq-one.lean) | proved | 2 | claude-rmt-001 | chat-bit-01 | [#971](https://github.com/agenticsnz/unsorry/pull/971) | 2026-06-15 |
 | [`gcd-3n2-4n3-eq-one`](https://github.com/agenticsnz/unsorry/blob/main/goals/gcd-3n2-4n3-eq-one.lean) | proved | 3 | claude-rmt-001 | chat-bit-01 | [#861](https://github.com/agenticsnz/unsorry/pull/861) | 2026-06-15 |
 | [`gcd-3n4-5n7-eq-one`](https://github.com/agenticsnz/unsorry/blob/main/goals/gcd-3n4-5n7-eq-one.lean) | proved | 3 | claude-rmt-001 | chat-bit-01 | [#958](https://github.com/agenticsnz/unsorry/pull/958) | 2026-06-15 |
 | [`gcd-4n1-6n1-dvd-two`](https://github.com/agenticsnz/unsorry/blob/main/goals/gcd-4n1-6n1-dvd-two.lean) | proved | 3 | claude-rmt-001 | chat-bit-01 | [#887](https://github.com/agenticsnz/unsorry/pull/887) | 2026-06-15 |
 | [`gcd-4n3-6n5-eq-one`](https://github.com/agenticsnz/unsorry/blob/main/goals/gcd-4n3-6n5-eq-one.lean) | proved | 3 | claude-rmt-001 | chat-bit-01 | [#800](https://github.com/agenticsnz/unsorry/pull/800) | 2026-06-15 |
 | [`gcd-5n2-7n3-eq-one`](https://github.com/agenticsnz/unsorry/blob/main/goals/gcd-5n2-7n3-eq-one.lean) | proved | 3 | claude-rmt-001 | chat-bit-01 | [#794](https://github.com/agenticsnz/unsorry/pull/794) | 2026-06-15 |
 | [`gcd-6n5-4n3-eq-one`](https://github.com/agenticsnz/unsorry/blob/main/goals/gcd-6n5-4n3-eq-one.lean) | proved | 3 | claude-rmt-001 | chat-bit-01 | [#960](https://github.com/agenticsnz/unsorry/pull/960) | 2026-06-15 |
+| [`gcd-6n5-6n11-eq-one`](https://github.com/agenticsnz/unsorry/blob/main/goals/gcd-6n5-6n11-eq-one.lean) | proved | 2 | claude-rmt-001 | chat-bit-01 | [#964](https://github.com/agenticsnz/unsorry/pull/964) | 2026-06-15 |
 | [`gcd-lin-3n2-5n3`](https://github.com/agenticsnz/unsorry/blob/main/goals/gcd-lin-3n2-5n3.lean) | proved | 3 | 1367ab40f0b1-e413 | cgbarlow · `opus` | [#658](https://github.com/agenticsnz/unsorry/pull/658) | 2026-06-15 |
 | [`gcd-n-add-six-dvd-six`](https://github.com/agenticsnz/unsorry/blob/main/goals/gcd-n-add-six-dvd-six.lean) | proved | 2 | claude-rmt-001 | chat-bit-01 | [#869](https://github.com/agenticsnz/unsorry/pull/869) | 2026-06-15 |
 | [`gcd-n1-n7-dvd-six`](https://github.com/agenticsnz/unsorry/blob/main/goals/gcd-n1-n7-dvd-six.lean) | proved | 2 | claude-rmt-001 | chat-bit-01 | [#872](https://github.com/agenticsnz/unsorry/pull/872) | 2026-06-15 |

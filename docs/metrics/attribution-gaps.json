@@ -10,6 +10,21 @@
       "date": "2026-06-15",
       "difficulty": 2,
       "display_name": "chat-bit-01",
+      "git_add_commit": "8aaf54a01a886186f0362a9ee19302b0ba26eb2c",
+      "git_add_date": "2026-06-15",
+      "git_author": "chat-bit-01 <chatuser55@gmail.com>",
+      "git_author_name": "chat-bit-01",
+      "goal": "gcd-6n5-6n11-eq-one",
+      "mapped_github": "chat-bit-01",
+      "path": "library/index/058a4449f56de601d4fa76445c8fcc883bf907094752825b176920ba04dca541.aisp",
+      "review_status": "candidate",
+      "sha": "058a4449f56de601d4fa76445c8fcc883bf907094752825b176920ba04dca541"
+    },
+    {
+      "alias_mapped": true,
+      "date": "2026-06-15",
+      "difficulty": 2,
+      "display_name": "chat-bit-01",
       "git_add_commit": "6fed928820e61f0044e147a84547d7cb38f37b46",
       "git_add_date": "2026-06-15",
       "git_author": "chat-bit-01 <chatuser55@gmail.com>",
@@ -379,6 +394,21 @@
       "path": "library/index/7b83a02a18f7a57de296c6eab23c11c57891a6b9068c320cd21c25d38f40ab42.aisp",
       "review_status": "candidate",
       "sha": "7b83a02a18f7a57de296c6eab23c11c57891a6b9068c320cd21c25d38f40ab42"
+    },
+    {
+      "alias_mapped": true,
+      "date": "2026-06-15",
+      "difficulty": 2,
+      "display_name": "chat-bit-01",
+      "git_add_commit": "67b1a9c49680da79bb02acec9a31be2c581ae1a3",
+      "git_add_date": "2026-06-15",
+      "git_author": "chat-bit-01 <chatuser55@gmail.com>",
+      "git_author_name": "chat-bit-01",
+      "goal": "gcd-3n1-5n2-eq-one",
+      "mapped_github": "chat-bit-01",
+      "path": "library/index/82f90b2ebd38b64da550fc3f3d2e19aba9978450062d748206b79d9f4a7f868a.aisp",
+      "review_status": "candidate",
+      "sha": "82f90b2ebd38b64da550fc3f3d2e19aba9978450062d748206b79d9f4a7f868a"
     },
     {
       "alias_mapped": true,
@@ -2349,9 +2379,9 @@
   "schema_version": 1,
   "source": "git-add-author",
   "summary": {
-    "git_attributed_missing_solver": 156,
-    "mapped_missing_solver": 152,
-    "missing_solver_provenance": 156,
+    "git_attributed_missing_solver": 158,
+    "mapped_missing_solver": 154,
+    "missing_solver_provenance": 158,
     "unmapped_missing_solver": 4
   }
 }

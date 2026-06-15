@@ -1,63 +1,63 @@
 {
   "contributors": [
     {
-      "attempt_yield": 0.1909,
+      "attempt_yield": 0.1967,
       "avatar_url": "https://github.com/cgbarlow.png?size=96",
       "badges": {
-        "difficulty": 186,
-        "proofs": 106,
-        "success_rate_percent": 20.44
+        "difficulty": 192,
+        "proofs": 108,
+        "success_rate_percent": 21.05
       },
       "credit_source_summary": "explicit + inferred",
       "credit_sources": [
         "explicit-solver",
         "inferred-git-add-author"
       ],
-      "credited_proofs": 106,
-      "difficulty_points": 186,
+      "credited_proofs": 108,
+      "difficulty_points": 192,
       "display_name": "@cgbarlow",
-      "explicit_solver_proofs": 59,
-      "failed_attempts": 195,
+      "explicit_solver_proofs": 61,
+      "failed_attempts": 196,
       "github": "cgbarlow",
       "inferred_git_proofs": 47,
-      "median_solve_s": 390,
+      "median_solve_s": 389,
       "profile_url": "https://github.com/cgbarlow",
       "rank": 1,
-      "run_success_rate": 0.2044,
-      "runs": 225,
-      "score": 21250,
+      "run_success_rate": 0.2105,
+      "runs": 228,
+      "score": 21900,
       "solver": "cgbarlow",
-      "successes": 46,
-      "verified_proofs": 106
+      "successes": 48,
+      "verified_proofs": 108
     },
     {
       "attempt_yield": null,
       "avatar_url": "https://github.com/chat-bit-01.png?size=96",
       "badges": {
-        "difficulty": 206,
-        "proofs": 95,
+        "difficulty": 210,
+        "proofs": 97,
         "success_rate_percent": null
       },
       "credit_source_summary": "inferred",
       "credit_sources": [
         "inferred-git-add-author"
       ],
-      "credited_proofs": 95,
-      "difficulty_points": 206,
+      "credited_proofs": 97,
+      "difficulty_points": 210,
       "display_name": "@chat-bit-01",
       "explicit_solver_proofs": 0,
       "failed_attempts": 0,
       "github": "chat-bit-01",
-      "inferred_git_proofs": 95,
+      "inferred_git_proofs": 97,
       "median_solve_s": null,
       "profile_url": "https://github.com/chat-bit-01",
       "rank": 2,
       "run_success_rate": null,
       "runs": 0,
-      "score": 22975,
+      "score": 23425,
       "solver": "chat-bit-01",
       "successes": 0,
-      "verified_proofs": 95
+      "verified_proofs": 97
     },
     {
       "attempt_yield": 0.3333,
@@ -234,30 +234,30 @@
       "verified_proofs": 1
     }
   ],
-  "generated_at": "2026-06-15T23:03:08Z",
+  "generated_at": "2026-06-15T23:10:40Z",
   "generated_from": "docs/metrics/community-stats.json",
   "historical_contributors": [
     {
       "attribution_source": "git-add-author",
       "avatar_url": "https://github.com/cgbarlow.png?size=96",
-      "difficulty_points": 186,
+      "difficulty_points": 192,
       "display_name": "Chris Barlow",
       "github": "cgbarlow",
-      "index_files_added": 106,
+      "index_files_added": 108,
       "missing_solver_provenance": 47,
       "profile_url": "https://github.com/cgbarlow",
       "rank": 1,
       "solver_credit": false,
-      "solver_provenance_proofs": 59
+      "solver_provenance_proofs": 61
     },
     {
       "attribution_source": "git-add-author",
       "avatar_url": "https://github.com/chat-bit-01.png?size=96",
-      "difficulty_points": 206,
+      "difficulty_points": 210,
       "display_name": "chat-bit-01",
       "github": "chat-bit-01",
-      "index_files_added": 95,
-      "missing_solver_provenance": 95,
+      "index_files_added": 97,
+      "missing_solver_provenance": 97,
       "profile_url": "https://github.com/chat-bit-01",
       "rank": 2,
       "solver_credit": false,
@@ -345,9 +345,9 @@
   "models": [
     {
       "provider_model": "claude / opus",
-      "run_success_rate": 0.9048,
-      "runs": 42,
-      "verified_proofs": 46
+      "run_success_rate": 0.9091,
+      "runs": 44,
+      "verified_proofs": 48
     },
     {
       "provider_model": "codex / unknown",
@@ -382,7 +382,7 @@
     {
       "provider_model": "openai / jackcloudman/Leanstral-2603-GGUF",
       "run_success_rate": 0.0,
-      "runs": 40,
+      "runs": 41,
       "verified_proofs": 0
     },
     {
@@ -401,19 +401,19 @@
   "schema_version": 1,
   "score_policy": "rank by credited verified proofs desc, difficulty_points desc; score = difficulty_points * 100 + credited_proofs * 25",
   "summary": {
-    "attributed_proofs": 90,
-    "attribution_gap_count": 156,
+    "attributed_proofs": 92,
+    "attribution_gap_count": 158,
     "credited_contributors": 8,
-    "credited_proofs": 246,
-    "explicit_solver_proofs": 90,
-    "git_attributed_index_files": 246,
+    "credited_proofs": 250,
+    "explicit_solver_proofs": 92,
+    "git_attributed_index_files": 250,
     "historical_contributors": 8,
-    "historical_unknown_proofs": 156,
-    "inferred_git_proofs": 156,
-    "proof_run_coverage": 0.2602,
-    "terminal_runs": 308,
+    "historical_unknown_proofs": 158,
+    "inferred_git_proofs": 158,
+    "proof_run_coverage": 0.264,
+    "terminal_runs": 311,
     "uncredited_proofs": 0,
-    "verified_proofs": 246
+    "verified_proofs": 250
   },
   "timeline": [
     {
@@ -442,9 +442,9 @@
       "proofs": 33
     },
     {
-      "cumulative_proofs": 246,
+      "cumulative_proofs": 250,
       "date": "2026-06-15",
-      "proofs": 122
+      "proofs": 126
     }
   ]
 }

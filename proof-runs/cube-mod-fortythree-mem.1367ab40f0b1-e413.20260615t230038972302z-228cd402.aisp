@@ -1,0 +1,8 @@
+𝔸5.1.run.cube-mod-fortythree-mem.1367ab40f0b1-e413.20260615t230038972302z-228cd402@2026-06-15
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260615t230038972302z-228cd402; goal≜cube-mod-fortythree-mem; agent≜1367ab40f0b1-e413; outcome≜proved}
+⟦Π:Provenance⟧{solver≜cgbarlow; provider≜claude; model≜opus; effort≜high}
+⟦Γ:Goal⟧{goal≜cube-mod-fortythree-mem}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜258; ended≜2026-06-15T23:00:38Z; lessons≜0}
+⟦Σ:Artifact⟧{sha≜087b4a66248e7b4d1aac653b2f1b8d2bb8f79a110c1cdb08cb3a7358153596e2}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

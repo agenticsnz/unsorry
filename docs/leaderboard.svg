@@ -4,24 +4,24 @@
 <rect width="900" height="100%" rx="18" fill="#ffffff"/>
 <rect x="0.5" y="0.5" width="899" height="485" rx="18" fill="none" stroke="#e2e8f0"/>
 <text x="32" y="44" font-family="Inter, system-ui, sans-serif" font-size="28" font-weight="700" fill="#334155">Unsorry Leaderboard</text>
-<text x="32" y="72" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#64748b">246 credited proofs · 90 explicit · 156 inferred from git · 8 contributors</text>
+<text x="32" y="72" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#64748b">250 credited proofs · 92 explicit · 158 inferred from git · 8 contributors</text>
 <text x="34" y="148" font-family="Georgia, serif" font-size="24" font-style="italic" font-weight="700" fill="#fbbf24">1</text>
 <a href="https://github.com/cgbarlow">
 <text x="82" y="138" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="650" fill="#334155">@cgbarlow</text>
 </a>
-<text x="82" y="158" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">106 proofs · 186 difficulty · 59 explicit · 47 inferred · 225 runs</text>
+<text x="82" y="158" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">108 proofs · 192 difficulty · 61 explicit · 47 inferred · 228 runs</text>
 <rect x="320" y="127" width="420" height="26" rx="13" fill="#f1f5f9"/>
-<rect x="320" y="127" width="360" height="26" rx="13" fill="#e0f2fe"/>
-<text x="760" y="146" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">21250 pts</text>
+<rect x="320" y="127" width="364" height="26" rx="13" fill="#e0f2fe"/>
+<text x="760" y="146" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">21900 pts</text>
 <text x="760" y="162" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#64748b">explicit + inferred</text>
 <text x="34" y="212" font-family="Georgia, serif" font-size="24" font-style="italic" font-weight="700" fill="#94a3b8">2</text>
 <a href="https://github.com/chat-bit-01">
 <text x="82" y="202" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="650" fill="#334155">@chat-bit-01</text>
 </a>
-<text x="82" y="222" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">95 proofs · 206 difficulty · 0 explicit · 95 inferred · 0 runs</text>
+<text x="82" y="222" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">97 proofs · 210 difficulty · 0 explicit · 97 inferred · 0 runs</text>
 <rect x="320" y="191" width="420" height="26" rx="13" fill="#f1f5f9"/>
 <rect x="320" y="191" width="390" height="26" rx="13" fill="#e0f2fe"/>
-<text x="760" y="210" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">22975 pts</text>
+<text x="760" y="210" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">23425 pts</text>
 <text x="760" y="226" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#64748b">inferred</text>
 <text x="34" y="276" font-family="Georgia, serif" font-size="24" font-style="italic" font-weight="700" fill="#b45309">3</text>
 <a href="https://github.com/perttu">
@@ -29,7 +29,7 @@
 </a>
 <text x="82" y="286" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">24 proofs · 53 difficulty · 24 explicit · 0 inferred · 26 runs</text>
 <rect x="320" y="255" width="420" height="26" rx="13" fill="#f1f5f9"/>
-<rect x="320" y="255" width="100" height="26" rx="13" fill="#e0f2fe"/>
+<rect x="320" y="255" width="98" height="26" rx="13" fill="#e0f2fe"/>
 <text x="760" y="274" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">5900 pts</text>
 <text x="760" y="290" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#64748b">explicit</text>
 <text x="34" y="340" font-family="Georgia, serif" font-size="24" font-style="italic" font-weight="700" fill="#cbd5e1">4</text>
@@ -38,7 +38,7 @@
 </a>
 <text x="82" y="350" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">9 proofs · 19 difficulty · 0 explicit · 9 inferred · 0 runs</text>
 <rect x="320" y="319" width="420" height="26" rx="13" fill="#f1f5f9"/>
-<rect x="320" y="319" width="36" height="26" rx="13" fill="#e0f2fe"/>
+<rect x="320" y="319" width="35" height="26" rx="13" fill="#e0f2fe"/>
 <text x="760" y="338" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">2125 pts</text>
 <text x="760" y="354" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#64748b">inferred</text>
 <text x="34" y="404" font-family="Georgia, serif" font-size="24" font-style="italic" font-weight="700" fill="#cbd5e1">5</text>
