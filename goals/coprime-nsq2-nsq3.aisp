@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜coprime-nsq2-nsq3
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/coprime-nsq2-nsq3.lean
-  sha≜∅
-  aff≜-20
+  sha≜124e8926177ca034cc9aa0766a8e94092d4c7dbf2b437235358ce9af250dfe0a
+  aff≜-19
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
