@@ -44,7 +44,7 @@ After the central re-check passes, downstream archive or leaderboard flows may t
 
 ## 6. Phasing (contract milestones)
 
-- **Phase 0 (this PR's scope is research only):** ADR-049 + this spec + the §5.1 regression tests authored red. No `gate-a.yml` control-flow change.
+- **Phase 0 (delivered):** ADR-049 + this spec + the §5 conformance regression suite (`tools/gate_a/tests/test_decentralised_runner_conformance.py`), which locks in the §2 soundness invariant (no contributor-supplied artifact is a trusted input; scoping never under-scopes incl `*Binding`; global-impact forces a full re-check; the workflow feeds no downloaded artifact into the central build/replay). The Phase-1-dependent items (§5.4 cache provenance, §5.5 determinism) are recorded as skipped placeholders. No `gate-a.yml` control-flow change.
 - **Phase 1:** scope the central build to the changed closure; keep replay/audit/binding verbatim; measure cost. CODEOWNERS-reviewed (ADR-019).
 - **Phase 2:** advisory pre-filters + per-contributor rate-limiting (SPEC-030-A §7.1 anti-abuse), non-merge-gating.
 - **Phase 3 (pilot-gated):** `lean4export` + independent-checker re-check as a second, kernel-diverse anchor — adopted only if a determinism + wall-clock pilot shows it bounded (guard the ">100× slower" pathology). Authoritative gate stays `leanchecker`-on-locally-rebuilt-environment until then.
