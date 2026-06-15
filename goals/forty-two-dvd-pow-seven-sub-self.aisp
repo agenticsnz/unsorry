@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜forty-two-dvd-pow-seven-sub-self
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/forty-two-dvd-pow-seven-sub-self.lean
-  sha≜∅
-  aff≜-20
+  sha≜cb01eaf7e67dcb939bd5c2fd0af2515481b28716038ca750b6c2cb2a161e6f1a
+  aff≜-19
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
