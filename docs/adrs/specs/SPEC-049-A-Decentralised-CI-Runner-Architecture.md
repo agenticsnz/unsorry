@@ -1,8 +1,8 @@
 # SPEC-049-A: Decentralised CI Runner — Tiered Verification Split
 
-Implements: [ADR-049](../ADR-049-Decentralised-CI-Runner-Architecture.md) · Status: Proposed · Updated: 2026-06-15
+Implements: [ADR-049](../ADR-049-Decentralised-CI-Runner-Architecture.md) · Status: Accepted (Phase 0 delivered) · Updated: 2026-06-15
 
-This spec defines the **contract** for the recommended decentralised CI runner architecture: a tiered split where the untrusted contributor performs the expensive elaboration and a mandatory cheap **central** re-check is the sole load-bearing soundness gate. Like [SPEC-030-A](SPEC-030-A-Distributed-Workload-Engine.md), it is a **design target, not yet an implementation**; today's Gate A (ADR-006/SPEC-006-B) is the conformance reference because the central re-check already exists — this spec scopes *which work it repeats* and codifies *what it must never trust*. It is intentionally implementation-light: the full options analysis is in [docs/proposals/decentralised-ci-runner-architecture.md](../../proposals/decentralised-ci-runner-architecture.md), and the decision is [ADR-049](../ADR-049-Decentralised-CI-Runner-Architecture.md).
+This spec defines the **contract** for the recommended decentralised CI runner architecture: a tiered split where the untrusted contributor performs the expensive elaboration and a mandatory cheap **central** re-check is the sole load-bearing soundness gate. Phase 0 is delivered (the §5 conformance suite, see §6); the **Phase-1+ control-flow change remains a design target**. Today's Gate A (ADR-006/SPEC-006-B) is the conformance reference because the central re-check already exists — this spec scopes *which work it repeats* and codifies *what it must never trust*. It is intentionally implementation-light: the full options analysis is in [docs/proposals/decentralised-ci-runner-architecture.md](../../proposals/decentralised-ci-runner-architecture.md), and the decision is [ADR-049](../ADR-049-Decentralised-CI-Runner-Architecture.md).
 
 ## 1. Roles
 

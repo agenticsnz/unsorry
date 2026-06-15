@@ -6,7 +6,7 @@
 | **Initiative** | unsorry — CI scalability (issue #635) |
 | **Proposed By** | unsorry maintainers |
 | **Date** | 2026-06-15 |
-| **Status** | Proposed |
+| **Status** | Accepted |
 
 ## Context
 
@@ -17,7 +17,7 @@ unsorry's soundness gate (Gate A, ADR-006) is the project's dominant CI cost and
 1. **The client already runs the runner.** `swarm/agent.sh::prove_local_verify()` already performs `lake build UnsorryLibrary --wfail` + `axiom_audit` + `check_library_options` before opening a PR. The open problem is therefore **trust**, not capability.
 2. **Lean splits cleanly at a natural seam.** Expensive *elaboration* (the cost driver, and the part that need not be trusted) is separable from cheap *kernel checking*. A full kernel replay of every swarm proof (~225 s) is already ~4–6× cheaper than one cold elaboration build; an incremental PR replay is ~40–120× cheaper. This makes a mandatory central re-check affordable on **every** PR.
 
-The decision is bounded by the project's standing, non-negotiable invariants: the Lean kernel is the only truth oracle; every contribution must be re-checkable on a **trusted** surface before it lands in the commons; identity is hygiene, never soundness (ADR-007); the CI trust surface is SHA-pinned and CODEOWNERS-gated (ADR-019); mathlib/toolchain are release-pinned for reproducibility (ADR-002). This decision records the recommended *direction* (Status: Proposed); the implementation contract is sketched in [SPEC-049-A](specs/SPEC-049-A-Decentralised-CI-Runner-Architecture.md) as a design target, not yet built.
+The decision is bounded by the project's standing, non-negotiable invariants: the Lean kernel is the only truth oracle; every contribution must be re-checkable on a **trusted** surface before it lands in the commons; identity is hygiene, never soundness (ADR-007); the CI trust surface is SHA-pinned and CODEOWNERS-gated (ADR-019); mathlib/toolchain are release-pinned for reproducibility (ADR-002). This decision records the recommended *direction* (Status: Accepted). Its substance was already live via ADR-033 (incremental replay/audit) and ADR-045 (olean cache); the implementation contract in [SPEC-049-A](specs/SPEC-049-A-Decentralised-CI-Runner-Architecture.md) is phased. **Phase 0 is delivered** — the §5 conformance regression suite (`tools/gate_a/tests/test_decentralised_runner_conformance.py`, PR #926) that locks in the §2 soundness invariant. **Phase 1** (scoping the central elaboration build to the changed closure) is deferred pending a cost measurement, since the build is already incremental via Lake content-hash traces + the ADR-045 cache, so the marginal win is small and SPEC-049-A §6 gates Phase 1 on measured cost. **Phases 2–3** remain future / pilot-gated, each its own decision.
 
 ## WH(Y) Decision Statement
 
@@ -103,3 +103,4 @@ Keep namespace.so; scale by paying. **Pros:** unimpeachable soundness (kernel on
 | Status | Approver | Date |
 |--------|----------|------|
 | Proposed | unsorry maintainers | 2026-06-15 |
+| Accepted (Phase 0 delivered, #926) | unsorry maintainers | 2026-06-15 |
