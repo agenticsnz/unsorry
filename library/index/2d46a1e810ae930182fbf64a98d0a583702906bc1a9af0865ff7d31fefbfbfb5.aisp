@@ -1,8 +1,7 @@
-𝔸5.1.lemma.2d46a1e810ae@2026-06-14
+𝔸5.1.lemma.2d46a1e810ae@2026-06-15
 γ≔unsorry.lemma.index
 ⟦Ω:Lemma⟧{sha≜2d46a1e810ae930182fbf64a98d0a583702906bc1a9af0865ff7d31fefbfbfb5; goal≜two-abs-mul-le-sq-add-sq; name≜two_abs_mul_le_sq_add_sq}
 ⟦Σ:Source⟧{src≜goals/two-abs-mul-le-sq-add-sq.lean}
 ⟦Γ:Tags⟧{tags≜⟨⟩}
 ⟦Λ:Meta⟧{use≜0; aff≜0}
-⟦Π:Provenance⟧{solver≜perttu; agent≜oma-2-c50d; provider≜gemini; model≜gemini-3.1-pro-preview; effort≜high; attempts≜1; solve_s≜199}
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
