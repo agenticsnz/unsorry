@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜prime-fourth-power-mod-240
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜4
 }
 ⟦Σ:Source⟧{
-  src≜backlog/prime-fourth-power-mod-240.md
+  src≜packages/unsorry-archive-0002/backlog/prime-fourth-power-mod-240.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨odd-fourth-power-mod-sixteen,fourth-power-mod-three,fourth-power-mod-five⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/prime-fourth-power-mod-240.lean
+  lean≜packages/unsorry-archive-0002/goals/prime-fourth-power-mod-240.lean
   sha≜3d4d1c2b119fa534e18d14f6f39d218a3fdbf4455f11c178b55ce77b3286c254
   aff≜1
 }

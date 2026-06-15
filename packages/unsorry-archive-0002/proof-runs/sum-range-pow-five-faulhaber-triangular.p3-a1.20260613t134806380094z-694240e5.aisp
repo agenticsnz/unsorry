@@ -1,0 +1,7 @@
+𝔸5.1.run.sum-range-pow-five-faulhaber-triangular.p3-a1.20260613t134806380094z-694240e5@2026-06-13
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260613t134806380094z-694240e5; goal≜sum-range-pow-five-faulhaber-triangular; agent≜p3-a1; outcome≜proved}
+⟦Π:Provenance⟧{solver≜cgbarlow; provider≜claude; model≜opus; effort≜high}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜292; ended≜2026-06-13T13:48:06Z; lessons≜0}
+⟦Σ:Artifact⟧{sha≜31b4ed851507457abe6b7984f1a55c7423b251505d558b827e165cb3a9059c4e}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

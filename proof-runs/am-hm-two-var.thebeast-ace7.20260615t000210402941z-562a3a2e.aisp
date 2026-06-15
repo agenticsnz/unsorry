@@ -1,0 +1,9 @@
+𝔸5.1.run.am-hm-two-var.thebeast-ace7.20260615t000210402941z-562a3a2e@2026-06-15
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260615t000210402941z-562a3a2e; goal≜am-hm-two-var; agent≜thebeast-ace7; outcome≜failed}
+⟦Π:Provenance⟧{solver≜adam91holt; provider≜codex; effort≜xhigh}
+⟦Γ:Goal⟧{goal≜am-hm-two-var}
+⟦Λ:Metrics⟧{attempts≜3; solve_s≜253; ended≜2026-06-15T00:02:10Z; lessons≜2}
+⟦Σ:Artifact⟧{sha≜∅}
+⟦Δ:Lesson⟧{sig≜(no file was written at library/Unsorry/AmHmTwoVar.lean)}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

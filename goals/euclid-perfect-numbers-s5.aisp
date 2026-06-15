@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜euclid-perfect-numbers-s5
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜decompositions/euclid-perfect-numbers.oma-2-c50d.aisp
+  src≜packages/unsorry-archive-0002/decompositions/euclid-perfect-numbers.oma-2-c50d.aisp
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/euclid-perfect-numbers-s5.lean
+  lean≜packages/unsorry-archive-0002/goals/euclid-perfect-numbers-s5.lean
   sha≜31c9b7e6c5f577789882ecd0b0189e74be703dedfb04437e0260cf31df90c4ed
   aff≜1
   depth≜1

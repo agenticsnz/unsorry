@@ -1,0 +1,9 @@
+𝔸5.1.run.discriminant-nonneg.1367ab40f0b1-e413.20260615t004836275879z-c069d891@2026-06-15
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260615t004836275879z-c069d891; goal≜discriminant-nonneg; agent≜1367ab40f0b1-e413; outcome≜decomposed}
+⟦Π:Provenance⟧{solver≜cgbarlow; provider≜claude; model≜opus; effort≜max}
+⟦Γ:Goal⟧{goal≜discriminant-nonneg}
+⟦Λ:Metrics⟧{attempts≜3; solve_s≜1493; ended≜2026-06-15T00:48:36Z; lessons≜1}
+⟦Σ:Artifact⟧{sha≜∅}
+⟦Δ:Lesson⟧{sig≜⚠ [8552/8558] Replaying Unsorry.DiscriminantNonnegBinding trace: .> LEAN_PATH=/home/vscode/.unsorry/work/prove-discriminant-nonneg-1367ab40f0b1-e413/.lake/packages/Cli/.lake/build/lib/lean:/home/vscode/.unsorry/work/prove-discriminant-nonneg-1367ab40f0b1-e413/.lake/packages/batte}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

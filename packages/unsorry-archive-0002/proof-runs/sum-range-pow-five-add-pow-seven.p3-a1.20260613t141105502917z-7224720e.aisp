@@ -1,0 +1,7 @@
+𝔸5.1.run.sum-range-pow-five-add-pow-seven.p3-a1.20260613t141105502917z-7224720e@2026-06-13
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260613t141105502917z-7224720e; goal≜sum-range-pow-five-add-pow-seven; agent≜p3-a1; outcome≜proved}
+⟦Π:Provenance⟧{solver≜cgbarlow; provider≜claude; model≜opus; effort≜high}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜342; ended≜2026-06-13T14:11:05Z; lessons≜0}
+⟦Σ:Artifact⟧{sha≜5eef0bff85cd4b8b9ddd4314c88126e935e21b70aa76c5bee783fbb06451b7e0}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

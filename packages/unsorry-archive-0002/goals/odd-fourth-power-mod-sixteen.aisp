@@ -1,0 +1,20 @@
+𝔸5.1.goal.odd-fourth-power-mod-sixteen@2026-06-13
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜odd-fourth-power-mod-sixteen
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/odd-fourth-power-mod-sixteen.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨odd-sq-mod-eight⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/odd-fourth-power-mod-sixteen.lean
+  sha≜f0c04e173bcc32f99679ef3214b277a7da0a411bc3d4634ce9d78f1fe992831f
+  aff≜1
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

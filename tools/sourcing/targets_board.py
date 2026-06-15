@@ -1,10 +1,12 @@
 """Generate `docs/targets.md` — the human-facing worklist of backlog targets
 (ADR-012). One row per prove goal: status, difficulty, source, reference.
 
-Provenance (source / reference / absence) lives in `backlog/<id>.md` as light
-`- **Field:** value` lines (Gate B does not validate the backlog markdown, so no
-schema churn); status/difficulty come from the goal record, and the proved
-marker from `library/index`. Deterministic — regenerate whenever goals change.
+Provenance (source / reference / absence) lives in the goal record's markdown
+source, normally `backlog/<id>.md` and, after archival, a
+`packages/unsorry-archive-*` path. Markdown uses light `- **Field:** value`
+lines (Gate B does not validate it, so no schema churn); status/difficulty come
+from the goal record, and the proved marker from `library/index`.
+Deterministic — regenerate whenever goals change.
 
 Usage:  python3 -m tools.sourcing.targets_board [<repo-root>] > docs/targets.md
         python3 -m tools.sourcing.targets_board --check [<repo-root>]   # CI drift check
@@ -20,6 +22,7 @@ _STATUS_RE = re.compile(r"status≜(\w+)")
 _PHASE_RE = re.compile(r"phase≜(\w+)")
 _DIFF_RE = re.compile(r"difficulty≜(\d+)")
 _GOAL_RE = re.compile(r"goal≜([A-Za-z0-9][A-Za-z0-9-]*)")
+_SRC_RE = re.compile(r"src≜([^}\s]+)")
 
 
 def _proved(root: Path) -> set[str]:
@@ -37,19 +40,26 @@ def _proved(root: Path) -> set[str]:
     return proved
 
 
-def _backlog_fields(root: Path, goal: str) -> dict[str, str]:
-    md = root / "backlog" / f"{goal}.md"
+def _backlog_fields(root: Path, goal: str, goal_text: str | None = None) -> dict[str, str]:
+    src = (_SRC_RE.search(goal_text).group(1) if goal_text and _SRC_RE.search(goal_text) else None)
+    md = root / src if src and src.endswith(".md") else root / "backlog" / f"{goal}.md"
     if not md.is_file():
         return {}
     text = md.read_text(encoding="utf-8")
     fields = {m.group("key").strip().lower(): m.group("val").strip()
               for m in _FIELD_RE.finditer(text)}
-    # title: first non-empty non-heading line
+    # title: first non-empty non-heading paragraph
+    title_lines: list[str] = []
     for line in text.splitlines():
         s = line.strip()
-        if s and not s.startswith("#") and not s.startswith("-"):
-            fields.setdefault("title", s)
-            break
+        if title_lines:
+            if not s or s.startswith("#") or s.startswith("-") or s.startswith(">"):
+                break
+            title_lines.append(s)
+        elif s and not s.startswith("#") and not s.startswith("-") and not s.startswith(">"):
+            title_lines.append(s)
+    if title_lines:
+        fields.setdefault("title", " ".join(title_lines))
     return fields
 
 
@@ -66,7 +76,7 @@ def rows(root: Path) -> list[dict]:
         goal = path.stem
         status = "proved" if goal in proved else (_STATUS_RE.search(text) or [None, "open"])[1]
         diff = (_DIFF_RE.search(text) or [None, ""])[1]
-        fields = _backlog_fields(root, goal)
+        fields = _backlog_fields(root, goal, text)
         out.append({
             "id": goal,
             "title": fields.get("title", goal),

@@ -1,0 +1,186 @@
+{
+  "block_id": "unsorry-archive-0002",
+  "target_size": 40,
+  "proof_count": 40,
+  "status": "frozen",
+  "source_commit": "0015a65bdc35e606c793ba860d980885034b62db",
+  "validation_commit": null,
+  "pins": {
+    "lean_toolchain": "leanprover/lean4:v4.30.0",
+    "mathlib": "v4.30.0"
+  },
+  "notes": [
+    "Second ADR-041 proof archive block.",
+    "Active package proof modules, goal Lean files, backlog entries, and active index entries for this block have been retired.",
+    "Active goal records remain as archived metadata and point at this archive package for their source and Lean statement files."
+  ],
+  "goals": [
+    {
+      "goal": "platonic-schlafli-core",
+      "module": "Unsorry.PlatonicSchlafliCore"
+    },
+    {
+      "goal": "platonic-schlafli-core-s1",
+      "module": "Unsorry.PlatonicSchlafliCoreS1"
+    },
+    {
+      "goal": "platonic-schlafli-core-s1-s1",
+      "module": "Unsorry.PlatonicSchlafliCoreS1S1"
+    },
+    {
+      "goal": "platonic-schlafli-core-s1-s1-s1",
+      "module": "Unsorry.PlatonicSchlafliCoreS1S1S1"
+    },
+    {
+      "goal": "platonic-schlafli-core-s1-s1-s2",
+      "module": "Unsorry.PlatonicSchlafliCoreS1S1S2"
+    },
+    {
+      "goal": "platonic-schlafli-core-s1-s2",
+      "module": "Unsorry.PlatonicSchlafliCoreS1S2"
+    },
+    {
+      "goal": "platonic-schlafli-core-s1-s3",
+      "module": "Unsorry.PlatonicSchlafliCoreS1S3"
+    },
+    {
+      "goal": "platonic-schlafli-core-s2",
+      "module": "Unsorry.PlatonicSchlafliCoreS2"
+    },
+    {
+      "goal": "platonic-schlafli-core-s2-s1",
+      "module": "Unsorry.PlatonicSchlafliCoreS2S1"
+    },
+    {
+      "goal": "platonic-schlafli-core-s2-s2",
+      "module": "Unsorry.PlatonicSchlafliCoreS2S2"
+    },
+    {
+      "goal": "platonic-schlafli-core-s2-s3",
+      "module": "Unsorry.PlatonicSchlafliCoreS2S3"
+    },
+    {
+      "goal": "platonic-schlafli-core-s3",
+      "module": "Unsorry.PlatonicSchlafliCoreS3"
+    },
+    {
+      "goal": "platonic-schlafli-core-s4",
+      "module": "Unsorry.PlatonicSchlafliCoreS4"
+    },
+    {
+      "goal": "abstract-regular-polyhedron-classification",
+      "module": "Unsorry.AbstractRegularPolyhedronClassification"
+    },
+    {
+      "goal": "euclid-perfect-numbers-s1",
+      "module": "Unsorry.EuclidPerfectNumbersS1"
+    },
+    {
+      "goal": "euclid-perfect-numbers-s2",
+      "module": "Unsorry.EuclidPerfectNumbersS2"
+    },
+    {
+      "goal": "euclid-perfect-numbers-s3",
+      "module": "Unsorry.EuclidPerfectNumbersS3"
+    },
+    {
+      "goal": "euclid-perfect-numbers-s4",
+      "module": "Unsorry.EuclidPerfectNumbersS4"
+    },
+    {
+      "goal": "euclid-perfect-numbers-s5",
+      "module": "Unsorry.EuclidPerfectNumbersS5"
+    },
+    {
+      "goal": "euclid-perfect-numbers-s6",
+      "module": "Unsorry.EuclidPerfectNumbersS6"
+    },
+    {
+      "goal": "euclid-perfect-numbers",
+      "module": "Unsorry.EuclidPerfectNumbers"
+    },
+    {
+      "goal": "odd-sq-mod-eight",
+      "module": "Unsorry.OddSqModEight"
+    },
+    {
+      "goal": "prime-sq-mod-twenty-four",
+      "module": "Unsorry.PrimeSqModTwentyFour"
+    },
+    {
+      "goal": "prime-sq-sub-sq-div-twenty-four",
+      "module": "Unsorry.PrimeSqSubSqDivTwentyFour"
+    },
+    {
+      "goal": "sq-mod-three",
+      "module": "Unsorry.SqModThree"
+    },
+    {
+      "goal": "fourth-power-mod-five",
+      "module": "Unsorry.FourthPowerModFive"
+    },
+    {
+      "goal": "fourth-power-mod-five-s1",
+      "module": "Unsorry.FourthPowerModFiveS1"
+    },
+    {
+      "goal": "fourth-power-mod-five-s2",
+      "module": "Unsorry.FourthPowerModFiveS2"
+    },
+    {
+      "goal": "fourth-power-mod-three",
+      "module": "Unsorry.FourthPowerModThree"
+    },
+    {
+      "goal": "odd-fourth-power-mod-sixteen",
+      "module": "Unsorry.OddFourthPowerModSixteen"
+    },
+    {
+      "goal": "prime-fourth-power-mod-240",
+      "module": "Unsorry.PrimeFourthPowerMod240"
+    },
+    {
+      "goal": "sum-range-pow-five-closed-form",
+      "module": "Unsorry.SumRangePowFiveClosedForm"
+    },
+    {
+      "goal": "sum-range-pow-seven-faulhaber-triangular",
+      "module": "Unsorry.SumRangePowSevenFaulhaberTriangular"
+    },
+    {
+      "goal": "sum-range-pow-five-faulhaber-triangular",
+      "module": "Unsorry.SumRangePowFiveFaulhaberTriangular"
+    },
+    {
+      "goal": "sum-range-pow-seven-closed-form",
+      "module": "Unsorry.SumRangePowSevenClosedForm"
+    },
+    {
+      "goal": "sum-range-pow-five-add-pow-seven",
+      "module": "Unsorry.SumRangePowFiveAddPowSeven"
+    },
+    {
+      "goal": "sum-range-recip-pronic",
+      "module": "Unsorry.SumRangeRecipPronic"
+    },
+    {
+      "goal": "sum-range-recip-triangular",
+      "module": "Unsorry.SumRangeRecipTriangular"
+    },
+    {
+      "goal": "three-cubes-div-nine",
+      "module": "Unsorry.ThreeCubesDivNine"
+    },
+    {
+      "goal": "six-dvd-three-consecutive",
+      "module": "Unsorry.SixDvdThreeConsecutive"
+    }
+  ],
+  "deferred_groups": [
+    [
+      "sum-range-sq-mul-choose",
+      "sum-range-fall-mul-choose",
+      "sum-range-cube-mul-choose"
+    ]
+  ]
+}

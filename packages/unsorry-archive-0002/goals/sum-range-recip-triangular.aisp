@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-range-recip-triangular@2026-06-13
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-range-recip-triangular
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-range-recip-triangular.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨sum-range-recip-pronic⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-range-recip-triangular.lean
+  sha≜7cadca8b4dddc9d2d9a8fff9f0cb028c4e6fc4d91611468491460541b0bad2b1
+  aff≜1
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

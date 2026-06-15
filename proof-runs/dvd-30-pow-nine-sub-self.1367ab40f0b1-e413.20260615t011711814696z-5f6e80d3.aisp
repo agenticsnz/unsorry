@@ -1,0 +1,8 @@
+𝔸5.1.run.dvd-30-pow-nine-sub-self.1367ab40f0b1-e413.20260615t011711814696z-5f6e80d3@2026-06-15
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260615t011711814696z-5f6e80d3; goal≜dvd-30-pow-nine-sub-self; agent≜1367ab40f0b1-e413; outcome≜proved}
+⟦Π:Provenance⟧{solver≜cgbarlow; provider≜claude; model≜opus; effort≜high}
+⟦Γ:Goal⟧{goal≜dvd-30-pow-nine-sub-self}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜163; ended≜2026-06-15T01:17:11Z; lessons≜0}
+⟦Σ:Artifact⟧{sha≜01cefcd01a4e04aa0d7c7a71e671f70a0891c8f91786576c1c5c6b3e3c55f9cc}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-range-recip-pronic@2026-06-12
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-range-recip-pronic
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-range-recip-pronic.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-range-recip-pronic.lean
+  sha≜051b341cd7723755424a4748a6a6dbcbb02f3bae374a8c2c84743b2b8ea5563a
+  aff≜1
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

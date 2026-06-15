@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-pow-seven-faulhaber-triangular
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜4
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-pow-seven-faulhaber-triangular.md
+  src≜packages/unsorry-archive-0002/backlog/sum-range-pow-seven-faulhaber-triangular.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨sum-range-pow-seven-closed-form⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-pow-seven-faulhaber-triangular.lean
+  lean≜packages/unsorry-archive-0002/goals/sum-range-pow-seven-faulhaber-triangular.lean
   sha≜89307614b03d8e9eb6bf63b1f7483478c4100d87211d1a423db9cb53afa4dedb
   aff≜1
 }

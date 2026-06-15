@@ -1,0 +1,9 @@
+𝔸5.1.run.am-gm-three-cube-s1.afnz-zbook-b336.20260615t001537982824z-127dd5d5@2026-06-15
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260615t001537982824z-127dd5d5; goal≜am-gm-three-cube-s1; agent≜afnz-zbook-b336; outcome≜failed}
+⟦Π:Provenance⟧{solver≜cgbarlow; provider≜openai; model≜leanstral-2603; effort≜high}
+⟦Γ:Goal⟧{goal≜am-gm-three-cube-s1}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜205; ended≜2026-06-15T00:15:38Z; lessons≜1}
+⟦Σ:Artifact⟧{sha≜∅}
+⟦Δ:Lesson⟧{sig≜✖ [8556/8558] Building Unsorry.AmGmThreeCubeS1 (1.1s) trace: .> LEAN_PATH=/home/chris/.unsorry/work/prove-am-gm-three-cube-s1-afnz-zbook-b336/.lake/packages/Cli/.lake/build/lib/lean:/home/chris/.unsorry/work/prove-am-gm-three-cube-s1-afnz-zbook-b336/.lake/packages/batteries/.lake}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

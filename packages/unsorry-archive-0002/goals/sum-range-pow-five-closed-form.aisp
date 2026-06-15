@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-range-pow-five-closed-form@2026-06-12
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-range-pow-five-closed-form
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-range-pow-five-closed-form.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-range-pow-five-closed-form.lean
+  sha≜6f17a73a74d8d197ec95c06814032a85c20b925b76244f1311819d31c16e821f
+  aff≜1
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

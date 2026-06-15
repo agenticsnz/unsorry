@@ -1,0 +1,8 @@
+𝔸5.1.run.discriminant-nonneg-s1.1367ab40f0b1-e413.20260615t010402634441z-8b23da17@2026-06-15
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260615t010402634441z-8b23da17; goal≜discriminant-nonneg-s1; agent≜1367ab40f0b1-e413; outcome≜proved}
+⟦Π:Provenance⟧{solver≜cgbarlow; provider≜claude; model≜opus; effort≜high}
+⟦Γ:Goal⟧{goal≜discriminant-nonneg-s1}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜183; ended≜2026-06-15T01:04:02Z; lessons≜0}
+⟦Σ:Artifact⟧{sha≜1f70c1213ebdf624a3b55e35ed514e3480d1943b78367f005548456eb103bbe3}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

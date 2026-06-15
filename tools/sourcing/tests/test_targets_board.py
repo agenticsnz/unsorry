@@ -29,6 +29,44 @@ def test_rows_reads_status_and_provenance(tmp_path):
     assert r[0]["status"] == "open"
 
 
+def test_rows_reads_archived_source_provenance(tmp_path):
+    _seed(tmp_path, "archived-goal", "archived", 3, None)
+    goal = tmp_path / "goals" / "archived-goal.aisp"
+    goal.write_text(
+        "⟦Ω:Goal⟧{ id≜archived-goal phase≜prove status≜archived difficulty≜3 }\n"
+        "⟦Σ:Source⟧{ src≜packages/unsorry-archive-0002/backlog/archived-goal.md }\n",
+        encoding="utf-8",
+    )
+    md = tmp_path / "packages" / "unsorry-archive-0002" / "backlog" / "archived-goal.md"
+    md.parent.mkdir(parents=True)
+    md.write_text(
+        "# archived-goal\n\nThe archived target title.\n\n"
+        "- **Source:** Archived source\n- **Reference:** Archived reference\n",
+        encoding="utf-8",
+    )
+
+    r = rows(tmp_path)
+
+    assert r[0]["title"] == "The archived target title."
+    assert r[0]["source"] == "Archived source"
+    assert r[0]["reference"] == "Archived reference"
+
+
+def test_rows_joins_multiline_title_paragraph(tmp_path):
+    _seed(
+        tmp_path,
+        "multiline-title",
+        "open",
+        1,
+        "# multiline-title\n\n"
+        "The first title line\n"
+        "continues on the next line.\n\n"
+        "- **Source:** Source field\n",
+    )
+
+    assert rows(tmp_path)[0]["title"] == "The first title line continues on the next line."
+
+
 def test_proved_marker_overrides_record_status(tmp_path):
     _seed(tmp_path, "g", "open", 1, None)
     (tmp_path / "library" / "index").mkdir(parents=True, exist_ok=True)

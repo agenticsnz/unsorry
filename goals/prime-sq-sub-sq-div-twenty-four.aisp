@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜prime-sq-sub-sq-div-twenty-four
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/prime-sq-sub-sq-div-twenty-four.md
+  src≜packages/unsorry-archive-0002/backlog/prime-sq-sub-sq-div-twenty-four.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨prime-sq-mod-twenty-four⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/prime-sq-sub-sq-div-twenty-four.lean
+  lean≜packages/unsorry-archive-0002/goals/prime-sq-sub-sq-div-twenty-four.lean
   sha≜d8f3f87334f4a56d774b289029ab5d60aec6b661a17d991dd6ce278e9478d381
   aff≜1
 }

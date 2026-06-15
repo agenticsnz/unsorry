@@ -1,0 +1,9 @@
+𝔸5.1.run.discriminant-nonneg-s2.afnz-zbook-b336.20260615t010625256889z-08901927@2026-06-15
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260615t010625256889z-08901927; goal≜discriminant-nonneg-s2; agent≜afnz-zbook-b336; outcome≜failed}
+⟦Π:Provenance⟧{solver≜cgbarlow; provider≜openai; model≜leanstral-2603; effort≜high}
+⟦Γ:Goal⟧{goal≜discriminant-nonneg-s2}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜213; ended≜2026-06-15T01:06:25Z; lessons≜0}
+⟦Σ:Artifact⟧{sha≜∅}
+⟦Δ:Lesson⟧{sig≜✖ [8517/8519] Building Unsorry.DiscriminantNonnegS2 (1.5s) trace: .> LEAN_PATH=/home/chris/.unsorry/work/prove-discriminant-nonneg-s2-afnz-zbook-b336/.lake/packages/Cli/.lake/build/lib/lean:/home/chris/.unsorry/work/prove-discriminant-nonneg-s2-afnz-zbook-b336/.lake/packages/batt}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

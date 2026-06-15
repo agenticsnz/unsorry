@@ -1,0 +1,8 @@
+𝔸5.1.run.coprime-2n1-n1.1367ab40f0b1-e413.20260615t005609024348z-99251f4f@2026-06-15
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260615t005609024348z-99251f4f; goal≜coprime-2n1-n1; agent≜1367ab40f0b1-e413; outcome≜proved}
+⟦Π:Provenance⟧{solver≜cgbarlow; provider≜claude; model≜opus; effort≜high}
+⟦Γ:Goal⟧{goal≜coprime-2n1-n1}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜262; ended≜2026-06-15T00:56:09Z; lessons≜0}
+⟦Σ:Artifact⟧{sha≜734eba750feee05b8e9e72782de281c562521a534cddc00db8b0d9a10734e002}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

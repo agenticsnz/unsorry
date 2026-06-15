@@ -1,0 +1,13 @@
+𝔸5.1.decomp.discriminant-nonneg.1367ab40f0b1-e413@2026-06-15
+γ≔unsorry.decomposition
+⟦Ω:Decomp⟧{parent≜discriminant-nonneg; agent≜1367ab40f0b1-e413}
+⟦Σ:Subs⟧{
+  sub₁≜⟨id≜discriminant-nonneg-s1,sha≜1f70c1213ebdf624a3b55e35ed514e3480d1943b78367f005548456eb103bbe3⟩
+  sub₂≜⟨id≜discriminant-nonneg-s2,sha≜371c5f9bf176fadb60edbadcbed859640ade565ea8fe7bf6754b256c457fdb39⟩
+  sub₃≜⟨id≜discriminant-nonneg-s3,sha≜4122262be757b6393ef5d80fea35ef1a78f0c7a1a538b04d837678a1aa28d8ee⟩
+}
+⟦Γ:Edges⟧{
+  Post(sub₁)⊆Pre(parent); Post(sub₂)⊆Pre(parent); Post(sub₃)⊆Pre(parent)
+}
+⟦Λ:Requeue⟧{∀s∈subs:goal(s)≫status≔open}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

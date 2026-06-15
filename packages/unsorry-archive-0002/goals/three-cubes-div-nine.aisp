@@ -1,0 +1,20 @@
+𝔸5.1.goal.three-cubes-div-nine@2026-06-12
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜three-cubes-div-nine
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/three-cubes-div-nine.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/three-cubes-div-nine.lean
+  sha≜9b0fe92e18d79e7729e23fa544a37a2530074349a05720ebbf6724f51ae17397
+  aff≜1
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

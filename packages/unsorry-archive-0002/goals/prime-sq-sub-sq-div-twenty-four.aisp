@@ -1,0 +1,20 @@
+𝔸5.1.goal.prime-sq-sub-sq-div-twenty-four@2026-06-12
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜prime-sq-sub-sq-div-twenty-four
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/prime-sq-sub-sq-div-twenty-four.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨prime-sq-mod-twenty-four⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/prime-sq-sub-sq-div-twenty-four.lean
+  sha≜d8f3f87334f4a56d774b289029ab5d60aec6b661a17d991dd6ce278e9478d381
+  aff≜1
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

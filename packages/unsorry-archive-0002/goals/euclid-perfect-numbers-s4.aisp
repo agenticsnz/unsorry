@@ -1,0 +1,21 @@
+𝔸5.1.goal.euclid-perfect-numbers-s4@2026-06-12
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜euclid-perfect-numbers-s4
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜decompositions/euclid-perfect-numbers.oma-2-c50d.aisp
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/euclid-perfect-numbers-s4.lean
+  sha≜2866d69a1e831bf17091218cac177dfea3dbf8bc4b93c1f12e4edc6f865cd20b
+  aff≜1
+  depth≜1
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

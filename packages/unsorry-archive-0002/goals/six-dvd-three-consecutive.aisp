@@ -1,0 +1,20 @@
+𝔸5.1.goal.six-dvd-three-consecutive@2026-06-13
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜six-dvd-three-consecutive
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/six-dvd-three-consecutive.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/six-dvd-three-consecutive.lean
+  sha≜ba2873b1e4c8b0a7fd8c21228cd76305efe283f4dc97ca40507a2a838b9e10ed
+  aff≜1
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

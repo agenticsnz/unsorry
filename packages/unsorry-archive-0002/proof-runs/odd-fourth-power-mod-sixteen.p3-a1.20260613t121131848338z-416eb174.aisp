@@ -1,0 +1,8 @@
+𝔸5.1.run.odd-fourth-power-mod-sixteen.p3-a1.20260613t121131848338z-416eb174@2026-06-13
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260613t121131848338z-416eb174; goal≜odd-fourth-power-mod-sixteen; agent≜p3-a1; outcome≜proved}
+⟦Π:Provenance⟧{solver≜cgbarlow; provider≜claude; model≜opus; effort≜xhigh}
+⟦Γ:Goal⟧{goal≜odd-fourth-power-mod-sixteen}
+⟦Λ:Metrics⟧{attempts≜2; solve_s≜344; ended≜2026-06-13T12:11:31Z; lessons≜0}
+⟦Σ:Artifact⟧{sha≜f0c04e173bcc32f99679ef3214b277a7da0a411bc3d4634ce9d78f1fe992831f}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

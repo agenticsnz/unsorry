@@ -1,0 +1,20 @@
+𝔸5.1.goal.fourth-power-mod-three@2026-06-13
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜fourth-power-mod-three
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/fourth-power-mod-three.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨sq-mod-three⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/fourth-power-mod-three.lean
+  sha≜65355333a367f57a8b5e954dfb14d4b97d128445dbafb195e9e2fc12e245875f
+  aff≜1
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

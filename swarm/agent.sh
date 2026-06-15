@@ -1892,6 +1892,42 @@ prepare_proof_attempt() {
   rm -f "$root/$target" "$root/$binding"
 }
 
+extract_provider_text_module() {
+  local root="$1" attempt_log="$2" target="$3"
+  [ -s "$attempt_log" ] || return 1
+  python3 - "$root" "$attempt_log" "$target" <<'PYEXTRACT'
+import re
+import sys
+from pathlib import Path
+
+root = Path(sys.argv[1]).resolve()
+attempt_log = Path(sys.argv[2])
+target = sys.argv[3]
+
+text = attempt_log.read_text(encoding="utf-8", errors="replace")
+text = re.sub(r"\x1b\[[0-?]*[ -/]*[@-~]", "", text)
+
+match = re.search(r"```[ \t]*lean[ \t]*\r?\n(.*?)```", text, re.DOTALL | re.IGNORECASE)
+if match is None:
+    match = re.search(r"```[ \t]*[A-Za-z0-9_+-]*[ \t]*\r?\n(.*?)```", text, re.DOTALL)
+if match is None:
+    sys.exit(1)
+
+body = match.group(1).strip()
+if not body:
+    sys.exit(1)
+
+target_path = (root / target).resolve()
+try:
+    target_path.relative_to(root)
+except ValueError:
+    sys.exit(1)
+
+target_path.parent.mkdir(parents=True, exist_ok=True)
+target_path.write_text(body + "\n", encoding="utf-8")
+PYEXTRACT
+}
+
 # The provider receives a writable proof worktree, but the proof contract
 # permits exactly one changed path: the target module. Enforce that boundary
 # after every model call independently of provider-specific tool policy.
@@ -1949,7 +1985,7 @@ prove_local_verify() {
 # Prints nothing; returns 0 with the verified module in place, 1 on failure.
 run_proof() {
   local goal="$1" prwt="$2" camel="$3"
-  local stmt name target binding prompt attempt err="" proof_started
+  local stmt name target binding prompt attempt attempt_log err="" proof_started
   PROOF_MODEL_USED=""
   PROOF_EFFORT_USED=""
   PROOF_ATTEMPTS_USED=""
@@ -2026,8 +2062,9 @@ Fix the module so both pass. Write the corrected $target."
     fi
     prepare_proof_attempt "$prwt" "$target" "$binding"
     t0="$(date +%s)"
-    log "running proof generation (logging to $prwt/prove-attempt-$attempt.log)..."
-    if ! call_provider_prove "$prompt" "$prwt" "$eff_tok" > "$prwt/prove-attempt-$attempt.log" 2>&1; then
+    attempt_log="$prwt/prove-attempt-$attempt.log"
+    log "running proof generation (logging to $attempt_log)..."
+    if ! call_provider_prove "$prompt" "$prwt" "$eff_tok" > "$attempt_log" 2>&1; then
       dur=$(( $(date +%s) - t0 ))
       # ADR-016: a call that died fast probably never reached the model.
       if [ "$dur" -lt "$UNSORRY_FASTFAIL" ]; then
@@ -2040,6 +2077,10 @@ Fix the module so both pass. Write the corrected $target."
       log "$UNSORRY_PROVIDER prove call failed or timed out for $goal (attempt $attempt)"
       err="($UNSORRY_PROVIDER call failed or timed out)"
       continue
+    fi
+    if [ ! -f "$prwt/$target" ] \
+      && extract_provider_text_module "$prwt" "$attempt_log" "$target"; then
+      log "extracted $target from provider text output (attempt $attempt)"
     fi
     if ! prove_target_only_changed "$prwt" "$target"; then
       log "provider path policy failed for $goal (attempt $attempt)"
@@ -2089,6 +2130,14 @@ write_binding_module() {
   {
     printf 'import Unsorry.%s\n\n' "$camel"
     if [ -n "$opens" ]; then printf '%s\n' "$opens"; fi
+    # linter.unusedVariables is suppressed to match Gate A's regenerated
+    # obligation (tools/gate_a/check_statement_binding.py): the binding restates
+    # the goal's binders verbatim, so a goal hypothesis a correct proof leaves
+    # unused (or a named binder eta-expanded after an implicit one) is flagged
+    # unused and fails this --wfail self-verify — wrongly rejecting a proof CI
+    # accepts and forcing a needless decomposition. The binding's force is
+    # type-checking, not lints.
+    printf 'set_option linter.unusedVariables false in\n'
     printf 'theorem %s_binding_check : %s := %s\n' "$name" "$ftype" "$name"
   } > "$prwt/library/Unsorry/${camel}Binding.lean"
 }
@@ -3023,6 +3072,40 @@ test_prove_attempt_log_does_not_trip_guard() {
     || { log "  attempt log was deleted; it must be preserved for inspection"; return 1; }
 }
 
+test_provider_text_module_extraction() {
+  local tmp target="library/Unsorry/Goal.lean"
+  tmp="$(mktemp -d "$SESSION_TMP/text-extract.XXXXXX")" || return 1
+  mkdir -p "$tmp/library/Unsorry" || return 1
+  cat > "$tmp/prove-attempt-1.log" <<'EOF' || return 1
+The proof module is below.
+```lean
+import Mathlib
+
+theorem goal : True := by
+  trivial
+```
+EOF
+
+  extract_provider_text_module "$tmp" "$tmp/prove-attempt-1.log" "$target" \
+    || { log "  fenced Lean output was not extracted"; return 1; }
+  diff -u "$tmp/$target" - <<'EOF' >/dev/null \
+    || { log "  extracted Lean module did not match expected content"; return 1; }
+import Mathlib
+
+theorem goal : True := by
+  trivial
+EOF
+
+  rm -f "$tmp/$target"
+  printf '%s\n' 'No fenced Lean here.' > "$tmp/prove-attempt-2.log"
+  if extract_provider_text_module "$tmp" "$tmp/prove-attempt-2.log" "$target"; then
+    log "  non-fenced prose was extracted as a module"
+    return 1
+  fi
+  [ ! -e "$tmp/$target" ] \
+    || { log "  target was written for non-fenced prose"; return 1; }
+}
+
 test_proof_attempt_cleanup() {
   local tmp target="library/Unsorry/Goal.lean"
   local binding="library/Unsorry/GoalBinding.lean"
@@ -3075,6 +3158,33 @@ test_run_proof_mock_provider_smoke() {
   [ -f "$tree/library/Unsorry/GoalSmoke.lean" ] \
     || { log "  target module missing after smoke"; return 1; }
   [ -e "$tree/test.lean" ] && { log "  stray root file survived run_proof"; return 1; }
+  return 0
+}
+
+test_binding_module_suppresses_unused_linter() {
+  # Regression for the swarm/Gate-A binding divergence (issue #612): the local
+  # self-verify binding must suppress linter.unusedVariables exactly as Gate A's
+  # generator does (tools/gate_a/check_statement_binding.py). Without it, a goal
+  # hypothesis a correct proof leaves unused trips --wfail here, wrongly failing
+  # the self-verify and forcing a needless decomposition.
+  local tree camel="UnusedHyp" binding sopt_line thm_line
+  tree="$(mktemp -d "$SESSION_TMP/binding-unused.XXXXXX")" || return 1
+  mkdir -p "$tree/library/Unsorry" || return 1
+  make_prove_goal "$tree" unused-hyp \
+    "theorem unused_hyp (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) : 4 * (a * b) ≤ (a + b) ^ 2" \
+    || return 1
+  write_binding_module "$tree" unused-hyp "$camel" \
+    || { log "  write_binding_module failed"; return 1; }
+  binding="$tree/library/Unsorry/${camel}Binding.lean"
+  [ -f "$binding" ] || { log "  binding module not written"; return 1; }
+  grep -q 'set_option linter.unusedVariables false in' "$binding" \
+    || { log "  binding lacks linter.unusedVariables suppression (issue #612)"; return 1; }
+  # The suppression must precede the obligation it guards.
+  sopt_line="$(grep -n 'set_option linter.unusedVariables false in' "$binding" | head -1 | cut -d: -f1)"
+  thm_line="$(grep -n 'unused_hyp_binding_check' "$binding" | head -1 | cut -d: -f1)"
+  if ! { [ -n "$sopt_line" ] && [ -n "$thm_line" ] && [ "$sopt_line" -lt "$thm_line" ]; }; then
+    log "  suppression does not precede the binding theorem"; return 1
+  fi
   return 0
 }
 
@@ -4121,7 +4231,9 @@ run_self_tests() {
     test_gemini_health_probe_uses_version
     test_prove_target_path_guard
     test_prove_attempt_log_does_not_trip_guard
+    test_provider_text_module_extraction
     test_run_proof_mock_provider_smoke
+    test_binding_module_suppresses_unused_linter
     test_proof_attempt_cleanup
     test_feature_branch_names
     test_claim_push_reentrancy

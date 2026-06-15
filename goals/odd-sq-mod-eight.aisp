@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜odd-sq-mod-eight
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/odd-sq-mod-eight.md
+  src≜packages/unsorry-archive-0002/backlog/odd-sq-mod-eight.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/odd-sq-mod-eight.lean
+  lean≜packages/unsorry-archive-0002/goals/odd-sq-mod-eight.lean
   sha≜d7504aba83806a67955bcd53e6a2074f81024ec73f2e94a0b9fb91a0715a3e89
   aff≜1
 }

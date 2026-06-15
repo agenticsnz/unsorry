@@ -1,0 +1,8 @@
+𝔸5.1.run.cube-mod-nine.1367ab40f0b1-e413.20260615t010038460863z-d60fe7b7@2026-06-15
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260615t010038460863z-d60fe7b7; goal≜cube-mod-nine; agent≜1367ab40f0b1-e413; outcome≜proved}
+⟦Π:Provenance⟧{solver≜cgbarlow; provider≜claude; model≜opus; effort≜high}
+⟦Γ:Goal⟧{goal≜cube-mod-nine}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜249; ended≜2026-06-15T01:00:38Z; lessons≜0}
+⟦Σ:Artifact⟧{sha≜eac005c40e69aa7db9fed5be971f5aa52e712c09a79564ff31404da55cb7ff60}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

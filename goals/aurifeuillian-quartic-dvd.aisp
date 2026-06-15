@@ -1,0 +1,20 @@
+𝔸5.1.goal.aurifeuillian-quartic-dvd@2026-06-14
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜aurifeuillian-quartic-dvd
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/aurifeuillian-quartic-dvd.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/aurifeuillian-quartic-dvd.lean
+  sha≜65a1a82651e3d3de79a9edc7484de1742197c8d4f38940449a017b417afa3de4
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

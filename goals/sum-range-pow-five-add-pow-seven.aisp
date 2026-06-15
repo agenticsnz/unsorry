@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-pow-five-add-pow-seven
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜4
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-pow-five-add-pow-seven.md
+  src≜packages/unsorry-archive-0002/backlog/sum-range-pow-five-add-pow-seven.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨sum-range-pow-five-closed-form,sum-range-pow-seven-closed-form⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-pow-five-add-pow-seven.lean
+  lean≜packages/unsorry-archive-0002/goals/sum-range-pow-five-add-pow-seven.lean
   sha≜5eef0bff85cd4b8b9ddd4314c88126e935e21b70aa76c5bee783fbb06451b7e0
   aff≜1
 }

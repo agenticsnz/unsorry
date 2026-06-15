@@ -1,0 +1,8 @@
+𝔸5.1.run.euclid-perfect-numbers.p3-a1.20260613t203429617414z-89a61ba7@2026-06-13
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260613t203429617414z-89a61ba7; goal≜euclid-perfect-numbers; agent≜p3-a1; outcome≜proved}
+⟦Π:Provenance⟧{solver≜cgbarlow; provider≜claude; model≜opus; effort≜xhigh}
+⟦Γ:Goal⟧{goal≜euclid-perfect-numbers}
+⟦Λ:Metrics⟧{attempts≜2; solve_s≜1103; ended≜2026-06-13T20:34:29Z; lessons≜0}
+⟦Σ:Artifact⟧{sha≜65d0af31b09d4685fedba3549e46f6a8d8ee82b02cb8b00d8e9907ee5d42aedd}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

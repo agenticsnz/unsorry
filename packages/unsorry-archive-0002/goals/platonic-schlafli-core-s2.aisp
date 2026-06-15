@@ -1,0 +1,21 @@
+𝔸5.1.goal.platonic-schlafli-core-s2@2026-06-11
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜platonic-schlafli-core-s2
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜decompositions/platonic-schlafli-core.p3-alpha.aisp
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/platonic-schlafli-core-s2.lean
+  sha≜bad7d9abe911fa027e682c57ab080e420fd949e690fcc3463859e3ff462a1e4d
+  aff≜1
+  depth≜1
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

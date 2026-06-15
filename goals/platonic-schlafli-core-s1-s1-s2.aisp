@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜platonic-schlafli-core-s1-s1-s2
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜decompositions/platonic-schlafli-core-s1-s1.p3-alpha.aisp
+  src≜packages/unsorry-archive-0002/decompositions/platonic-schlafli-core-s1-s1.p3-alpha.aisp
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/platonic-schlafli-core-s1-s1-s2.lean
+  lean≜packages/unsorry-archive-0002/goals/platonic-schlafli-core-s1-s1-s2.lean
   sha≜3920492a0df7f350e1853b960efd03fbf350f3aad13512969715114ad108b129
   aff≜1
   depth≜3

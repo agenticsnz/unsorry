@@ -1,0 +1,8 @@
+𝔸5.1.lemma.eac005c40e69@2026-06-15
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜eac005c40e69aa7db9fed5be971f5aa52e712c09a79564ff31404da55cb7ff60; goal≜cube-mod-nine; name≜cube_mod_nine}
+⟦Σ:Source⟧{src≜goals/cube-mod-nine.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜cgbarlow; agent≜1367ab40f0b1-e413; provider≜claude; model≜opus; effort≜high; attempts≜1; solve_s≜249}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

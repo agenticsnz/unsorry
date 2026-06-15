@@ -46,7 +46,7 @@ partition / generating-function coefficients.
 
 ## Progress (updated per batch)
 
-**Shipped: 6 / 100 · Scoped: 0 / 200 · mathlib c5ea00351c**
+**Shipped: 8 / 100 · Sourced & in-flight: 59 / 100 · Scoped: 259 / 200 ✓ · mathlib c5ea00351c**
 
 | Theme | sourced | target (first-100) |
 |-------|---------|--------------------|
@@ -61,7 +61,18 @@ partition / generating-function coefficients.
 | closed-form sums (9) | 0 | 8 |
 | algebraic (10) | 0 | 6 |
 
-Batch log: **#577** — batch 1, +6 (divisibility ×2, power-residue ×1, telescope ×2, 5-consecutive ×1).
+Batch log:
+- **#577** — batch 1, +6 (divisibility ×2, power-residue ×1, telescope ×2, 5-consecutive ×1).
+- **#581** — batch 2, +8 (divisibility, residue, figurate) — **merged**.
+- **#582** — batch 3, +29 (6 themes).
+- **#584** — batch 4, +16 (residue, gcd/coprime, modular, not-prime).
+- **candidate backlog** — +259 vetted-but-not-sourced across all 12 themes (absence-clean +
+  ADR-035 non-trivial; promotion runs the `lake env lean` + skeptic gates).
 
-See `backlog/candidates/` for the next 200–300 staged candidates, `docs/targets.md` for the
-live board, and #81 for the per-batch announcements.
+Candidate backlog (the "planned" half, ≥200 bar **met**): binomial 20 · fibonacci 20 ·
+zmod-divisibility 22 · power-residue 24 · telescoping 22 · figurate 24 · sos-inequalities 20 ·
+gcd-coprime 23 · concrete-math 21 · algebraic-identities 20 · continued-fraction-pell 24 ·
+partition-genfun 18.
+
+See `backlog/candidates/` for the staged candidates, `docs/targets.md` for the live board, and
+#81 for the per-batch announcements.
