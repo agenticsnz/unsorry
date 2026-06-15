@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜cube-sum-ge-mul-sq
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/cube-sum-ge-mul-sq.lean
-  sha≜∅
-  aff≜-20
+  sha≜5a55a2e8a6bd2cfeef757ceb96d1f23d08bab31344427471725fe0d7627ee4e4
+  aff≜-19
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
