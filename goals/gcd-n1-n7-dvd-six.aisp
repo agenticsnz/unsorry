@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜gcd-n1-n7-dvd-six
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/gcd-n1-n7-dvd-six.lean
-  sha≜∅
-  aff≜-10
+  sha≜2d903d2fb7a0e6559af8725e813f879efeca95a7659fdcc455d82825d2b5eb53
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
