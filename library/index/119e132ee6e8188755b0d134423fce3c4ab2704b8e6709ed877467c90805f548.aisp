@@ -1,8 +1,7 @@
-𝔸5.1.lemma.119e132ee6e8@2026-06-14
+𝔸5.1.lemma.119e132ee6e8@2026-06-15
 γ≔unsorry.lemma.index
 ⟦Ω:Lemma⟧{sha≜119e132ee6e8188755b0d134423fce3c4ab2704b8e6709ed877467c90805f548; goal≜sum-sq-add-three-ge-two-sum; name≜sum_sq_add_three_ge_two_sum}
 ⟦Σ:Source⟧{src≜goals/sum-sq-add-three-ge-two-sum.lean}
 ⟦Γ:Tags⟧{tags≜⟨⟩}
 ⟦Λ:Meta⟧{use≜0; aff≜0}
-⟦Π:Provenance⟧{solver≜cgbarlow; agent≜afnz-zbook-b336; provider≜openai; model≜leanstral-2603; effort≜high; attempts≜1; solve_s≜619}
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
