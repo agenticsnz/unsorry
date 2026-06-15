@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜gcd-2n5-3n7-eq-one
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜3
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/gcd-2n5-3n7-eq-one.lean
-  sha≜∅
-  aff≜-10
+  sha≜36c8364ea97e87b563fa87dc9979930c6d2883e990e965f607881543be2d3d35
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
