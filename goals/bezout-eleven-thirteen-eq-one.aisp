@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜bezout-eleven-thirteen-eq-one
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/bezout-eleven-thirteen-eq-one.lean
-  sha≜∅
+  sha≜48bf42d6bc22c1d57c3503cf9521b900aa6f97908958aca3098d65a6f430478c
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
