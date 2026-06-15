@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sq-mod-eleven-mem
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/sq-mod-eleven-mem.lean
-  sha≜∅
-  aff≜-10
+  sha≜5c94e5c2575c32f443395482bd5c9c0c89eff4e8d311438f5602cd349afe2c00
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
