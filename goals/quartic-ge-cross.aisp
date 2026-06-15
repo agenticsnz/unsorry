@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜quartic-ge-cross
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/quartic-ge-cross.lean
-  sha≜∅
-  aff≜-10
+  sha≜a34890c31d952d1a0f0534bd75edc1b148a656d7f4cc44489bba7c1daf4119aa
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
