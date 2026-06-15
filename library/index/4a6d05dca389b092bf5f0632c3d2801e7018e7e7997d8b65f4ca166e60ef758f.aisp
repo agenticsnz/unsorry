@@ -1,8 +1,7 @@
-𝔸5.1.lemma.4a6d05dca389@2026-06-14
+𝔸5.1.lemma.4a6d05dca389@2026-06-15
 γ≔unsorry.lemma.index
 ⟦Ω:Lemma⟧{sha≜4a6d05dca389b092bf5f0632c3d2801e7018e7e7997d8b65f4ca166e60ef758f; goal≜sum-four-sq-ge-two-cross; name≜sum_four_sq_ge_two_cross}
 ⟦Σ:Source⟧{src≜goals/sum-four-sq-ge-two-cross.lean}
 ⟦Γ:Tags⟧{tags≜⟨⟩}
 ⟦Λ:Meta⟧{use≜0; aff≜0}
-⟦Π:Provenance⟧{solver≜cgbarlow; agent≜afnz-zbook-b336; provider≜openai; model≜leanstral-2603; effort≜high; attempts≜1; solve_s≜661}
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
