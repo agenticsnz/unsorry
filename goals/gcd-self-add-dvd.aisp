@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜gcd-self-add-dvd
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/gcd-self-add-dvd.lean
-  sha≜∅
-  aff≜-20
+  sha≜29a715289eb19ed1c03c0ee6062f8492755f907fc09a3b75cb9fbd22d50158a3
+  aff≜-19
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
