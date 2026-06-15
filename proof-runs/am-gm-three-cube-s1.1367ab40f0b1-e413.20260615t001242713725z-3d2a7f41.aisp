@@ -1,0 +1,9 @@
+𝔸5.1.run.am-gm-three-cube-s1.1367ab40f0b1-e413.20260615t001242713725z-3d2a7f41@2026-06-15
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260615t001242713725z-3d2a7f41; goal≜am-gm-three-cube-s1; agent≜1367ab40f0b1-e413; outcome≜decomposed}
+⟦Π:Provenance⟧{solver≜cgbarlow; provider≜claude; model≜opus; effort≜max}
+⟦Γ:Goal⟧{goal≜am-gm-three-cube-s1}
+⟦Λ:Metrics⟧{attempts≜3; solve_s≜1390; ended≜2026-06-15T00:12:42Z; lessons≜1}
+⟦Σ:Artifact⟧{sha≜∅}
+⟦Δ:Lesson⟧{sig≜⚠ [8528/8558] Replaying Unsorry.AmGmThreeCubeS1Binding trace: .> LEAN_PATH=/home/vscode/.unsorry/work/prove-am-gm-three-cube-s1-1367ab40f0b1-e413/.lake/packages/Cli/.lake/build/lib/lean:/home/vscode/.unsorry/work/prove-am-gm-three-cube-s1-1367ab40f0b1-e413/.lake/packages/batterie}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
