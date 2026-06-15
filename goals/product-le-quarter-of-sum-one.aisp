@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜product-le-quarter-of-sum-one
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/product-le-quarter-of-sum-one.lean
-  sha≜∅
-  aff≜-10
+  sha≜000f97d84f723f0d1266d7028bcb2326e394e39f814312cd003183c74b8e9e68
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
