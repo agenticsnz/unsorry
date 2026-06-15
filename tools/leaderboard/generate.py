@@ -987,6 +987,29 @@ def _success_rate_percent(value: float | None) -> float | None:
     return None if value is None else round(value * 100, 2)
 
 
+def _proof_timeline(proof_list: list[Proof]) -> list[dict]:
+    """Cumulative count of library proofs by calendar date (issue #738).
+
+    A deterministic series for the leaderboard's "proofs over time" view: one
+    entry per date on which at least one proof index landed, carrying that day's
+    count and the running cumulative total. Proofs without a parseable date are
+    ignored so the series stays monotonic in time.
+    """
+    by_date: dict[str, int] = defaultdict(int)
+    for proof in proof_list:
+        day = (proof.date or "")[:10]
+        if day:
+            by_date[day] += 1
+    cumulative = 0
+    series: list[dict] = []
+    for day in sorted(by_date):
+        cumulative += by_date[day]
+        series.append(
+            {"date": day, "proofs": by_date[day], "cumulative_proofs": cumulative}
+        )
+    return series
+
+
 def ui_payload(root: Path) -> dict:
     stats = base_stats(root)
     coverage = stats["coverage"]
@@ -1076,6 +1099,9 @@ def ui_payload(root: Path) -> dict:
             }
             for model in stats["models"]
         ],
+        # Cumulative library proofs by date — the "proofs over time" line graph
+        # toggled on the leaderboard page (issue #738).
+        "timeline": _proof_timeline(proofs(root)),
     }
 
 

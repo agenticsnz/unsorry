@@ -428,6 +428,9 @@ _HTML_TEMPLATE = """<!doctype html>
   table.goals { border-collapse:collapse; width:100%; }
   table.goals th, table.goals td { text-align:left; padding:.5rem .7rem; border-bottom:1px solid #e2e8f0; font-size:.875rem; white-space:nowrap; }
   table.goals th { position:sticky; top:0; background:#f8fafc; color:#64748b; font-weight:600; text-transform:uppercase; letter-spacing:.03em; font-size:.72rem; z-index:1; }
+  table.goals th[data-col] { cursor:pointer; user-select:none; }
+  table.goals th[data-col]:hover { color:#334155; }
+  table.goals th .sort-ind { color:#94a3b8; font-size:.7rem; }
   table.goals tbody tr { cursor:pointer; }
   table.goals tbody tr:hover { background:#f0fdfa; }
   table.goals tbody tr.sel { background:#ccfbf1; }
@@ -440,6 +443,13 @@ _HTML_TEMPLATE = """<!doctype html>
 </head>
 <body class="font-sans text-brand-text p-4 md:p-8 flex justify-center items-start min-h-screen">
 <main class="w-full max-w-6xl bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 overflow-hidden">
+
+  <!-- Top navigation — shared across home / leaderboard / proof graph (issue #738). -->
+  <nav class="flex items-center gap-1 px-6 md:px-8 py-3 text-sm font-medium border-b border-slate-100" aria-label="Primary">
+    <a href="index.html" class="px-3 py-1.5 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors">Home</a>
+    <a href="leaderboard.html" class="px-3 py-1.5 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors">Leaderboard</a>
+    <a href="proofs-contributors-visualisation.html" aria-current="page" class="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-800">Proof graph</a>
+  </nav>
 
   <!-- Header — shared design language (ADR-038): wordmark, status chip, cross-link, stat chips. -->
   <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 p-6 md:p-8 border-b border-slate-100">
@@ -493,7 +503,15 @@ __MERMAID__
     <h2 class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">All goals</h2>
     <div class="overflow-x-auto rounded-xl border border-slate-100">
       <table class="goals">
-        <thead><tr><th>Goal</th><th>Status</th><th>Diff</th><th>Agent</th><th>Solver / model</th><th>PR</th><th>Proved</th></tr></thead>
+        <thead><tr>
+          <th data-col="0">Goal<span class="sort-ind"></span></th>
+          <th data-col="1">Status<span class="sort-ind"></span></th>
+          <th data-col="2">Diff<span class="sort-ind"></span></th>
+          <th data-col="3">Agent<span class="sort-ind"></span></th>
+          <th data-col="4">Solver / model<span class="sort-ind"></span></th>
+          <th data-col="5">PR<span class="sort-ind"></span></th>
+          <th data-col="6">Proved<span class="sort-ind"></span></th>
+        </tr></thead>
         <tbody id="rows">
 __ROWS__
         </tbody>
@@ -539,6 +557,30 @@ __ROWS__
   }
   q.addEventListener("input", applyFilter); st.addEventListener("change", applyFilter);
   document.querySelectorAll("#rows tr").forEach(r => r.addEventListener("click", () => showDetail(r.dataset.id)));
+
+  // Click a column heading to sort the goals table (first click A→Z, click again Z→A) (#738).
+  (function () {
+    const tbody = document.getElementById("rows");
+    const heads = document.querySelectorAll("table.goals th[data-col]");
+    let sortedCol = -1, dir = 1;
+    const cell = (tr, c) => (tr.children[c] ? tr.children[c].textContent : "").trim();
+    heads.forEach(th => th.addEventListener("click", () => {
+      const col = Number(th.dataset.col);
+      dir = (sortedCol === col) ? -dir : 1;
+      sortedCol = col;
+      const rows = Array.from(tbody.querySelectorAll("tr"));
+      rows.sort((a, b) => {
+        const av = cell(a, col), bv = cell(b, col);
+        const an = parseFloat(av), bn = parseFloat(bv);
+        const cmp = (!isNaN(an) && !isNaN(bn) && av !== "" && bv !== "")
+          ? an - bn : av.toLowerCase().localeCompare(bv.toLowerCase());
+        return cmp * dir;
+      });
+      rows.forEach(r => tbody.appendChild(r));
+      heads.forEach(h => { const s = h.querySelector(".sort-ind"); if (s) s.textContent = ""; });
+      const ind = th.querySelector(".sort-ind"); if (ind) ind.textContent = dir === 1 ? " ▲" : " ▼";
+    }));
+  })();
 
   let scale = 1; const diagram = document.getElementById("diagram");
   const zoom = s => { scale = Math.max(0.3, Math.min(3, s)); diagram.style.transform = `scale(${scale})`; };

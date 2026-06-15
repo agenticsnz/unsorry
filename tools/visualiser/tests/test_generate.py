@@ -182,6 +182,9 @@ def test_render_html(tmp_path):
     assert "lg:grid-cols-[minmax(0,1fr)_320px]" in html  # responsive diagram/panel
     assert ">Unsorry<" in html  # shared wordmark header
     assert "4 goals" in html  # header summary stat
+    # Issue #738: shared top-nav + click-to-sort goals-table headings.
+    assert 'href="index.html"' in html and 'href="leaderboard.html"' in html
+    assert 'data-col="0"' in html and 'class="sort-ind"' in html
 
 
 def test_render_html_status_chips(tmp_path):

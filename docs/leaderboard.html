@@ -81,7 +81,14 @@
 <body class="text-brand-text p-4 md:p-8 flex justify-center items-start min-h-screen">
 
     <main class="w-full max-w-6xl bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-6 md:p-10 border border-slate-100 relative overflow-hidden">
-        
+
+        <!-- Top navigation — shared across home / leaderboard / proof graph (issue #738). -->
+        <nav class="flex items-center gap-1 mb-8 text-sm font-medium" aria-label="Primary">
+            <a href="index.html" class="px-3 py-1.5 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors">Home</a>
+            <a href="leaderboard.html" aria-current="page" class="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-800">Leaderboard</a>
+            <a href="proofs-contributors-visualisation.html" class="px-3 py-1.5 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors">Proof graph</a>
+        </nav>
+
         <!-- Header Section -->
         <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
             <div class="flex flex-col">
@@ -89,11 +96,15 @@
                 <div class="inline-flex items-center bg-slate-100 rounded-full px-4 py-1 text-xs font-semibold text-slate-600 uppercase tracking-wider w-max">
                     <span id="generated-at">Loading proof stats</span>
                 </div>
-                <a href="proofs-contributors-visualisation.html" class="mt-2 inline-flex items-center gap-1 text-sm font-medium text-slate-500 hover:text-slate-800 underline underline-offset-2 w-max">
-                    Proof graph &amp; contributors <span aria-hidden="true">→</span>
-                </a>
+                <!-- View toggle: contributor leaderboard ↔ cumulative proofs over time. -->
+                <div class="mt-3 inline-flex rounded-xl border border-slate-200 p-1 bg-white w-max" role="tablist" aria-label="Leaderboard view">
+                    <button id="tab-leaderboard" type="button" role="tab" aria-selected="true"
+                        class="px-4 py-1.5 rounded-lg text-sm font-semibold bg-slate-100 text-slate-800 transition-colors">Leaderboard</button>
+                    <button id="tab-timeline" type="button" role="tab" aria-selected="false"
+                        class="px-4 py-1.5 rounded-lg text-sm font-semibold text-slate-500 hover:text-slate-800 transition-colors">Proofs over time</button>
+                </div>
             </div>
-            
+
             <div class="flex flex-wrap gap-3">
                 <div class="flex items-center gap-2 bg-white border border-slate-200 text-slate-600 px-4 py-2 rounded-xl text-sm font-medium">
                     <span id="summary-verified">0</span>
@@ -113,6 +124,9 @@
                 </div>
             </div>
         </header>
+
+        <!-- ===== View: contributor leaderboard ===== -->
+        <div id="view-leaderboard">
 
         <!-- Top Progress Timeline Area -->
         <div class="relative w-full h-24 mb-8 hidden md:block">
@@ -155,6 +169,23 @@
             </div>
             <div id="models-list" class="flex flex-col gap-3"></div>
         </section>
+
+        </div><!-- /view-leaderboard -->
+
+        <!-- ===== View: proofs over time (cumulative line graph) ===== -->
+        <div id="view-timeline" class="hidden">
+            <div class="flex items-baseline justify-between mb-5">
+                <h2 class="text-lg font-bold text-slate-700">Proofs over time</h2>
+                <span class="text-xs text-slate-400 uppercase tracking-wider">cumulative kernel-verified proofs</span>
+            </div>
+            <div id="timeline-chart" class="w-full">
+                <div class="state-panel">Loading timeline…</div>
+            </div>
+            <div class="mt-4 flex flex-wrap gap-3 text-xs text-slate-500">
+                <span><span id="timeline-total" class="font-semibold text-slate-700">0</span> proofs total</span>
+                <span><span id="timeline-span" class="font-semibold text-slate-700">—</span></span>
+            </div>
+        </div>
 
     </main>
 
@@ -328,7 +359,9 @@
                     </div>
 
                     <div class="flex-grow flex items-center relative h-12 md:h-14 min-w-0">
-                        <div class="h-8 md:h-10 bg-brand-blue rounded-r-3xl progress-bar-fill shadow-sm flex-shrink-0" style="width: 0%;" data-target-width="${Math.min(widthPercent, 100)}%"></div>
+                        <!-- Bar width is capped to leave room for the "pts" label so the
+                             rank-1 (longest) bar never pushes it off the right edge (#738). -->
+                        <div class="h-8 md:h-10 bg-brand-blue rounded-r-3xl progress-bar-fill shadow-sm flex-shrink-0 max-w-full" style="width: 0%;" data-target-width="min(${Math.min(widthPercent, 100)}%, calc(100% - 6rem))"></div>
                         <span class="text-brand-text font-bold text-sm md:text-base whitespace-nowrap ml-3 opacity-0 transition-opacity duration-500 delay-500">${formatScore(user.score)}</span>
                     </div>
                 `;
@@ -385,11 +418,75 @@
             }, 100);
         };
 
+        const renderTimeline = (payload) => {
+            const container = document.getElementById('timeline-chart');
+            const series = Array.isArray(payload.timeline) ? payload.timeline : [];
+            if (!series.length) {
+                container.innerHTML = '<div class="state-panel">No dated proofs yet.</div>';
+                setText('timeline-total', '0');
+                setText('timeline-span', '—');
+                return;
+            }
+            const W = 900, H = 320, padL = 48, padR = 24, padT = 20, padB = 40;
+            const n = series.length;
+            const maxY = Math.max(series[n - 1].cumulative_proofs, 1);
+            const x = (i) => padL + (n === 1 ? (W - padL - padR) / 2 : i * (W - padL - padR) / (n - 1));
+            const y = (v) => H - padB - v * (H - padT - padB) / maxY;
+            const line = series.map((d, i) => `${x(i).toFixed(1)},${y(d.cumulative_proofs).toFixed(1)}`).join(' ');
+            const area = `${x(0).toFixed(1)},${(H - padB).toFixed(1)} ${line} ${x(n - 1).toFixed(1)},${(H - padB).toFixed(1)}`;
+            const ticks = [...new Set([0, 0.25, 0.5, 0.75, 1].map((f) => Math.round(maxY * f)))];
+            const grid = ticks.map((v) => {
+                const yy = y(v);
+                return `<line x1="${padL}" y1="${yy.toFixed(1)}" x2="${W - padR}" y2="${yy.toFixed(1)}" stroke="#f1f5f9" stroke-width="1"/>`
+                    + `<text x="${padL - 8}" y="${(yy + 4).toFixed(1)}" text-anchor="end" font-size="11" fill="#94a3b8">${v}</text>`;
+            }).join('');
+            const labelIdx = [...new Set([0, Math.floor((n - 1) / 2), n - 1])];
+            const xLabels = labelIdx.map((i) =>
+                `<text x="${x(i).toFixed(1)}" y="${H - padB + 22}" text-anchor="middle" font-size="11" fill="#94a3b8">${escapeHTML(series[i].date)}</text>`
+            ).join('');
+            const lastX = x(n - 1), lastY = y(maxY);
+            container.innerHTML =
+                `<svg viewBox="0 0 ${W} ${H}" class="w-full h-auto" role="img" aria-label="Cumulative kernel-verified proofs over time">`
+                + grid
+                + `<polygon points="${area}" fill="#e0f2fe" opacity="0.55"/>`
+                + `<polyline points="${line}" fill="none" stroke="#38bdf8" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`
+                + `<circle cx="${lastX.toFixed(1)}" cy="${lastY.toFixed(1)}" r="4" fill="#0ea5e9"/>`
+                + `<text x="${(lastX - 6).toFixed(1)}" y="${(lastY - 10).toFixed(1)}" text-anchor="end" font-size="13" font-weight="700" fill="#334155">${maxY}</text>`
+                + xLabels
+                + `</svg>`;
+            setText('timeline-total', formatNumber(maxY));
+            setText('timeline-span', `${series[0].date} → ${series[n - 1].date}`);
+        };
+
+        const setView = (view) => {
+            const isTimeline = view === 'timeline';
+            document.getElementById('view-timeline').classList.toggle('hidden', !isTimeline);
+            document.getElementById('view-leaderboard').classList.toggle('hidden', isTimeline);
+            const tabs = { leaderboard: document.getElementById('tab-leaderboard'), timeline: document.getElementById('tab-timeline') };
+            Object.entries(tabs).forEach(([key, btn]) => {
+                if (!btn) return;
+                const active = key === view;
+                btn.setAttribute('aria-selected', String(active));
+                btn.classList.toggle('bg-slate-100', active);
+                btn.classList.toggle('text-slate-800', active);
+                btn.classList.toggle('text-slate-500', !active);
+            });
+        };
+
+        const wireToggle = (payload) => {
+            const tabLb = document.getElementById('tab-leaderboard');
+            const tabTl = document.getElementById('tab-timeline');
+            if (tabLb) tabLb.addEventListener('click', () => setView('leaderboard'));
+            if (tabTl) tabTl.addEventListener('click', () => { renderTimeline(payload); setView('timeline'); });
+        };
+
         async function initApp() {
             try {
                 const payload = await loadPayload();
                 renderLeaderboard(payload);
                 renderModels(payload.models);
+                renderTimeline(payload);
+                wireToggle(payload);
             } catch (error) {
                 console.error(error);
                 updateScale(100);
