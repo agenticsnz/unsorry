@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sq-lt-cube-of-one-lt
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/sq-lt-cube-of-one-lt.lean
-  sha≜∅
-  aff≜-10
+  sha≜09d3f32739fed019ee17ce55938989e187ae8c9e2a5edb24c34d4eb674e82535
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
