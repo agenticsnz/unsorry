@@ -1892,6 +1892,42 @@ prepare_proof_attempt() {
   rm -f "$root/$target" "$root/$binding"
 }
 
+extract_provider_text_module() {
+  local root="$1" attempt_log="$2" target="$3"
+  [ -s "$attempt_log" ] || return 1
+  python3 - "$root" "$attempt_log" "$target" <<'PYEXTRACT'
+import re
+import sys
+from pathlib import Path
+
+root = Path(sys.argv[1]).resolve()
+attempt_log = Path(sys.argv[2])
+target = sys.argv[3]
+
+text = attempt_log.read_text(encoding="utf-8", errors="replace")
+text = re.sub(r"\x1b\[[0-?]*[ -/]*[@-~]", "", text)
+
+match = re.search(r"```[ \t]*lean[ \t]*\r?\n(.*?)```", text, re.DOTALL | re.IGNORECASE)
+if match is None:
+    match = re.search(r"```[ \t]*[A-Za-z0-9_+-]*[ \t]*\r?\n(.*?)```", text, re.DOTALL)
+if match is None:
+    sys.exit(1)
+
+body = match.group(1).strip()
+if not body:
+    sys.exit(1)
+
+target_path = (root / target).resolve()
+try:
+    target_path.relative_to(root)
+except ValueError:
+    sys.exit(1)
+
+target_path.parent.mkdir(parents=True, exist_ok=True)
+target_path.write_text(body + "\n", encoding="utf-8")
+PYEXTRACT
+}
+
 # The provider receives a writable proof worktree, but the proof contract
 # permits exactly one changed path: the target module. Enforce that boundary
 # after every model call independently of provider-specific tool policy.
@@ -1949,7 +1985,7 @@ prove_local_verify() {
 # Prints nothing; returns 0 with the verified module in place, 1 on failure.
 run_proof() {
   local goal="$1" prwt="$2" camel="$3"
-  local stmt name target binding prompt attempt err="" proof_started
+  local stmt name target binding prompt attempt attempt_log err="" proof_started
   PROOF_MODEL_USED=""
   PROOF_EFFORT_USED=""
   PROOF_ATTEMPTS_USED=""
@@ -2026,8 +2062,9 @@ Fix the module so both pass. Write the corrected $target."
     fi
     prepare_proof_attempt "$prwt" "$target" "$binding"
     t0="$(date +%s)"
-    log "running proof generation (logging to $prwt/prove-attempt-$attempt.log)..."
-    if ! call_provider_prove "$prompt" "$prwt" "$eff_tok" > "$prwt/prove-attempt-$attempt.log" 2>&1; then
+    attempt_log="$prwt/prove-attempt-$attempt.log"
+    log "running proof generation (logging to $attempt_log)..."
+    if ! call_provider_prove "$prompt" "$prwt" "$eff_tok" > "$attempt_log" 2>&1; then
       dur=$(( $(date +%s) - t0 ))
       # ADR-016: a call that died fast probably never reached the model.
       if [ "$dur" -lt "$UNSORRY_FASTFAIL" ]; then
@@ -2040,6 +2077,10 @@ Fix the module so both pass. Write the corrected $target."
       log "$UNSORRY_PROVIDER prove call failed or timed out for $goal (attempt $attempt)"
       err="($UNSORRY_PROVIDER call failed or timed out)"
       continue
+    fi
+    if [ ! -f "$prwt/$target" ] \
+      && extract_provider_text_module "$prwt" "$attempt_log" "$target"; then
+      log "extracted $target from provider text output (attempt $attempt)"
     fi
     if ! prove_target_only_changed "$prwt" "$target"; then
       log "provider path policy failed for $goal (attempt $attempt)"
@@ -3021,6 +3062,40 @@ test_prove_attempt_log_does_not_trip_guard() {
     || { log "  attempt log tripped the guard (the #292 regression)"; return 1; }
   [ -e "$tmp/prove-attempt-1.log" ] \
     || { log "  attempt log was deleted; it must be preserved for inspection"; return 1; }
+}
+
+test_provider_text_module_extraction() {
+  local tmp target="library/Unsorry/Goal.lean"
+  tmp="$(mktemp -d "$SESSION_TMP/text-extract.XXXXXX")" || return 1
+  mkdir -p "$tmp/library/Unsorry" || return 1
+  cat > "$tmp/prove-attempt-1.log" <<'EOF' || return 1
+The proof module is below.
+```lean
+import Mathlib
+
+theorem goal : True := by
+  trivial
+```
+EOF
+
+  extract_provider_text_module "$tmp" "$tmp/prove-attempt-1.log" "$target" \
+    || { log "  fenced Lean output was not extracted"; return 1; }
+  diff -u "$tmp/$target" - <<'EOF' >/dev/null \
+    || { log "  extracted Lean module did not match expected content"; return 1; }
+import Mathlib
+
+theorem goal : True := by
+  trivial
+EOF
+
+  rm -f "$tmp/$target"
+  printf '%s\n' 'No fenced Lean here.' > "$tmp/prove-attempt-2.log"
+  if extract_provider_text_module "$tmp" "$tmp/prove-attempt-2.log" "$target"; then
+    log "  non-fenced prose was extracted as a module"
+    return 1
+  fi
+  [ ! -e "$tmp/$target" ] \
+    || { log "  target was written for non-fenced prose"; return 1; }
 }
 
 test_proof_attempt_cleanup() {
@@ -4121,6 +4196,7 @@ run_self_tests() {
     test_gemini_health_probe_uses_version
     test_prove_target_path_guard
     test_prove_attempt_log_does_not_trip_guard
+    test_provider_text_module_extraction
     test_run_proof_mock_provider_smoke
     test_proof_attempt_cleanup
     test_feature_branch_names
