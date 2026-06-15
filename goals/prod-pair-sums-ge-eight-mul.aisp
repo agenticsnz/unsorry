@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜prod-pair-sums-ge-eight-mul
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜3
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/prod-pair-sums-ge-eight-mul.lean
-  sha≜∅
-  aff≜-10
+  sha≜ffc945c757edeceaffc1ca0ac4c73cb8cf6da4c56bc2f87678d6889b79723bbf
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
