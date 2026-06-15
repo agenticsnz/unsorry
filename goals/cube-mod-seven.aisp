@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜cube-mod-seven
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/cube-mod-seven.lean
-  sha≜∅
-  aff≜-20
+  sha≜9ce549148320d291d0dd4a430ca68a9d360e6e33d2abb279677a5977f7321c55
+  aff≜-19
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
