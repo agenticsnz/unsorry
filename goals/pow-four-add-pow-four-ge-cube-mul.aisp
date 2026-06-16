@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜pow-four-add-pow-four-ge-cube-mul
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/pow-four-add-pow-four-ge-cube-mul.lean
-  sha≜∅
+  sha≜4125318acb6ee15b710c512c5181e96ef5c626e5f955d352c5b457a4e3e22173
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
