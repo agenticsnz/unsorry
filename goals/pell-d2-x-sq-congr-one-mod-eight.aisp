@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜pell-d2-x-sq-congr-one-mod-eight
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/pell-d2-x-sq-congr-one-mod-eight.lean
-  sha≜∅
+  sha≜d339d8b436311775ac8257e4721b887452a734c46a96d33b6bd32522b7f0a6a1
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
