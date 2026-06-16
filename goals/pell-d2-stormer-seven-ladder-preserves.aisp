@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜pell-d2-stormer-seven-ladder-preserves
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/pell-d2-stormer-seven-ladder-preserves.lean
-  sha≜∅
+  sha≜28430dc534bd3d28d5e9cce499c96b18d08ad4251a63a9ad60acb10db46782f6
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
