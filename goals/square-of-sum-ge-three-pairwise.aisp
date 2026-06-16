@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜square-of-sum-ge-three-pairwise
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/square-of-sum-ge-three-pairwise.lean
-  sha≜∅
+  sha≜30486b0b7a7f6a5c7cc4958e68a0d4d34d69cf64877e39cd28df246226bff4ad
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
