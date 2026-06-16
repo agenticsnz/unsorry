@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜quad-form-divides-cube-sum
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜1
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/quad-form-divides-cube-sum.lean
-  sha≜∅
+  sha≜9d60de0adaf88569514e429f136417ef7aeb96aab5fb2ffc169a2d8915258efe
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
