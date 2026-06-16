@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜alt-sum-range-sq-eq-signed-pronic
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/alt-sum-range-sq-eq-signed-pronic.lean
-  sha≜∅
+  sha≜41acb1a7e58181472b791366255b32d91e8d31e94fd618a9cc13fb91850bc47e
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
