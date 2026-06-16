@@ -1,0 +1,8 @@
+𝔸5.1.run.cyclic-cube-sum-ge-asym-quad-cubic.mac-158f.20260616t234048881722z-553e30af@2026-06-16
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260616t234048881722z-553e30af; goal≜cyclic-cube-sum-ge-asym-quad-cubic; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-nlinarith}
+⟦Γ:Goal⟧{goal≜cyclic-cube-sum-ge-asym-quad-cubic}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-16T23:40:48Z}
+⟦Σ:Artifact⟧{sha≜a19fe2694b153eeb69f796d508dc758d8364c9857816288b836c42084d3af493}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
