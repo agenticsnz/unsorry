@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜amgm-prod-half-sum-le-cubes
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜3
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/amgm-prod-half-sum-le-cubes.lean
-  sha≜∅
+  sha≜dbcc3a5f86007d3c16a399bcfec5546d5a8640f6d47bf856ff90ae473de255e0
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
