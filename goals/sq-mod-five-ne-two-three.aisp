@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sq-mod-five-ne-two-three
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/sq-mod-five-ne-two-three.lean
-  sha≜∅
+  sha≜cacd76bd1724af64d63a3dc76a9c6e723a1d601c3277751329ef55d89972ce1f
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
