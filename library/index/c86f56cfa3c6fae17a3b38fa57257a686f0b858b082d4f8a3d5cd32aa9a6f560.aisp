@@ -1,0 +1,8 @@
+𝔸5.1.lemma.c86f56cfa3c6@2026-06-16
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜c86f56cfa3c6fae17a3b38fa57257a686f0b858b082d4f8a3d5cd32aa9a6f560; goal≜sumsq-ge-ab-plus-bc; name≜sumsq_ge_ab_plus_bc}
+⟦Σ:Source⟧{src≜goals/sumsq-ge-ab-plus-bc.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜claude; model≜template-nlinarith; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
