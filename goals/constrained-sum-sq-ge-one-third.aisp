@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜constrained-sum-sq-ge-one-third
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/constrained-sum-sq-ge-one-third.lean
-  sha≜∅
+  sha≜78809d96da1e05c45de38a1c38bee70b50f95f53288dace650db79b77e2d2ed4
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
