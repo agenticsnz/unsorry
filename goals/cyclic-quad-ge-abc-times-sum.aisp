@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜cyclic-quad-ge-abc-times-sum
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜3
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/cyclic-quad-ge-abc-times-sum.lean
-  sha≜∅
+  sha≜dd207d366a5b75f0b0ca089b60c63e10cd1d37acebd4ac79e0fd81081f49f16a
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
