@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜gcd-n-factorial-succ-eq-one
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜3
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/gcd-n-factorial-succ-eq-one.lean
-  sha≜∅
+  sha≜e0303a51da4839820f60058ea82bdc2c2123a91c94f73b657559774a68955528
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
