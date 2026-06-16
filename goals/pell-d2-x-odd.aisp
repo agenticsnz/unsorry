@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜pell-d2-x-odd
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜3
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/pell-d2-x-odd.lean
-  sha≜∅
+  sha≜de0a8c26697cf114a229eac86eb9cc862b2dc9e67fa6a1e2641f9a3453c69438
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
