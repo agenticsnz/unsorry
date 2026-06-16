@@ -1,0 +1,8 @@
+𝔸5.1.run.sum-two-k-sub-one-mul-two-pow.mac-158f.20260616t233127712414z-4ad79f3f@2026-06-16
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260616t233127712414z-4ad79f3f; goal≜sum-two-k-sub-one-mul-two-pow; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-sum-closedform}
+⟦Γ:Goal⟧{goal≜sum-two-k-sub-one-mul-two-pow}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-16T23:31:27Z}
+⟦Σ:Artifact⟧{sha≜1c7e8ed42e29f7d56c8d0b904c5d384c181c47bf6a133b6c3ccd70e6ea7753aa}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
