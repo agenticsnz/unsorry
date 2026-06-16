@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜pell-negative-brahmagupta-composition-generic-d
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/pell-negative-brahmagupta-composition-generic-d.lean
-  sha≜∅
+  sha≜c8e0cedbdaced8402b58cc5bd7bc0e62d55a28d3d900448bb6eba1ea94caebe4
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
