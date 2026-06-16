@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜coprime-consec-tri
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜3
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/coprime-consec-tri.lean
-  sha≜∅
+  sha≜35fe9a2a77311ba09fe59875caa3acf310296c2922538eafce578f6706866ee2
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
