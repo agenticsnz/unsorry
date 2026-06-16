@@ -1,0 +1,8 @@
+𝔸5.1.run.three-quartic-sum-ge-sumsq-sq.mac-158f.20260616t234112624803z-6e734151@2026-06-16
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260616t234112624803z-6e734151; goal≜three-quartic-sum-ge-sumsq-sq; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-nlinarith}
+⟦Γ:Goal⟧{goal≜three-quartic-sum-ge-sumsq-sq}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-16T23:41:12Z}
+⟦Σ:Artifact⟧{sha≜45a87f62df11600cd47657d8a7158aec48f2bcee2c5b22ebbc3da27a2d018626}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

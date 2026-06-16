@@ -1,0 +1,8 @@
+𝔸5.1.lemma.45a87f62df11@2026-06-16
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜45a87f62df11600cd47657d8a7158aec48f2bcee2c5b22ebbc3da27a2d018626; goal≜three-quartic-sum-ge-sumsq-sq; name≜three_quartic_sum_ge_sumsq_sq}
+⟦Σ:Source⟧{src≜goals/three-quartic-sum-ge-sumsq-sq.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜claude; model≜template-nlinarith; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
