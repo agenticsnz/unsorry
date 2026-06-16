@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜fourth-power-mod-twentyfive-mem
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/fourth-power-mod-twentyfive-mem.lean
-  sha≜∅
+  sha≜f3c3c3171b4499e95bf61bbe8dc3638b56487d4f9588753709b2e97dacfe225f
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
