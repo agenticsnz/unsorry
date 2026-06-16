@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜dvd-120-pow-seven-sub-pow-three
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜3
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/dvd-120-pow-seven-sub-pow-three.lean
-  sha≜∅
+  sha≜011cd4398f607ac4392afce56b393b1ec6c83afe39afcd18b31a08a72b5d8c6f
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
