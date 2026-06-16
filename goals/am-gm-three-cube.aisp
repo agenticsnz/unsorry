@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜am-gm-three-cube
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜3
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/am-gm-three-cube.lean
-  sha≜∅
-  aff≜-10
+  sha≜d8e19dd27937e13fae4f4fbb18cd1e174b8b9cc54acca679adaf83e6c4d5ada2
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
