@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sum-sixth-power-two-var-ge-mixed-fourth-second
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/sum-sixth-power-two-var-ge-mixed-fourth-second.lean
-  sha≜∅
+  sha≜89dc7c4d840c2610f69c8fd6517749fb2f2997e6385c731ebf460aab9a37bae6
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
