@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜pair-sum-sq-ge-three-abc-sum
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/pair-sum-sq-ge-three-abc-sum.lean
-  sha≜∅
+  sha≜806fa7ee4f56d688c209a5e632d31a9b3e6e49faca199b59099661203575ac6b
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
