@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜gcd-twon-n5-dvd-ten
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜3
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/gcd-twon-n5-dvd-ten.lean
-  sha≜∅
+  sha≜b518f57c58adaa9dbbfae832db0878d978468849aea54fc8edd840e7f5d27520
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
