@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sum-sq-ge-third-sq-sum
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/sum-sq-ge-third-sq-sum.lean
-  sha≜∅
+  sha≜e58ec693f8bc84a5f4288e1f8c63bc0f3ef7cad108b2790df1390b66f0fca927
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
