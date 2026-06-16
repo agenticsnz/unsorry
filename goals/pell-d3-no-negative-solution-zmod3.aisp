@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜pell-d3-no-negative-solution-zmod3
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜3
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/pell-d3-no-negative-solution-zmod3.lean
-  sha≜∅
+  sha≜4eafe0404cd821737858eb505855fefb65b162320c8551d689f758d97ecd164e
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
