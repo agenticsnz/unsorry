@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜platonic-pairs-realizable
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜3
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/platonic-pairs-realizable.lean
-  sha≜∅
+  sha≜00803792473b22ca1441a17aeec29fac234492f25918197c9cf747b933074cb0
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
