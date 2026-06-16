@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜gcd-n3p1-np1-eq-np1
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/gcd-n3p1-np1-eq-np1.lean
-  sha≜∅
+  sha≜5753ba3338af411b9e4a3fff7b9307ebdd7a08251c47abd62cbd314b82051562
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
