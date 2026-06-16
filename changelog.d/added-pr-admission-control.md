@@ -1,0 +1,1 @@
+Added repository-side proof PR admission control for the queued dispatcher cutover: post-cutover direct `feature/goal-*`, `prove/*`, or `prove(...)` submissions are labelled, commented, closed, and short-circuited from expensive CI while existing pre-cutover PRs continue draining.

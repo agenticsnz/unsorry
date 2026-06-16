@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜six-dvd-pow-three-add-five-mul
   phase≜prove
-  status≜blocked
+  status≜open
   difficulty≜2
 }
 ⟦Σ:Source⟧{

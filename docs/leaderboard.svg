@@ -4,7 +4,7 @@
 <rect width="900" height="100%" rx="18" fill="#ffffff"/>
 <rect x="0.5" y="0.5" width="899" height="485" rx="18" fill="none" stroke="#e2e8f0"/>
 <text x="32" y="44" font-family="Inter, system-ui, sans-serif" font-size="28" font-weight="700" fill="#334155">Unsorry Leaderboard</text>
-<text x="32" y="72" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#64748b">417 credited proofs · 144 explicit · 273 inferred from git · 10 contributors</text>
+<text x="32" y="72" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#64748b">418 credited proofs · 145 explicit · 273 inferred from git · 10 contributors</text>
 <text x="34" y="148" font-family="Georgia, serif" font-size="24" font-style="italic" font-weight="700" fill="#fbbf24">1</text>
 <a href="https://github.com/chat-bit-01">
 <text x="82" y="138" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="650" fill="#334155">@chat-bit-01</text>
@@ -27,10 +27,10 @@
 <a href="https://github.com/ohdearquant">
 <text x="82" y="266" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="650" fill="#334155">@ohdearquant</text>
 </a>
-<text x="82" y="286" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">33 proofs · 66 difficulty · 33 explicit · 0 inferred · 33 runs</text>
+<text x="82" y="286" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">34 proofs · 69 difficulty · 34 explicit · 0 inferred · 34 runs</text>
 <rect x="320" y="255" width="420" height="26" rx="13" fill="#f1f5f9"/>
-<rect x="320" y="255" width="54" height="26" rx="13" fill="#e0f2fe"/>
-<text x="760" y="274" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">7425 pts</text>
+<rect x="320" y="255" width="57" height="26" rx="13" fill="#e0f2fe"/>
+<text x="760" y="274" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">7750 pts</text>
 <text x="760" y="290" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#64748b">explicit</text>
 <text x="34" y="340" font-family="Georgia, serif" font-size="24" font-style="italic" font-weight="700" fill="#cbd5e1">4</text>
 <a href="https://github.com/perttu">

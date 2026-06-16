@@ -11,6 +11,7 @@ jobs:
     outputs:
       gate_b: ${{ steps.filter.outputs.gate_b }}
       aisp: ${{ steps.filter.outputs.aisp }}
+      admitted: ${{ steps.admission.outputs.admitted }}
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - id: filter
@@ -38,6 +39,16 @@ jobs:
               - 'library/index/**/*.aisp'
               - 'proof-runs/**/*.aisp'
               - 'swarm/**/*.aisp'
+      - id: admission
+        env:
+          CREATED_AT: ${{ github.event.pull_request.created_at }}
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          python3 -m tools.repo.pr_admission env \
+            --created-at "$CREATED_AT" \
+            --head-ref "$HEAD_REF" \
+            --title "$TITLE" >> "$GITHUB_OUTPUT"
 
   gate-b:
     # Required check: in-repo deterministic validator (ADR-003). Stdlib only;
@@ -48,37 +59,37 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Short-circuit (no Gate B-relevant paths)
-        if: needs.detect.outputs.gate_b != 'true'
+        if: needs.detect.outputs.admitted != 'true' || needs.detect.outputs.gate_b != 'true'
         run: echo "No Gate B-relevant paths touched — gate-b passes vacuously."
 
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-        if: needs.detect.outputs.gate_b == 'true'
+        if: needs.detect.outputs.admitted == 'true' && needs.detect.outputs.gate_b == 'true'
       - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
-        if: needs.detect.outputs.gate_b == 'true'
+        if: needs.detect.outputs.admitted == 'true' && needs.detect.outputs.gate_b == 'true'
         with:
           python-version: "3.12"
       - name: Install test dependency
-        if: needs.detect.outputs.gate_b == 'true'
+        if: needs.detect.outputs.admitted == 'true' && needs.detect.outputs.gate_b == 'true'
         run: pip install pytest
       - name: Gate B test suite
-        if: needs.detect.outputs.gate_b == 'true'
+        if: needs.detect.outputs.admitted == 'true' && needs.detect.outputs.gate_b == 'true'
         run: pytest tools/gate_b -q
       - name: Sourcing test suite (ADR-012 / ADR-035)
-        if: needs.detect.outputs.gate_b == 'true'
+        if: needs.detect.outputs.admitted == 'true' && needs.detect.outputs.gate_b == 'true'
         # Stdlib only (absence grep + triviality probe use a mocked runner).
         run: pytest tools/sourcing -q
       - name: Archive planner test suite (ADR-041)
-        if: needs.detect.outputs.gate_b == 'true'
+        if: needs.detect.outputs.admitted == 'true' && needs.detect.outputs.gate_b == 'true'
         run: pytest tools/archive -q
       - name: Validate repository tree
-        if: needs.detect.outputs.gate_b == 'true'
+        if: needs.detect.outputs.admitted == 'true' && needs.detect.outputs.gate_b == 'true'
         run: python3 -m tools.gate_b validate .
       # Neither the targets-board nor the leaderboard `--check` is a PR gate
       # (ADR-036, #415): a generated artifact regenerated in every PR made
       # concurrent goal PRs conflict on it. Both are refreshed POST-MERGE — the
       # board by `targets-board.yml`, the leaderboard by `leaderboard.yml`.
       - name: LLM provider tests (ADR-025)
-        if: needs.detect.outputs.gate_b == 'true'
+        if: needs.detect.outputs.admitted == 'true' && needs.detect.outputs.gate_b == 'true'
         # The OpenAI provider imports `requests`; the resolver tests are pure stdlib.
         run: |
           pip install -r tools/llm_providers/requirements.txt
@@ -94,7 +105,7 @@ jobs:
     # block) that the pinned upstream rejects. Resolving that drift (upstream the
     # block or bump the pin) is tracked in issue #318.
     needs: detect
-    if: needs.detect.outputs.aisp == 'true'
+    if: needs.detect.outputs.admitted == 'true' && needs.detect.outputs.aisp == 'true'
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:

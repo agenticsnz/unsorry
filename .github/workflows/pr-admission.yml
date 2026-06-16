@@ -1,0 +1,59 @@
+name: pr-admission
+
+on:
+  pull_request_target:
+    types: [opened, reopened, synchronize, ready_for_review]
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  admission:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - id: admission
+        env:
+          CREATED_AT: ${{ github.event.pull_request.created_at }}
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          python3 -m tools.repo.pr_admission env \
+            --created-at "$CREATED_AT" \
+            --head-ref "$HEAD_REF" \
+            --title "$TITLE" >> "$GITHUB_OUTPUT"
+      - name: Admit PR
+        if: steps.admission.outputs.admitted == 'true'
+        run: echo "${{ steps.admission.outputs.reason }}"
+      - name: Close post-cutover direct proof PR
+        if: steps.admission.outputs.admitted != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          REASON: ${{ steps.admission.outputs.reason }}
+        run: |
+          set -euo pipefail
+          gh label create blocked-direct-submit \
+            --repo "$GITHUB_REPOSITORY" \
+            --color B60205 \
+            --description "Direct proof PR rejected after queued-proof cutover" \
+            --force >/dev/null
+          gh pr edit "$PR" --repo "$GITHUB_REPOSITORY" --add-label blocked-direct-submit
+          {
+            echo "This PR is being closed by repository admission control."
+            echo
+            echo "$REASON."
+            echo
+            echo "Restart the producer from current \`main\` and submit through the queued proof flow:"
+            echo
+            echo "\`\`\`bash"
+            echo "git switch main"
+            echo "git pull"
+            echo "./swarm/agent.sh --prove"
+            echo "\`\`\`"
+          } > admission-comment.md
+          gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" -F body=@admission-comment.md >/dev/null
+          gh api -X PATCH "repos/$GITHUB_REPOSITORY/pulls/$PR" -f state=closed >/dev/null
+          exit 1

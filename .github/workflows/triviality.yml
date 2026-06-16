@@ -19,6 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       goals: ${{ steps.filter.outputs.goals }}
+      admitted: ${{ steps.admission.outputs.admitted }}
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - id: filter
@@ -27,10 +28,20 @@ jobs:
           filters: |
             goals:
               - 'goals/**/*.lean'
+      - id: admission
+        env:
+          CREATED_AT: ${{ github.event.pull_request.created_at }}
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          python3 -m tools.repo.pr_admission env \
+            --created-at "$CREATED_AT" \
+            --head-ref "$HEAD_REF" \
+            --title "$TITLE" >> "$GITHUB_OUTPUT"
 
   triviality:
     needs: detect
-    if: needs.detect.outputs.goals == 'true'
+    if: needs.detect.outputs.admitted == 'true' && needs.detect.outputs.goals == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:

@@ -112,6 +112,108 @@ aggregation lane, while namespace remains the trusted verifier lane.
 Runner segmentation is a live operations change. It must handle existing PRs
 and queued jobs, not only new work.
 
+### 5.0 Coordinated prove admission governor
+
+`swarm/agent.sh --prove` now has a cheap admission layer before the trusted
+verifier lane. After syncing the repository, and before claim, unblock,
+decompose, demote, or proof PR creation, the agent reads live GitHub state:
+
+```text
+open_prove_prs       = open PRs with titles beginning prove(
+gate_a_in_flight     = queued gate-a.yml runs + in-progress gate-a.yml runs
+```
+
+The default policy is:
+
+```text
+UNSORRY_SUBMISSION_GOVERNOR=1
+UNSORRY_MAX_OPEN_PROVE_PRS=40
+UNSORRY_MAX_GATE_A_IN_FLIGHT=20
+UNSORRY_SUBMISSION_FREEZE=0
+UNSORRY_GOVERNOR_SCAN_LIMIT=200
+```
+
+If the freeze is truthy, or either threshold is reached, coordinated `--prove`
+exits cleanly with no new claim and no new PR. If the GitHub API read fails,
+the governor fails closed and pauses the cycle. Operators can set
+`UNSORRY_SUBMISSION_GOVERNOR=0` for a deliberate override, or set either max to
+`-1` to disable only that limit.
+
+This is the first concrete two-layer implementation:
+
+- **Cheap admission layer:** GitHub-hosted metadata/API visibility decides
+  whether new proof work may enter the queue.
+- **Trusted verifier layer:** namespace Gate A remains the only lane that can
+  admit Lean content.
+
+`--prove-local` and `--dry-run` are exempt because they produce no remote
+claims, branches, PRs, or namespace verifier demand.
+
+### 5.0.1 Queue-backed producer / dispatcher mode
+
+The compatible cutover path is:
+
+```text
+old proof PRs already open       -> continue through the existing Gate A lane
+new proof producers              -> default queued submit mode
+queued proof branches            -> no PR, no Gate A spend
+queue dispatcher                 -> opens bounded PRs when the governor allows
+```
+
+`./swarm/agent.sh --prove` still claims a goal, generates a proof, locally
+verifies it, writes the same library/index/goal tree, and releases the claim.
+By default it now pushes the verified tree to:
+
+```text
+queued/prove/<goal>/<agent>-<suffix>
+```
+
+`./swarm/agent.sh --dispatch-queue` fetches queued proof branches, skips any
+branch that already has a PR, checks the same live admission governor, and
+opens at most `UNSORRY_DISPATCH_LIMIT` PRs per pass.
+`UNSORRY_GOVERNOR_WAIT` defaults to `300`, so producers and dispatchers poll
+rather than exit when the governor is closed or no work is available.
+
+This lets operators switch the production engine while the old PR queue drains:
+existing PRs are untouched, existing required checks remain stable, and new
+proof work does not consume GitHub PR or namespace Gate A capacity until the
+dispatcher admits it.
+
+### 5.0.2 Repository-side admission for uncontrolled producers
+
+The queue-backed producer mode is cooperative: a running `agent.sh` process does
+not hot-reload itself after `main` changes, and external contributors may run
+custom scripts. The repository therefore enforces the same cutover policy at PR
+ingress.
+
+The cutoff is the merge time of the queued dispatcher:
+
+```text
+queued-proof cutover = 2026-06-16T22:24:44Z
+```
+
+Post-cutover PRs are rejected when they look like direct proof submissions:
+
+```text
+head ref starts with feature/goal-
+head ref starts with prove/
+title starts with prove(
+```
+
+Dispatcher submissions are admitted only through:
+
+```text
+queued/prove/<goal>/<agent>-<suffix>
+```
+
+`.github/workflows/pr-admission.yml` runs on `pull_request_target`, checks the
+base-repository policy from `tools.repo.pr_admission`, labels rejected PRs
+`blocked-direct-submit`, comments with restart instructions, and closes them.
+Gate A, Gate B, `agent-lint`, `triviality`, and `attribution-advisory` run the
+same admission check and short-circuit rejected PRs so that a direct-submission
+flood cannot keep consuming GitHub-hosted or Namespace runner capacity while the
+close workflow is pending.
+
 ### 5.1 Required-check continuity
 
 The cutover must preserve required check names:
@@ -153,8 +255,13 @@ Before changing actual runner profile sizes, operators should:
 5. Cancel only superseded or clearly stuck runs.
 6. Confirm new PRs route routine work to `unsorry-1` and olean-invalidating
    work to `unsorry-2`.
-7. Wait for one scheduled `gate-a-full-replay` run after the cutover.
-8. Record the cutover event with profile sizes and queue state.
+7. Let producer agents pull/re-exec the latest harness, or restart them if
+   they are inside a long provider call; default coordinated `--prove` now
+   queues verified branches.
+8. Start one dispatcher with `./swarm/agent.sh --dispatch-queue` and a small
+   `UNSORRY_DISPATCH_LIMIT`.
+9. Wait for one scheduled `gate-a-full-replay` run after the cutover.
+10. Record the cutover event with profile sizes and queue state.
 
 The pause in step 2 can be manual at first. ADR-053/ADR-054 should later make
 it an explicit claim/quota control.

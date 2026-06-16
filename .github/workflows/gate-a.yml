@@ -29,6 +29,7 @@ jobs:
       lean: ${{ steps.filter.outputs.lean }}
       active: ${{ steps.filter.outputs.active }}
       archive: ${{ steps.filter.outputs.archive }}
+      admitted: ${{ steps.admission.outputs.admitted }}
       profile: ${{ steps.profile.outputs.name }}
       volume: ${{ steps.profile.outputs.volume }}
     steps:
@@ -72,6 +73,16 @@ jobs:
               - 'lakefile.toml'
               - 'lakefile.lean'
               - 'lake-manifest.json'
+      - id: admission
+        env:
+          CREATED_AT: ${{ github.event.pull_request.created_at }}
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          python3 -m tools.repo.pr_admission env \
+            --created-at "$CREATED_AT" \
+            --head-ref "$HEAD_REF" \
+            --title "$TITLE" >> "$GITHUB_OUTPUT"
       # Route by replay workload (ADR-048 Phase 2): a routine proof PR AND a push
       # to main now replay INCREMENTALLY (light) -> namespace-profile-unsorry-1
       # (4 GB). Only an olean-invalidating change (toolchain/lakefile/manifest)
@@ -117,7 +128,7 @@ jobs:
     # This prepare job warms/restores the Lean cache, generates binding modules,
     # and runs the cheap authoritative checks once before the heavy audit/replay
     # jobs start in parallel.
-    if: needs.detect.outputs.lean == 'true'
+    if: needs.detect.outputs.admitted == 'true' && needs.detect.outputs.lean == 'true'
     runs-on: ${{ needs.detect.outputs.profile }}
     # 45 min, not 30: a COLD library build (~21 min and growing — no warm
     # `.lake/build` cache, e.g. first run on a new cache prefix after a
@@ -240,7 +251,7 @@ jobs:
   gate_a_audit:
     name: gate-a-audit
     needs: [detect, gate_a_prepare]
-    if: needs.detect.outputs.active == 'true'
+    if: needs.detect.outputs.admitted == 'true' && needs.detect.outputs.active == 'true'
     runs-on: ${{ needs.detect.outputs.profile }}
     # 45 min, not 30: this job also does the cold library build (~21 min) before
     # its incremental audit; the old 30-min cap killed it on a cold cache (#567).
@@ -361,7 +372,7 @@ jobs:
   gate_a_replay:
     name: gate-a-replay
     needs: [detect, gate_a_prepare]
-    if: needs.detect.outputs.active == 'true'
+    if: needs.detect.outputs.admitted == 'true' && needs.detect.outputs.active == 'true'
     runs-on: ${{ needs.detect.outputs.profile }}
     # 120m (not 60m): a FULL replay (toolchain/dep change, or the scheduled
     # backstop) is serial on a memory-bound runner and needs the headroom to
@@ -491,7 +502,7 @@ jobs:
   gate_a_archive:
     name: gate-a-archive
     needs: [detect]
-    if: needs.detect.outputs.archive == 'true'
+    if: needs.detect.outputs.admitted == 'true' && needs.detect.outputs.archive == 'true'
     runs-on: ${{ needs.detect.outputs.profile }}
     # Validates a changed archive package: packaging sanity (`lake build --wfail`)
     # + provenance/byte-identity (ADR-018, checked in gate-a-prepare). It does NOT
@@ -551,6 +562,7 @@ jobs:
         env:
           LEAN_RELEVANT: ${{ needs.detect.outputs.lean }}
           ACTIVE_RELEVANT: ${{ needs.detect.outputs.active }}
+          ADMITTED: ${{ needs.detect.outputs.admitted }}
           PREPARE_RESULT: ${{ needs.gate_a_prepare.result }}
           AUDIT_RESULT: ${{ needs.gate_a_audit.result }}
           REPLAY_RESULT: ${{ needs.gate_a_replay.result }}
@@ -558,6 +570,11 @@ jobs:
           ARCHIVE_RESULT: ${{ needs.gate_a_archive.result }}
         run: |
           set -euo pipefail
+          if [ "$ADMITTED" != "true" ]; then
+            echo "PR is not admitted by queued-proof cutover policy — heavy Gate A passes vacuously while pr-admission closes it."
+            exit 0
+          fi
+
           if [ "$LEAN_RELEVANT" != "true" ]; then
             echo "No Lean-relevant paths touched — gate-a passes vacuously."
             exit 0

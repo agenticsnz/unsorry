@@ -27,10 +27,25 @@ jobs:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
         with:
           fetch-depth: 0 # git add-author corroboration reads history
+      - id: admission
+        env:
+          CREATED_AT: ${{ github.event.pull_request.created_at }}
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          python3 -m tools.repo.pr_admission env \
+            --created-at "$CREATED_AT" \
+            --head-ref "$HEAD_REF" \
+            --title "$TITLE" >> "$GITHUB_OUTPUT"
+      - name: Short-circuit rejected direct proof PR
+        if: steps.admission.outputs.admitted != 'true'
+        run: echo "PR is not admitted by queued-proof cutover policy; pr-admission will close it."
       - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        if: steps.admission.outputs.admitted == 'true'
         with:
           python-version: "3.12"
       - name: Audit solver provenance (advisory)
+        if: steps.admission.outputs.admitted == 'true'
         id: audit
         run: |
           set +e
@@ -54,6 +69,7 @@ jobs:
           } > comment.md
           echo "phantoms=$code" >> "$GITHUB_OUTPUT"
       - name: Sticky advisory comment
+        if: steps.admission.outputs.admitted == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
           PR: ${{ github.event.pull_request.number }}

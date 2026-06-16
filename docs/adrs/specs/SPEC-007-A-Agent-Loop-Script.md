@@ -10,6 +10,7 @@ Scope: **translation-only mode** (Phase 0), **prove mode** (Phase 1), and a loca
 ./swarm/agent.sh --translate-only [--once] [--goal <id>] [--dry-run]
 ./swarm/agent.sh --prove [--once] [--goal <id>] [--provider claude|codex] [--dry-run]
 ./swarm/agent.sh --prove-local [--goal <id>] [--provider claude|codex|gemini|openai]
+./swarm/agent.sh --dispatch-queue [--once] [--dry-run]
 ./swarm/agent.sh --self-test
 ```
 
@@ -18,6 +19,7 @@ Scope: **translation-only mode** (Phase 0), **prove mode** (Phase 1), and a loca
 | `--translate-only` | Phase-0 mode: only `phase ≡ translate`, `status ≡ open` goals are candidates |
 | `--prove` | Phase-1 mode: only `phase ≡ prove`, `status ≡ open`, not-already-proved goals are candidates. Mutually exclusive with `--translate-only`; exactly one mode (or `--self-test`) is required |
 | `--prove-local` | Prove the highest-ranked open, unproved goal from local `HEAD`, or the explicit `--goal`, in a preserved detached worktree. Performs no fetch, claim, push, PR, GitHub, metrics, decomposition, or affinity operation |
+| `--dispatch-queue` | Open queued proof branches as PRs when the ADR-058 submission governor admits more verifier work |
 | `--provider <name>` | Proof provider. Coordinated `--prove` supports `claude` (default) and `codex`; `--prove-local` additionally supports experimental `gemini` and `openai` providers |
 | `--once` | Run exactly one cycle then exit (default: loop until no claimable goal or budget spent) |
 | `--goal <id>` | Restrict selection to one goal (trial orchestration) |
@@ -39,6 +41,14 @@ Must be run from the repository root (script verifies `swarm/protocol.aisp` exis
 | `UNSORRY_WALL` | `1800` | Wall-clock seconds per cycle (`timeout` around the claude call) |
 | `UNSORRY_TTL` | read from `tools/gate_b/config.py` (7200) | Claim TTL; the script reads the config value — never hardcodes it (DRY with the contract) |
 | `UNSORRY_ATTEMPTS` | `3` for `--prove` and `--prove-local`; otherwise read from `tools/gate_b/config.py` `BUDGET_ATTEMPTS` (2) | Prove build/audit attempts; later attempts receive the previous build/audit error in the prompt. |
+| `UNSORRY_SUBMISSION_GOVERNOR` | `1` for coordinated `--prove` | Enables the live submission governor. Set `0` only for an operator-approved override. `--prove-local` and `--dry-run` never create remote work and are exempt. |
+| `UNSORRY_SUBMISSION_FREEZE` | `0` | Emergency coordinated-`--prove` pause. Truthy values make the agent exit cleanly before claim, unblock, decompose, demote, or proof PR creation. |
+| `UNSORRY_SUBMIT_MODE` | `queue` | Coordinated `--prove` submit mode. `queue` pushes a verified branch under `queued/prove/<goal>/...` without opening a PR. `pr` restores the older immediate auto-merge PR behavior for deliberate operator exceptions. |
+| `UNSORRY_DISPATCH_LIMIT` | `1` | Maximum queued proof branches `--dispatch-queue` opens per pass. `--once` also limits dispatch to one branch. |
+| `UNSORRY_GOVERNOR_WAIT` | `300` | When positive and not `--once`, coordinated `--prove` and `--dispatch-queue` sleep this many seconds and poll again after a governor pause or empty queue. |
+| `UNSORRY_MAX_OPEN_PROVE_PRS` | `40` | Pause coordinated `--prove` when this many open `prove(...)` PRs already exist. Set `-1` to disable this limit. |
+| `UNSORRY_MAX_GATE_A_IN_FLIGHT` | `20` | Pause coordinated `--prove` when queued plus in-progress `gate-a.yml` runs reach this count. Set `-1` to disable this limit. |
+| `UNSORRY_GOVERNOR_SCAN_LIMIT` | `200` | Maximum PR/run rows fetched for each governor query. |
 
 Authentication: the selected provider CLI must be authenticated, or
 `OPENAI_API_KEY` must be set for `openai`; `gh` must be authenticated for PR
@@ -85,6 +95,7 @@ Local smoke defaults to the same three-attempt proof budget as coordinated prove
 
 A `prove`-phase goal carries `goals/<id>.lean` — a `theorem <name> <signature> := by sorry` — and no AISP statement. The cycle reuses the translate skeleton's claim/PR/release plumbing; only the work and verify steps differ.
 
+0. **Admission governor**: after syncing `main` and before any claim or PR-producing maintenance work, the coordinated `--prove` loop checks the live operations lane. If `UNSORRY_SUBMISSION_FREEZE` is truthy, if open `prove(...)` PRs are at or above `UNSORRY_MAX_OPEN_PROVE_PRS`, or if queued plus in-progress `gate-a.yml` runs are at or above `UNSORRY_MAX_GATE_A_IN_FLIGHT`, the agent exits 0 without claiming work. GitHub API read failures fail closed for coordinated `--prove`: when queue pressure cannot be observed during a flood, the safe action is to avoid adding new verifier demand. `--prove-local` and `--dry-run` are exempt because they do not create remote work.
 1. **Pull** `main`; refresh the claims worktree (identical to translate step 1). No convergence sweep — that is a translate-only step.
 2. **Enumerate candidates**: goals with `phase ≡ prove`, `status ≡ open`, fewer than `config.PROVE_CLAIM_CAP` (= 1) live claims by distinct other agents, no live claim by self, and **not already proved**. A goal is *proved* iff a `library/index/<sha>.aisp` entry names it (`goal≜<id>`) — the index entry is the authoritative proved marker (the merge edits both the goal record and the index, but the index entry is what a racing agent on a stale checkout can still see). Lexicographic goal-id order.
 3. **Select**: first candidate in lexicographic goal-id order (same rationale as translate).
@@ -93,10 +104,28 @@ A `prove`-phase goal carries `goals/<id>.lean` — a `theorem <name> <signature>
 6. **Verify locally, before any PR** (the agent self-verifying, per ADR-006 and the design doc's step 6). The proof worktree is a fresh checkout with **no `.lake`** (it is gitignored), so before the first build the cycle runs `lake exe cache get` once in the worktree to restore the prebuilt mathlib oleans — without it, `lake build UnsorryLibrary --wfail` recompiles all of mathlib from source and blows the attempt budget (observed in phase1-run-001; a warm global cache makes the fetch a ~20 s no-op). The fetch is best-effort: on failure the build still works, just slowly, so the cycle warns and continues. Then all three must pass on the proof worktree, for module `Unsorry.<CamelName>`: (a) `lake build UnsorryLibrary --wfail` (zero-sorry, zero-warning bar); (b) `lake exe axiom_audit Unsorry.<CamelName>` — whitelist only, **no** `--allow-sorry`; (c) `python3 -m tools.gate_a.check_library_options library`. Up to `config.BUDGET_ATTEMPTS` (= 2, via `UNSORRY_ATTEMPTS`) attempts: on a failed build/audit the combined output is fed back to one fresh `claude` call, then give up.
 7. **Index the proof**: compute the proved statement's **content address** — `sha = sha256(<normalized Lean statement string>)` (lowercase hex). The normalized Lean statement is the goal `.lean`'s `theorem`/`lemma` declaration with `import`/`--`-comment lines dropped, the proof (`:=` body) cut, and all whitespace collapsed to single spaces. This is the prove analogue of `tools/fidelity` `statement_sha` for translate goals: a translate goal has an AISP canonical statement to address (and its index sha is `tools/fidelity` `statement_sha` of that), but a prove goal has only its Lean text, so the index is keyed by the sha of that normalized Lean statement string (theorem name + signature included). The rule is deterministic and, on the seeded 20-goal backlog, collision-free. Write `library/index/<sha>.aisp` (same shape as existing entries; `tags≜⟨⟩` and `use≜0; aff≜0` start empty).
 8. **Mark the goal proved**: edit `goals/<id>.aisp` via the existing `rewrite-goal` helper — `status≜proved` + `sha≜<sha>`, only those two lines.
-9. **Check in**: branch `feature/goal-<goal>-prove-<AGENT_ID>-<suffix>` from `origin/main`; commit the library module + index entry + goal edit; Gate-B-validate the tree; push; `gh pr create` (title `prove(<goal>): <name> by <AGENT_ID>`); `gh pr merge --auto --squash`. Same per-cycle `<suffix>` uniqueness as translate step 9.
+9. **Check in or queue**: in `UNSORRY_SUBMIT_MODE=pr`, branch `feature/goal-<goal>-prove-<AGENT_ID>-<suffix>` from `origin/main`; commit the library module + index entry + goal edit; Gate-B-validate the tree; push; `gh pr create` (title `prove(<goal>): <name> by <AGENT_ID>`); `gh pr merge --auto --squash`. In `UNSORRY_SUBMIT_MODE=queue`, branch `queued/prove/<goal>/<AGENT_ID>-<suffix>` from `origin/main`; commit the exact same verified tree; Gate-B-validate it; push it to `origin`; do **not** create a PR or arm auto-merge. Candidate selection treats a queued proof branch for a goal as in-flight work, so another producer does not duplicate it while it waits for dispatch.
 10. **Release** the claim (identical re-entrant plumbing to translate step 10).
 11. **On prove failure** (budget/attempts spent, build/audit never passed, or check-in failed): release the claim and emit a `prove-failed` event. **Phase 1 keeps it simple — no decomposition.** The design doc's decomposition path (commit a `decompositions/` record, split the goal into sub-goals) is **Phase 2**; in Phase 1 a prove failure is just release + flag.
-12. **Metrics**: events `claimed`, `collision`, `proved`, `prove-failed`, `pr-opened`, `released` — same JSON line format as translate. `proved` and `pr-opened` are emitted on a successful check-in; `prove-failed` on the failure path.
+12. **Metrics**: events `claimed`, `collision`, `proved`, `prove-failed`, `queued`, `pr-opened`, `released` — same JSON line format as translate. `proved` and `pr-opened` are emitted on an immediate PR check-in; `proved` and `queued` are emitted on a successful queued-branch check-in; `prove-failed` on the failure path.
+
+## Queue Dispatch
+
+`./swarm/agent.sh --dispatch-queue` is the intake valve for queued proof
+branches. It fetches `origin/queued/prove/*`, skips branches that already have
+a PR, checks the same ADR-058 submission governor used by producers, and opens
+at most `UNSORRY_DISPATCH_LIMIT` PRs per pass. Each dispatched PR uses the
+queued branch's commit subject as its title and arms the same auto-merge policy
+as immediate `pr` mode.
+
+When `UNSORRY_GOVERNOR_WAIT` is positive, producer and dispatcher loops stay
+resident: producers poll again after a governor pause or empty prove queue, and
+dispatchers poll again after a pass with no admitted dispatch.
+
+This path is compatible with the existing flow. Already-open proof PRs remain
+ordinary PRs and drain through Gate A. Queued branches add no Gate A load until
+the dispatcher opens them, and the dispatcher counts the existing open PRs and
+Gate A queued/in-progress runs before adding more.
 
 ## Index-sha rule (prove)
 

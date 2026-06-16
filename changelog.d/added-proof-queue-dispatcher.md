@@ -1,0 +1,1 @@
+Coordinated proof producers now queue locally verified `queued/prove/...` branches by default instead of opening PRs immediately; `./swarm/agent.sh --dispatch-queue` meters those branches into ordinary auto-merge PRs when the ADR-058 submission governor allows more Gate A work.

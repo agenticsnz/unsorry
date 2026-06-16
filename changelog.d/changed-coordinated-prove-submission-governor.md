@@ -1,0 +1,1 @@
+Coordinated `--prove` now pauses before claiming new work when open proof PRs or Gate A queue pressure exceed the ADR-058 submission-governor thresholds, while `--prove-local` and `--dry-run` remain available.

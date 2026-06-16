@@ -41,6 +41,28 @@ python3 -m tools.gate_b validate .       # check coordination artifacts (Gate B)
 a Lean proof, self-verifies it locally (`lake build --wfail` + the axiom audit)
 before opening a PR, and lets the gates decide. Use `--provider codex` to run
 both proof attempts and decomposition with Codex; Claude remains the default.
+
+Coordinated `--prove` has a live submission governor (ADR-058). When the
+repository already has too many open proof PRs or queued/in-progress Gate A
+runs, the agent exits cleanly before claiming more work. Local proving remains
+available through `--prove-local`, and an operator can override the governor
+with `UNSORRY_SUBMISSION_GOVERNOR=0` for a deliberate emergency exception.
+
+Coordinated `--prove` queues verified work by default so it does not
+immediately become PR/CI load:
+
+```bash
+./swarm/agent.sh --prove
+./swarm/agent.sh --dispatch-queue
+```
+
+The first command produces locally verified proof branches under
+`queued/prove/`; the second opens those branches as ordinary auto-merge PRs
+only when the governor admits more Gate A work. Both loops poll every 300s by
+default when saturated or empty. Existing proof PRs continue through the old
+path and drain normally. Set `UNSORRY_SUBMIT_MODE=pr` only for an
+operator-approved immediate-PR exception.
+
 Other flags:
 
 - `--translate-only` — run the Phase-0/1 formalisation loop instead of proving.
@@ -50,6 +72,8 @@ Other flags:
   generation and full local verification in a preserved worktree without
   fetching, claiming, pushing, or opening a PR. Without `--goal`, the script
   automatically selects the highest-ranked open local target.
+- `--dispatch-queue` — open queued proof branches as PRs when the submission
+  governor allows more verifier work.
 - `-pi [<model>]` — use pi-coder's `~/.pi/agent/models.json`: resolve the model name/id
   (the optional `<model>` arg, else `UNSORRY_MODEL`) to its OpenAI-compatible endpoint,
   key, and id, and prove with it (forces `--provider openai`; ADR-025). Works with

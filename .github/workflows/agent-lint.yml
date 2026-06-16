@@ -10,16 +10,35 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - id: admission
+        env:
+          CREATED_AT: ${{ github.event.pull_request.created_at }}
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          python3 -m tools.repo.pr_admission env \
+            --created-at "$CREATED_AT" \
+            --head-ref "$HEAD_REF" \
+            --title "$TITLE" >> "$GITHUB_OUTPUT"
+      - name: Short-circuit rejected direct proof PR
+        if: steps.admission.outputs.admitted != 'true'
+        run: echo "PR is not admitted by queued-proof cutover policy; pr-admission will close it."
       - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        if: steps.admission.outputs.admitted == 'true'
         with:
           python-version: "3.12"
       - name: Install shellcheck
+        if: steps.admission.outputs.admitted == 'true'
         run: sudo apt-get update && sudo apt-get install -y shellcheck
       - name: shellcheck
+        if: steps.admission.outputs.admitted == 'true'
         run: shellcheck swarm/agent.sh swarm/supervise.sh
       - name: bash syntax check
+        if: steps.admission.outputs.admitted == 'true'
         run: bash -n swarm/agent.sh && bash -n swarm/supervise.sh
       - name: agent self-test
+        if: steps.admission.outputs.admitted == 'true'
         run: ./swarm/agent.sh --self-test
       - name: supervisor self-test
+        if: steps.admission.outputs.admitted == 'true'
         run: ./swarm/supervise.sh --self-test
