@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜pell-d3-no-small-nontrivial-y
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜3
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/pell-d3-no-small-nontrivial-y.lean
-  sha≜∅
+  sha≜46d0fddaaf61ef738aa5850cfcb451d7a1e8cd231a14f16cd4316b179e1cb35e
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
