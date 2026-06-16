@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜pell-d2-square-ladder-step-preserves
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/pell-d2-square-ladder-step-preserves.lean
-  sha≜∅
+  sha≜9415c381b020e1d952632546ea0bb4d4b5739909caa8a9697afc6ed8f74361e9
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
