@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜lcm-self-succ
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/lcm-self-succ.lean
-  sha≜∅
+  sha≜001a26a07a1e6f63147b5111f65b604b277fbbec7ac7f8f58ed28b1f93bbad8b
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
