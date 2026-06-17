@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sum-icc-k-div-three-shifted-consecutive-telescope
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜3
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/sum-icc-k-div-three-shifted-consecutive-telescope.lean
-  sha≜∅
+  sha≜2e079ccbf3f42668ae6f3caeaa74a419b01b7aaae75d49f0cd030683f7649af0
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
