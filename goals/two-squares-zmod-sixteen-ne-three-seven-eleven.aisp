@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜two-squares-zmod-sixteen-ne-three-seven-eleven
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/two-squares-zmod-sixteen-ne-three-seven-eleven.lean
-  sha≜∅
+  sha≜c7e66bc6482c6994c446af20d7f7e81612def809ca7d1e895aefc07899d5f18e
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
