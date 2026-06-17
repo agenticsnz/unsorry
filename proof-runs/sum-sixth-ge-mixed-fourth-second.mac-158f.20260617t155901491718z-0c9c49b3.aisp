@@ -1,0 +1,8 @@
+𝔸5.1.run.sum-sixth-ge-mixed-fourth-second.mac-158f.20260617t155901491718z-0c9c49b3@2026-06-17
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260617t155901491718z-0c9c49b3; goal≜sum-sixth-ge-mixed-fourth-second; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-nlinarith}
+⟦Γ:Goal⟧{goal≜sum-sixth-ge-mixed-fourth-second}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-17T15:59:01Z}
+⟦Σ:Artifact⟧{sha≜ac982fda9d8e813cff6fa51386035b8c57ea081c27f8243c55d42badda0eec12}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
