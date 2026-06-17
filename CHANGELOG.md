@@ -12,6 +12,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 `python3 -m tools.changelog --preview`; a release folds them in here with
 `python3 -m tools.changelog --release <version> <date>`. -->
 
+## [1.23.0] - 2026-06-17
+
+### Added
+
+- Added a demand-driven mode to the goal-sourcing runner (`swarm/sourcing.sh`, [ADR-067](docs/adrs/ADR-067-Demand-Driven-Sourcing.md) / [SPEC-067-A](docs/adrs/specs/SPEC-067-A-Demand-Driven-Sourcing.md)): the new `--if-pool-empty` flag makes sourcing source **only when there are no problems left to solve** — when no `goals/<slug>.aisp` carries `status≜open` on the freshly-synced `main` — and otherwise no-op with exit 0 (no Claude call, no PR). It re-checks the pool before every cycle, so a supervisor or cron can keep a single `./swarm/sourcing.sh --if-pool-empty` running that replenishes the backlog exactly when, and only when, the prove arm (`agent.sh`) runs dry — the complement of the prove arm's empty-pool stop. The flag is default-off (every existing invocation is byte-for-byte unchanged), reuses the same `status≜open` marker `supervise.sh` already reads (no new claim/proved/index plumbing), and keeps ADR-062's exit-code contract so `supervise.sh` wraps it unchanged.
+
+### Fixed
+
+- Fixed the leaderboard's view-toggle menu (the **Leaderboard / Top 5 / Proofs over time / Sourcing** tabs) overflowing off the right edge on mobile — the fourth tab, **Sourcing**, sat entirely off-screen and was clipped by the card. The `inline-flex` strip was ~479px wide inside a ~310px mobile content area and its `overflow-x` scroll never engaged, so the last tab was simply unreachable. The strip now **wraps to multiple rows on narrow viewports** (every tab visible) and still hugs its content in a single row from `sm:` up. (Verified at 320/360/390px.)
+
 ## [1.22.2] - 2026-06-17
 
 ### Fixed
