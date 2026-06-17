@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-compositions-count-eq-two-pow
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜3
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/sum-range-compositions-count-eq-two-pow.lean
-  sha≜∅
+  sha≜f5ac49d824b9b4abd93761f12cefdd8884c6eba89e9f7622a5c86aba040e50ca
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
