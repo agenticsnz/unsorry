@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜dvd-fortyeight-coprime-six-pow-four-sub-one
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜4
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/dvd-fortyeight-coprime-six-pow-four-sub-one.lean
-  sha≜∅
+  sha≜abf0e1277118aaf1bfcf298011dcb86ffde90e30929843989862924e095777dd
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
