@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜fib-consecutive-vieta-form-value
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/fib-consecutive-vieta-form-value.lean
-  sha≜∅
+  sha≜45782a3b614d4745d66a0ee3f525246d023dae6795ba5d8f1c981c70d6a5b87d
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
