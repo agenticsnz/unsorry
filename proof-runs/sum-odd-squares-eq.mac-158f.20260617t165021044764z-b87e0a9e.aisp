@@ -1,0 +1,8 @@
+𝔸5.1.run.sum-odd-squares-eq.mac-158f.20260617t165021044764z-b87e0a9e@2026-06-17
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260617t165021044764z-b87e0a9e; goal≜sum-odd-squares-eq; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-sum-induction}
+⟦Γ:Goal⟧{goal≜sum-odd-squares-eq}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-17T16:50:21Z}
+⟦Σ:Artifact⟧{sha≜1f56dbef11d3b9912f2c578d32ef3f2990a88771d2c733372a93feb37fa5d3ab}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
