@@ -1,0 +1,8 @@
+𝔸5.1.run.sum-two-squares-zmod-eight-ne-six.mac-158f.20260616t220812500918z-f0842dd0@2026-06-16
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260616t220812500918z-f0842dd0; goal≜sum-two-squares-zmod-eight-ne-six; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-zmod-decide}
+⟦Γ:Goal⟧{goal≜sum-two-squares-zmod-eight-ne-six}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-16T22:08:12Z}
+⟦Σ:Artifact⟧{sha≜6e6a334e2b5dc614505d33873fb8146f6a270d7809c507c8455a8c858f894b9e}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
