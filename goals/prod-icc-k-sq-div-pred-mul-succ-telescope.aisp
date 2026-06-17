@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜prod-icc-k-sq-div-pred-mul-succ-telescope
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/prod-icc-k-sq-div-pred-mul-succ-telescope.lean
-  sha≜∅
+  sha≜7d14c31a290484236f7e3d94a14404f6559381b829f14359426f21d04b33c8a4
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
