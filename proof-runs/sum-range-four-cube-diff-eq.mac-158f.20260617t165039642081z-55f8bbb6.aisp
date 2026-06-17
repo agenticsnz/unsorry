@@ -1,0 +1,8 @@
+𝔸5.1.run.sum-range-four-cube-diff-eq.mac-158f.20260617t165039642081z-55f8bbb6@2026-06-17
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260617t165039642081z-55f8bbb6; goal≜sum-range-four-cube-diff-eq; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-sum-induction}
+⟦Γ:Goal⟧{goal≜sum-range-four-cube-diff-eq}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-17T16:50:39Z}
+⟦Σ:Artifact⟧{sha≜5bac78d7fea6116966679c2cbb77572bce73fc52db5a3cd1fd3fc3229d66bd77}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
