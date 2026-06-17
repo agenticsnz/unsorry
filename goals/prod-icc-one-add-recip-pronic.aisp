@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜prod-icc-one-add-recip-pronic
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜3
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/prod-icc-one-add-recip-pronic.lean
-  sha≜∅
+  sha≜9e18f981cd9c764b766940b8bd66f6390e7b94db7cdfde09ccfefd92c9f382d5
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
