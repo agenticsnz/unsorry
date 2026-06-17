@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-recip-three-consec-odd-telescope
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜3
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/sum-range-recip-three-consec-odd-telescope.lean
-  sha≜∅
+  sha≜e41b29a56dddd99bd1cc22032f40016ee23475a65fc3d2a99133a553fd68c4e2
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
