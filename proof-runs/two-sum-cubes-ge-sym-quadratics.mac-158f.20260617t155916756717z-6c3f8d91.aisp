@@ -1,0 +1,8 @@
+𝔸5.1.run.two-sum-cubes-ge-sym-quadratics.mac-158f.20260617t155916756717z-6c3f8d91@2026-06-17
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260617t155916756717z-6c3f8d91; goal≜two-sum-cubes-ge-sym-quadratics; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-nlinarith}
+⟦Γ:Goal⟧{goal≜two-sum-cubes-ge-sym-quadratics}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-17T15:59:16Z}
+⟦Σ:Artifact⟧{sha≜b59d7cfb63577dd4746c1a20d000aa0152744de4880ff65e4c9ba309090aceb2}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
