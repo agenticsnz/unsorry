@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜nicomachus-sum-cubes-eq-sum-id-sq
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜3
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/nicomachus-sum-cubes-eq-sum-id-sq.lean
-  sha≜∅
+  sha≜98eb83c9adfdf3f9d0cc953c84dd2a2005e297dc52da0f5d73ca091140857cc4
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
