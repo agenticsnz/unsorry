@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-shifted-choose-eq-two-pow-sub-one
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜3
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/sum-range-shifted-choose-eq-two-pow-sub-one.lean
-  sha≜∅
+  sha≜652da5852ede46b51fde662a5c2c3f97746dcde4771e1762ac595f37fff0706c
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
