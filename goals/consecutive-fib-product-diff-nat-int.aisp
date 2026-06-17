@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜consecutive-fib-product-diff-nat-int
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜4
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/consecutive-fib-product-diff-nat-int.lean
-  sha≜∅
+  sha≜2e31bc828b829c1e7f613fc7167ba31786898e9411a9ba28250a658ec24d6952
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
