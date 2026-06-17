@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜dvd-sixteen-odd-pow-four-sub-one
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜3
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/dvd-sixteen-odd-pow-four-sub-one.lean
-  sha≜∅
+  sha≜5030426aae6009286abf76d698c3776d8e2865c038238bf9a8e0b78de4fafc30
   aff≜-30
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
