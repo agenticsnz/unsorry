@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sum-one-div-three-k-plus-one-mul-three-k-plus-four
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜3
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/sum-one-div-three-k-plus-one-mul-three-k-plus-four.lean
-  sha≜∅
+  sha≜d33858b013a1920cd5ec225676e1aaf6f81435d67a775aa0d1d0a1bd6e2ada49
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
