@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜pairsum-sq-le-three-sum-sq-products
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜3
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/pairsum-sq-le-three-sum-sq-products.lean
-  sha≜∅
+  sha≜e96f7294db785825a330a274ceacb808df78496c123c769495a3804bc9667255
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
