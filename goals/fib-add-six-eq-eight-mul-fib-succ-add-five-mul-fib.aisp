@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜fib-add-six-eq-eight-mul-fib-succ-add-five-mul-fib
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/fib-add-six-eq-eight-mul-fib-succ-add-five-mul-fib.lean
-  sha≜∅
+  sha≜30f49c4d3e98e6400d885e877d010e9e8c18a1d6057fe5cde5836f366ee5613b
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
