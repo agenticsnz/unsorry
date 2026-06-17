@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sum-two-fourth-powers-zmod-sixteen-mem
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜3
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/sum-two-fourth-powers-zmod-sixteen-mem.lean
-  sha≜∅
+  sha≜adaf434f4409cc3aed73c446bdcbdd893f05a4fa1ef04330d7a66568625ea663
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
