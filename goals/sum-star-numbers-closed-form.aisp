@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sum-star-numbers-closed-form
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/sum-star-numbers-closed-form.lean
-  sha≜∅
+  sha≜79bed37b8b75b8c397d99f028fa2dc3759e654c1b6c959143ed98ea70c639560
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
