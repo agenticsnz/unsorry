@@ -57,7 +57,7 @@ usage() {
   cat <<'EOF'
 Usage:
   ./swarm/agent.sh --translate-only [--once] [--goal <id>] [--dry-run]
-  ./swarm/agent.sh --prove [--once] [--goal <id>] [--provider claude|codex|gemini|openai] [-pi [<model>]] [--dry-run]
+  ./swarm/agent.sh --prove [--fork] [--once] [--goal <id>] [--provider claude|codex|gemini|openai] [-pi [<model>]] [--dry-run]
   ./swarm/agent.sh --prove-local [--goal <id>] [--provider claude|codex|gemini|openai] [-pi [<model>]]
   ./swarm/agent.sh --dispatch-queue [--once] [--dry-run]
   ./swarm/agent.sh --self-test
@@ -69,6 +69,11 @@ Flags:
                     PR, or GitHub operation; auto-selects unless --goal is set
   --dispatch-queue  Open queued proof branches as PRs when the ADR-058
                     submission governor admits more verifier work
+  --fork            Fork-native mode (ADR-068): prove with no upstream write
+                    access. Claimless (no claims branch), submits each proof as a
+                    cross-repo PR the upstream re-verifies + auto-merges. Auto-
+                    detected when origin is a fork of UNSORRY_UPSTREAM; --fork
+                    forces it. Implies PR submit mode
   --provider <name> Proof provider: claude (default), codex, gemini, or openai
   --once            Run exactly one cycle then exit
   --goal <id>       Restrict or override automatic selection to one goal
@@ -90,6 +95,9 @@ Requirement:
 
 Environment:
   UNSORRY_AGENT_ID  Swarm identity (default: ~/.unsorry/agent-id, created on first run)
+  UNSORRY_FORK      Set to 1 to force fork-native mode (ADR-068); otherwise it is
+                    auto-detected when origin is a fork of UNSORRY_UPSTREAM
+  UNSORRY_UPSTREAM  Canonical repo a fork submits to (default: agenticsnz/unsorry)
   UNSORRY_SOLVER    GitHub handle credited for verified proofs (default: gh api user)
   UNSORRY_SOLVER_NAME, UNSORRY_SOLVER_EMAIL
                     Override the git commit author/committer the harness uses
@@ -1213,6 +1221,81 @@ require_unsorry_origin() {
   esac
 }
 
+# ADR-068: parse a GitHub remote URL into its owner/repo ("nwo"). Handles the
+# https and ssh forms and an optional .git suffix; prints empty for a non-GitHub
+# URL. Pure (string in, string out) — hermetically unit-tested.
+parse_github_nwo() {
+  local url="$1" nwo
+  case "$url" in
+    *github.com[:/]*) nwo="${url#*github.com}"; nwo="${nwo#[:/]}" ;;
+    *) printf '\n'; return 0 ;;
+  esac
+  nwo="${nwo%.git}"
+  nwo="${nwo%/}"
+  printf '%s\n' "$nwo"
+}
+
+# The owner/repo of a configured remote (default origin), via its URL.
+gh_repo_nwo() {
+  local url
+  url="$(git remote get-url "${1:-origin}" 2>/dev/null)" || return 1
+  parse_github_nwo "$url"
+}
+
+# ADR-068: ensure the read-only `upstream` remote points at the canonical repo.
+ensure_upstream_remote() {
+  git remote get-url "$UPSTREAM_REMOTE" >/dev/null 2>&1 && return 0
+  git remote add "$UPSTREAM_REMOTE" "https://github.com/$UNSORRY_UPSTREAM.git" \
+    || die_config "fork mode: cannot add '$UPSTREAM_REMOTE' remote for $UNSORRY_UPSTREAM"
+}
+
+# ADR-068 / SPEC-068-A: decide whether this --prove run is a fork-native
+# contribution (no upstream write access) and, if so, prepare it. Fork mode is
+# entered when --fork / UNSORRY_FORK is set, or when origin is a fork of the
+# canonical upstream. On entry it adds the read-only upstream remote, best-effort
+# syncs the fork's main from upstream (so the existing origin/main-based relocate,
+# sync, and worktree machinery stays correct and unchanged — the fork's main now
+# mirrors the upstream), and records FORK_OWNER for the cross-repo PR head. When
+# it is not a fork the canonical path is left completely untouched (FORK_MODE=0).
+detect_fork_mode() {
+  local origin_nwo
+  origin_nwo="$(gh_repo_nwo origin)" || origin_nwo=""
+  if [ "$FORK_REQUEST" = 1 ] || env_truthy "${UNSORRY_FORK:-}"; then
+    FORK_MODE=1
+  elif [ -n "$origin_nwo" ] && [ "$origin_nwo" != "$UNSORRY_UPSTREAM" ]; then
+    # origin differs from the canonical repo — treat it as a fork iff GitHub
+    # confirms it (a same-name mirror that is not a fork stays on the normal path
+    # and will fail later on a real write, which is the honest outcome).
+    [ "$(gh api "repos/$origin_nwo" --jq '.fork' 2>/dev/null)" = true ] && FORK_MODE=1
+  fi
+  [ "$FORK_MODE" = 1 ] || return 0
+
+  FORK_OWNER="${origin_nwo%%/*}"
+  if [ -z "$FORK_OWNER" ] || [ "$FORK_OWNER" = "$origin_nwo" ]; then
+    die_config "fork mode: cannot determine the fork owner from origin ($origin_nwo); set a GitHub origin or pass --fork on a clone of your fork"
+  fi
+  ensure_upstream_remote
+  # Keep the fork's main current with the upstream so origin/main == upstream/main
+  # and every existing origin/main read (selection, dedup, the relocate/worktree
+  # base) is canonical without touching that machinery. Best-effort: a real
+  # divergence is caught later by require_main_matches_origin with guidance.
+  gh repo sync "$origin_nwo" --branch main >/dev/null 2>&1 \
+    || log "fork mode: could not auto-sync $origin_nwo main from upstream (continuing; sync it with: gh repo sync $origin_nwo)"
+  git fetch -q origin main 2>/dev/null || true
+  # A fork cannot push queued/prove/* to the upstream, so submission is always a
+  # direct cross-repo PR (the upstream enabler arms auto-merge, SPEC-068-A §6).
+  UNSORRY_SUBMIT_MODE="pr"
+  log "fork mode (ADR-068): claimless; proving against upstream $UNSORRY_UPSTREAM, submitting from fork $origin_nwo via cross-repo PR"
+}
+
+# ADR-068: the PR head ref. Cross-repo `<fork-owner>:<branch>` in fork mode (the
+# branch lives on the contributor's fork), plain `<branch>` on the canonical path.
+fork_pr_head_ref() {
+  local branch="$1"
+  if [ "$FORK_MODE" = 1 ]; then printf '%s:%s\n' "$FORK_OWNER" "$branch"
+  else printf '%s\n' "$branch"; fi
+}
+
 require_main_checkout() {
   # ADR-042: inside an isolated agent worktree the checkout is a detached HEAD
   # pinned to origin/main by sync_repo every cycle, so the branch-name check
@@ -1302,7 +1385,20 @@ git_fetch_retry() {
 # hard-reset to origin/main (re-entrant: clears anything a dead cycle left
 # behind, like the claims worktree does). The non-isolated path keeps the
 # conservative --ff-only merge of the operator's own main checkout.
+# ADR-068: fork mode is claimless (the claims branch is upstream-only and
+# fork-inaccessible). Point CLAIMS_WT at an empty stub directory so the candidate
+# enumerator (py_helper, which reads <CLAIMS_WT>/claims) sees an unclaimed pool,
+# with no claims worktree and no origin/claims access at all.
+ensure_fork_claims_stub() {
+  CLAIMS_WT="${SESSION_TMP:-${TMPDIR:-/tmp}}/fork-claims"
+  mkdir -p "$CLAIMS_WT/claims"
+}
+
 sync_repo() {
+  # ADR-068: each cycle, keep the fork's main current with the upstream so
+  # origin/main stays canonical and the relocate/worktree base is fresh — without
+  # touching any of the origin/main-based machinery below.
+  [ "$FORK_MODE" = 1 ] && { gh repo sync "$(gh_repo_nwo origin)" --branch main >/dev/null 2>&1 || true; }
   git_fetch_retry . -q origin || return $?  # ADR-059: 3 on exhausted retries
   if [ "${UNSORRY_IN_WT:-0}" = 1 ]; then
     git reset --hard -q origin/main || return 1
@@ -1310,7 +1406,11 @@ sync_repo() {
     git merge -q --ff-only origin/main || return 1
   fi
   require_main_matches_origin
-  ensure_claims_worktree
+  if [ "$FORK_MODE" = 1 ]; then
+    ensure_fork_claims_stub
+  else
+    ensure_claims_worktree
+  fi
 }
 
 # #428: sync_repo advances the *working tree* to origin/main, but this running
@@ -1442,12 +1542,24 @@ submit_pr_tree() {
   fi
   git -C "$prwt" add "$@" || return 1
   git -C "$prwt" commit -q -m "$title" || return 1
+  # The proof branch is pushed to `origin` in both modes — origin is the canonical
+  # repo on the write-access path, and the contributor's own fork in fork mode.
   git -C "$prwt" push -q origin "$branch" || return 1
-  (
-    cd "$prwt" || exit 1
-    gh pr create --base main --head "$branch" --title "$title" --body "$body" \
-      && gh pr merge --auto --squash "$branch"
-  ) || return 1
+  if [ "$FORK_MODE" = 1 ]; then
+    # ADR-068: open a cross-repo PR from <fork-owner>:<branch> against the upstream;
+    # a fork cannot arm auto-merge there (the upstream enabler does, SPEC-068-A §6).
+    (
+      cd "$prwt" || exit 1
+      gh pr create --repo "$UNSORRY_UPSTREAM" --base main \
+        --head "$(fork_pr_head_ref "$branch")" --title "$title" --body "$body"
+    ) || return 1
+  else
+    (
+      cd "$prwt" || exit 1
+      gh pr create --base main --head "$branch" --title "$title" --body "$body" \
+        && gh pr merge --auto --squash "$branch"
+    ) || return 1
+  fi
   git worktree remove --force "$prwt" >/dev/null 2>&1 || true
   git branch -q -D "$branch" >/dev/null 2>&1 || true
   return 0
@@ -1602,7 +1714,11 @@ dispatch_queue() {
 # selection must not depend on API health.
 open_prove_pr_exists() {
   local goal="$1" titles t
-  titles="$(gh pr list --state open --limit 30 \
+  # ADR-068: in fork mode the open-PR dedup must read the UPSTREAM's PRs (gh would
+  # otherwise infer the fork from origin and see none).
+  local -a repo_args=()
+  [ "$FORK_MODE" = 1 ] && repo_args=(--repo "$UNSORRY_UPSTREAM")
+  titles="$(gh pr list ${repo_args[@]+"${repo_args[@]}"} --state open --limit 30 \
     --search "\"prove($goal):\" in:title" \
     --json title --jq '.[].title' 2>/dev/null)" || return 1
   [ -n "$titles" ] || return 1
@@ -1724,6 +1840,11 @@ decompose_blocked_by_open_prove_pr() {
 # commits behind for the next cycle.
 claim_goal() {
   local goal="$1"
+  # ADR-068: fork mode is claimless — the claims branch is upstream-only and
+  # fork-inaccessible, so there is no claim to push. Merge-time dedup (ADR-064,
+  # checked at selection) plus the upstream kernel are the coordination backstop;
+  # a duplicate fork proof wastes only verifier compute, never soundness.
+  [ "$FORK_MODE" = 1 ] && return 0
   local file="claims/${goal}.${AGENT_ID}.aisp" ts attempt recheck
   # Post-fetch recheck helper (step 4): the cap is per-mode (SPEC-007-A —
   # prove cap 1, translate cap 2), and a rejected push is most often the
@@ -2923,6 +3044,8 @@ demote_goal() {
 # (the Phase-0 trial failure mode after "release push rejected").
 release_claim() {
   local goal="$1"
+  # ADR-068: nothing was claimed in fork mode, so there is nothing to release.
+  [ "$FORK_MODE" = 1 ] && return 0
   local file="claims/${goal}.${AGENT_ID}.aisp" attempt
   for attempt in 1 2 3 4; do  # initial push + up to 3 from-scratch retries
     if [ "$attempt" -gt 1 ]; then
@@ -4714,6 +4837,89 @@ test_open_pr_claim_guard() {
   return 0
 }
 
+# ADR-068 fork-native contribution mode (SPEC-068-A) -------------------------
+
+test_parse_github_nwo() {
+  local got
+  got="$(parse_github_nwo https://github.com/alice/unsorry.git)"
+  [ "$got" = alice/unsorry ] || { log "  https .git: '$got'"; return 1; }
+  got="$(parse_github_nwo https://github.com/agenticsnz/unsorry)"
+  [ "$got" = agenticsnz/unsorry ] || { log "  https no-suffix: '$got'"; return 1; }
+  got="$(parse_github_nwo git@github.com:bob/unsorry.git)"
+  [ "$got" = bob/unsorry ] || { log "  ssh: '$got'"; return 1; }
+  got="$(parse_github_nwo https://github.com/alice/unsorry/)"
+  [ "$got" = alice/unsorry ] || { log "  trailing slash: '$got'"; return 1; }
+  got="$(parse_github_nwo https://example.com/x/y.git)"
+  [ -z "$got" ] || { log "  non-github should be empty: '$got'"; return 1; }
+  return 0
+}
+
+test_fork_pr_head_ref() {
+  local got FORK_MODE=0 FORK_OWNER=""
+  got="$(fork_pr_head_ref prove/g/agent-x)"
+  [ "$got" = prove/g/agent-x ] || { log "  canonical head: '$got'"; return 1; }
+  FORK_MODE=1 FORK_OWNER=alice
+  got="$(fork_pr_head_ref prove/g/agent-x)"
+  [ "$got" = "alice:prove/g/agent-x" ] || { log "  fork head: '$got'"; return 1; }
+  return 0
+}
+
+test_detect_fork_mode() {
+  # --fork override enters fork mode, derives the owner, and forces PR submit mode.
+  local FORK_MODE=0 FORK_REQUEST=1 FORK_OWNER="" UNSORRY_FORK="" \
+        UNSORRY_UPSTREAM=agenticsnz/unsorry UPSTREAM_REMOTE=upstream UNSORRY_SUBMIT_MODE=""
+  git() { case "$* " in "remote get-url origin "*) echo https://github.com/alice/unsorry.git ;; *) return 0 ;; esac; }
+  gh() { return 0; }
+  detect_fork_mode
+  [ "$FORK_MODE" = 1 ] || { unset -f git gh; log "  --fork did not enter fork mode"; return 1; }
+  [ "$FORK_OWNER" = alice ] || { unset -f git gh; log "  fork owner '$FORK_OWNER'"; return 1; }
+  [ "$UNSORRY_SUBMIT_MODE" = pr ] || { unset -f git gh; log "  submit mode not forced to pr"; return 1; }
+  unset -f git gh
+  # Auto-detect: origin differs from upstream and GitHub reports it is a fork.
+  local FORK_MODE=0 FORK_REQUEST=0 FORK_OWNER="" UNSORRY_FORK="" UNSORRY_SUBMIT_MODE=""
+  git() { case "$* " in "remote get-url origin "*) echo https://github.com/bob/unsorry ;; *) return 0 ;; esac; }
+  gh() { case "$1 $2" in "api repos/bob/unsorry") echo true ;; *) return 0 ;; esac; }
+  detect_fork_mode
+  [ "$FORK_MODE" = 1 ] || { unset -f git gh; log "  fork not auto-detected"; return 1; }
+  unset -f git gh
+  # Canonical origin is never fork mode.
+  local FORK_MODE=0 FORK_REQUEST=0 FORK_OWNER="" UNSORRY_FORK="" UNSORRY_SUBMIT_MODE=""
+  git() { case "$* " in "remote get-url origin "*) echo https://github.com/agenticsnz/unsorry.git ;; *) return 0 ;; esac; }
+  gh() { return 0; }
+  detect_fork_mode
+  [ "$FORK_MODE" = 0 ] || { unset -f git gh; log "  canonical origin entered fork mode"; return 1; }
+  unset -f git gh
+  return 0
+}
+
+test_fork_claimless() {
+  # ADR-068: claim/release are no-ops in fork mode and must touch no git/claims.
+  local FORK_MODE=1 rc=0
+  git() { echo "  unexpected git call in fork claimless path: $*" >&2; return 99; }
+  claim_goal some-goal || rc=$?
+  [ "$rc" -eq 0 ] || { unset -f git; log "  claim_goal not a no-op in fork mode (rc=$rc)"; return 1; }
+  rc=0; release_claim some-goal || rc=$?
+  [ "$rc" -eq 0 ] || { unset -f git; log "  release_claim not a no-op in fork mode (rc=$rc)"; return 1; }
+  unset -f git
+  return 0
+}
+
+test_fork_open_pr_dedup_targets_upstream() {
+  # In fork mode the open-PR dedup must query the UPSTREAM repo; the stub only
+  # answers when it sees --repo <upstream>, so rc 0 proves the arg was passed.
+  local FORK_MODE=1 UNSORRY_UPSTREAM=agenticsnz/unsorry rc=0
+  gh() { case "$*" in *"--repo agenticsnz/unsorry"*) printf 'prove(g): t by a\n' ;; esac; }
+  open_prove_pr_exists g || rc=$?
+  [ "$rc" -eq 0 ] || { unset -f gh; log "  fork dedup did not target the upstream repo"; return 1; }
+  # Canonical mode lets gh infer origin (no --repo) and still detects the PR.
+  local FORK_MODE=0
+  gh() { printf 'prove(g): t by a\n'; }
+  rc=0; open_prove_pr_exists g || rc=$?
+  [ "$rc" -eq 0 ] || { unset -f gh; log "  canonical dedup broke"; return 1; }
+  unset -f gh
+  return 0
+}
+
 test_decompose_open_prove_guard() {
   local rc
   gh() { printf 'prove(parent-goal): theorem_name by agent-a\n'; }
@@ -4938,6 +5144,11 @@ run_self_tests() {
     test_effort_ladder
     test_infra_failure_classifier
     test_open_pr_claim_guard
+    test_parse_github_nwo
+    test_fork_pr_head_ref
+    test_detect_fork_mode
+    test_fork_claimless
+    test_fork_open_pr_dedup_targets_upstream
     test_submission_governor_reason
     test_submission_governor_allows_with_stubbed_gh
     test_queued_branch_claim_guard
@@ -4981,6 +5192,18 @@ PROOF_EFFORT_USED=""
 PROOF_ATTEMPTS_USED=""
 PROOF_SOLVE_SECONDS=""
 
+# ADR-068 fork-native contribution mode. A contributor with no write access to
+# the canonical upstream runs the prover from a fork: it proves CLAIMLESS (no
+# origin/claims push — fork-inaccessible), keeps the fork's main synced to the
+# upstream so the ADR-042 relocate/sync machinery is unchanged, and submits each
+# proof by a cross-repo fork→PR that the upstream kernel re-verifies (Gate A/B).
+# Default off; the canonical (write-access) path is unchanged when FORK_MODE=0.
+FORK_MODE=0
+FORK_REQUEST=0
+FORK_OWNER=""
+UNSORRY_UPSTREAM="${UNSORRY_UPSTREAM:-agenticsnz/unsorry}"
+UPSTREAM_REMOTE="upstream"
+
 # -pi (ADR-025): source endpoint/key/model from pi-coder's ~/.pi/agent/models.json
 # by the existing UNSORRY_MODEL name, then drive the OpenAI-compatible path. The
 # seam to the existing OpenAI provider is environment variables only — this sets
@@ -5008,6 +5231,7 @@ parse_args() {
       --translate-only) TRANSLATE_ONLY=1 ;;
       --prove) PROVE=1 ;;
       --prove-local) PROVE_LOCAL=1; PROVE=1; ONCE=1 ;;
+      --fork) FORK_REQUEST=1 ;;
       --dispatch-queue) DISPATCH_QUEUE=1; PROVE=1 ;;
       --provider)
         [ $# -ge 2 ] || { usage >&2; die_config "--provider requires a value"; }
@@ -5214,6 +5438,14 @@ main() {
       log "queue dispatcher waiting ${UNSORRY_GOVERNOR_WAIT}s before next dispatch pass"
       sleep "$UNSORRY_GOVERNOR_WAIT"
     done
+  fi
+
+  # ADR-068: decide fork mode before relocating, so the per-agent worktree bases
+  # on a fork-main already synced to the upstream. The prove arm only; --prove-local
+  # is HEAD-only with no submission, and --dispatch-queue exited above.
+  if [ "$PROVE" -eq 1 ] && [ "$PROVE_LOCAL" -eq 0 ]; then
+    require_cmd git gh
+    detect_fork_mode
   fi
 
   # ADR-042: relocate into a dedicated per-agent worktree before any provider,

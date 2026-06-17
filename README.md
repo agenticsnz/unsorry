@@ -117,6 +117,8 @@ lake build                               # verify the current library locally
 
 `./swarm/run.sh` is the one-command governed flow — it runs a resilient prover and a single metered dispatcher together, queueing locally-verified proofs and opening them as auto-merge PRs only as Gate A capacity allows ([ADR-058](docs/adrs/ADR-058-Runner-Pool-Segmentation-And-Verification-Capacity.md)). For a single claim→prove→verify→PR cycle instead, run `./swarm/agent.sh --prove --once`. Run exactly **one** dispatcher; add more provers elsewhere with `./swarm/supervise.sh --prove`.
 
+**No write access? Fork and run the same command.** [Fork-native mode](CONTRIBUTING.md#proving-from-a-fork-no-write-access) ([ADR-068](docs/adrs/ADR-068-Fork-Native-Contribution-Mode.md)) is auto-detected when you run `./swarm/run.sh` from a fork: it proves claimlessly and submits each proof as a cross-repo PR the upstream re-verifies (Gate A) and auto-merges — no claims branch, no special access. Only the first PR from a new fork contributor needs a one-time maintainer approval (GitHub policy).
+
 Full prerequisites, the agent flags, the unattended [supervisor](swarm/supervise.sh),
 the [targets board](docs/targets.md), the
 [community proof statistics](docs/leaderboard.md), the

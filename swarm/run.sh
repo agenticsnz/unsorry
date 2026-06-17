@@ -68,6 +68,12 @@ UNSORRY_SOURCE_ON_EMPTY=0.
 Run ONE dispatcher and ONE sourcer; for more provers, start extra
 `supervise.sh --prove` only.
 
+Fork mode (ADR-068): run from a fork of agenticsnz/unsorry (auto-detected, or
+forced with --fork / UNSORRY_FORK=1) and run.sh launches the PROVER ONLY — it
+proves claimlessly and submits each proof as a cross-repo PR the upstream
+re-verifies and auto-merges. No dispatcher or sourcer (a fork cannot open the
+upstream's queued branches).
+
   --self-test   Run hermetic self-tests and exit (0 green / 1 red).
   -h, --help    Show this help.
 EOF
@@ -111,6 +117,25 @@ run_self_test() {
   return 1
 }
 
+# ADR-068: a fork (no upstream write access) submits proofs as cross-repo PRs and
+# CANNOT run the dispatcher or sourcer, which open the upstream's own branches as
+# PRs. Detect a fork origin — or an explicit --fork / UNSORRY_FORK — so run.sh
+# launches the prover only (in fork mode) instead of the dispatcher+sourcer+prover
+# trio. The fork branch is taken below, after the repo-root check.
+UNSORRY_UPSTREAM="${UNSORRY_UPSTREAM:-agenticsnz/unsorry}"
+is_fork_run() {
+  case " $* " in *" --fork "*) return 0 ;; esac
+  case "${UNSORRY_FORK:-}" in 1|true|TRUE|yes|YES|on|ON) return 0 ;; esac
+  local url nwo
+  url="$(git remote get-url origin 2>/dev/null)" || return 1
+  case "$url" in
+    *github.com[:/]*) nwo="${url#*github.com}"; nwo="${nwo#[:/]}"; nwo="${nwo%.git}"; nwo="${nwo%/}" ;;
+    *) return 1 ;;
+  esac
+  [ -n "$nwo" ] && [ "$nwo" != "$UNSORRY_UPSTREAM" ] || return 1
+  [ "$(gh api "repos/$nwo" --jq '.fork' 2>/dev/null)" = true ]
+}
+
 # One dispatcher loop in the background. agent.sh --dispatch-queue self-polls
 # (UNSORRY_GOVERNOR_WAIT, default 300s); this wrapper restarts it if it ever
 # exits non-zero (transient infra error) so the queue keeps draining.
@@ -149,6 +174,17 @@ esac
 if [ ! -f swarm/agent.sh ] || [ ! -f swarm/supervise.sh ] || [ ! -f swarm/sourcing.sh ]; then
   echo "swarm/run.sh: run from the repository root" >&2
   exit 2
+fi
+
+# ADR-068: in fork mode, run the prover only (cross-repo PRs); a fork cannot run
+# the dispatcher or sourcer against the upstream. --fork reaches agent.sh through
+# supervise.sh (added if not already present).
+if is_fork_run "$@"; then
+  log "fork mode (ADR-068): submitting cross-repo PRs to $UNSORRY_UPSTREAM; running the prover only (no dispatcher, no sourcer)"
+  case " $* " in
+    *" --fork "*) exec ./swarm/supervise.sh --prove "$@" ;;
+    *)           exec ./swarm/supervise.sh --prove --fork "$@" ;;
+  esac
 fi
 
 dispatcher &
