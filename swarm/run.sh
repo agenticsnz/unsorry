@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# swarm/run.sh — one-command governed swarm (ADR-058, SPEC-058-A; ADR-068).
+# swarm/run.sh — one-command governed swarm (ADR-058, SPEC-058-A; ADR-069).
 #
 # Runs the coordinated --prove flow as ONE command instead of three, so an
 # operator launches the whole governed swarm at once:
@@ -7,7 +7,7 @@
 #       opens queued/prove/* branches as admitted PRs when the submission
 #       governor allows more verifier work. Ref-only (gh pr create --head);
 #       never mutates the working-tree checkout.
-#   * one SOURCER loop    — ./swarm/sourcing.sh --if-pool-empty   (ADR-068)
+#   * one SOURCER loop    — ./swarm/sourcing.sh --if-pool-empty   (ADR-069)
 #       demand-driven goal sourcing: opens one chore(sourcing): PR ONLY when the
 #       prove pool is empty (no goals/<slug>.aisp carries status≜open on the
 #       synced main) and no-ops with exit 0 otherwise — the complement of the
@@ -52,7 +52,7 @@ set -euo pipefail
 
 usage() {
   cat <<'EOF'
-swarm/run.sh — launch the governed swarm with a single command (ADR-058, ADR-068).
+swarm/run.sh — launch the governed swarm with a single command (ADR-058, ADR-069).
 
   ./swarm/run.sh [agent.sh --prove args]
 
@@ -75,7 +75,7 @@ EOF
 
 log() { printf '[run %s] %s\n' "$(date -u +%H:%M:%SZ)" "$*"; }
 
-# The demand-driven sourcing arm (ADR-068) is ON by default; set
+# The demand-driven sourcing arm (ADR-069) is ON by default; set
 # UNSORRY_SOURCE_ON_EMPTY to a falsey value (0/false/no/off) to omit it — e.g. a
 # deployment whose backlog is topped up by a scheduled sourcing job. Pure in the
 # environment (mirrors agent.sh:env_truthy, inverted with a default-on), so the
@@ -123,7 +123,7 @@ dispatcher() {
   done
 }
 
-# One demand-driven sourcing loop in the background (ADR-068). Each invocation
+# One demand-driven sourcing loop in the background (ADR-069). Each invocation
 # of sourcing.sh --if-pool-empty re-checks the synced main: it no-ops with exit 0
 # while any goal is still open and opens a single chore(sourcing): PR only when
 # the pool is empty (ADR-067). This wrapper re-invokes it on an interval so the

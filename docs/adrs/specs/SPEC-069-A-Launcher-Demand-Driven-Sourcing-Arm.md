@@ -1,6 +1,6 @@
-# SPEC-068-A: Launcher Demand-Driven Sourcing Arm
+# SPEC-069-A: Launcher Demand-Driven Sourcing Arm
 
-Implements: [ADR-068](../ADR-068-Launcher-Demand-Driven-Sourcing-Arm.md) · Status: Living · Updated: 2026-06-17
+Implements: [ADR-069](../ADR-069-Launcher-Demand-Driven-Sourcing-Arm.md) · Status: Living · Updated: 2026-06-17
 
 One deliverable: a third background arm in `swarm/run.sh` that runs
 `./swarm/sourcing.sh --if-pool-empty` (SPEC-067-A) on a re-poll interval, so a
@@ -46,7 +46,7 @@ sourcer() {
   logged and retried after the `sleep`; a clean exit also sleeps then re-polls.
 - **Adds only automatic top-up.** The arm passes `--if-pool-empty`, so it never
   gates the manual path — `./swarm/sourcing.sh` (no flag) still sources on demand
-  at any pool depth (ADR-068 second-half constraint).
+  at any pool depth (ADR-069 second-half constraint).
 
 ## 3. Default-on with an opt-out — `source_arm_enabled`
 

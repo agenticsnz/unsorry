@@ -1,8 +1,8 @@
-# ADR-068: Launcher Demand-Driven Sourcing Arm
+# ADR-069: Launcher Demand-Driven Sourcing Arm
 
 | Field | Value |
 |-------|-------|
-| **Decision ID** | ADR-068 |
+| **Decision ID** | ADR-069 |
 | **Initiative** | problem supply / swarm autonomy |
 | **Proposed By** | unsorry maintainers |
 | **Date** | 2026-06-17 |
@@ -109,7 +109,7 @@ scheduled sourcing job, hence the opt-out); and that the sourcer touches the
 shared working-tree checkout — safe for one sourcer beside a ref-only dispatcher
 and a worktree-isolated prover, with full worktree isolation left as a follow-up.
 
-## What the arm does (summary; full contract in SPEC-068-A)
+## What the arm does (summary; full contract in SPEC-069-A)
 
 1. **Third arm, default-on.** `run.sh` starts `sourcer()` in the background
    alongside the dispatcher, unless `UNSORRY_SOURCE_ON_EMPTY` is falsey.
@@ -147,7 +147,7 @@ and a worktree-isolated prover, with full worktree isolation left as a follow-up
 
 | Reference ID | Title | Type | Location |
 |--------------|-------|------|----------|
-| REF-1 | Launcher Demand-Driven Sourcing Arm spec | Specification | specs/SPEC-068-A-Launcher-Demand-Driven-Sourcing-Arm.md |
+| REF-1 | Launcher Demand-Driven Sourcing Arm spec | Specification | specs/SPEC-069-A-Launcher-Demand-Driven-Sourcing-Arm.md |
 | REF-2 | Demand-Driven Sourcing | Decision | ADR-067-Demand-Driven-Sourcing.md |
 | REF-3 | Demand-Driven Sourcing spec | Specification | specs/SPEC-067-A-Demand-Driven-Sourcing.md |
 | REF-4 | Runner Pool Segmentation & Verification Capacity (governed run.sh) | Decision | ADR-058-Runner-Pool-Segmentation-And-Verification-Capacity.md |
