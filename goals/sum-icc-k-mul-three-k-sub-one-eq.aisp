@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sum-icc-k-mul-three-k-sub-one-eq
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜3
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/sum-icc-k-mul-three-k-sub-one-eq.lean
-  sha≜∅
+  sha≜5a16be82d68c3d1d67f5f72037d42a1a4be15d6aeb0849362d684e50c32d3788
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
