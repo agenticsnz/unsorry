@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜prod-icc-succ-add-three-div-self-eq-binom-shift
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/prod-icc-succ-add-three-div-self-eq-binom-shift.lean
-  sha≜∅
+  sha≜660d3f336cb96b7c9c2ca7bd3b4f70f8d7ecd4a0f896c4a6bb589657989cb351
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
