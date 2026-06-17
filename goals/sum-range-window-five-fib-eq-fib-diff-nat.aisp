@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-window-five-fib-eq-fib-diff-nat
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/sum-range-window-five-fib-eq-fib-diff-nat.lean
-  sha≜∅
+  sha≜94b6ad24279fed5397a9a55e9b4bb4e3706878ca356bb5b0fe107b2950dfc65e
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
