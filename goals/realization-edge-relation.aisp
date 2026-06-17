@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜realization-edge-relation
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/realization-edge-relation.lean
-  sha≜∅
+  sha≜0f44f8012823784ab85eeaf6ea0d1c15c7610093755ed5532eab085372ce7a84
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
