@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜two-mul-sum-icc-three-k-sub-two-eq-pentagonal
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/two-mul-sum-icc-three-k-sub-two-eq-pentagonal.lean
-  sha≜∅
+  sha≜e0b6ac90e1f2035b5fd7de954a02429effca17e4acd57f3fc98c37b97374c44b
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
