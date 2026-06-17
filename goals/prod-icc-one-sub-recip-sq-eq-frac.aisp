@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜prod-icc-one-sub-recip-sq-eq-frac
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/prod-icc-one-sub-recip-sq-eq-frac.lean
-  sha≜∅
+  sha≜2643495bc3ebc0a98cd248b537399d6320231293d1db5da79331efd54f2103d8
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
