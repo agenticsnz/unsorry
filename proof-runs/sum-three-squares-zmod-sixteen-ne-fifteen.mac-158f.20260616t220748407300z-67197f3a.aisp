@@ -1,0 +1,8 @@
+𝔸5.1.run.sum-three-squares-zmod-sixteen-ne-fifteen.mac-158f.20260616t220748407300z-67197f3a@2026-06-16
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260616t220748407300z-67197f3a; goal≜sum-three-squares-zmod-sixteen-ne-fifteen; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-zmod-decide}
+⟦Γ:Goal⟧{goal≜sum-three-squares-zmod-sixteen-ne-fifteen}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-16T22:07:48Z}
+⟦Σ:Artifact⟧{sha≜843bd380ff855296862184c26cab65aa0388e3fd633ab1079d2885a5794fdd52}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
