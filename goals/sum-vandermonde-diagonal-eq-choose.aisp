@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sum-vandermonde-diagonal-eq-choose
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜3
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/sum-vandermonde-diagonal-eq-choose.lean
-  sha≜∅
+  sha≜f87f0d8cd26868c208703ef3703b5e2ed34fcef86266217fd95fe55327f6d9d5
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
