@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜alt-sum-range-two-k-add-one-eq-signed-n
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/alt-sum-range-two-k-add-one-eq-signed-n.lean
-  sha≜∅
+  sha≜0776f91b085197873466154b8552303d025e66cba0bceee3ac3c343aa2faecab
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
