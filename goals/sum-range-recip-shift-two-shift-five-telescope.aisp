@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-recip-shift-two-shift-five-telescope
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜3
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/sum-range-recip-shift-two-shift-five-telescope.lean
-  sha≜∅
+  sha≜4792b7f46a84bee01b7384b15cb5bb471165f4fd29f44b4048ee167e3e7e02c4
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
