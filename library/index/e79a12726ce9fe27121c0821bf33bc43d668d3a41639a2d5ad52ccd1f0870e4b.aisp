@@ -1,0 +1,8 @@
+𝔸5.1.lemma.e79a12726ce9@2026-06-17
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜e79a12726ce9fe27121c0821bf33bc43d668d3a41639a2d5ad52ccd1f0870e4b; goal≜sum-four-consecutive-eq-hyper-tetrahedral; name≜sum_four_consecutive_eq_hyper_tetrahedral}
+⟦Σ:Source⟧{src≜goals/sum-four-consecutive-eq-hyper-tetrahedral.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜claude; model≜template-sum-induction; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
