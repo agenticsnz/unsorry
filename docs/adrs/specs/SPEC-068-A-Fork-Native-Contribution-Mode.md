@@ -115,6 +115,11 @@ PRs — the action a fork cannot perform:
 This workflow is the only **new upstream** surface; it is CODEOWNERS-owned
 (`/.github/`) and lands with a maintainer review.
 
+> **Implemented:** `.github/workflows/fork-automerge-enabler.yml` (the scheduled
+> arming job) + `tools/repo/fork_automerge.py` (the pure, unit-tested admissibility
+> selector: cross-repo, `prove(...)` title, proof-allow-paths only, not already
+> armed; fail-closed on an unseen diff). Governor parity is the per-run `--limit`.
+
 ## 7. Solver credit
 
 Unchanged from the canonical path: `UNSORRY_SOLVER` (or `gh api user`) is embedded
