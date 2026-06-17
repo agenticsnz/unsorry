@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜catalan-r2-int-fib
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/catalan-r2-int-fib.lean
-  sha≜∅
+  sha≜d7680235ffe32907c8a4448d5a805be30bd10e56f6055ce65f9f7d4bd238268c
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
