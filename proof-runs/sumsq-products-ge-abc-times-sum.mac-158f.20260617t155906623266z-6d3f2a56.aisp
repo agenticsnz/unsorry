@@ -1,0 +1,8 @@
+𝔸5.1.run.sumsq-products-ge-abc-times-sum.mac-158f.20260617t155906623266z-6d3f2a56@2026-06-17
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260617t155906623266z-6d3f2a56; goal≜sumsq-products-ge-abc-times-sum; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-nlinarith}
+⟦Γ:Goal⟧{goal≜sumsq-products-ge-abc-times-sum}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-17T15:59:06Z}
+⟦Σ:Artifact⟧{sha≜41721ae5c45ee187074d7b8ac090f240a5c97313c4ab83488063a9cd05a34810}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
