@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜five-var-qm-am
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜3
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/five-var-qm-am.lean
-  sha≜∅
+  sha≜24c98f24b4b3627471ed9586e47127d2cac54ac4f7c489e51e1aa5c88766d1ed
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
