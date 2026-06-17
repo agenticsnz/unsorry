@@ -1,0 +1,8 @@
+𝔸5.1.run.sum-pentatope-triple-product.mac-158f.20260617t165026533460z-17254241@2026-06-17
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260617t165026533460z-17254241; goal≜sum-pentatope-triple-product; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-sum-induction}
+⟦Γ:Goal⟧{goal≜sum-pentatope-triple-product}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-17T16:50:26Z}
+⟦Σ:Artifact⟧{sha≜82d1ebdb05a383bfb4ee6894d9a42bf06782bb4654ef7e0cdf84fa1ab98c879a}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
