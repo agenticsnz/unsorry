@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜two-fourth-powers-zmod-five-ne-three-four
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/two-fourth-powers-zmod-five-ne-three-four.lean
-  sha≜∅
+  sha≜cc82c8034de587e3d5ba0b3cb8a0b1770da2501a792d3e85adf8da019ae9d536
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
