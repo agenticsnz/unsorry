@@ -1,0 +1,8 @@
+𝔸5.1.run.sum-range-disp-mul-choose-sq-eq-zero.beast-eeee.20260617t001122114526z-af236a87@2026-06-17
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260617t001122114526z-af236a87; goal≜sum-range-disp-mul-choose-sq-eq-zero; agent≜beast-eeee; outcome≜proved}
+⟦Π:Provenance⟧{solver≜adam91holt; provider≜claude; model≜opus; effort≜high}
+⟦Γ:Goal⟧{goal≜sum-range-disp-mul-choose-sq-eq-zero}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜453; ended≜2026-06-17T00:11:22Z; lessons≜0}
+⟦Σ:Artifact⟧{sha≜1203053505f2acb216514267779d1699fba48264592fd4e7fef1afe0e2d7bc79}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
