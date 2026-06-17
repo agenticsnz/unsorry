@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sum-icc-k-sq-add-one-mul-factorial-eq-prod
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜3
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/sum-icc-k-sq-add-one-mul-factorial-eq-prod.lean
-  sha≜∅
-  aff≜-10
+  sha≜16fc6d6d7b77d1592811e2ea51d7e4c44ee26f31b6544b1b572a4fe83347afa3
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
