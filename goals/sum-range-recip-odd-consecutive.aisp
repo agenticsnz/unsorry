@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-recip-odd-consecutive
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/sum-range-recip-odd-consecutive.lean
-  sha≜∅
+  sha≜6ac2558f9391d54598dcb45d0b94a20dbdea452c6b204ef47e09e0d780f4d2a9
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
