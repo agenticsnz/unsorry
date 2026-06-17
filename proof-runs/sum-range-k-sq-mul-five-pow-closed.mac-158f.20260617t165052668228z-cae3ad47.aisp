@@ -1,0 +1,8 @@
+𝔸5.1.run.sum-range-k-sq-mul-five-pow-closed.mac-158f.20260617t165052668228z-cae3ad47@2026-06-17
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260617t165052668228z-cae3ad47; goal≜sum-range-k-sq-mul-five-pow-closed; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-sum-induction}
+⟦Γ:Goal⟧{goal≜sum-range-k-sq-mul-five-pow-closed}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-17T16:50:52Z}
+⟦Σ:Artifact⟧{sha≜c4eba89c0959279fc7845a4f86e775a36a853bcaff98e741e2c7dcf37db07f83}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
