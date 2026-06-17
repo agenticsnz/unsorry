@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sum-product-consecutive-odds-closed-form
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/sum-product-consecutive-odds-closed-form.lean
-  sha≜∅
+  sha≜9502c4789d8ee7a02e627b7a9cb15461ab7aef7fc332a169cd7fdf63d15d4425
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
