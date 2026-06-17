@@ -1,0 +1,8 @@
+𝔸5.1.run.sum-quadruple-product-closed-form.mac-158f.20260617t165029344035z-40cd2402@2026-06-17
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260617t165029344035z-40cd2402; goal≜sum-quadruple-product-closed-form; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-sum-induction}
+⟦Γ:Goal⟧{goal≜sum-quadruple-product-closed-form}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-17T16:50:29Z}
+⟦Σ:Artifact⟧{sha≜9dfd7f81f84e6465761b5ed94fffed4fb21bc91bd190b4ed52546151551d1011}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
