@@ -248,6 +248,31 @@ def _status_class(status: str) -> str:
     return STATUS_STYLE.get(status, _DEFAULT_STYLE)[0]
 
 
+def _unconnected_by_status(graph: Graph) -> dict[str, list[Node]]:
+    """Standalone goals (no decomposition lineage) grouped by status.
+
+    These carry no parent→sub edge, so they are not part of the forest. Rather
+    than drop them (ADR-032 V1) or draw ~700 isolated boxes (illegible), the
+    hybrid layout folds them into one summary **cluster** per status that the
+    interactive page expands on demand. Groups are returned in legend order with
+    ids sorted, so the rendering is deterministic.
+    """
+    in_forest = {edge.parent for edge in graph.edges} | {
+        edge.child for edge in graph.edges
+    }
+    groups: dict[str, list[Node]] = {}
+    for node in sorted(graph.nodes, key=lambda n: n.id):
+        if node.id in in_forest:
+            continue
+        groups.setdefault(node.status, []).append(node)
+    return {s: groups[s] for s in sorted(groups, key=lambda s: _ORDER.get(s, 9))}
+
+
+def _cluster_key(status: str) -> str:
+    """Mermaid-safe node id for a status cluster (distinct from ``g_`` goal keys)."""
+    return "cluster_" + re.sub(r"[^0-9a-z]", "_", status)
+
+
 def _mermaid_body(graph: Graph, *, for_html: bool) -> list[str]:
     """The ``flowchart`` definition lines (no code fence).
 
@@ -276,6 +301,18 @@ def _mermaid_body(graph: Graph, *, for_html: bool) -> list[str]:
             )
     for edge in sorted(graph.edges, key=lambda e: (e.parent, e.child)):
         lines.append(f"  {_node_key(edge.parent)} --> {_node_key(edge.child)}")
+    # Standalone goals (no lineage) collapse into one stadium-shaped summary
+    # cluster per status, status-coloured so the diagram still accounts for every
+    # goal. The interactive HTML expands a cluster into its goals on click
+    # (``toggleCluster``); the static markdown shows the collapsed summary and the
+    # full per-goal list lives in the table below.
+    for status, members in _unconnected_by_status(graph).items():
+        ckey = _cluster_key(status)
+        caret = "▸ " if for_html else ""
+        lines.append(f'  {ckey}(["{caret}{status} · {len(members)}"])')
+        lines.append(f"  class {ckey} {_status_class(status)};")
+        if for_html:
+            lines.append(f'  click {ckey} call toggleCluster("{status}")')
     return lines
 
 
@@ -322,7 +359,9 @@ def render_markdown(graph: Graph) -> str:
         "",
         f"**{len(graph.nodes)} goals — {summary}.** "
         f"{n_families} decomposition {'family' if n_families == 1 else 'families'} shown below; "
-        "standalone goals are listed in the table.",
+        "standalone goals (no lineage) are folded into one summary cluster per "
+        "status — the interactive page expands a cluster into its goals on click, "
+        "and every goal is listed individually in the table.",
         "",
         f"Solving agent, PR and the GitHub user who merged it are resolved from the "
         f"`prove(…)` merge commits ({attributed} of {n_proved} proved goals carry a "
@@ -369,6 +408,12 @@ def graph_payload(graph: Graph) -> dict:
         "source": "goals/, decompositions/, library/index/, proof-runs/, prove(…) commits",
         "nodes": [asdict(node) for node in graph.nodes],
         "edges": [asdict(edge) for edge in graph.edges],
+        # Standalone goals grouped by status (legend order) — the hybrid layout's
+        # cluster feed the interactive page expands on click.
+        "unconnected": [
+            {"status": status, "ids": [node.id for node in members]}
+            for status, members in _unconnected_by_status(graph).items()
+        ],
     }
 
 
@@ -445,22 +490,19 @@ _HTML_TEMPLATE = """<!doctype html>
 <main class="w-full max-w-6xl bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 overflow-hidden">
 
   <!-- Top navigation — shared across home / leaderboard / proof graph (issue #738). -->
-  <nav class="flex items-center gap-1 px-6 md:px-8 py-3 text-sm font-medium border-b border-slate-100" aria-label="Primary">
+  <nav class="flex items-center gap-1 px-6 md:px-10 py-3 text-sm font-medium border-b border-slate-100" aria-label="Primary">
     <a href="index.html" class="px-3 py-1.5 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors">Home</a>
     <a href="leaderboard.html" class="px-3 py-1.5 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors">Leaderboard</a>
     <a href="proofs-contributors-visualisation.html" aria-current="page" class="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-800">Proof graph</a>
   </nav>
 
   <!-- Header — shared design language (ADR-038): wordmark, status chip, cross-link, stat chips. -->
-  <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 p-6 md:p-8 border-b border-slate-100">
+  <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 px-6 md:px-10 py-6 md:py-8 border-b border-slate-100">
     <div class="flex flex-col">
-      <h1 class="text-4xl md:text-6xl font-bold text-slate-200 tracking-tighter leading-none mb-2">Unsorry</h1>
+      <h1 class="text-5xl md:text-7xl font-bold text-slate-200 tracking-tighter leading-none mb-2">Unsorry</h1>
       <div class="inline-flex items-center bg-slate-100 rounded-full px-4 py-1 text-xs font-semibold text-slate-600 uppercase tracking-wider w-max">
         Proof graph · __COUNT__ goals
       </div>
-      <a href="leaderboard.html" class="mt-2 inline-flex items-center gap-1 text-sm font-medium text-slate-500 hover:text-slate-800 underline underline-offset-2 w-max">
-        Contributor leaderboard <span aria-hidden="true">&rarr;</span>
-      </a>
     </div>
     <div class="flex flex-wrap gap-2" id="stat-chips">
 __STATCHIPS__
@@ -468,7 +510,7 @@ __STATCHIPS__
   </header>
 
   <!-- Toolbar — wraps on narrow viewports. -->
-  <div class="flex flex-wrap gap-2 items-center px-6 md:px-8 py-3 border-b border-slate-100 sticky top-0 bg-white/95 backdrop-blur z-10">
+  <div class="flex flex-wrap gap-2 items-center px-6 md:px-10 py-3 border-b border-slate-100 sticky top-0 bg-white/95 backdrop-blur z-10">
     <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider mr-1">Diagram</span>
     <button id="zout" class="px-3 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-sm">−</button>
     <button id="zreset" class="px-3 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-sm">reset</button>
@@ -499,7 +541,7 @@ __MERMAID__
   </div>
 
   <!-- Goals table — scrolls horizontally within the card on narrow screens. -->
-  <section class="p-6 md:p-8">
+  <section class="px-6 md:px-10 py-6 md:py-8">
     <h2 class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">All goals</h2>
     <div class="overflow-x-auto rounded-xl border border-slate-100">
       <table class="goals">
@@ -591,6 +633,68 @@ __ROWS__
   mermaid.initialize({ startOnLoad: true, securityLevel: "loose",
     themeVariables: { fontFamily: "Inter, system-ui, sans-serif" },
     flowchart: { useMaxWidth: false } });
+
+  // ── Hybrid layout: decomposition forest + per-status clusters of standalone
+  // goals. The server-rendered <pre> paints the initial collapsed diagram (and is
+  // the no-JS fallback); clicking a cluster rebuilds the Mermaid source from the
+  // embedded model — expanding that status into its individual goals — and
+  // re-renders. Mirrors `_mermaid_body` so collapsed JS output matches the server.
+  const STATUS_FILLS = { proved: "#c6f6d5", open: "#e2e8f0", blocked: "#feebc8",
+    flagged: "#fed7d7", translated: "#bee3f8", unknown: "#edf2f7" };
+  const nodeKey = id => "g_" + String(id).replace(/[^0-9a-z]/g, "_");
+  const clusterKey = s => "cluster_" + String(s).replace(/[^0-9a-z]/g, "_");
+  const statusClass = s => STATUS_FILLS[s] ? s : "unknown";
+  const expanded = new Set();
+
+  function buildMermaidSource(open) {
+    const inForest = new Set();
+    data.edges.forEach(e => { inForest.add(e.parent); inForest.add(e.child); });
+    const lines = ["flowchart LR"];
+    Object.keys(STATUS_FILLS).forEach(s =>
+      lines.push(`  classDef ${s} fill:${STATUS_FILLS[s]},stroke:#4a5568,color:#1a202c;`));
+    data.nodes.forEach(n => {
+      if (!inForest.has(n.id)) return;
+      const k = nodeKey(n.id);
+      lines.push(`  ${k}["${n.id}"]`, `  class ${k} ${statusClass(n.status)};`,
+        `  click ${k} call showDetail("${n.id}")`);
+    });
+    data.edges.slice()
+      .sort((a, b) => (a.parent + "→" + a.child).localeCompare(b.parent + "→" + b.child))
+      .forEach(e => lines.push(`  ${nodeKey(e.parent)} --> ${nodeKey(e.child)}`));
+    (data.unconnected || []).forEach(({ status, ids }) => {
+      const ck = clusterKey(status), n = ids.length, cls = statusClass(status);
+      if (open.has(status)) {
+        lines.push(`  subgraph sg_${ck}["${status} · ${n}"]`,
+          `    ${ck}(["▾ ${status} · ${n}"])`,
+          `    class ${ck} ${cls};`, `    click ${ck} call toggleCluster("${status}")`);
+        ids.forEach(id => {
+          const k = nodeKey(id);
+          lines.push(`    ${k}["${id}"]`, `    class ${k} ${cls};`,
+            `    click ${k} call showDetail("${id}")`);
+        });
+        lines.push("  end");
+      } else {
+        lines.push(`  ${ck}(["▸ ${status} · ${n}"])`,
+          `  class ${ck} ${cls};`, `  click ${ck} call toggleCluster("${status}")`);
+      }
+    });
+    return lines.join("\\n");
+  }
+
+  let renderSeq = 0;
+  async function renderDiagram() {
+    try {
+      const { svg, bindFunctions } =
+        await mermaid.render("pg-diagram-" + (++renderSeq), buildMermaidSource(expanded));
+      diagram.innerHTML = svg;
+      if (bindFunctions) bindFunctions(diagram);
+    } catch (err) { console.error("diagram render failed", err); }
+  }
+
+  window.toggleCluster = function (status) {
+    if (expanded.has(status)) expanded.delete(status); else expanded.add(status);
+    renderDiagram();
+  };
 </script>
 </body>
 </html>

@@ -2,7 +2,7 @@
 exists in the repo's PR history)."""
 from __future__ import annotations
 
-from tools.repo.pr_labels import classify, is_conforming
+from tools.repo.pr_labels import classify, diagnose, is_conforming
 
 
 def test_swarm_surfaces():
@@ -10,6 +10,7 @@ def test_swarm_surfaces():
     assert classify("converge(nat-mul-one): matched by trial-bravo") == ["swarm:translate"]
     assert classify("prove(nicomachus-sum-cubes): nicomachus_sum_cubes by e-alpha") == ["swarm:prove"]
     assert classify("decompose(platonic-schlafli-core): split into 3 subs by p3-alpha") == ["swarm:decompose"]
+    assert classify("unblock(am-gm-three-cube): sub-lemmas proved, re-opening (ADR-009)") == ["swarm:unblock"]
     assert classify("affinity(platonic-schlafli-core): -10 after a failed prove attempt by p3-alpha") == ["swarm:demote"]
 
 
@@ -66,10 +67,23 @@ def test_unknown_title_gets_no_labels():
     assert classify("something nonconforming entirely") == []
 
 
+def test_bracket_prefix_is_rejected_with_a_targeted_hint():
+    # A leading [codex]/[tool] prefix pushes the conventional type out of first
+    # position, so the title is (correctly) nonconforming — but the diagnostic
+    # must name the exact fix so agents that read CI output self-correct.
+    assert not is_conforming("[codex] ci: add queued proof dispatcher")
+    hint = diagnose("[codex] ci: add queued proof dispatcher")
+    assert "[codex]" in hint and "ci: add queued proof dispatcher" in hint
+    # No hint for a conforming title, or for a title that is broken some other way.
+    assert diagnose("ci: add queued proof dispatcher") == ""
+    assert diagnose("totally nonconforming title") == ""
+
+
 def test_enforce_gate_accepts_known_shapes_rejects_prose():
     # ADR-026: the CI gate is exactly "classify is non-empty".
     assert is_conforming("prove(nat-add-comm): nat_add_comm by agent-1")
     assert is_conforming("decompose(hard-goal): split into 3 subs by agent-2")
+    assert is_conforming("unblock(hard-goal): sub-lemmas proved, re-opening (ADR-009)")
     assert is_conforming("affinity(hard-goal): -10 after a failed prove attempt by agent-2")
     assert is_conforming("fix: a real bug")
     assert is_conforming("ci: a new gate")

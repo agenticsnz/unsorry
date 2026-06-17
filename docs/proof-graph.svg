@@ -1,32 +1,38 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="900" height="342" viewBox="0 0 900 342" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="394" viewBox="0 0 900 394" role="img" aria-labelledby="title desc">
 <title id="title">Unsorry proof graph</title>
 <desc id="desc">Unsorry proof graph: goals by status, with the decomposition-lineage family count.</desc>
 <rect width="900" height="100%" rx="18" fill="#ffffff"/>
-<rect x="0.5" y="0.5" width="899" height="341" rx="18" fill="none" stroke="#e2e8f0"/>
+<rect x="0.5" y="0.5" width="899" height="393" rx="18" fill="none" stroke="#e2e8f0"/>
 <text x="32" y="44" font-family="Inter, system-ui, sans-serif" font-size="28" font-weight="700" fill="#334155">Unsorry Proof Graph</text>
-<text x="32" y="72" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#64748b">153 goals · 104 proved · 12 decomposition families</text>
-<rect x="32" y="123" width="15" height="15" rx="3" fill="#c6f6d5" stroke="#94a3b8"/>
-<text x="58" y="136" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="650" fill="#334155">proved</text>
-<text x="58" y="154" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">104 of 153 goals · 68%</text>
+<text x="32" y="72" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#64748b">762 goals · 289 proved · 15 decomposition families</text>
+<rect x="32" y="123" width="15" height="15" rx="3" fill="#e2e8f0" stroke="#94a3b8"/>
+<text x="58" y="136" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="650" fill="#334155">open</text>
+<text x="58" y="154" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">323 of 762 goals · 42%</text>
 <rect x="300" y="125" width="420" height="24" rx="12" fill="#f1f5f9"/>
-<rect x="300" y="125" width="420" height="24" rx="12" fill="#c6f6d5"/>
-<text x="740" y="143" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">104</text>
-<rect x="32" y="175" width="15" height="15" rx="3" fill="#e2e8f0" stroke="#94a3b8"/>
-<text x="58" y="188" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="650" fill="#334155">open</text>
-<text x="58" y="206" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">35 of 153 goals · 23%</text>
+<rect x="300" y="125" width="420" height="24" rx="12" fill="#e2e8f0"/>
+<text x="740" y="143" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">323</text>
+<rect x="32" y="175" width="15" height="15" rx="3" fill="#c6f6d5" stroke="#94a3b8"/>
+<text x="58" y="188" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="650" fill="#334155">proved</text>
+<text x="58" y="206" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">289 of 762 goals · 38%</text>
 <rect x="300" y="177" width="420" height="24" rx="12" fill="#f1f5f9"/>
-<rect x="300" y="177" width="141" height="24" rx="12" fill="#e2e8f0"/>
-<text x="740" y="195" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">35</text>
-<rect x="32" y="227" width="15" height="15" rx="3" fill="#bee3f8" stroke="#94a3b8"/>
-<text x="58" y="240" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="650" fill="#334155">translated</text>
-<text x="58" y="258" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">10 of 153 goals · 7%</text>
+<rect x="300" y="177" width="375" height="24" rx="12" fill="#c6f6d5"/>
+<text x="740" y="195" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">289</text>
+<rect x="32" y="227" width="15" height="15" rx="3" fill="#edf2f7" stroke="#94a3b8"/>
+<text x="58" y="240" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="650" fill="#334155">archived</text>
+<text x="58" y="258" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">138 of 762 goals · 18%</text>
 <rect x="300" y="229" width="420" height="24" rx="12" fill="#f1f5f9"/>
-<rect x="300" y="229" width="40" height="24" rx="12" fill="#bee3f8"/>
-<text x="740" y="247" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">10</text>
-<rect x="32" y="279" width="15" height="15" rx="3" fill="#feebc8" stroke="#94a3b8"/>
-<text x="58" y="292" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="650" fill="#334155">blocked</text>
-<text x="58" y="310" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">4 of 153 goals · 3%</text>
+<rect x="300" y="229" width="179" height="24" rx="12" fill="#edf2f7"/>
+<text x="740" y="247" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">138</text>
+<rect x="32" y="279" width="15" height="15" rx="3" fill="#bee3f8" stroke="#94a3b8"/>
+<text x="58" y="292" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="650" fill="#334155">translated</text>
+<text x="58" y="310" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">9 of 762 goals · 1%</text>
 <rect x="300" y="281" width="420" height="24" rx="12" fill="#f1f5f9"/>
-<rect x="300" y="281" width="16" height="24" rx="12" fill="#feebc8"/>
-<text x="740" y="299" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">4</text>
+<rect x="300" y="281" width="11" height="24" rx="12" fill="#bee3f8"/>
+<text x="740" y="299" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">9</text>
+<rect x="32" y="331" width="15" height="15" rx="3" fill="#feebc8" stroke="#94a3b8"/>
+<text x="58" y="344" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="650" fill="#334155">blocked</text>
+<text x="58" y="362" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">3 of 762 goals · 0%</text>
+<rect x="300" y="333" width="420" height="24" rx="12" fill="#f1f5f9"/>
+<rect x="300" y="333" width="6" height="24" rx="12" fill="#feebc8"/>
+<text x="740" y="351" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">3</text>
 </svg>

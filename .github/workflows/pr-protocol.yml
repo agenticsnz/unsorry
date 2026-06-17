@@ -1,7 +1,8 @@
-# Protocol-compliance gate (ADR-028): a newly added ADR must ship with its spec
-# (docs/protocols.md). Only ADDED files are checked, so historical unpaired ADRs
-# are untouched. pull_request_target on the BASE ref (the trusted tool + the base
-# ADR/spec tree); added files come from the PR API.
+# Protocol-compliance gate (ADR-028, ADR-061): a newly added ADR must ship with
+# its spec, and an added ADR/SPEC number must not collide with one already in the
+# tree (docs/protocols.md). Only ADDED files are checked, so historical unpaired
+# or pre-duplicated ADRs are untouched. pull_request_target on the BASE ref (the
+# trusted tool + the base ADR/spec tree); added files come from the PR API.
 name: pr-protocol
 on:
   pull_request_target:
@@ -14,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3 — base ref, never the PR head
-      - name: Require a spec for every newly added ADR (ADR-028)
+      - name: Require a spec per added ADR and a unique ADR/SPEC number (ADR-028, ADR-061)
         env:
           GH_TOKEN: ${{ github.token }}
           PR: ${{ github.event.pull_request.number }}

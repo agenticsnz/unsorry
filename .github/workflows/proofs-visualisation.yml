@@ -5,8 +5,9 @@
 # which only exists on `main` AFTER a proof merges. So a PR-time `--check`
 # cannot include the goal a PR is about to prove (it would spuriously redden the
 # *next* PR). This runs **post-merge**: on every push to `main` that could change
-# the graph it runs `--check`, and on drift regenerates the two `docs/` outputs
-# and commits them straight back to `main` (the standard generated-artifact
+# the graph it runs `--check`, and on drift regenerates the three `docs/` outputs
+# (the `.md` table, the `.html` page, and the `proof-graph.svg` preview) and
+# commits them straight back to `main` (the standard generated-artifact
 # exception — a single docs-only, `[skip ci]` commit, not a human/agent change).
 #
 # Pushing the refresh to `main` needs an admin identity: the default
@@ -85,7 +86,7 @@ jobs:
           # three artifacts write disjoint files — then pushes; a lost race just
           # retries onto the updated main. `[skip ci]` + the docs-only paths keep
           # it from re-firing.
-          paths="docs/proofs-contributors-visualisation.md docs/proofs-contributors-visualisation.html"
+          paths="docs/proofs-contributors-visualisation.md docs/proofs-contributors-visualisation.html docs/proof-graph.svg"
           for attempt in 1 2 3 4 5; do
             git fetch --quiet origin main
             git reset --hard --quiet origin/main

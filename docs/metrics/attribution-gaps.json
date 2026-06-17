@@ -2511,7 +2511,7 @@
       "sha": "fd94f35a0bb3db8863f45847169664591a6c7c892e950932445c749db44dc49b"
     },
     {
-      "alias_mapped": false,
+      "alias_mapped": true,
       "date": "2026-06-15",
       "difficulty": 1,
       "display_name": "Perttu Isotalo",
@@ -2520,7 +2520,7 @@
       "git_author": "Perttu Isotalo <pisotalo@isotalo.org>",
       "git_author_name": "Perttu Isotalo",
       "goal": "am-hm-two-var-s1",
-      "mapped_github": null,
+      "mapped_github": "perttu",
       "path": "library/index/ff0fe10ebdc1ea2d3f0bb1ebcf1ca7225fd31445055a06ae3b65b4969c05d59b.aisp",
       "review_status": "candidate",
       "sha": "ff0fe10ebdc1ea2d3f0bb1ebcf1ca7225fd31445055a06ae3b65b4969c05d59b"
@@ -3921,7 +3921,7 @@
       "sha": "1c82b0f5546fa19fd220112ece592d2e2879907038adc62fa48cda995e30c68b"
     },
     {
-      "alias_mapped": false,
+      "alias_mapped": true,
       "date": "2026-06-15",
       "difficulty": 2,
       "display_name": "Perttu Isotalo",
@@ -3930,7 +3930,7 @@
       "git_author": "Perttu Isotalo <pisotalo@isotalo.org>",
       "git_author_name": "Perttu Isotalo",
       "goal": "two-abs-mul-le-sq-add-sq",
-      "mapped_github": null,
+      "mapped_github": "perttu",
       "path": "packages/unsorry-archive-0004/library/index/2d46a1e810ae930182fbf64a98d0a583702906bc1a9af0865ff7d31fefbfbfb5.aisp",
       "review_status": "candidate",
       "sha": "2d46a1e810ae930182fbf64a98d0a583702906bc1a9af0865ff7d31fefbfbfb5"
@@ -4026,7 +4026,7 @@
       "sha": "b590bf8a6ea022612ad4001b49c0aab77f68ffad7bd04908f031ee81ff394e1c"
     },
     {
-      "alias_mapped": false,
+      "alias_mapped": true,
       "date": "2026-06-15",
       "difficulty": 3,
       "display_name": "Perttu Isotalo",
@@ -4035,7 +4035,7 @@
       "git_author": "Perttu Isotalo <pisotalo@isotalo.org>",
       "git_author_name": "Perttu Isotalo",
       "goal": "cauchy-schwarz-three-term",
-      "mapped_github": null,
+      "mapped_github": "perttu",
       "path": "packages/unsorry-archive-0004/library/index/cd2f5ab3e6b50898ac05ef03af4e3d562f3af8075b58c9759865311c83d1bcfa.aisp",
       "review_status": "candidate",
       "sha": "cd2f5ab3e6b50898ac05ef03af4e3d562f3af8075b58c9759865311c83d1bcfa"
@@ -4071,7 +4071,7 @@
       "sha": "de52c14b959e1e358998c4ad4b6487773163ca1b1061d6f4aa9620a1885c7de2"
     },
     {
-      "alias_mapped": false,
+      "alias_mapped": true,
       "date": "2026-06-15",
       "difficulty": 2,
       "display_name": "Perttu Isotalo",
@@ -4080,7 +4080,7 @@
       "git_author": "Perttu Isotalo <pisotalo@isotalo.org>",
       "git_author_name": "Perttu Isotalo",
       "goal": "consecutive-cubes-diff-odd",
-      "mapped_github": null,
+      "mapped_github": "perttu",
       "path": "packages/unsorry-archive-0004/library/index/eaee5ea2cd7a6dc14c349341d941f92479917f22ca8354a7ea09cea1df83c579.aisp",
       "review_status": "candidate",
       "sha": "eaee5ea2cd7a6dc14c349341d941f92479917f22ca8354a7ea09cea1df83c579"
@@ -4105,8 +4105,8 @@
   "source": "git-add-author",
   "summary": {
     "git_attributed_missing_solver": 273,
-    "mapped_missing_solver": 269,
+    "mapped_missing_solver": 273,
     "missing_solver_provenance": 273,
-    "unmapped_missing_solver": 4
+    "unmapped_missing_solver": 0
   }
 }

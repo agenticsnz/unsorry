@@ -4,7 +4,7 @@
 <rect width="900" height="100%" rx="18" fill="#ffffff"/>
 <rect x="0.5" y="0.5" width="899" height="485" rx="18" fill="none" stroke="#e2e8f0"/>
 <text x="32" y="44" font-family="Inter, system-ui, sans-serif" font-size="28" font-weight="700" fill="#334155">Unsorry Leaderboard</text>
-<text x="32" y="72" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#64748b">418 credited proofs · 145 explicit · 273 inferred from git · 10 contributors</text>
+<text x="32" y="72" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#64748b">427 credited proofs · 154 explicit · 273 inferred from git · 9 contributors</text>
 <text x="34" y="148" font-family="Georgia, serif" font-size="24" font-style="italic" font-weight="700" fill="#fbbf24">1</text>
 <a href="https://github.com/chat-bit-01">
 <text x="82" y="138" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="650" fill="#334155">@chat-bit-01</text>
@@ -18,7 +18,7 @@
 <a href="https://github.com/cgbarlow">
 <text x="82" y="202" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="650" fill="#334155">@cgbarlow</text>
 </a>
-<text x="82" y="222" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">118 proofs · 212 difficulty · 71 explicit · 47 inferred · 306 runs</text>
+<text x="82" y="222" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">118 proofs · 212 difficulty · 71 explicit · 47 inferred · 310 runs</text>
 <rect x="320" y="191" width="420" height="26" rx="13" fill="#f1f5f9"/>
 <rect x="320" y="191" width="178" height="26" rx="13" fill="#e0f2fe"/>
 <text x="760" y="210" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">24150 pts</text>
@@ -27,20 +27,20 @@
 <a href="https://github.com/ohdearquant">
 <text x="82" y="266" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="650" fill="#334155">@ohdearquant</text>
 </a>
-<text x="82" y="286" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">34 proofs · 69 difficulty · 34 explicit · 0 inferred · 34 runs</text>
+<text x="82" y="286" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">42 proofs · 90 difficulty · 42 explicit · 0 inferred · 42 runs</text>
 <rect x="320" y="255" width="420" height="26" rx="13" fill="#f1f5f9"/>
-<rect x="320" y="255" width="57" height="26" rx="13" fill="#e0f2fe"/>
-<text x="760" y="274" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">7750 pts</text>
+<rect x="320" y="255" width="74" height="26" rx="13" fill="#e0f2fe"/>
+<text x="760" y="274" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">10050 pts</text>
 <text x="760" y="290" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#64748b">explicit</text>
 <text x="34" y="340" font-family="Georgia, serif" font-size="24" font-style="italic" font-weight="700" fill="#cbd5e1">4</text>
 <a href="https://github.com/perttu">
 <text x="82" y="330" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="650" fill="#334155">@perttu</text>
 </a>
-<text x="82" y="350" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">32 proofs · 73 difficulty · 32 explicit · 0 inferred · 34 runs</text>
+<text x="82" y="350" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">37 proofs · 83 difficulty · 33 explicit · 4 inferred · 35 runs</text>
 <rect x="320" y="319" width="420" height="26" rx="13" fill="#f1f5f9"/>
-<rect x="320" y="319" width="59" height="26" rx="13" fill="#e0f2fe"/>
-<text x="760" y="338" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">8100 pts</text>
-<text x="760" y="354" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#64748b">explicit</text>
+<rect x="320" y="319" width="68" height="26" rx="13" fill="#e0f2fe"/>
+<text x="760" y="338" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">9225 pts</text>
+<text x="760" y="354" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#64748b">explicit + inferred</text>
 <text x="34" y="404" font-family="Georgia, serif" font-size="24" font-style="italic" font-weight="700" fill="#cbd5e1">5</text>
 <a href="https://github.com/binto">
 <text x="82" y="394" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="650" fill="#334155">@binto</text>

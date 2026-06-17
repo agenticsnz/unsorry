@@ -20,8 +20,10 @@
 #
 # Exit codes: 0 success or nothing-to-do · 1 cycle failure · 2 configuration
 # error (not at repo root, missing tools, unauthenticated gh) · 3
-# infrastructure failure (the selected proof CLI cannot run — quota, auth, network —
-# the agent stops without applying any queue penalty, ADR-016).
+# infrastructure failure — the selected proof CLI cannot run (quota, auth,
+# network; the agent stops without applying any queue penalty, ADR-016), or a
+# git fetch on the shared object store could not complete after retries
+# (ADR-059, #983). Either way supervise.sh backs off and reschedules.
 #
 # shellcheck disable=SC2317,SC2329  # test_* functions are invoked indirectly ("$t")
 set -euo pipefail
@@ -41,6 +43,14 @@ log() {
 die_config() {
   printf '[agent.sh] config error: %s\n' "$*" >&2
   exit 2
+}
+
+# ADR-059: the infrastructure-failure counterpart to die_config, for the
+# pre-loop startup path (relocation) where there is no cycle to return a code
+# up through. Exit 3 routes supervise.sh to its ADR-016 exponential backoff.
+die_infra() {
+  printf '[agent.sh] infrastructure failure: %s\n' "$*" >&2
+  exit 3
 }
 
 usage() {
@@ -127,6 +137,13 @@ Environment:
                     normal prove pipeline (retry with accumulated lessons,
                     ADR-024; decompose on failure, ADR-009) instead of going
                     idle (default: 1; set 0 to disable)
+  UNSORRY_FETCH_RETRIES
+                    Attempts for a `git fetch` on the shared object store before
+                    it is called an infrastructure failure (ADR-059, #983;
+                    default: 3)
+  UNSORRY_FETCH_BACKOFF
+                    Base seconds for the exponential backoff between fetch
+                    retries (default: 2; doubles per attempt, capped at 30)
   UNSORRY_SUBMIT_MODE
                     Coordinated --prove submit mode: queue pushes a verified
                     proof branch under queued/prove/ without opening a PR
@@ -1237,13 +1254,56 @@ emit_event() {
 
 # ------------------------------------------------------------- git plumbing
 
+# ADR-059 pure backoff schedule: seconds to wait before the next fetch retry.
+# <attempt> is the 1-based index of the just-failed attempt; delay is
+# base*2^(attempt-1), the shift clamped at 6 to bound the arithmetic, then
+# capped. base 0 yields 0 for every attempt (the self-test uses this to avoid
+# real sleeps). Mirrors supervise.sh:next_action's doubling-with-cap shape.
+fetch_retry_delay() {
+  local attempt="$1" base="$2" cap="$3" delay shift_n
+  shift_n=$((attempt - 1)); [ "$shift_n" -gt 6 ] && shift_n=6
+  delay=$(( base * (1 << shift_n) ))
+  [ "$delay" -gt "$cap" ] && delay="$cap"
+  echo "$delay"
+}
+
+# ADR-059: git fetch into the SHARED object store (all ADR-042 per-agent
+# worktrees on a host share one .git/objects) is not concurrency-safe — a
+# sibling agent's fetch, or a gc.auto repack, can leave a thin-pack base object
+# momentarily unreadable while this fetch's unpack needs it ("failed to read
+# delta-pack base object" / "unpack-objects error", #983). The failure is
+# transient, so retry with exponential backoff; -c gc.auto=0 stops a concurrent
+# repack from racing this fetch. <dir> is the repo to fetch into ("." for the
+# current worktree, "$CLAIMS_WT" for the claims worktree) — one helper covers
+# every site. Returns 0 on success, or the infrastructure code 3 once all
+# attempts are spent (callers propagate it so the loop exits 3 and supervise.sh
+# backs off, rather than dying on the first blip).
+git_fetch_retry() {
+  local dir="$1"; shift
+  local attempts="${UNSORRY_FETCH_RETRIES:-3}" base="${UNSORRY_FETCH_BACKOFF:-2}" cap=30
+  local n=1 delay
+  while :; do
+    if git -C "$dir" -c gc.auto=0 fetch "$@"; then
+      return 0
+    fi
+    if [ "$n" -ge "$attempts" ]; then
+      log "git fetch ($*) failed after $attempts attempt(s) — infrastructure failure (#983, ADR-059)"
+      return 3
+    fi
+    delay="$(fetch_retry_delay "$n" "$base" "$cap")"
+    log "git fetch ($*) failed (attempt $n/$attempts) — retrying in ${delay}s (#983)"
+    sleep "$delay"
+    n=$((n + 1))
+  done
+}
+
 # Step 1: pull main, ensure the claims worktree exists and is freshly pulled.
 # ADR-042: an isolated agent worktree is a throwaway detached checkout, so it is
 # hard-reset to origin/main (re-entrant: clears anything a dead cycle left
 # behind, like the claims worktree does). The non-isolated path keeps the
 # conservative --ff-only merge of the operator's own main checkout.
 sync_repo() {
-  git fetch -q origin || return 1
+  git_fetch_retry . -q origin || return $?  # ADR-059: 3 on exhausted retries
   if [ "${UNSORRY_IN_WT:-0}" = 1 ]; then
     git reset --hard -q origin/main || return 1
   else
@@ -1304,7 +1364,8 @@ relocate_into_agent_worktree() {
   [ "${UNSORRY_NO_ISOLATE:-0}" = 1 ] && return 0
 
   require_unsorry_origin
-  git fetch -q origin || die_config "cannot fetch origin before relocating into an isolated worktree"
+  git_fetch_retry . -q origin \
+    || die_infra "cannot fetch origin before relocating into an isolated worktree (ADR-059, #983)"
 
   local workdir wt
   workdir="${UNSORRY_WORKDIR:-$HOME/.unsorry/work}"
@@ -1343,7 +1404,7 @@ ensure_claims_worktree() {
   fi
   # Unconditional at every cycle start: whatever the previous cycle left
   # behind (unpushed commits, dirty files), start from the true origin tip.
-  git -C "$CLAIMS_WT" fetch -q origin claims || return 1
+  git_fetch_retry "$CLAIMS_WT" -q origin claims || return $?  # ADR-059: 3 on exhausted retries
   git -C "$CLAIMS_WT" reset --hard -q origin/claims || return 1
 }
 
@@ -2178,6 +2239,39 @@ prove_target_only_changed() {
   done < <(git -C "$root" status --porcelain=v1 --untracked-files=all)
 }
 
+# Keep THIS agent checkout's UnsorryLibrary oleans warm. Called once per cycle
+# after sync_repo (so the working tree is at origin/main, the same commit each
+# prove worktree branches from). The first call pays a full library build; later
+# calls are incremental — only newly-merged modules compile. The result is the
+# seed source for seed_library_cache. Best-effort and opt-out via
+# UNSORRY_SEED_LIBRARY=0; on failure prove verifies just fall back to the prior
+# full-build behaviour.
+ensure_warm_library() {
+  [ "${UNSORRY_SEED_LIBRARY:-1}" = 0 ] && return 0
+  WARM_LIBRARY_ROOT=""
+  if ( lake exe cache get && lake build UnsorryLibrary ) >/dev/null 2>&1; then
+    WARM_LIBRARY_ROOT="$PWD"
+  else
+    log "warning: warm library build failed — prove verifies will do a full build this cycle"
+  fi
+}
+
+# Seed <prwt>'s .lake/build from the warm checkout so `lake build UnsorryLibrary`
+# in the prove worktree compiles only the agent's new module instead of the
+# whole library. A full copy (not a hardlink) keeps the prove worktree's build
+# from ever touching the warm tree's oleans. Both trees sit at the same
+# origin/main commit, so Lean's content-hashed traces treat the copied oleans as
+# up to date. Best-effort: no warm root (build failed or opted out) ⇒ no-op, and
+# the verify falls back to a full build.
+seed_library_cache() {
+  local prwt="$1" warm="${WARM_LIBRARY_ROOT:-}"
+  [ -n "$warm" ] || return 0
+  [ -d "$warm/.lake/build" ] || return 0
+  [ -e "$prwt/.lake/build" ] && return 0
+  mkdir -p "$prwt/.lake" || return 0
+  cp -a "$warm/.lake/build" "$prwt/.lake/build" 2>/dev/null || true
+}
+
 # Prove step 3: local soundness verification of a candidate proof tree, BEFORE
 # any PR (the agent self-verifying per ADR-006 / design-doc step 6). All three
 # must pass on the tree at <root> for module Unsorry.<camel>:
@@ -2222,6 +2316,16 @@ run_proof() {
   if ! ( cd "$prwt" && lake exe cache get ) >/dev/null 2>&1; then
     log "warning: 'lake exe cache get' failed in the prove worktree for $goal — verification may be slow"
   fi
+  # cache get restores only *mathlib* oleans; the project's own UnsorryLibrary
+  # modules (hundreds, and growing with every merged proof) are not in any cache
+  # and would otherwise be recompiled from scratch in this fresh worktree on
+  # every verify (~9 min, and far worse when many agents contend for cores).
+  # Seed them from this agent's warm checkout (kept built by ensure_warm_library,
+  # pinned to the same origin/main commit the prove worktree branches from) so
+  # the verify compiles only the new module. Soundness is unaffected: CI Gate A
+  # re-verifies the whole library from scratch (ADR-049), so this only speeds the
+  # local pre-check. Best-effort: a miss just falls back to the full build.
+  seed_library_cache "$prwt"
   # ADR-014 dependency reuse: surface this goal's PROVED dependencies (declared
   # deps + the subs of its own decomposition) as importable library modules, so
   # merged work compounds instead of being re-proved.
@@ -3086,6 +3190,47 @@ test_require_main_matches_origin() {
   ( cd "$tmp" && require_main_matches_origin ) >/dev/null 2>&1 || rc=$?
   [ "$rc" -eq 2 ] \
     || { log "  local-only main returned $rc, expected config error 2"; return 1; }
+}
+
+# ADR-059: the pure fetch-retry backoff — base*2^(attempt-1), capped, and a
+# zero base never sleeps (the self-test relies on that to stay fast).
+test_fetch_retry_delay() {
+  local got
+  got="$(fetch_retry_delay 1 2 30)"; [ "$got" = 2 ]  || { log "  attempt1: want 2, got $got"; return 1; }
+  got="$(fetch_retry_delay 2 2 30)"; [ "$got" = 4 ]  || { log "  attempt2: want 4, got $got"; return 1; }
+  got="$(fetch_retry_delay 3 2 30)"; [ "$got" = 8 ]  || { log "  attempt3: want 8, got $got"; return 1; }
+  got="$(fetch_retry_delay 9 2 30)"; [ "$got" = 30 ] || { log "  cap: want 30, got $got"; return 1; }
+  got="$(fetch_retry_delay 1 0 30)"; [ "$got" = 0 ]  || { log "  zero-base: want 0, got $got"; return 1; }
+  return 0
+}
+
+# ADR-059 (#983): git_fetch_retry succeeds against a healthy origin, and after
+# exhausting its attempts against a dead remote returns the infra code 3, having
+# really looped (attempts-1 inter-attempt retry logs). Hermetic: a bare file://
+# origin, no network, zero backoff so it never sleeps.
+test_git_fetch_retry() {
+  local tmp origin rc=0 err retries=3
+  tmp="$(mktemp -d "$SESSION_TMP/fetch-retry.XXXXXX")" || return 1
+  origin="$tmp/origin.git"
+  git init -q --bare "$origin" || return 1
+  git init -q -b main "$tmp/clone" || return 1
+  fixture_git_id "$tmp/clone" || return 1
+  git -C "$tmp/clone" commit -q --allow-empty -m seed || return 1
+  git -C "$tmp/clone" remote add origin "$origin" || return 1
+  git -C "$tmp/clone" push -q origin main || return 1
+  # Success path: a fetch against the healthy origin returns 0.
+  ( cd "$tmp/clone" && UNSORRY_FETCH_BACKOFF=0 git_fetch_retry . -q origin ) \
+    || { log "  fetch against a healthy origin failed"; return 1; }
+  # Exhaustion path: a non-existent remote returns infra 3 after the retries.
+  err="$( ( cd "$tmp/clone" && UNSORRY_FETCH_RETRIES="$retries" UNSORRY_FETCH_BACKOFF=0 \
+            git_fetch_retry . -q "$tmp/nonexistent.git" ) 2>&1 )" || rc=$?
+  [ "$rc" -eq 3 ] \
+    || { log "  exhausted fetch returned $rc, expected infra 3"; return 1; }
+  printf '%s\n' "$err" | grep -q "after $retries attempt" \
+    || { log "  exhausted fetch did not log the attempt count"; return 1; }
+  [ "$(printf '%s\n' "$err" | grep -c "retrying in")" -eq $((retries - 1)) ] \
+    || { log "  expected $((retries - 1)) retry logs before exhaustion"; return 1; }
+  return 0
 }
 
 # #428: the re-exec decision — stale iff the running and on-disk shas differ and
@@ -4453,6 +4598,32 @@ test_infra_failure_classifier() {
   [ "$got" = real ] || { log "  boundary: want 'real', got '$got'"; return 1; }
 }
 
+test_seed_library_cache() {
+  local warm prwt rc
+  warm="$(mktemp -d)"; prwt="$(mktemp -d)"
+  mkdir -p "$warm/.lake/build/lib/lean/Unsorry" "$warm/.lake/build/bin"
+  : > "$warm/.lake/build/lib/lean/Unsorry/Foo.olean"
+  : > "$warm/.lake/build/bin/axiom_audit"
+  # Warm root set → the prove worktree is seeded with the oleans and the exe.
+  WARM_LIBRARY_ROOT="$warm"
+  seed_library_cache "$prwt"
+  rc=0
+  [ -f "$prwt/.lake/build/lib/lean/Unsorry/Foo.olean" ] || { log "  olean not seeded"; rc=1; }
+  [ -f "$prwt/.lake/build/bin/axiom_audit" ] || { log "  audit exe not seeded"; rc=1; }
+  # An existing build dir is never clobbered (a started build owns it).
+  local prwt2; prwt2="$(mktemp -d)"; mkdir -p "$prwt2/.lake/build"; : > "$prwt2/.lake/build/SENTINEL"
+  seed_library_cache "$prwt2"
+  [ -f "$prwt2/.lake/build/SENTINEL" ] || { log "  clobbered an existing build dir"; rc=1; }
+  [ -e "$prwt2/.lake/build/lib" ] && { log "  seeded over an existing build dir"; rc=1; }
+  # No warm root (build failed or UNSORRY_SEED_LIBRARY=0) → no-op, no crash.
+  local prwt3; prwt3="$(mktemp -d)"
+  WARM_LIBRARY_ROOT=""
+  seed_library_cache "$prwt3"
+  [ -e "$prwt3/.lake" ] && { log "  seeded with no warm root"; rc=1; }
+  rm -rf "$warm" "$prwt" "$prwt2" "$prwt3"
+  return "$rc"
+}
+
 test_open_pr_claim_guard() {
   local rc
   # ADR-017: an open prove PR for exactly this goal → skip it (rc 0). gh is
@@ -4615,10 +4786,13 @@ run_self_tests() {
     test_candidate_filtering
     test_sweep_detection
     test_goal_rewrite
+    test_seed_library_cache
     test_convergence_rewrite
     test_record_validation
     test_require_main_checkout
     test_require_main_matches_origin
+    test_fetch_retry_delay
+    test_git_fetch_retry
     test_harness_is_stale
     test_relocate_into_worktree_noop
     test_require_main_checkout_isolated
@@ -5117,12 +5291,14 @@ main() {
 
   declare -A HANDLED=()
   declare -A SWEPT=()
-  local overall=0 translations_dir candidates goal cand stmt cycle_failed prc
+  local overall=0 translations_dir candidates goal cand stmt cycle_failed prc rc
 
   while :; do
     # Step 1 — pull main, refresh the claims worktree, then re-exec if main
     # brought a newer agent.sh (so the cycle runs the latest code, #428).
-    sync_repo || { log "repository sync failed"; exit 1; }
+    # ADR-059: an exhausted fetch returns 3 (infra → supervise.sh backs off);
+    # other sync failures (reset/merge) stay 1 (cycle retry).
+    sync_repo || { rc=$?; log "repository sync failed (rc=$rc)"; exit "$rc"; }
     maybe_reexec_on_harness_update
     if [ "$PROVE" -eq 1 ] && ! submission_governor_allows; then
       if [ "$UNSORRY_GOVERNOR_WAIT" -gt 0 ] && [ "$ONCE" -eq 0 ]; then
@@ -5137,6 +5313,9 @@ main() {
     # sweep is a translate-only janitor step; the unblock sweep is its prove
     # analogue (ADR-009): re-open blocked parents whose sub-lemmas are all proved.
     if [ "$PROVE" -eq 1 ]; then
+      # Warm this checkout's library oleans (at origin/main) so each prove
+      # worktree's verify is seeded and compiles only its new module.
+      ensure_warm_library
       unblock_sweep || overall=1
       candidates="$(select_prove_candidates)"
     else

@@ -30,8 +30,14 @@ jobs:
       active: ${{ steps.filter.outputs.active }}
       archive: ${{ steps.filter.outputs.archive }}
       admitted: ${{ steps.admission.outputs.admitted }}
-      profile: ${{ steps.profile.outputs.name }}
-      volume: ${{ steps.profile.outputs.volume }}
+      prepare_profile: ${{ steps.profiles.outputs.prepare }}
+      audit_profile: ${{ steps.profiles.outputs.audit }}
+      replay_profile: ${{ steps.profiles.outputs.replay }}
+      archive_profile: ${{ steps.profiles.outputs.archive }}
+      prepare_volume: ${{ steps.profiles.outputs.prepare_volume }}
+      audit_volume: ${{ steps.profiles.outputs.audit_volume }}
+      replay_volume: ${{ steps.profiles.outputs.replay_volume }}
+      archive_volume: ${{ steps.profiles.outputs.archive_volume }}
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - id: filter
@@ -61,18 +67,6 @@ jobs:
               - '.github/workflows/gate-a.yml'
             archive:
               - 'packages/unsorry-archive-*/**'
-            # The ADR-033 olean-invalidating full-replay triggers: a change here
-            # forces gate-a to replay the WHOLE library (heavy), so it gets its
-            # own heavier Namespace profile. Narrowed to exactly the
-            # olean-invalidating paths (FULL_REPLAY_PATHS in parallel_modules.py):
-            # #792 made tools/gate_a/** and gate-a.yml run an INCREMENTAL replay
-            # (they change no olean), so they no longer select the heavy profile
-            # (ADR-048 Phase 2).
-            infra:
-              - 'lean-toolchain'
-              - 'lakefile.toml'
-              - 'lakefile.lean'
-              - 'lake-manifest.json'
       - id: admission
         env:
           CREATED_AT: ${{ github.event.pull_request.created_at }}
@@ -83,53 +77,42 @@ jobs:
             --created-at "$CREATED_AT" \
             --head-ref "$HEAD_REF" \
             --title "$TITLE" >> "$GITHUB_OUTPUT"
-      # Route by replay workload (ADR-048 Phase 2): a routine proof PR AND a push
-      # to main now replay INCREMENTALLY (light) -> namespace-profile-unsorry-1
-      # (4 GB). Only an olean-invalidating change (toolchain/lakefile/manifest)
-      # forces a FULL replay (heavy) → namespace-profile-unsorry-2 (16 GB), so a
-      # rare slow full-replay never hogs the frequent proof runner.
-      #
-      # Transition note: namespace-profile-unsorry-2 is now used ONLY by forced
-      # full-replay (toolchain/dep) runs. If the operator retires unsorry-2,
-      # point those runs at unsorry-1 with the small-chunk path
-      # (UNSORRY_REPLAY_CHUNK, see the replay job and SPEC-048-B) — nothing on the
-      # routine path depends on the 16 GB profile.
-      - id: profile
+      # Route by Gate A job role (ADR-058): prepare/build, audit, and replay use
+      # separate Namespace profiles so the operator can scale each bottleneck
+      # independently. Replay keeps the larger memory lane; prepare/archive stay
+      # on the cheap build lane; audit has its own serial axiom-audit lane.
+      - id: profiles
         run: |
-          if [ "${{ steps.filter.outputs.infra }}" = "true" ]; then
-            name=namespace-profile-unsorry-2
-          else
-            name=namespace-profile-unsorry-1
-          fi
-          echo "name=$name" >> "$GITHUB_OUTPUT"
+          prepare=namespace-profile-unsorry-prepare
+          audit=namespace-profile-unsorry-audit
+          replay=namespace-profile-unsorry-replay
+          archive=namespace-profile-unsorry-prepare
+
+          echo "prepare=$prepare" >> "$GITHUB_OUTPUT"
+          echo "audit=$audit" >> "$GITHUB_OUTPUT"
+          echo "replay=$replay" >> "$GITHUB_OUTPUT"
+          echo "archive=$archive" >> "$GITHUB_OUTPUT"
+
           # Failsafe (ADR-046): the .lake cache volume engages ONLY on a Namespace
-          # profile. If the runner is ever changed to a non-Namespace one, volume
-          # is false and the gate falls back to lean-action's GitHub mathlib cache
-          # — nothing references a volume that isn't there.
-          case "$name" in
-            namespace-*) echo "volume=true"  >> "$GITHUB_OUTPUT" ;;
-            *)           echo "volume=false" >> "$GITHUB_OUTPUT" ;;
-          esac
+          # profile. If a runner is ever changed to a non-Namespace label, its
+          # volume output is false and that job falls back to GitHub caches.
+          for key in prepare audit replay archive; do
+            eval label="\$$key"
+            case "$label" in
+              namespace-*) value=true ;;
+              *)                     value=false ;;
+            esac
+            echo "${key}_volume=$value" >> "$GITHUB_OUTPUT"
+          done
 
   gate_a_prepare:
     name: gate-a-prepare
     needs: detect
-    # Namespace managed (ephemeral) runner, chosen by detect.profile (ADR-048
-    # Phase 2):
-    #   namespace-profile-unsorry-1 (4 GB) — routine proof PRs AND push to main,
-    #                                 both incremental + light.
-    #   namespace-profile-unsorry-2 (16 GB) — only an olean-invalidating change
-    #                                 (toolchain/lakefile/manifest) that forces a
-    #                                 FULL replay, so the rare slow full replay
-    #                                 runs in its own pool and never blocks the
-    #                                 frequent proof PRs on unsorry-1.
-    # The scheduled gate-a-full-replay workflow runs the full backstop on the
-    # routine profile with a small UNSORRY_REPLAY_CHUNK.
-    # This prepare job warms/restores the Lean cache, generates binding modules,
-    # and runs the cheap authoritative checks once before the heavy audit/replay
-    # jobs start in parallel.
+    # Namespace managed prepare lane (ADR-058). This job warms/restores the Lean
+    # cache, generates binding modules, and runs the cheap authoritative checks
+    # once before the audit/replay jobs start in parallel.
     if: needs.detect.outputs.admitted == 'true' && needs.detect.outputs.lean == 'true'
-    runs-on: ${{ needs.detect.outputs.profile }}
+    runs-on: ${{ needs.detect.outputs.prepare_profile }}
     # 45 min, not 30: a COLD library build (~21 min and growing — no warm
     # `.lake/build` cache, e.g. first run on a new cache prefix after a
     # toolchain/mathlib bump) plus the cheap checks overran the old 30-min cap
@@ -160,7 +143,7 @@ jobs:
       # a Namespace profile; soft-fails (continue-on-error) if no volume is
       # attached, falling back to the GitHub caches below.
       - name: Namespace .lake cache volume
-        if: needs.detect.outputs.volume == 'true'
+        if: needs.detect.outputs.prepare_volume == 'true'
         id: ns_lake_cache
         continue-on-error: true
         uses: namespacelabs/nscloud-cache-action@15799a6b54e5765f85b2aac25b3f0df43ed571c0 # v1.4.3
@@ -168,16 +151,20 @@ jobs:
           path: ${{ github.workspace }}/.lake
 
       - name: Namespace .lake cache diagnostics
-        if: needs.detect.outputs.volume == 'true'
+        if: needs.detect.outputs.prepare_volume == 'true'
         run: |
           echo "nscloud cache-hit=${{ steps.ns_lake_cache.outputs.cache-hit }}"
           du -sh .lake .lake/packages .lake/build 2>/dev/null || true
 
-      # GitHub-cache fallback for the local oleans. Keep this active even on
-      # Namespace: the volume is shared and keyless, while ADR-045's cache is
-      # exact to this commit so audit/replay can restore prepare's build and
-      # skip the duplicate library build safely.
+      # GitHub-cache fallback for the local oleans — NON-Namespace only. On a
+      # Namespace profile the .lake cache volume (ADR-046) already persists
+      # .lake/build across jobs and runs, so this GitHub cache is pure churn there:
+      # a ~320 MB per-commit entry (keyed on github.sha) that thrashes the 10 GB
+      # repo cache. Gating it to volume!='true' keeps the cache small. On Namespace
+      # the warm volume makes audit/replay's library build a cheap incremental
+      # instead — the #801 exact-key build-skip just doesn't fire there.
       - name: Cache local Lake build (.lake/build) — incremental library (ADR-045)
+        if: needs.detect.outputs.volume != 'true'
         id: lake_build_cache
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
@@ -204,7 +191,7 @@ jobs:
         with:
           # On a warm Namespace .lake volume, mathlib is already resident. If the
           # volume misses/errors, fall back to lean-action's GitHub cache.
-          use-github-cache: ${{ needs.detect.outputs.volume != 'true' || steps.ns_lake_cache.outputs.cache-hit != 'true' }}
+          use-github-cache: ${{ needs.detect.outputs.prepare_volume != 'true' || steps.ns_lake_cache.outputs.cache-hit != 'true' }}
           build-args: "UnsorryGoals"
 
       # ADR-011 statement binding: Gate A REGENERATES the binding obligation for
@@ -252,7 +239,7 @@ jobs:
     name: gate-a-audit
     needs: [detect, gate_a_prepare]
     if: needs.detect.outputs.admitted == 'true' && needs.detect.outputs.active == 'true'
-    runs-on: ${{ needs.detect.outputs.profile }}
+    runs-on: ${{ needs.detect.outputs.audit_profile }}
     # 45 min, not 30: this job also does the cold library build (~21 min) before
     # its incremental audit; the old 30-min cap killed it on a cold cache (#567).
     # See gate-a-prepare and ADR-045.
@@ -273,7 +260,7 @@ jobs:
       # a Namespace profile; soft-fails (continue-on-error) if no volume is
       # attached, falling back to the GitHub caches below.
       - name: Namespace .lake cache volume
-        if: needs.detect.outputs.volume == 'true'
+        if: needs.detect.outputs.audit_volume == 'true'
         id: ns_lake_cache
         continue-on-error: true
         uses: namespacelabs/nscloud-cache-action@15799a6b54e5765f85b2aac25b3f0df43ed571c0 # v1.4.3
@@ -281,16 +268,20 @@ jobs:
           path: ${{ github.workspace }}/.lake
 
       - name: Namespace .lake cache diagnostics
-        if: needs.detect.outputs.volume == 'true'
+        if: needs.detect.outputs.audit_volume == 'true'
         run: |
           echo "nscloud cache-hit=${{ steps.ns_lake_cache.outputs.cache-hit }}"
           du -sh .lake .lake/packages .lake/build 2>/dev/null || true
 
-      # GitHub-cache fallback for the local oleans. Keep this active even on
-      # Namespace: the volume is shared and keyless, while ADR-045's cache is
-      # exact to this commit so audit/replay can restore prepare's build and
-      # skip the duplicate library build safely.
+      # GitHub-cache fallback for the local oleans — NON-Namespace only. On a
+      # Namespace profile the .lake cache volume (ADR-046) already persists
+      # .lake/build across jobs and runs, so this GitHub cache is pure churn there:
+      # a ~320 MB per-commit entry (keyed on github.sha) that thrashes the 10 GB
+      # repo cache. Gating it to volume!='true' keeps the cache small. On Namespace
+      # the warm volume makes audit/replay's library build a cheap incremental
+      # instead — the #801 exact-key build-skip just doesn't fire there.
       - name: Cache local Lake build (.lake/build) — incremental library (ADR-045)
+        if: needs.detect.outputs.volume != 'true'
         id: lake_build_cache
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
@@ -304,7 +295,7 @@ jobs:
         with:
           # On a warm Namespace .lake volume, mathlib is already resident. If the
           # volume misses/errors, fall back to lean-action's GitHub cache.
-          use-github-cache: ${{ needs.detect.outputs.volume != 'true' || steps.ns_lake_cache.outputs.cache-hit != 'true' }}
+          use-github-cache: ${{ needs.detect.outputs.audit_volume != 'true' || steps.ns_lake_cache.outputs.cache-hit != 'true' }}
           build-args: "UnsorryGoals"
 
       - name: Generate statement-binding obligations
@@ -373,7 +364,7 @@ jobs:
     name: gate-a-replay
     needs: [detect, gate_a_prepare]
     if: needs.detect.outputs.admitted == 'true' && needs.detect.outputs.active == 'true'
-    runs-on: ${{ needs.detect.outputs.profile }}
+    runs-on: ${{ needs.detect.outputs.replay_profile }}
     # 120m (not 60m): a FULL replay (toolchain/dep change, or the scheduled
     # backstop) is serial on a memory-bound runner and needs the headroom to
     # finish rather than time out (ADR-047). Incremental PR and push-to-main
@@ -395,7 +386,7 @@ jobs:
       # a Namespace profile; soft-fails (continue-on-error) if no volume is
       # attached, falling back to the GitHub caches below.
       - name: Namespace .lake cache volume
-        if: needs.detect.outputs.volume == 'true'
+        if: needs.detect.outputs.replay_volume == 'true'
         id: ns_lake_cache
         continue-on-error: true
         uses: namespacelabs/nscloud-cache-action@15799a6b54e5765f85b2aac25b3f0df43ed571c0 # v1.4.3
@@ -403,16 +394,20 @@ jobs:
           path: ${{ github.workspace }}/.lake
 
       - name: Namespace .lake cache diagnostics
-        if: needs.detect.outputs.volume == 'true'
+        if: needs.detect.outputs.replay_volume == 'true'
         run: |
           echo "nscloud cache-hit=${{ steps.ns_lake_cache.outputs.cache-hit }}"
           du -sh .lake .lake/packages .lake/build 2>/dev/null || true
 
-      # GitHub-cache fallback for the local oleans. Keep this active even on
-      # Namespace: the volume is shared and keyless, while ADR-045's cache is
-      # exact to this commit so audit/replay can restore prepare's build and
-      # skip the duplicate library build safely.
+      # GitHub-cache fallback for the local oleans — NON-Namespace only. On a
+      # Namespace profile the .lake cache volume (ADR-046) already persists
+      # .lake/build across jobs and runs, so this GitHub cache is pure churn there:
+      # a ~320 MB per-commit entry (keyed on github.sha) that thrashes the 10 GB
+      # repo cache. Gating it to volume!='true' keeps the cache small. On Namespace
+      # the warm volume makes audit/replay's library build a cheap incremental
+      # instead — the #801 exact-key build-skip just doesn't fire there.
       - name: Cache local Lake build (.lake/build) — incremental library (ADR-045)
+        if: needs.detect.outputs.volume != 'true'
         id: lake_build_cache
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
@@ -434,8 +429,8 @@ jobs:
         # cold mathlib regions instead of OOMing on a constrained runner.
         # Namespace managed runners disallow swapon ("Operation not permitted");
         # there the incremental scope (routine PRs + push to main, ADR-048 Phase
-        # 2) keeps the replay small, and a forced FULL replay routes to the 16 GB
-        # unsorry-2 profile (or unsorry-1 with a small UNSORRY_REPLAY_CHUNK), so
+        # 2) keeps the replay small, and full replay runs on the replay profile
+        # with a small UNSORRY_REPLAY_CHUNK available as the fallback path, so
         # any failure in this step is a warning, not a gate failure.
         run: |
           if sudo fallocate -l 12G /mnt/swapfile \
@@ -458,7 +453,7 @@ jobs:
         with:
           # On a warm Namespace .lake volume, mathlib is already resident. If the
           # volume misses/errors, fall back to lean-action's GitHub cache.
-          use-github-cache: ${{ needs.detect.outputs.volume != 'true' || steps.ns_lake_cache.outputs.cache-hit != 'true' }}
+          use-github-cache: ${{ needs.detect.outputs.replay_volume != 'true' || steps.ns_lake_cache.outputs.cache-hit != 'true' }}
           build-args: "UnsorryGoals"
 
       - name: Generate statement-binding obligations
@@ -503,7 +498,7 @@ jobs:
     name: gate-a-archive
     needs: [detect]
     if: needs.detect.outputs.admitted == 'true' && needs.detect.outputs.archive == 'true'
-    runs-on: ${{ needs.detect.outputs.profile }}
+    runs-on: ${{ needs.detect.outputs.archive_profile }}
     # Validates a changed archive package: packaging sanity (`lake build --wfail`)
     # + provenance/byte-identity (ADR-018, checked in gate-a-prepare). It does NOT
     # leanchecker-replay the archived proofs (ADR-048 verify-on-ingest) — they were
@@ -520,7 +515,7 @@ jobs:
       # finds mathlib .ltar archives in the shared MATHLIB_CACHE_DIR (under .lake)
       # instead of re-downloading per package (ADR-046).
       - name: Namespace .lake cache volume
-        if: needs.detect.outputs.volume == 'true'
+        if: needs.detect.outputs.archive_volume == 'true'
         id: ns_lake_cache
         continue-on-error: true
         uses: namespacelabs/nscloud-cache-action@15799a6b54e5765f85b2aac25b3f0df43ed571c0 # v1.4.3

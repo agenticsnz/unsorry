@@ -19,6 +19,26 @@
       "display_name": "chat-bit-01",
       "evidence": "Git author name is already a GitHub-handle-shaped contributor identity in this repository.",
       "github": "chat-bit-01"
+    },
+    "Perttu Isotalo <pisotalo@isotalo.org>": {
+      "display_name": "Perttu Isotalo",
+      "evidence": "GitHub PR author for sourced/proof contributions in this repository (e.g. PR #258); handle confirmed via gh.",
+      "github": "perttu"
+    },
+    "Your Name <you@example.com>": {
+      "display_name": "Perttu Isotalo",
+      "evidence": "Git default placeholder identity used on the single early commit b7e9932605 (PR #258, feat/sourced-batch-3, authored and merged by @perttu) before git was configured; the only commit using the placeholder. Maps the 4 goals it sourced (euclid-perfect-numbers, sq-add-sq-eq-three-mul-sq, sum-range-pentagonal-closed-form, sum-range-sq-mul-choose) to their real sourcer rather than crediting the placeholder.",
+      "github": "perttu"
+    },
+    "ruv <ruv@ruv.net>": {
+      "display_name": "ruvnet",
+      "evidence": "Custom git author identity used on @ruvnet's large direct-submission proof campaign (the 'ruv sledgehammer', issue #1904). The ADR-037 provenance audit flagged solver≜ruvnet as uncorroborated because the git add-author is 'ruv', not 'ruvnet'; this alias attaches that work to the canonical handle ruvnet.",
+      "github": "ruvnet"
+    },
+    "rUv <2934394+ruvnet@users.noreply.github.com>": {
+      "display_name": "ruvnet",
+      "evidence": "GitHub no-reply identity (numeric id 2934394, login ruvnet) used on @ruvnet's merged PR #1278; maps to the canonical handle ruvnet.",
+      "github": "ruvnet"
     }
   },
   "schema_version": 1

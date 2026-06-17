@@ -1,0 +1,73 @@
+# Drain the queued-proof backlog on a schedule (ADR-058 governor, SPEC-007-A
+# dispatcher). `swarm/agent.sh --dispatch-queue` only RE-PACKAGES an
+# already-locally-verified `queued/prove/*` branch into a PR (Gate A re-verifies
+# every one from scratch — no soundness is trusted from the producer), and it is
+# governor-capped (`UNSORRY_MAX_OPEN_PROVE_PRS` / `UNSORRY_MAX_GATE_A_IN_FLIGHT`),
+# so a frequent schedule self-throttles: it dispatches only while in-flight Gate A
+# work is below the cap and no-ops when full. Without this the queue drains only
+# when an operator runs the dispatcher by hand — the backlog in #1909.
+#
+# Token: a PR opened by the default GITHUB_TOKEN does NOT trigger required
+# workflows (Gate A), so it could never satisfy checks or auto-merge. The
+# dispatcher therefore authenticates `gh` with the admin `REFRESH_TOKEN` PAT/App
+# token (same secret the leaderboard/visualisation refreshers use, #417). When
+# the secret is unset the job degrades to a report-only notice instead of opening
+# un-checkable PRs.
+name: queue-dispatcher
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: "Max branches to dispatch this run (UNSORRY_DISPATCH_LIMIT)"
+        required: false
+        default: "10"
+
+# Never overlap dispatcher runs (the governor counts in-flight work; two
+# concurrent passes would double-count and over-dispatch).
+concurrency:
+  group: queue-dispatcher
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Detect refresh token (#417)
+        id: tok
+        env:
+          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+        run: |
+          if [ -n "${REFRESH_TOKEN}" ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: No REFRESH_TOKEN — report only (#417)
+        if: steps.tok.outputs.present != 'true'
+        run: |
+          echo "::warning::REFRESH_TOKEN is unset — skipping queue dispatch. A GITHUB_TOKEN-opened PR does not trigger Gate A, so it could never merge. Add an admin PAT/App token as the REFRESH_TOKEN secret to enable the scheduled dispatcher."
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        if: steps.tok.outputs.present == 'true'
+        with:
+          ref: main # --dispatch-queue requires main checked out (require_main_checkout)
+          token: ${{ secrets.REFRESH_TOKEN }}
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        if: steps.tok.outputs.present == 'true'
+        with:
+          python-version: "3.12"
+      - name: Dispatch queued proofs (governor-metered)
+        if: steps.tok.outputs.present == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+          # One pass per scheduled run; the cron cadence is the loop, and the
+          # governor (open-PR + in-flight Gate A caps) bounds how many actually
+          # dispatch. Override the per-run cap via workflow_dispatch input.
+          UNSORRY_DISPATCH_LIMIT: ${{ github.event.inputs.limit || '10' }}
+        run: ./swarm/agent.sh --dispatch-queue --once

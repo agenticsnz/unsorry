@@ -1193,11 +1193,143 @@ def render_attribution_gaps_json(root: Path) -> str:
     ) + "\n"
 
 
+def goal_add_authors(root: Path, goal_ids: list[str]) -> dict[str, GitAuthor]:
+    """git add-author for each ``goals/<id>.aisp`` — who **sourced** the goal
+    (the earliest commit that added the record). Mirrors ``git_add_authors`` but
+    for goal records; goals are never archived under ``packages/``, so no
+    attribution-path remapping is needed (ADR-060 §6)."""
+    lookup = {goal_id: f"goals/{goal_id}.aisp" for goal_id in goal_ids}
+    if not lookup:
+        return {}
+    result = subprocess.run(
+        [
+            "git", "-C", str(root), "log", "--diff-filter=A", "--name-only",
+            "--format=\x1e%H\x1f%an\x1f%ae\x1f%cs", "--", *sorted(lookup.values()),
+        ],
+        check=False, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True,
+    )
+    if result.returncode != 0:
+        return {}
+    by_path: dict[str, GitAuthor] = {}
+    current: GitAuthor | None = None
+    wanted = set(lookup.values())
+    for raw_line in result.stdout.split("\n"):
+        line = raw_line.rstrip("\n\r")
+        if not line:
+            continue
+        if line.startswith("\x1e"):
+            fields = line[1:].split("\x1f")
+            current = GitAuthor(*fields) if len(fields) == 4 else None
+            continue
+        path = line.strip()
+        if current and path in wanted:
+            # newest-first ⇒ leaving the last assignment keeps the earliest add.
+            by_path[path] = current
+    return {gid: by_path[p] for gid, p in lookup.items() if p in by_path}
+
+
+def sourcing_contributors(root: Path, data: Dataset | None = None) -> list[dict]:
+    """Per-sourcer aggregation: who added which goals, with difficulty points and
+    a proved/open split. Credit is independent of who *proves* the goal."""
+    data = load_dataset(root) if data is None else data
+    aliases = contributor_aliases(root)
+    authors = goal_add_authors(root, [goal.id for goal in data.goals])
+    by_goal = {goal.id: goal for goal in data.goals}
+    agg: dict[str, dict] = {}
+    for goal_id, author in authors.items():
+        goal = by_goal[goal_id]
+        display_name, github = _alias_for(aliases, author)
+        bucket = github or author.key  # collapse a sourcer's aliases by handle
+        row = agg.get(bucket)
+        if row is None:
+            row = agg[bucket] = {
+                "sourcer": github,
+                "git_author": author.key,
+                "display_name": display_name,
+                "github": github,
+                "profile_url": _profile_url(github),
+                "avatar_url": _avatar_url(github),
+                "sourced_goals": 0,
+                "difficulty_points": 0,
+                "proved": 0,
+                "open": 0,
+                "earliest_sourced": author.date,
+                "latest_sourced": author.date,
+            }
+        row["sourced_goals"] += 1
+        row["difficulty_points"] += goal.difficulty
+        if goal.status == "proved":
+            row["proved"] += 1
+        elif goal.status == "open":
+            row["open"] += 1
+        row["earliest_sourced"] = min(row["earliest_sourced"], author.date)
+        row["latest_sourced"] = max(row["latest_sourced"], author.date)
+    return sorted(
+        agg.values(),
+        key=lambda r: (-r["sourced_goals"], -r["difficulty_points"], r["display_name"] or ""),
+    )
+
+
+def sourcing_payload(root: Path) -> dict:
+    rows = sourcing_contributors(root)
+    return {
+        "schema_version": 1,
+        "sourcers": rows,
+        "totals": {
+            "sourcers": len(rows),
+            "sourced_goals": sum(r["sourced_goals"] for r in rows),
+            "difficulty_points": sum(r["difficulty_points"] for r in rows),
+        },
+    }
+
+
+def render_sourcing_json(root: Path) -> str:
+    return json.dumps(sourcing_payload(root), ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+
+
+def render_sourcing(root: Path) -> str:
+    """Markdown view of the sourcing leaderboard (ADR-060 §6)."""
+    rows = sourcing_contributors(root)
+    lines = [
+        "# Sourcing leaderboard",
+        "",
+        "Who **sourced** the goals — added `goals/<id>.aisp` — independent of who "
+        "proves them. Attribution is git add-author (ADR-060); a contributor may "
+        "also appear on the proof [leaderboard](../leaderboard.md).",
+        "",
+        "| # | Contributor | Sourced | Difficulty pts | Proved | Open |",
+        "|---|---|---|---|---|---|",
+    ]
+    for i, r in enumerate(rows, 1):
+        who = (
+            f"[@{r['github']}]({r['profile_url']})"
+            if r.get("github") and r.get("profile_url")
+            else r["display_name"]
+        )
+        lines.append(
+            f"| {i} | {who} | {r['sourced_goals']} | {r['difficulty_points']} "
+            f"| {r['proved']} | {r['open']} |"
+        )
+    if not rows:
+        lines.append("| — | _no sourced goals attributed yet_ | 0 | 0 | 0 | 0 |")
+    return "\n".join(lines) + "\n"
+
+
 def main(argv: list[str] | None = None) -> int:
     argv = sys.argv[1:] if argv is None else argv
     if "--audit-provenance" in argv:
         rest = [arg for arg in argv if arg != "--audit-provenance"]
         return _run_provenance_audit(Path(rest[0]) if rest else Path.cwd())
+    if "--sourcing" in argv:
+        # Standalone human view of the sourcing leaderboard. The machine-readable
+        # docs/metrics/sourcing-leaderboard.json is kept fresh by --write/--check
+        # alongside the other generated artifacts.
+        rest = [arg for arg in argv if arg not in ("--sourcing", "--json")]
+        root = Path(rest[0]) if rest else Path.cwd()
+        sys.stdout.write(
+            render_sourcing_json(root) if "--json" in argv else render_sourcing(root)
+        )
+        return 0
     modes = [flag for flag in ("--check", "--write", "--json") if flag in argv]
     if len(modes) > 1:
         print("--check, --write, and --json are mutually exclusive", file=sys.stderr)
@@ -1210,10 +1342,12 @@ def main(argv: list[str] | None = None) -> int:
     ui_payload_json = render_ui_json(root)
     svg = render_svg(root)
     gaps_payload = render_attribution_gaps_json(root)
+    sourcing_payload_json = render_sourcing_json(root)
     markdown_path = root / "docs" / "leaderboard.md"
     json_path = root / "docs" / "metrics" / "community-stats.json"
     ui_json_path = root / "docs" / "metrics" / "leaderboard-ui.json"
     gaps_json_path = root / "docs" / "metrics" / "attribution-gaps.json"
+    sourcing_json_path = root / "docs" / "metrics" / "sourcing-leaderboard.json"
     svg_path = root / "docs" / "leaderboard.svg"
     if mode == "--check":
         stale = []
@@ -1225,6 +1359,8 @@ def main(argv: list[str] | None = None) -> int:
             stale.append(ui_json_path.relative_to(root).as_posix())
         if not gaps_json_path.is_file() or gaps_json_path.read_text(encoding="utf-8") != gaps_payload:
             stale.append(gaps_json_path.relative_to(root).as_posix())
+        if not sourcing_json_path.is_file() or sourcing_json_path.read_text(encoding="utf-8") != sourcing_payload_json:
+            stale.append(sourcing_json_path.relative_to(root).as_posix())
         if not svg_path.is_file() or svg_path.read_text(encoding="utf-8") != svg:
             stale.append(svg_path.relative_to(root).as_posix())
         if stale:
@@ -1242,6 +1378,7 @@ def main(argv: list[str] | None = None) -> int:
         json_path.write_text(payload, encoding="utf-8")
         ui_json_path.write_text(ui_payload_json, encoding="utf-8")
         gaps_json_path.write_text(gaps_payload, encoding="utf-8")
+        sourcing_json_path.write_text(sourcing_payload_json, encoding="utf-8")
         svg_path.write_text(svg, encoding="utf-8")
         return 0
     sys.stdout.write(payload if mode == "--json" else markdown)
