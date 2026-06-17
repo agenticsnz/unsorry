@@ -487,6 +487,12 @@ def test_docs_leaderboard_html_consumes_generated_ui_json():
     # Top 5 view: a third toggle tab rendering the top five contributors.
     assert 'id="tab-top5"' in html and 'id="view-top5"' in html
     assert "renderTop5" in html
+    # ADR-060 sourcing leaderboard: a fourth toggle view consuming the generated
+    # sourcing-leaderboard.json (who sourced each goal).
+    assert 'id="tab-sourcing"' in html and 'id="view-sourcing"' in html
+    assert "renderSourcing" in html
+    assert "metrics/sourcing-leaderboard.json" in html
+    assert "sourced_goals" in html
 
 
 def test_docs_index_links_readme():

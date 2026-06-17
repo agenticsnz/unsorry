@@ -105,6 +105,8 @@
                         class="px-4 py-1.5 rounded-lg text-sm font-semibold text-slate-500 hover:text-slate-800 transition-colors whitespace-nowrap flex-shrink-0">Top 5</button>
                     <button id="tab-timeline" type="button" role="tab" aria-selected="false"
                         class="px-4 py-1.5 rounded-lg text-sm font-semibold text-slate-500 hover:text-slate-800 transition-colors whitespace-nowrap flex-shrink-0">Proofs over time</button>
+                    <button id="tab-sourcing" type="button" role="tab" aria-selected="false"
+                        class="px-4 py-1.5 rounded-lg text-sm font-semibold text-slate-500 hover:text-slate-800 transition-colors whitespace-nowrap flex-shrink-0">Sourcing</button>
                 </div>
             </div>
 
@@ -204,6 +206,20 @@
             </div>
         </div>
 
+        <!-- ===== View: goals sourced (ADR-060 sourcing leaderboard) ===== -->
+        <div id="view-sourcing" class="hidden">
+            <div class="flex items-baseline justify-between mb-5">
+                <h2 class="text-lg font-bold text-slate-700">Goals sourced</h2>
+                <span class="text-xs text-slate-400 uppercase tracking-wider">who added each goal · ADR-060</span>
+            </div>
+            <div class="relative chart-grid pt-2">
+                <div class="goal-line hidden md:block"></div>
+                <div id="sourcing-list" class="flex flex-col gap-4 relative z-10">
+                    <div class="state-panel">Loading sourcing…</div>
+                </div>
+            </div>
+        </div>
+
     </main>
 
     <!-- Templates for SVGs to keep logic clean -->
@@ -219,6 +235,7 @@
 
     <script>
         const DATA_URL = 'metrics/leaderboard-ui.json';
+        const SOURCING_URL = 'metrics/sourcing-leaderboard.json';
 
         const numberFormatter = new Intl.NumberFormat('en-US');
         const percentFormatter = new Intl.NumberFormat('en-US', {
@@ -503,11 +520,85 @@
             setText('timeline-span', `${series[0].date} → ${series[n - 1].date}`);
         };
 
-        // The three toggle views and their tab buttons.
+        // One sourcer bar row — same visual language as the contributor rows, but
+        // ranked by goals *sourced* (ADR-060) with a proved/open/difficulty subline.
+        const createSourcerRow = (s, rank, maxGoals) => {
+            const goals = Number(s.sourced_goals || 0);
+            const widthPercent = Math.max(2, (goals / maxGoals) * 100);
+            const safeName = escapeHTML(s.display_name || s.sourcer);
+            const safeProfileUrl = escapeHTML(s.profile_url || '#');
+            const safeAvatar = escapeHTML(s.avatar_url || '');
+            const isTop3 = rank <= 3;
+            const rankDisplay = isTop3
+                ? `<div class="relative flex items-center justify-center w-8 h-8 font-serif italic text-xl font-bold ${rank===1?'text-brand-gold':rank===2?'text-brand-silver':'text-brand-bronze'}">
+                    ${rank}
+                    ${getRankWreathSvg(rank)}
+                   </div>`
+                : `<div class="w-8 text-center text-slate-300 font-medium text-lg italic">${rank}</div>`;
+
+            const row = document.createElement('div');
+            row.className = 'flex items-center w-full py-1 group';
+            row.innerHTML = `
+                <div class="flex items-center w-48 md:w-64 flex-shrink-0 gap-3 z-20 bg-white md:bg-transparent pr-4">
+                    ${rankDisplay}
+                    <a href="${safeProfileUrl}" class="relative" aria-label="${safeName} on GitHub">
+                        <img src="${safeAvatar}" class="w-10 h-10 md:w-12 md:h-12 rounded-full border-2 ${isTop3 ? 'border-brand-gold/30 p-0.5' : 'border-transparent'} object-cover shadow-sm" alt="${safeName}">
+                    </a>
+                    <div class="flex flex-col min-w-0">
+                        <a href="${safeProfileUrl}" class="text-sm md:text-base font-medium text-slate-700 truncate max-w-[120px] md:max-w-[160px] hover:text-slate-900">${safeName}</a>
+                        <span class="hidden md:block text-[10px] uppercase tracking-wider text-slate-400 mt-1">${formatNumber(s.proved)} proved · ${formatNumber(s.open)} open · ${formatNumber(s.difficulty_points)} diff</span>
+                    </div>
+                </div>
+
+                <div class="flex-grow flex items-center relative h-12 md:h-14 min-w-0">
+                    <div class="h-8 md:h-10 bg-brand-blue rounded-r-3xl progress-bar-fill shadow-sm flex-shrink-0 max-w-full" style="width: 0%;" data-target-width="min(${Math.min(widthPercent, 100)}%, calc(100% - 6rem))"></div>
+                    <span class="text-brand-text font-bold text-sm md:text-base whitespace-nowrap ml-3 opacity-0 transition-opacity duration-500 delay-500">${formatNumber(goals)} sourced</span>
+                </div>
+            `;
+            return row;
+        };
+
+        const renderSourcing = (payload) => {
+            const container = document.getElementById('sourcing-list');
+            if (!container) return;
+            const sourcers = Array.isArray(payload.sourcers) ? payload.sourcers : [];
+            if (!sourcers.length) {
+                container.innerHTML = '<div class="state-panel">No sourced goals yet.</div>';
+                return;
+            }
+            const maxGoals = Math.max(...sourcers.map((s) => Number(s.sourced_goals || 0)), 1);
+            container.innerHTML = '';
+            sourcers.forEach((s, index) => container.appendChild(createSourcerRow(s, index + 1, maxGoals)));
+            animateBars('#sourcing-list');
+        };
+
+        // The sourcing board lives in its own JSON; fetch it lazily the first time
+        // the Sourcing tab is opened, then cache.
+        let sourcingLoaded = false;
+        const ensureSourcing = async () => {
+            if (sourcingLoaded) return;
+            try {
+                const response = await fetch(SOURCING_URL, { cache: 'no-store' });
+                if (!response.ok) throw new Error(`sourcing fetch failed: ${response.status}`);
+                const payload = await response.json();
+                if (payload.schema_version !== 1 || !Array.isArray(payload.sourcers)) {
+                    throw new Error('unsupported sourcing data');
+                }
+                renderSourcing(payload);
+                sourcingLoaded = true;
+            } catch (error) {
+                console.error(error);
+                const container = document.getElementById('sourcing-list');
+                if (container) container.innerHTML = '<div class="state-panel">Sourcing data is unavailable.</div>';
+            }
+        };
+
+        // The four toggle views and their tab buttons.
         const VIEWS = {
             leaderboard: { view: 'view-leaderboard', tab: 'tab-leaderboard' },
             top5: { view: 'view-top5', tab: 'tab-top5' },
             timeline: { view: 'view-timeline', tab: 'tab-timeline' },
+            sourcing: { view: 'view-sourcing', tab: 'tab-sourcing' },
         };
 
         const setView = (active) => {
@@ -529,6 +620,7 @@
             on('tab-leaderboard', () => setView('leaderboard'));
             on('tab-top5', () => { renderTop5(payload); setView('top5'); });
             on('tab-timeline', () => { renderTimeline(payload); setView('timeline'); });
+            on('tab-sourcing', () => { ensureSourcing(); setView('sourcing'); });
         };
 
         async function initApp() {
