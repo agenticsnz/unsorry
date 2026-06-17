@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-fib-sq-mul-two-eq
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜3
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/sum-range-fib-sq-mul-two-eq.lean
-  sha≜∅
+  sha≜9ab14c0805c7bf88b7d91d857a34ec4f6eb9697c4d3e4b4a64f2960161de7dd9
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
