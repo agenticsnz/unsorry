@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜two-cubes-zmod-nine-ne-three-four-five-six
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/two-cubes-zmod-nine-ne-three-four-five-six.lean
-  sha≜∅
+  sha≜52c0391ce93d644e74053befd0036e06c088dda607e141058369f940c9cc00fe
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
