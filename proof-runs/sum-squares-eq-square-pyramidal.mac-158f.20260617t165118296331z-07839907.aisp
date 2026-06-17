@@ -1,0 +1,8 @@
+𝔸5.1.run.sum-squares-eq-square-pyramidal.mac-158f.20260617t165118296331z-07839907@2026-06-17
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260617t165118296331z-07839907; goal≜sum-squares-eq-square-pyramidal; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-sum-induction}
+⟦Γ:Goal⟧{goal≜sum-squares-eq-square-pyramidal}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-17T16:51:18Z}
+⟦Σ:Artifact⟧{sha≜eeca9e031d44330c09cec70e5672c4cc2fe5d776383368317e774ebd5f4ec7b3}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
