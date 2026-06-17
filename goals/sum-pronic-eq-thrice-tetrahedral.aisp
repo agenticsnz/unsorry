@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sum-pronic-eq-thrice-tetrahedral
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/sum-pronic-eq-thrice-tetrahedral.lean
-  sha≜∅
+  sha≜4b7eba12ad57b0b8e8ed8279521cdaebc7bfe01c7b3750bc5694d4dbb50a102e
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
