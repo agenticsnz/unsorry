@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sophie-germain-plus-factor-dvd
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/sophie-germain-plus-factor-dvd.lean
-  sha≜∅
+  sha≜bcd581becc34fad4b0dd7ab92a20fe02742e234b89e4b6ab7d96b2158a83c07e
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
