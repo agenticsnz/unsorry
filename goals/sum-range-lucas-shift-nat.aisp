@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-lucas-shift-nat
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜3
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/sum-range-lucas-shift-nat.lean
-  sha≜∅
+  sha≜58ab2876e72949724b314df25b6784050179f5900d75308531b6c51800e244aa
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
