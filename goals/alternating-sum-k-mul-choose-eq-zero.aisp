@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜alternating-sum-k-mul-choose-eq-zero
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜4
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/alternating-sum-k-mul-choose-eq-zero.lean
-  sha≜∅
+  sha≜f3089d2c23074c0826f40e946589b48242a3ea7d01aeed79837f48731f15385e
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
