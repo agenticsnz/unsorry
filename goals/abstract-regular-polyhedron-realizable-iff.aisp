@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜abstract-regular-polyhedron-realizable-iff
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜4
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/abstract-regular-polyhedron-realizable-iff.lean
-  sha≜∅
+  sha≜a7ac75092b26a5bce24201c79595bdf7962690d3fef1fc000fdda8ce7b8a3286
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
