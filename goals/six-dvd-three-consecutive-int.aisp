@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜six-dvd-three-consecutive-int
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/six-dvd-three-consecutive-int.md
+  src≜packages/unsorry-archive-0005/backlog/six-dvd-three-consecutive-int.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/six-dvd-three-consecutive-int.lean
+  lean≜packages/unsorry-archive-0005/goals/six-dvd-three-consecutive-int.lean
   sha≜7b83a02a18f7a57de296c6eab23c11c57891a6b9068c320cd21c25d38f40ab42
   aff≜-9
 }
