@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜cube-sum-ge-three-prod
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/cube-sum-ge-three-prod.md
+  src≜packages/unsorry-archive-0005/backlog/cube-sum-ge-three-prod.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/cube-sum-ge-three-prod.lean
+  lean≜packages/unsorry-archive-0005/goals/cube-sum-ge-three-prod.lean
   sha≜f62453c1993f675e58cf07d20bd719166b8d63c79dbf48f311a4f60b513b2391
   aff≜-4
 }
