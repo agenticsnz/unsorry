@@ -1,0 +1,8 @@
+𝔸5.1.lemma.90e8d9ea6b45@2026-06-17
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜90e8d9ea6b452fe3fa964b901efe74eaba639d1dfd31b30e62cc7ddd278da31c; goal≜self-dvd-pow-four-add-cube; name≜self_dvd_pow_four_add_cube}
+⟦Σ:Source⟧{src≜goals/self-dvd-pow-four-add-cube.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜claude; model≜template-dvd-cofactor; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
