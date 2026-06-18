@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sum-icc-recip-k-sq-sub-one-telescope
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜3
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/sum-icc-recip-k-sq-sub-one-telescope.lean
-  sha≜∅
+  sha≜108ad6eb2cd8a69dc2eb5313b013c0f03f8caac5702184ba87988e6ee18d0fac
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

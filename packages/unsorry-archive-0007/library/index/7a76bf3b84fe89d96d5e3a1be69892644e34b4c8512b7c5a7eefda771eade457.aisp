@@ -1,0 +1,8 @@
+𝔸5.1.lemma.7a76bf3b84fe@2026-06-16
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜7a76bf3b84fe89d96d5e3a1be69892644e34b4c8512b7c5a7eefda771eade457; goal≜fib-add-three-eq-two-mul-fib-succ-add-fib; name≜fib_add_three_eq_two_mul_fib_succ_add_fib}
+⟦Σ:Source⟧{src≜goals/fib-add-three-eq-two-mul-fib-succ-add-fib.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜ruvnet; agent≜ruvnet-swarm; provider≜openrouter}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

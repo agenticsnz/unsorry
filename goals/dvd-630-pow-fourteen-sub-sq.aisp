@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜dvd-630-pow-fourteen-sub-sq
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜3
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/dvd-630-pow-fourteen-sub-sq.lean
-  sha≜∅
-  aff≜-30
+  sha≜6f1bd921a1d8d2e5c45414f23cc8964fd5db4ab2909f45825a22c4f82a38af23
+  aff≜-29
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

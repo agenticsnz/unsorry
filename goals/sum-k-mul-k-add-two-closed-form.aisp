@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sum-k-mul-k-add-two-closed-form
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/sum-k-mul-k-add-two-closed-form.lean
-  sha≜∅
-  aff≜-10
+  sha≜7b420e56013aaca2b079052cb230a34d920cc48a1c92a007bf23d33f61f4650a
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

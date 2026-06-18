@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sum-centered-tetrahedral-closed-form
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/sum-centered-tetrahedral-closed-form.lean
-  sha≜∅
-  aff≜-10
+  sha≜2f90632ec089ad922db6cf190d943a2478b814f128b77230a6a49c48c6ec3ce8
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
