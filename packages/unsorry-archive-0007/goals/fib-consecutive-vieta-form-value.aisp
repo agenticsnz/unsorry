@@ -1,0 +1,20 @@
+𝔸5.1.goal.fib-consecutive-vieta-form-value@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜fib-consecutive-vieta-form-value
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/fib-consecutive-vieta-form-value.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/fib-consecutive-vieta-form-value.lean
+  sha≜45782a3b614d4745d66a0ee3f525246d023dae6795ba5d8f1c981c70d6a5b87d
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

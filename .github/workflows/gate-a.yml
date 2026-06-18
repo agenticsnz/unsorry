@@ -83,10 +83,16 @@ jobs:
       # on the cheap build lane; audit has its own serial axiom-audit lane.
       - id: profiles
         run: |
-          prepare=namespace-profile-unsorry-prepare
-          audit=namespace-profile-unsorry-audit
-          replay=namespace-profile-unsorry-replay
-          archive=namespace-profile-unsorry-prepare
+          # Single shared lane (was per-stage prepare/audit/replay, ADR-058):
+          # keeping three lanes populated by hand kept leaving a lane at zero
+          # runners, which hangs the whole run (a stage with no runner queues
+          # forever) and stalls every merge. Route all Gate A stages to one pool
+          # so any Namespace runner serves any stage regardless of workload mix —
+          # the operator maintains exactly ONE label: namespace-profile-unsorry-1.
+          prepare=namespace-profile-unsorry-1
+          audit=namespace-profile-unsorry-1
+          replay=namespace-profile-unsorry-1
+          archive=namespace-profile-unsorry-1
 
           echo "prepare=$prepare" >> "$GITHUB_OUTPUT"
           echo "audit=$audit" >> "$GITHUB_OUTPUT"

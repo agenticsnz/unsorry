@@ -1,0 +1,20 @@
+𝔸5.1.goal.coprime-ncube1-ncube2@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜coprime-ncube1-ncube2
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/coprime-ncube1-ncube2.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/coprime-ncube1-ncube2.lean
+  sha≜cb74d365b7ee6d87b50afdd8da942ecbce78cd9b62282207d16a8d6bb60fc5f0
+  aff≜-19
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
