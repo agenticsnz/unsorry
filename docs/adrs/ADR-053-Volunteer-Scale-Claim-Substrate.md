@@ -98,6 +98,30 @@ Every implementation must provide:
 5. Export claim events back into repo evidence packs so the repository remains
    auditable.
 
+### Fork-access rollout (evidence-gated; Phase 2)
+
+The fork *access* dimension (ADR-068 ships the claimless onramp; this ADR owns
+the fork-*writable* lease) follows the same "measure before you build" discipline
+as step 4, sequenced cheapest-first so the operational dependency a lease service
+introduces is only paid if the data demands it. Detail lives in SPEC-053-A
+(§ "Fork-writable substrate") and SPEC-054-A; the gate is the **ADR-070**
+duplicate-verifier-waste metric:
+
+- **2a — instrument.** Measure how much Gate A capacity claimless fork duplicates
+  actually burn (ADR-070). This is the gate for everything below; if the waste is
+  negligible (ADR-064 dedup + the ADR-058 governor already bound it), no lease is
+  built.
+- **2b — identity + quota** at the `fork-automerge-enabler` chokepoint (ADR-054):
+  per-owner caps, denylist, tiers, emergency pause — most abuse control without a
+  lease, reusing the Phase-1 enabler.
+- **2c — sharded fork selection** (a claimless coordination, still *no lease*):
+  deterministic goal-space sharding keyed on identity to cut collisions.
+- **2d — fork-writable lease** (this contract): built only if 2a shows residual
+  waste 2b/2c do not remove. The mechanism (a GitHub-App lease broker vs an
+  append-only claim log forks append via fast-merge PR) is chosen at 2d-time on
+  the evidence; the git-native option is preferred to keep the repo-as-source-of-
+  truth model and avoid a hosted dependency (ADR-004).
+
 ## References
 
 | Reference ID | Title | Type | Location |
@@ -108,6 +132,8 @@ Every implementation must provide:
 | REF-4 | Autonomous Trunk Experience Layer | Decision | ADR-051-Autonomous-Trunk-Experience-Layer.md |
 | REF-5 | Verification Tiers and Auditability | Decision | ADR-052-Verification-Tiers-And-Auditability.md |
 | REF-6 | Fork-Native Contribution Mode (claimless fork onramp) | Decision | ADR-068-Fork-Native-Contribution-Mode.md |
+| REF-7 | Duplicate-Verifier-Waste Metric (the Phase-2 gate) | Decision | ADR-070-Duplicate-Verifier-Waste-Metric.md |
+| REF-8 | Agent Identity, Quotas, and Reputation (the lease's enforcement layer) | Decision | ADR-054-Agent-Identity-Quotas-And-Reputation.md |
 
 ## Status History
 

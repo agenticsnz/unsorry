@@ -107,9 +107,60 @@ Implementations should report:
 - per-agent live leases,
 - per-work-unit contention.
 
-## 8. Out of Scope
+## 8. Fork-writable substrate (Phase 2, evidence-gated)
 
-- Agent identity and reputation policy.
+ADR-068 shipped the **claimless** fork onramp (the degenerate "no-lease" backend
+above). This section is the plan for the fork-*writable* lease — needed only if
+forks coordinating purely by merge-time dedup waste too much verifier capacity.
+The whole sequence is gated on the **ADR-070** duplicate-verifier-waste metric; it
+is sequenced cheapest-first so the operational dependency a real lease introduces
+is paid only on evidence.
+
+### 8.1 The gate (2a)
+
+The ADR-070 metric reports the share of Gate A runs spent on cross-repo (fork)
+prove PRs that never merged — the loser of first-merge-wins. If that share is
+small, **nothing below is built**: ADR-064 goal-level dedup and the ADR-058
+governor already bound the cost, and a lease would add an operational dependency
+for no measured benefit (ADR-004's caution).
+
+### 8.2 Identity + quota at the enabler (2b)
+
+The first mitigation needs no lease. The Phase-1 `fork-automerge-enabler`
+(`tools.repo.fork_automerge`) is the single chokepoint every fork contribution
+passes through; SPEC-054-A extends its admissibility selector with per-owner open-
+PR caps, a denylist, trial/trusted tiering, and an emergency pause. This delivers
+most of ADR-054's abuse control by reusing existing infrastructure.
+
+### 8.3 Sharded fork selection (2c)
+
+A second claimless mitigation, still **no lease**: each fork deterministically
+owns a slice of the open-goal space, `shard = H(agent_id) mod K`, and selects
+preferentially within its slice (advisory only — never a correctness input; the
+kernel + first-merge-wins remain the backstop). This lowers the probability two
+forks pick the same goal without any coordination round-trip. `K` and the
+fall-through policy (a fork may step outside its shard when its slice is dry) are
+policy values.
+
+### 8.4 The fork-writable lease (2d)
+
+Built only if 2a shows residual waste 2b/2c do not remove. It realises the §2–§4
+contract over a backend a fork (no upstream write) can reach. Two candidates,
+decided at 2d-time on the evidence:
+
+| Backend | Latency | Dependency | Identity | Notes |
+|---|---|---|---|---|
+| **Append-only claim log via fast-merge PR** | seconds–minutes (PR merge) | none new (git + gates) | the PR author | Forks open a tiny claim PR an auto-merge lands on a `claims-log` ref; the log is the lease. Coarse leases; a mine-vs-merge race window (as ADR-060 sourcing already accepts). **Preferred** — keeps the repo as source of truth. |
+| **GitHub-App lease broker** | sub-second | a hosted service (uptime/auth) | the App-authenticated account | True low-latency leases and the natural ADR-054 enforcement home; reintroduces the operational dependency ADR-004 avoided. Only for a genuinely large public fleet. |
+
+Either way, lease decisions are **exported back into repository evidence** (§4) so
+the live substrate never becomes an invisible source of truth, and acquisition is
+quota-checked against the SPEC-054-A identity before it is granted.
+
+## 9. Out of Scope
+
+- Agent identity and reputation **policy** (SPEC-054-A owns it; this contract only
+  consumes the identity at acquire-time).
 - Verification tier policy.
 - Replacing GitHub as merge authority.
-- Defining a hosted claim service implementation.
+- Standing up a hosted claim service before the ADR-070 metric justifies 2d.
