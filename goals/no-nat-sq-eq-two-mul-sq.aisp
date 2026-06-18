@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜no-nat-sq-eq-two-mul-sq
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜4
 }
 ⟦Σ:Source⟧{
-  src≜backlog/no-nat-sq-eq-two-mul-sq.md
+  src≜packages/unsorry-archive-0005/backlog/no-nat-sq-eq-two-mul-sq.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/no-nat-sq-eq-two-mul-sq.lean
+  lean≜packages/unsorry-archive-0005/goals/no-nat-sq-eq-two-mul-sq.lean
   sha≜5c0f89c077896d70c75a9d589179f1a6697689352413c33871ee34d5ee71297e
   aff≜-4
 }

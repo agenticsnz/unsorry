@@ -20,8 +20,9 @@ The current Gate A workflow already has the useful split:
 
 - cheap detection and aggregation jobs run on GitHub-hosted `ubuntu-latest`,
 - trusted Lean verification jobs run on namespace.so profiles,
-- routine incremental verification routes to `namespace-profile-unsorry-1`,
-- rare olean-invalidating full replay routes to `namespace-profile-unsorry-2`.
+- prepare/build work routes to `namespace-profile-unsorry-prepare`,
+- axiom audit work routes to `namespace-profile-unsorry-audit`,
+- kernel replay work routes to `namespace-profile-unsorry-replay`.
 
 That split should become an explicit policy. GitHub-hosted runners are useful
 as cheap elastic intake capacity, but they give less control and operational
@@ -31,10 +32,11 @@ cache volume, sizing, and logs around the verifier boundary.
 
 As of this decision, the operating model is:
 
-- `namespace-profile-unsorry-1`: 4 GB routine verification profile, enough for
-  incremental proof PRs and normal push-to-main Gate A work.
-- `namespace-profile-unsorry-2`: 16 GB heavy verification profile, reserved for
-  forced full replay and olean-invalidating changes.
+- `namespace-profile-unsorry-prepare`: small prepare/build profile for cache warming, goal builds,
+  statement bindings, and archive package validation.
+- `namespace-profile-unsorry-audit`: axiom-audit profile sized for one resident mathlib image.
+- `namespace-profile-unsorry-replay`: replay profile sized for leanchecker and full-replay
+  headroom.
 - GitHub-hosted runners: cheap actions, protocol checks, docs checks, PR
   intake, labels, generated-board refreshes, and final aggregation.
 
@@ -52,14 +54,14 @@ service pressure,
 capacity governance**: GitHub-hosted runners are the cheap/intake lane for
 low-trust, low-cost, and non-Lean work; namespace.so runners are the trusted
 verification lane for Gate A and any future central re-check that can admit
-content to the verified library; `unsorry-1` is the routine 4 GB namespace
-profile for incremental verification; `unsorry-2` is the 16 GB namespace
-profile for forced full replay, toolchain/lake/manifest changes, and other
-explicit heavy verifier cases,
+content to the verified library; `namespace-profile-unsorry-prepare`, `namespace-profile-unsorry-audit`, and
+`namespace-profile-unsorry-replay` split the trusted verifier work by job role so the operator can
+scale prepare/build, axiom audit, and kernel replay capacity independently,
 
 **and neglected** a single shared runner pool (rejected because noisy agent and
 fork work can starve merge-blocking verification), GitHub-hosted runners as the
-only verifier surface or a direct replacement for `unsorry-1` (rejected because
+only verifier surface or a direct replacement for the role-specific Namespace
+verifier lanes (rejected because
 the trusted Lean lane needs stronger profile control, cache-volume control, and
 visibility; GitHub-hosted concurrency is useful enough to pilot, but not enough
 to make the protected verifier lane opaque by default), namespace runners for every
@@ -85,8 +87,9 @@ freely spend namespace verifier capacity.
 |-------|----------------|-------------------|----------|
 | Cheap intake | GitHub-hosted `ubuntu-latest` | Low-cost checks before verifier spend | path filters, PR labels, ADR/spec lint, protocol checks |
 | Required aggregator | GitHub-hosted `ubuntu-latest` | Stable required context wrapper | final `gate-a`, `gate-b` aggregation |
-| Routine verifier | `namespace-profile-unsorry-1` (4 GB) | Trusted incremental Lean verification | normal proof PRs, push-to-main incremental Gate A |
-| Heavy verifier | `namespace-profile-unsorry-2` (16 GB) | Trusted rare full replay | toolchain/lake/manifest changes, forced full replay |
+| Prepare verifier | `namespace-profile-unsorry-prepare` | Trusted build/cache preparation | goal builds, statement bindings, archive package validation |
+| Audit verifier | `namespace-profile-unsorry-audit` | Trusted axiom-audit verification | serial `axiom_audit` over changed scope |
+| Replay verifier | `namespace-profile-unsorry-replay` | Trusted kernel replay | incremental replay and forced full replay |
 | Scheduled backstop | namespace profile selected by verifier policy | Defense-in-depth verification | daily full replay with small replay chunk |
 | Generated artifacts | GitHub-hosted unless verifier evidence is required | Interruptible maintenance | leaderboard, targets board, visualization refresh |
 | Agent exploration | contributor/local or separate agent pool | Noisy advisory work | local proving, retries, candidate generation |
@@ -102,15 +105,15 @@ freely spend namespace verifier capacity.
   must not be starved by generated artifacts or agent exploration.
 - A workflow that can admit content to `UnsorryLibrary` must use the trusted
   verifier lane defined by ADR-049.
-- Routine proof verification should target `unsorry-1`; full replay and
-  olean-invalidating changes should target `unsorry-2`.
+- Gate A jobs should target their role-specific profiles: prepare/archive on
+  `namespace-profile-unsorry-prepare`, audit on `namespace-profile-unsorry-audit`, and replay on `namespace-profile-unsorry-replay`.
 - Superseded runs should be cancelled by concurrency groups so stale commits do
   not occupy trusted verifier capacity.
 - Runner sizing is an operator-controlled capacity property; the repository
   records the current intended size and routing contract, but correctness must
   not depend on a hidden profile size.
-- Switching routine Gate A from `unsorry-1` to GitHub-hosted runners requires a
-  shadow benchmark or pilot PR first. The pilot must compare wall time, cache
+- Switching routine Gate A from the Namespace verifier lanes to GitHub-hosted
+  runners requires a shadow benchmark or pilot PR first. The pilot must compare wall time, cache
   restore behavior, failure modes, queue wait, and verifier log quality against
   the namespace lane before any required check is moved.
 
@@ -125,8 +128,8 @@ The transition rules are:
 
 - Do not rename required contexts. `gate-a` and `gate-b` remain the branch
   protection contexts during the transition.
-- Do not rename namespace profiles during the transition. `unsorry-1` and
-  `unsorry-2` remain stable routing labels.
+- Do not rename namespace profiles during the transition. `namespace-profile-unsorry-prepare`,
+  `namespace-profile-unsorry-audit`, and `namespace-profile-unsorry-replay` remain stable routing labels.
 - Do not cancel all existing PR runs as part of the cutover. Superseded runs may
   be cancelled by existing concurrency groups, but active PRs should either
   finish on their current workflow revision or be explicitly rebased/rerun.
