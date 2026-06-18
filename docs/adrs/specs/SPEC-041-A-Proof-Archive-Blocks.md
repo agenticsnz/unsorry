@@ -212,5 +212,22 @@ between cuts. Two implications:
   **must** encode both invariants from §8: **(A)** select only whole decomposition trees + standalone
   goals (make the planner tree-aware), and **(B)** never write generated docs (leave them to the
   push-to-`main` refresh workflows). Both are what made the hand-cuts conflict / fail validation; a
-  tool that bakes them in is the durable fix for a high proof-inflow repo. Until then, follow §8 by
-  hand.
+  tool that bakes them in is the durable fix for a high proof-inflow repo.
+
+  **Write mode (implemented).** `python3 -m tools.archive.apply --source-commit <sha> --toolchain
+  <tc> --mathlib <rev>` performs one cut with both invariants baked in: tree-aware selection over the
+  active decomposition graph (A) and zero `docs/` writes (B). It moves the proof module,
+  `library/index/<sha>.aisp`, `goals/<id>.lean`, `backlog/<id>.md`, `proof-runs/<id>.*`; copies
+  `goals/<id>.aisp` into the package; re-points each active `goals/<id>.aisp` to the archived
+  end-state (`status≜archived`; `src`/`lean` prefixed with the package path; `sha` unchanged); moves
+  whole-tree decomposition records; and writes the package `lakefile.toml` / `lean-toolchain` /
+  `lake-manifest.json` / `archive-manifest.json`. Seed/translate goals with `lean≜∅` (e.g.
+  `Unsorry.Basic`) are skipped — they are not archivable proof modules. The tool deliberately does
+  **not** run git or open the PR: validate per §8 step 5, then open the retire PR by hand. The
+  scheduled/threshold auto-trigger is implemented by `tools/archive/auto_cut.sh` +
+  the `auto-archive` workflow (hourly + `workflow_dispatch`): when active
+  proved-not-archived ≥ a ceiling (default 40) and no archive PR is open, it cuts
+  one block, validates (Gate B active + package, ADR-018 immutability, zero-docs),
+  and opens an auto-merge retire PR. Bounding the active set this way keeps Gate A
+  full-replay / `lake build --wfail` under memory — the durable fix for the
+  exit-137 OOM on a high proof-inflow repo.
