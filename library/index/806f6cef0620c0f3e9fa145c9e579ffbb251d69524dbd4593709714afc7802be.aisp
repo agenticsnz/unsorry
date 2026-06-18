@@ -1,0 +1,8 @@
+𝔸5.1.lemma.806f6cef0620@2026-06-17
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜806f6cef0620c0f3e9fa145c9e579ffbb251d69524dbd4593709714afc7802be; goal≜sum-range-id-mul-three-pow; name≜sum_range_id_mul_three_pow}
+⟦Σ:Source⟧{src≜goals/sum-range-id-mul-three-pow.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜claude; model≜template-sum-induction; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

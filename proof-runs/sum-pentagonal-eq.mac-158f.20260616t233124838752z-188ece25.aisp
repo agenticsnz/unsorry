@@ -1,0 +1,8 @@
+𝔸5.1.run.sum-pentagonal-eq.mac-158f.20260616t233124838752z-188ece25@2026-06-16
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260616t233124838752z-188ece25; goal≜sum-pentagonal-eq; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-sum-closedform}
+⟦Γ:Goal⟧{goal≜sum-pentagonal-eq}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-16T23:31:24Z}
+⟦Σ:Artifact⟧{sha≜4b8f388fd41b449a3251416ea51b2beccdcf63dee50b68726051929b68604e95}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
