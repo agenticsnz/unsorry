@@ -1,0 +1,20 @@
+𝔸5.1.goal.fifth-power-mod-twentytwo-mem@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜fifth-power-mod-twentytwo-mem
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/fifth-power-mod-twentytwo-mem.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/fifth-power-mod-twentytwo-mem.lean
+  sha≜2e55534913c1a6d0a6c496d19c44bf3a9b68a67114da1982a9ce6b099d479436
+  aff≜-10
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

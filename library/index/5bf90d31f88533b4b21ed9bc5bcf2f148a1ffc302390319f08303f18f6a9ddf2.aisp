@@ -1,0 +1,8 @@
+𝔸5.1.lemma.5bf90d31f885@2026-06-17
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜5bf90d31f88533b4b21ed9bc5bcf2f148a1ffc302390319f08303f18f6a9ddf2; goal≜sum-octagonal-numbers-closed-form; name≜sum_octagonal_numbers_closed_form}
+⟦Σ:Source⟧{src≜goals/sum-octagonal-numbers-closed-form.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜claude; model≜template-sum-induction; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
