@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜cube-of-sum-le-nine-sum-cubes
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜3
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/cube-of-sum-le-nine-sum-cubes.lean
-  sha≜∅
+  sha≜633bf88af264f764f7f0c5db21cd42c7c71255ee60101f6c82daf2f8dadf7ff2
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

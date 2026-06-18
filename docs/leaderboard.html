@@ -97,9 +97,11 @@
                 <div class="inline-flex items-center bg-slate-100 rounded-full px-4 py-1 text-xs font-semibold text-slate-600 uppercase tracking-wider w-max">
                     <span id="generated-at">Loading proof stats</span>
                 </div>
-                <!-- View toggle: full leaderboard · top 5 · cumulative proofs over time.
-                     Scrolls horizontally on narrow viewports so the three tabs stay usable. -->
-                <div class="mt-3 inline-flex max-w-full overflow-x-auto rounded-xl border border-slate-200 p-1 bg-white" role="tablist" aria-label="Leaderboard view">
+                <!-- View toggle: leaderboard · top 5 · proofs over time · sourcing.
+                     Wraps to multiple rows on narrow viewports so every tab (incl.
+                     the last, "Sourcing") stays visible — the old inline-flex strip
+                     overflowed off the right edge and was clipped on mobile. -->
+                <div class="mt-3 flex flex-wrap gap-1 sm:w-max max-w-full rounded-xl border border-slate-200 p-1 bg-white" role="tablist" aria-label="Leaderboard view">
                     <button id="tab-leaderboard" type="button" role="tab" aria-selected="true"
                         class="px-4 py-1.5 rounded-lg text-sm font-semibold bg-slate-100 text-slate-800 transition-colors whitespace-nowrap flex-shrink-0">Leaderboard</button>
                     <button id="tab-top5" type="button" role="tab" aria-selected="false"
@@ -169,7 +171,7 @@
 
         <!-- Model Distribution Section (populated by JS) -->
         <section id="models-section" class="mt-12 pt-8 border-t border-slate-100 hidden">
-            <div class="flex items-baseline justify-between mb-5">
+            <div class="flex flex-col gap-0.5 sm:flex-row sm:items-baseline sm:justify-between mb-5">
                 <h2 class="text-lg font-bold text-slate-700">Model distribution</h2>
                 <span class="text-xs text-slate-400 uppercase tracking-wider">verified proofs by solver model</span>
             </div>
@@ -180,7 +182,7 @@
 
         <!-- ===== View: top 5 contributors ===== -->
         <div id="view-top5" class="hidden">
-            <div class="flex items-baseline justify-between mb-5">
+            <div class="flex flex-col gap-0.5 sm:flex-row sm:items-baseline sm:justify-between mb-5">
                 <h2 class="text-lg font-bold text-slate-700">Top 5 contributors</h2>
                 <span class="text-xs text-slate-400 uppercase tracking-wider">ranked by score</span>
             </div>
@@ -194,7 +196,7 @@
 
         <!-- ===== View: proofs over time (cumulative line graph) ===== -->
         <div id="view-timeline" class="hidden">
-            <div class="flex items-baseline justify-between mb-5">
+            <div class="flex flex-col gap-0.5 sm:flex-row sm:items-baseline sm:justify-between mb-5">
                 <h2 class="text-lg font-bold text-slate-700">Proofs over time</h2>
                 <span class="text-xs text-slate-400 uppercase tracking-wider">cumulative kernel-verified proofs</span>
             </div>
@@ -209,7 +211,7 @@
 
         <!-- ===== View: goals sourced (ADR-060 sourcing leaderboard) ===== -->
         <div id="view-sourcing" class="hidden">
-            <div class="flex items-baseline justify-between mb-5">
+            <div class="flex flex-col gap-0.5 sm:flex-row sm:items-baseline sm:justify-between mb-5">
                 <h2 class="text-lg font-bold text-slate-700">Goals sourced</h2>
                 <span class="text-xs text-slate-400 uppercase tracking-wider">who added each goal · ADR-060</span>
             </div>
@@ -553,7 +555,10 @@
 
                 <div class="flex-grow flex items-center relative h-12 md:h-14 min-w-0">
                     <div class="h-8 md:h-10 bg-brand-blue rounded-r-3xl progress-bar-fill shadow-sm flex-shrink-0 max-w-full" style="width: 0%;" data-target-width="min(${Math.min(widthPercent, 100)}%, calc(100% - 6rem))"></div>
-                    <span class="text-brand-text font-bold text-sm md:text-base whitespace-nowrap ml-3 opacity-0 transition-opacity duration-500 delay-500">${formatNumber(goals)} sourced</span>
+                    <!-- On narrow viewports show just the count; the wider " sourced"
+                         label is restored from sm: up so it no longer overflows the
+                         bar area and gets clipped by the card (mobile UX fix). -->
+                    <span class="text-brand-text font-bold text-sm md:text-base whitespace-nowrap ml-3 opacity-0 transition-opacity duration-500 delay-500">${formatNumber(goals)}<span class="hidden sm:inline"> sourced</span></span>
                 </div>
             `;
             return row;

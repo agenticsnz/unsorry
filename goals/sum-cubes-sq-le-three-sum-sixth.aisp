@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sum-cubes-sq-le-three-sum-sixth
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜3
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/sum-cubes-sq-le-three-sum-sixth.lean
-  sha≜∅
+  sha≜de56eb0dac771d8607508c5e7bc7f14dd22ac2e62ec3d6296375dcc4b7a1bd28
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

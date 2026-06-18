@@ -328,9 +328,10 @@ def _chips(board: dict) -> str:
 
 def _note(board: dict) -> str:
     note = (
-        "This board lists proofs submitted to the <code>queued/prove/*</code> queue "
-        "(ADR-058) but not yet merged, grouped by solver. It is regenerated on a "
-        "schedule, so it reflects the queue as of the last refresh."
+        "This board lists proofs submitted to the queue but not yet merged, grouped "
+        "by solver (biggest queue first). Tap a solver to see their queued proofs. "
+        "It is regenerated on a schedule, so it reflects the queue as of the last "
+        "refresh."
     )
     if not board["pr_status_known"]:
         note += (
@@ -347,17 +348,22 @@ def _sections(board: dict) -> str:
             "waiting to be processed.</div>"
         )
     out: list[str] = []
+    # Solvers arrive ranked biggest-queue-first (build_board). Each is a
+    # collapsed-by-default <details>: the summary shows the solver and their queue
+    # size; tapping it reveals the submission table (ADR-066) — so the page opens
+    # as a short, scannable list of solver names rather than hundreds of rows.
     for solver in board["solvers"]:
+        name = _esc(solver["display_name"])
         if solver.get("github") and solver.get("profile_url"):
-            who = (
-                f'<a class="lnk" href="{_esc(solver["profile_url"])}">'
-                f'{_esc(solver["display_name"])}</a>'
+            profile = (
+                f' · <a class="lnk" href="{_esc(solver["profile_url"])}">'
+                f"{name} on GitHub ↗</a>"
             )
         else:
-            who = _esc(solver["display_name"])
+            profile = ""
         meta = (
-            f'{solver["submissions"]} queued · {solver["waiting"]} waiting · '
-            f'{solver["in_flight"]} in-flight · {solver["distinct_goals"]} goals'
+            f'{solver["waiting"]} waiting · {solver["in_flight"]} in-flight · '
+            f'{solver["distinct_goals"]} goals{profile}'
         )
         rows = []
         for row in solver["queued"]:
@@ -373,14 +379,24 @@ def _sections(board: dict) -> str:
                 "</tr>"
             )
         out.append(
-            '<section class="mb-6">'
-            f'<h2 class="text-base font-semibold text-slate-800 mb-1">{who}</h2>'
+            '<details class="qd mb-2 rounded-xl border border-slate-200 bg-white">'
+            '<summary class="flex items-center justify-between gap-3 cursor-pointer '
+            'select-none px-4 py-3 rounded-xl hover:bg-slate-50">'
+            '<span class="flex items-center gap-2 min-w-0">'
+            '<span class="caret text-slate-400 transition-transform" aria-hidden="true">▸</span>'
+            f'<span class="font-semibold text-slate-800 truncate">{name}</span>'
+            "</span>"
+            '<span class="text-xs font-medium text-slate-500 whitespace-nowrap flex-shrink-0">'
+            f'{solver["submissions"]} queued</span>'
+            "</summary>"
+            '<div class="px-4 pb-4">'
             f'<p class="text-xs text-slate-500 mb-2">{meta}</p>'
             '<div class="overflow-x-auto rounded-xl border border-slate-100">'
             '<table class="q"><thead><tr><th>Goal</th><th>Branch</th><th>Model</th>'
             "<th>Submitted</th><th>State</th></tr></thead>"
             f'<tbody>{"".join(rows)}</tbody></table></div>'
-            "</section>"
+            "</div>"
+            "</details>"
         )
     return "\n".join(out)
 
@@ -423,6 +439,11 @@ _TEMPLATE = """<!doctype html>
   table.q th { background:#f8fafc; color:#64748b; font-weight:600; text-transform:uppercase; letter-spacing:.03em; font-size:.72rem; }
   code { background:#f1f5f9; padding:0 .3rem; border-radius:4px; font-size:.85em; }
   a.lnk { color:#0369a1; text-decoration:none; } a.lnk:hover { text-decoration:underline; }
+  /* Collapsible per-solver sections (collapsed by default): hide the native
+     disclosure marker and use a caret that rotates when open. */
+  details.qd > summary { list-style:none; }
+  details.qd > summary::-webkit-details-marker { display:none; }
+  details.qd[open] > summary .caret { transform:rotate(90deg); }
 </style>
 </head>
 <body class="font-sans text-brand-text p-4 md:p-8 flex justify-center items-start min-h-screen">
