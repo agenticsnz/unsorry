@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sum-pentagonal-pyramidal-closed-form
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜3
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/sum-pentagonal-pyramidal-closed-form.lean
-  sha≜∅
-  aff≜-10
+  sha≜6aa4e33517ca6a4c24b38575d4213c3c21e6fe5e2a2376bc0ed5d1d29ca4b201
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

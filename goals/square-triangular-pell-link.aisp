@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜square-triangular-pell-link
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/square-triangular-pell-link.lean
-  sha≜∅
-  aff≜-10
+  sha≜c37b7073632bceee02f90c4790c6a20713e0e1ad433f56935fd24df413144ff1
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

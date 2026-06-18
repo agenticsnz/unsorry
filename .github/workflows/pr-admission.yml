@@ -46,13 +46,24 @@ jobs:
             echo
             echo "$REASON."
             echo
-            echo "Restart the producer from current \`main\` and submit through the queued proof flow:"
+            echo "**Already have a verified proof on this branch? Re-route it — no need to re-prove.**"
+            echo "The queued dispatcher only re-packages an existing branch and Gate A re-verifies"
+            echo "it from scratch, so you can move this proof onto the accepted queued path directly:"
+            echo
+            echo "\`\`\`bash"
+            echo "python3 -m tools.repo.reroute_stranded --pr $PR --push"
+            echo "\`\`\`"
+            echo
+            echo "Otherwise, restart the producer from current \`main\` and let it queue a fresh proof:"
             echo
             echo "\`\`\`bash"
             echo "git switch main"
             echo "git pull"
             echo "./swarm/agent.sh --prove"
             echo "\`\`\`"
+            echo
+            echo "Either way the work lands through the metered queue instead of stranding"
+            echo "(ADR-058; see \"the ruv sledgehammer fix\", #1904)."
           } > admission-comment.md
           gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" -F body=@admission-comment.md >/dev/null
           gh api -X PATCH "repos/$GITHUB_REPOSITORY/pulls/$PR" -f state=closed >/dev/null

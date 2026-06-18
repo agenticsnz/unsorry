@@ -1,0 +1,9 @@
+𝔸5.1.run.sum-range-compositions-count-eq-two-pow.afnz-zbook-b336.20260616t222257281573z-b74431df@2026-06-16
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260616t222257281573z-b74431df; goal≜sum-range-compositions-count-eq-two-pow; agent≜afnz-zbook-b336; outcome≜failed}
+⟦Π:Provenance⟧{solver≜cgbarlow; provider≜openai; model≜leanstral-2603; effort≜high}
+⟦Γ:Goal⟧{goal≜sum-range-compositions-count-eq-two-pow}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜212; ended≜2026-06-16T22:22:57Z; lessons≜0}
+⟦Σ:Artifact⟧{sha≜∅}
+⟦Δ:Lesson⟧{sig≜✖ [8553/8757] Building Unsorry.SumRangeCompositionsCountEqTwoPow (192ms) trace: .> LEAN_PATH=/home/chris/.unsorry/work/prove-sum-range-compositions-count-eq-two-pow-afnz-zbook-b336/.lake/packages/Cli/.lake/build/lib/lean:/home/chris/.unsorry/work/prove-sum-range-compositions-coun}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -9,7 +9,7 @@ for correctness.
 There are three ways to contribute, in rough order of involvement:
 
 1. [Run an agent](#running-an-agent) — point a Claude instance at the queue, or prove a goal yourself.
-2. [Propose a target](#proposing-a-target) — suggest a theorem worth proving.
+2. [Propose a target](#proposing-a-target) — suggest a theorem worth proving, or [source new ones at scale](#sourcing-new-targets-at-scale).
 3. [Sponsor an upstream](#upstreaming-to-mathlib) — take a proved lemma into mathlib (the one task that requires a human, by mathlib policy).
 
 All work follows [`docs/protocols.md`](docs/protocols.md): an ADR for every significant
@@ -49,19 +49,36 @@ available through `--prove-local`, and an operator can override the governor
 with `UNSORRY_SUBMISSION_GOVERNOR=0` for a deliberate emergency exception.
 
 Coordinated `--prove` queues verified work by default so it does not
-immediately become PR/CI load:
+immediately become PR/CI load. The simplest way to run the full governed flow
+is the one-command launcher, which starts the prover and the dispatcher together
+and stops them together:
 
 ```bash
-./swarm/agent.sh --prove
-./swarm/agent.sh --dispatch-queue
+./swarm/run.sh                 # one dispatcher + one resilient prover (recommended)
 ```
 
-The first command produces locally verified proof branches under
-`queued/prove/`; the second opens those branches as ordinary auto-merge PRs
-only when the governor admits more Gate A work. Both loops poll every 300s by
-default when saturated or empty. Existing proof PRs continue through the old
-path and drain normally. Set `UNSORRY_SUBMIT_MODE=pr` only for an
+It is equivalent to running both loops yourself:
+
+```bash
+./swarm/agent.sh --prove          # produces verified branches under queued/prove/
+./swarm/agent.sh --dispatch-queue # opens them as auto-merge PRs when the governor admits
+```
+
+The prover produces locally verified proof branches under `queued/prove/`; the
+dispatcher opens those branches as ordinary auto-merge PRs only when the governor
+admits more Gate A work. Both loops poll every 300s by default when saturated or
+empty. Run exactly **one** dispatcher (`run.sh` starts one); for more provers,
+start additional `./swarm/supervise.sh --prove` only. Existing proof PRs continue
+through the old path and drain normally. Set `UNSORRY_SUBMIT_MODE=pr` only for an
 operator-approved immediate-PR exception.
+
+> **If the repo's scheduled `queue-dispatcher` workflow is enabled, it already
+> _is_ the one dispatcher.** Launching `run.sh` then runs a second one. ADR-064
+> goal dedup keeps this mostly harmless (both skip a goal that is already proved
+> or already has an open PR), but they can still race within a pass. So when the
+> scheduled dispatcher is active, run a prover only — `./swarm/supervise.sh
+> --prove` — instead of `run.sh`. Use `run.sh` for a standalone deployment with
+> no scheduled dispatcher.
 
 Other flags:
 
@@ -88,10 +105,41 @@ a tool-capable model). `-pi` is the shortcut that fills `OPENAI_BASE_URL`/key/mo
 your pi config. See [`tools/llm_providers/README.md`](tools/llm_providers/README.md) and
 [`docs/gemini-provider.md`](docs/gemini-provider.md).
 
-Coordinated `--prove` pushes claims, feature branches, and PRs through `origin`,
-so it requires write access to the shared repository. From a fork without that
-access, use `--prove-local`; it works from committed local `HEAD` and performs
-no remote operations.
+### Proving from a fork (no write access)
+
+You do **not** need write access to the shared repository to prove goals and have
+them merged. **Fork-native mode** ([ADR-068](docs/adrs/ADR-068-Fork-Native-Contribution-Mode.md)
+/ [SPEC-068-A](docs/adrs/specs/SPEC-068-A-Fork-Native-Contribution-Mode.md)) is the
+non-contributor route: fork `agenticsnz/unsorry`, then run the swarm against your
+fork and it takes care of the rest.
+
+```bash
+git clone https://github.com/<you>/unsorry && cd unsorry
+./swarm/run.sh          # fork auto-detected: claimless prover, cross-repo PRs, no dispatcher
+```
+
+In fork mode the agent (`./swarm/agent.sh --prove --fork`, auto-detected from a
+fork origin or forced with `--fork` / `UNSORRY_FORK=1`):
+
+- proves **claimlessly** — the `claims` branch is upstream-only and
+  fork-inaccessible, so there is no claim to push; it instead dedups read-only
+  against the upstream (skipping goals already proved or already PR'd) and keeps
+  your fork's `main` synced to the upstream automatically;
+- pushes each verified proof branch to **your fork** and opens a **cross-repo PR**
+  to `agenticsnz/unsorry`, where Gate A re-verifies it on the kernel (nobody
+  trusts your machine — the same trust boundary as any other PR);
+- leaves auto-merge to the upstream, which arms it on admissible fork PRs once the
+  gates are green.
+
+**One-time first PR.** GitHub requires a maintainer to approve a *new* fork
+contributor's **first** Actions run ("Approve and run"); after that, your PRs run
+and merge hands-off. Set `UNSORRY_SOLVER=<your-handle>` (or just authenticate `gh`
+as yourself) so the leaderboard credits you.
+
+This still re-verifies in CI, so duplicate fork proofs of the same goal only waste
+verifier compute (first-merge-wins), never soundness. To prove **without**
+submitting anything at all — purely local, no PR — use `--prove-local`, which
+works from committed local `HEAD` and performs no remote operations.
 
 Coordinated proof runs record optional leaderboard provenance in successful
 content-addressed library index entries and append one terminal fact under
@@ -152,6 +200,39 @@ closes (or one already in mathlib under another name, which `simp`/`aesop` then 
 admitted. A genuine-but-automatable theorem can carry a `- **Nontrivial-override:** <reason>`
 line in its `backlog/<id>.md`.
 
+### Sourcing new targets at scale
+
+Filing one propose-target issue is the lightweight path. To **source many new targets
+yourself** — the "make the problems harder and generate more of them" work
+([ADR-060](docs/adrs/ADR-060-Contributor-Goal-Sourcing-Skill.md)) — use the
+**`unsorry-goal-sourcing` skill**, which captures the whole workflow end to end.
+
+**How to use the skill.** The [`Skills/`](Skills/) directory packages the repo's
+workflows as agent skills. Working in this repo with [Claude Code](https://claude.com/claude-code)
+(or any agent), just ask it to *source new targets* and point it at
+[`Skills/unsorry-goal-sourcing/SKILL.md`](Skills/unsorry-goal-sourcing/SKILL.md) — it
+walks the gates, writes the goal triples, and opens the PR for you. Prefer to drive it
+by hand? That same `SKILL.md` (plus its `references/`) is a readable runbook.
+
+**The workflow, in short — you create the problem, you don't prove it:**
+
+1. Find a theorem that is **already proven somewhere** but **absent** from the pinned
+   mathlib — never an open conjecture. Aim **hard** (difficulty ≥3): olympiad /
+   PutnamBench / miniF2F, multivariate inequalities, the Freek-#50 Euler substrate.
+2. Screen it through the gates: `check_absence` (exit 0, record the mathlib rev) → it
+   type-checks (`lake build UnsorryGoals`) → `check_triviality` (exit 0) → its intended
+   proof compiles (`lake env lean`).
+3. Assemble the three-file goal triple with the helper, which also re-runs Gate B:
+   `python3 -m tools.sourcing.gen_triples --slug <id> --lean-sig '…' --statement '…' --difficulty 3 … --validate`.
+4. Open a PR titled **`chore(sourcing): …`** (≤50 goals per PR). It works **from a
+   fork** — Gate B validates sourcing PRs on GitHub-hosted runners, so you need no
+   special repo access; a maintainer just approves the first Actions run.
+
+Sourcing earns its own credit on the **sourcing leaderboard**
+(`python3 -m tools.leaderboard --sourcing`; data in
+`docs/metrics/sourcing-leaderboard.json`), independent of who proves the goal — make
+sure `gh auth status` shows your account, or set `UNSORRY_SOLVER=<your-handle>`.
+
 ---
 
 ## Upstreaming to mathlib
@@ -180,7 +261,7 @@ Every change, however small, follows [`docs/protocols.md`](docs/protocols.md):
 - **TDD** — tests before implementation; the agent loop (`./swarm/agent.sh --self-test`), the supervisor (`./swarm/supervise.sh --self-test`), and the Python tools (`python3 -m pytest tools -q`) all stay green.
 - **Feature branch + PR** for everything; no direct commits to `main`.
 - **One logical change per PR (trunk-based).** A proof is a proof; a fix is a fix; a feature is a feature — never bundle (e.g. a harness fix must not ride along a proof PR). One short-lived branch off `main`, squash-merged on green gates, deleted after.
-- **Conventional, enforced PR titles** ([`docs/pr-labels.md`](docs/pr-labels.md), [ADR-026](docs/adrs/ADR-026-PR-Convention-Enforcement.md)). The `pr-conventions` check fails any title that matches no known shape. Use a Conventional-Commits prefix (`feat:`, `fix:`, `docs:`, `chore:`, `ci:`, `test:`, `refactor:`, `perf:`, `build:`; scope optional, `:` required), or a swarm shape: `prove(<goal>):` (theorem **proved**), `decompose(<goal>):` / `affinity(<goal>):` (theorem **not** proved — split / demoted), `tr(<goal>):`, `converge(<goal>):`. Branch prefixes mirror the kind (`feat/`, `fix/`, `docs/`, `ci/`, `test/`).
+- **Conventional, enforced PR titles** ([`docs/pr-labels.md`](docs/pr-labels.md), [ADR-026](docs/adrs/ADR-026-PR-Convention-Enforcement.md)). The `pr-conventions` check fails any title that matches no known shape. Use a Conventional-Commits prefix (`feat:`, `fix:`, `docs:`, `chore:`, `ci:`, `test:`, `refactor:`, `perf:`, `build:`; scope optional, `:` required), or a swarm shape: `prove(<goal>):` (theorem **proved**), `decompose(<goal>):` / `affinity(<goal>):` (theorem **not** proved — split / demoted), `tr(<goal>):`, `converge(<goal>):`. The type must be the **first token** — no bracket/tool prefixes (`[codex] ci: …` is rejected; use `ci: …`). Branch prefixes mirror the kind (`feat/`, `fix/`, `docs/`, `ci/`, `test/`).
 - **Changelog fragment** for every user-facing change ([Keep a Changelog](https://keepachangelog.com/), SemVer): add a file `changelog.d/<category>-<unique-slug>.md` (e.g. `fixed-gemini-effort-435.md`) rather than editing `CHANGELOG.md`'s `[Unreleased]` section — one file per change keeps parallel PRs from ever conflicting on the changelog (ADR-040). See [`changelog.d/README.md`](changelog.d/README.md); a release collates fragments with `python3 -m tools.changelog --release`. (A single swarm proof needs no fragment.)
 - **README accuracy** — features described must exist; docs change in the same branch as the code.
 

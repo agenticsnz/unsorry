@@ -1,0 +1,20 @@
+𝔸5.1.goal.eleventh-power-mod-twentythree-mem@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜eleventh-power-mod-twentythree-mem
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/eleventh-power-mod-twentythree-mem.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/eleventh-power-mod-twentythree-mem.lean
+  sha≜59c2be0c1d28a241d1322758db9b5da22c742b9296529ae3cfafabce27677b02
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

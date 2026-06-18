@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜cyclotomic-three-divides-pow-six-sub-one
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/cyclotomic-three-divides-pow-six-sub-one.md
+  src≜packages/unsorry-archive-0006/backlog/cyclotomic-three-divides-pow-six-sub-one.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/cyclotomic-three-divides-pow-six-sub-one.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0006/goals/cyclotomic-three-divides-pow-six-sub-one.lean
+  sha≜bb7f2945a6670d21016f1b5cda4c0d70ad7818fb9fd639a7b4028666c1c1fb4b
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
