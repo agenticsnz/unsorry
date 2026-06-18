@@ -1,0 +1,8 @@
+𝔸5.1.run.sum-range-fib-sq-eq-fib-mul-fib-succ.mac-158f.20260616t234205945660z-8c7a27a9@2026-06-16
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260616t234205945660z-8c7a27a9; goal≜sum-range-fib-sq-eq-fib-mul-fib-succ; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-fib}
+⟦Γ:Goal⟧{goal≜sum-range-fib-sq-eq-fib-mul-fib-succ}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-16T23:42:05Z}
+⟦Σ:Artifact⟧{sha≜fd7941984183877edadc104f0f2aa6f3a76f6ae27d56440b71e81f7adf8a36f5}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
