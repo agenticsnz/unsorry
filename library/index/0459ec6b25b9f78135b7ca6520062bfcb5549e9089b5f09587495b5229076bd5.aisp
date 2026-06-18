@@ -1,0 +1,8 @@
+𝔸5.1.lemma.0459ec6b25b9@2026-06-17
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜0459ec6b25b9f78135b7ca6520062bfcb5549e9089b5f09587495b5229076bd5; goal≜sum-fourth-powers-eq; name≜sum_fourth_powers_eq}
+⟦Σ:Source⟧{src≜goals/sum-fourth-powers-eq.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜claude; model≜template-sum-induction; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

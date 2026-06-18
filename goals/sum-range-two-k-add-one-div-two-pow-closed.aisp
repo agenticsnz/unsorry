@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-two-k-add-one-div-two-pow-closed
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜3
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/sum-range-two-k-add-one-div-two-pow-closed.lean
-  sha≜∅
-  aff≜-10
+  sha≜439ddc36f16b420311708e6bda78b4d9821f8d73ad95b85f168ae57b926cc8f1
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
