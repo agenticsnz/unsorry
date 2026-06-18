@@ -1,0 +1,12 @@
+{
+  "prove_prs": 873,
+  "fork_prove_prs": 0,
+  "fork_merged": 0,
+  "fork_open": 0,
+  "fork_closed_unmerged": 0,
+  "fork_waste_ratio": 0.0,
+  "goals_with_multiple_prove_prs": 240,
+  "goals_with_fork_collision": 0,
+  "estimated_wasted_gate_a_runs": 0,
+  "top_collisions": []
+}
