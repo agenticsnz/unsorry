@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sum-quintic-gnomon-eq-fifth-power
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/sum-quintic-gnomon-eq-fifth-power.lean
-  sha≜∅
-  aff≜-10
+  sha≜072c9e52daf07805e88b9002469b78778c9651393b036587029c31e83923cad1
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

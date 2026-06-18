@@ -1,0 +1,8 @@
+𝔸5.1.lemma.a66fbf862895@2026-06-17
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜a66fbf8628955461050212c200108d4187ff241718f9a1d586f8cb74511c1304; goal≜sum-range-two-mul-add-one; name≜sum_range_two_mul_add_one}
+⟦Σ:Source⟧{src≜goals/sum-range-two-mul-add-one.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜claude; model≜template-sum-induction; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
