@@ -45,3 +45,6 @@ jobs:
       - name: sourcing self-test
         if: steps.admission.outputs.admitted == 'true'
         run: ./swarm/sourcing.sh --self-test
+      - name: run.sh self-test
+        if: steps.admission.outputs.admitted == 'true'
+        run: ./swarm/run.sh --self-test
