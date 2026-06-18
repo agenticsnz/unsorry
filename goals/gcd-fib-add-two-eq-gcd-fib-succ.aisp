@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜gcd-fib-add-two-eq-gcd-fib-succ
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/gcd-fib-add-two-eq-gcd-fib-succ.md
+  src≜packages/unsorry-archive-0008/backlog/gcd-fib-add-two-eq-gcd-fib-succ.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/gcd-fib-add-two-eq-gcd-fib-succ.lean
+  lean≜packages/unsorry-archive-0008/goals/gcd-fib-add-two-eq-gcd-fib-succ.lean
   sha≜6078a1d0a9e163095b8bf600311609308c6e1a7eb0e42c583aee984ca3e8072a
   aff≜-10
 }

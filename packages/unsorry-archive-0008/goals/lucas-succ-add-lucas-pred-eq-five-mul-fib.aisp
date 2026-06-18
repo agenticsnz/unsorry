@@ -1,0 +1,20 @@
+𝔸5.1.goal.lucas-succ-add-lucas-pred-eq-five-mul-fib@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜lucas-succ-add-lucas-pred-eq-five-mul-fib
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/lucas-succ-add-lucas-pred-eq-five-mul-fib.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/lucas-succ-add-lucas-pred-eq-five-mul-fib.lean
+  sha≜f560d5fd762d6df87a0d33a1528ffc147f193ac2e82f1d37ffbdf69d92d01c8a
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

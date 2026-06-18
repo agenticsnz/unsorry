@@ -1,0 +1,20 @@
+𝔸5.1.goal.gcd-n-add-six-dvd-six@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gcd-n-add-six-dvd-six
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/gcd-n-add-six-dvd-six.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/gcd-n-add-six-dvd-six.lean
+  sha≜4a9553e1882190873c6e41e9ffcdfac9445450e0b1476cfbb17898e80abbc218
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
