@@ -1,0 +1,8 @@
+𝔸5.1.run.sum-pentagonal-pyramidal-closed-form.mac-158f.20260617t002016194487z-b47fa5f9@2026-06-17
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260617t002016194487z-b47fa5f9; goal≜sum-pentagonal-pyramidal-closed-form; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-sum-induction}
+⟦Γ:Goal⟧{goal≜sum-pentagonal-pyramidal-closed-form}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-17T00:20:16Z}
+⟦Σ:Artifact⟧{sha≜6aa4e33517ca6a4c24b38575d4213c3c21e6fe5e2a2376bc0ed5d1d29ca4b201}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜dvd-sixteen-odd-pow-four-sub-one
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/dvd-sixteen-odd-pow-four-sub-one.md
+  src≜packages/unsorry-archive-0006/backlog/dvd-sixteen-odd-pow-four-sub-one.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/dvd-sixteen-odd-pow-four-sub-one.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0006/goals/dvd-sixteen-odd-pow-four-sub-one.lean
+  sha≜5030426aae6009286abf76d698c3776d8e2865c038238bf9a8e0b78de4fafc30
   aff≜-30
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -1,6 +1,6 @@
 # SPEC-032-A: Proof Graph Visualiser
 
-Implements: [ADR-032](../ADR-032-Proof-Graph-Visualiser.md) · Status: Living · Updated: 2026-06-13
+Implements: [ADR-032](../ADR-032-Proof-Graph-Visualiser.md) · Status: Living · Updated: 2026-06-17
 
 ## Scope
 
@@ -129,3 +129,55 @@ This needs the Actions token to be allowed to push to `main` (a code-owner
 setting). A `GITHUB_TOKEN`-opened PR would *not* trigger the required checks, so
 a plain auto-PR could never self-merge; if a direct push is undesirable, the
 fallback is a PAT-driven refresh PR.
+
+## Amendment (ADR-032 / 2026-06-17): hybrid clusters, expand-on-click, layout parity
+
+### Standalone goals → status clusters (supersedes "omit standalone goals")
+
+V1 drew only forest nodes. The diagram now also renders the standalone goals (no
+decomposition lineage), grouped by status:
+
+* `_unconnected_by_status(graph) → {status: [Node]}` — goals not in any edge,
+  grouped, **legend order** (`_ORDER`), ids sorted. Deterministic.
+* `_mermaid_body` appends, after the forest, one **collapsed cluster** per status:
+  a stadium node `_cluster_key(status)` = `cluster_<status>`, labelled
+  `<status> · <count>` (HTML prefixes a `▸` caret), classed by status colour. In
+  HTML the cluster carries `click … call toggleCluster("<status>")`; markdown
+  clusters are non-interactive (the per-goal list is the table).
+* `graph_payload` gains `unconnected: [{status, ids}]` (same order) — the feed the
+  interactive page expands from. `--json` emits it; the model stays `{source,
+  nodes, edges, unconnected}`.
+
+### Expand-on-click (HTML)
+
+The server-rendered `<pre class="mermaid">` paints the initial **collapsed** diagram
+(and is the no-JS fallback). `buildMermaidSource(expanded)` in the page mirrors
+`_mermaid_body` and, for a status in the `expanded` set, emits a `subgraph` of that
+cluster's individual goal nodes (each `click … call showDetail`) plus a `▾` header
+node that collapses it; `toggleCluster(status)` flips membership and re-renders via
+`mermaid.render(...)` + `bindFunctions`. **Invariant (tested):** the JS
+`buildMermaidSource(∅)` output is byte-identical to `_mermaid_body(for_html=True)`,
+so collapsing always returns to the exact initial view.
+
+### Layout parity
+
+The proof-graph page shares the home/leaderboard card: heading `text-5xl md:text-7xl`
+and section inset `px-6 md:px-10` (was `text-4xl md:text-6xl` / `md:px-8`), and the
+redundant header "Contributor leaderboard" cross-link is removed — the shared
+top-nav already links it.
+
+### Sourcing view (ADR-060 surface)
+
+`docs/leaderboard.html` (the hand-authored browser surface, not generated) gains a
+fourth toggle **Sourcing** view that lazily fetches `docs/metrics/sourcing-leaderboard.json`
+(`tools.leaderboard --sourcing`, schema_version 1) and renders the per-sourcer bars
+ranked by `sourced_goals` with a proved/open/difficulty subline.
+
+### Tests (added)
+
+`test_unconnected_clusters_in_json`, `test_render_html_hybrid_clusters_expand`
+(collapsed cluster + `buildMermaidSource`/`toggleCluster`/`subgraph` machinery +
+embedded `unconnected`), `test_render_html_layout_parity`, the extended
+`test_mermaid_has_classes_clicks_edges`, and (leaderboard suite) the extended
+`test_docs_leaderboard_html_consumes_generated_ui_json` asserting the Sourcing
+tab/view/`renderSourcing`/JSON wiring.

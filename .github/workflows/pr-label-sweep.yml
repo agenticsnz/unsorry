@@ -1,0 +1,84 @@
+# Safety-net sweep: label any open PR the per-PR labeller (pr-labels.yml) missed.
+# The per-PR job runs on pull_request_target [opened/edited/reopened]; under a
+# burst of swarm/contributor PRs its run can be queued-out, superseded, or
+# cancelled, leaving the PR permanently unlabelled. This scheduled sweep is the
+# backstop — it reuses the single-source classifier (tools/repo/pr_labels.py,
+# docs/pr-labels.md, ADR-026) so the labelling rules live in exactly one place.
+# Never executes PR head code: it only reads PR titles and adds labels via the API.
+name: pr-label-sweep
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch: {}
+
+concurrency: pr-label-sweep
+
+permissions:
+  pull-requests: write
+  issues: write
+
+jobs:
+  sweep:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main (classifier source of truth)
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+
+      - name: Set up Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.12"
+
+      - name: Ensure labels exist (sync from the source-of-truth table)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Idempotently create/update every label in the classifier's table so
+          # --add-label never fails on a missing label (matches pr-labels.yml).
+          python3 -m tools.repo.pr_labels labels | while IFS=$'\t' read -r name colour desc; do
+            gh label create "$name" --repo "$GITHUB_REPOSITORY" \
+              --color "$colour" --description "$desc" --force
+          done
+
+      - name: Classify and label any unlabelled open PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          python3 - <<'PY'
+          import json, os, subprocess
+          from tools.repo.pr_labels import classify
+
+          repo = os.environ["REPO"]
+          prs = json.loads(subprocess.run(
+              ["gh", "pr", "list", "--repo", repo,
+               "--search", "is:open no:label", "--limit", "500",
+               "--json", "number,title"],
+              capture_output=True, text=True, check=True).stdout)
+
+          labelled, skipped, lines = 0, 0, []
+          for pr in prs:
+              labels = classify(pr["title"])
+              if not labels:
+                  # Title matches no known shape — the pr-conventions gate
+                  # (ADR-026) is the place that flags this, not the sweep.
+                  skipped += 1
+                  continue
+              subprocess.run(
+                  ["gh", "pr", "edit", str(pr["number"]), "--repo", repo,
+                   "--add-label", ",".join(labels)], check=True)
+              labelled += 1
+              lines.append(f"- #{pr['number']} → {', '.join(labels)}")
+
+          step = os.environ.get("GITHUB_STEP_SUMMARY")
+          if step:
+              with open(step, "a") as f:
+                  f.write(
+                      "## pr-label-sweep\n\n"
+                      f"Scanned {len(prs)} unlabelled open PR(s); "
+                      f"labelled {labelled}, skipped {skipped} "
+                      "(title matched no known shape).\n\n"
+                      + ("\n".join(lines) + "\n" if lines else ""))
+          print(f"scanned={len(prs)} labelled={labelled} skipped={skipped}")
+          PY

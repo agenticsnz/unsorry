@@ -101,8 +101,46 @@ def test_mermaid_has_classes_clicks_edges(tmp_path):
     assert "classDef proved" in mermaid
     assert "g_parent --> g_parent_s1" in mermaid
     assert 'click g_parent_s1 "https://github.com/agenticsnz/unsorry/blob/main/goals/parent-s1.lean"' in mermaid
-    # Standalone goal (no edges) is not drawn in the forest.
+    # Standalone goal (no edges) folds into a per-status cluster, not a forest node.
     assert "g_standalone[" not in mermaid
+    assert 'cluster_proved(["proved · 1"])' in mermaid
+    assert "class cluster_proved proved;" in mermaid
+
+
+def test_unconnected_clusters_in_json(tmp_path):
+    import json
+
+    payload = json.loads(render_json(build_graph(_repo(tmp_path))))
+    groups = {g["status"]: g["ids"] for g in payload["unconnected"]}
+    # Only `standalone` (proved) has no decomposition lineage.
+    assert groups == {"proved": ["standalone"]}
+
+
+def test_render_html_hybrid_clusters_expand(tmp_path):
+    import json
+
+    html = render_html(build_graph(_repo(tmp_path)))
+    # Collapsed, clickable status cluster in the server-rendered initial diagram.
+    assert 'cluster_proved(["▸ proved · 1"])' in html
+    assert 'call toggleCluster("proved")' in html
+    # Client-side expand machinery: a cluster click rebuilds the source as a
+    # status subgraph of individual goals and re-renders.
+    assert "function buildMermaidSource" in html
+    assert "window.toggleCluster" in html
+    assert "subgraph sg_" in html
+    assert "mermaid.render(" in html
+    blob = html.split('id="graph-data">', 1)[1].split("</script>", 1)[0]
+    assert json.loads(blob)["unconnected"] == [{"status": "proved", "ids": ["standalone"]}]
+
+
+def test_render_html_layout_parity(tmp_path):
+    # The proof-graph page shares the home/leaderboard card: same heading scale
+    # and section insets, and no duplicate leaderboard cross-link (the nav links it).
+    html = render_html(build_graph(_repo(tmp_path)))
+    assert "text-5xl md:text-7xl" in html and "text-4xl md:text-6xl" not in html
+    assert "px-6 md:px-10" in html and "md:px-8" not in html
+    assert "Contributor leaderboard" not in html
+    assert 'href="leaderboard.html"' in html
 
 
 def test_markdown_table_lists_every_goal(tmp_path):

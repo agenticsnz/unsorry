@@ -464,6 +464,48 @@ def scoped_audit_targets(
     )
 
 
+def compute_replay_targets(
+    root: Path, base: str | None, runner: Runner = subprocess.run
+) -> tuple[list[str], str]:
+    """The modules a kernel replay must cover, with its mode:
+
+    - ``("…", "full")``        — ``base`` is None, or the diff is untrusted /
+      global-impact, so the FULL on-disk library is replayed (fail-closed: an
+      unscopeable base never yields an empty set).
+    - ``("…", "incremental")`` — ``base`` given and scoped to the changed +
+      reverse-import closure (ADR-033).
+    - ``([], "none")``         — ``base`` given and no library module changed.
+
+    This is the single source of truth for *what to replay*; the serial
+    ``replay`` and the sharded ``plan`` / ``replay_shard`` all read it, so a
+    shard can never check a different set than a full replay would (the
+    soundness coverage invariant, ADR-048/049/063)."""
+    library = module_names(root, "library")
+    if base is None:
+        return library, "full"
+    scoped = scoped_targets(root, base, runner)
+    if scoped is None:
+        return library, "full"  # untrusted/global-impact diff — fail-closed to FULL
+    if not scoped:
+        return [], "none"
+    return scoped, "incremental"
+
+
+def _replay_chunk_commands(targets: Sequence[str]) -> list[Command]:
+    """Serial leanchecker commands over ``targets``, chunked to bound peak memory
+    (one mathlib image per process; UNSORRY_REPLAY_CHUNK). split_evenly keeps the
+    chunks disjoint and covering, so every target is replayed exactly once."""
+    chunk_size = _replay_chunk_size()
+    n_chunks = max(1, (len(targets) + chunk_size - 1) // chunk_size)
+    return [
+        Command(
+            ("lake", "env", "leanchecker", *chunk),
+            f"kernel replay chunk {index}/{n_chunks}",
+        )
+        for index, chunk in enumerate(split_evenly(targets, n_chunks), 1)
+    ]
+
+
 def replay(
     root: Path,
     jobs: int,
@@ -480,20 +522,15 @@ def replay(
     # changed library modules and their reverse-import closure; the rest are
     # byte-identical to (and already verified on) main. Falls back to FULL replay
     # whenever the incremental assumption cannot be trusted.
-    targets = library
-    if base is not None:
-        scoped = scoped_targets(root, base, runner)
-        if scoped is None:
-            pass  # reason already logged; full replay below
-        elif not scoped:
-            print("kernel replay: no changed library modules — nothing to verify")
-            return 0
-        else:
-            targets = scoped
-            print(
-                f"incremental kernel replay: {len(targets)} of {len(library)} "
-                "module(s) (changed + reverse-import closure)"
-            )
+    targets, mode = compute_replay_targets(root, base, runner)
+    if mode == "none":
+        print("kernel replay: no changed library modules — nothing to verify")
+        return 0
+    if mode == "incremental":
+        print(
+            f"incremental kernel replay: {len(targets)} of {len(library)} "
+            "module(s) (changed + reverse-import closure)"
+        )
     # leanchecker re-checks every declaration against the kernel and holds
     # ~all of mathlib resident per process, so its memory cost is essentially
     # fixed regardless of how few library modules a chunk carries. Two
@@ -502,18 +539,11 @@ def replay(
     # earlier min(jobs, 2) cap was not enough). Replay runs serially: one
     # leanchecker over the whole library, one mathlib image in memory. The
     # `jobs` argument is accepted for CLI symmetry with `audit` but ignored
-    # here; audit (collectAxioms, far lighter) keeps its parallelism.
+    # here; audit (collectAxioms, far lighter) keeps its parallelism. Cross-
+    # *runner* parallelism is the sharded path (plan / replay_shard, ADR-063).
     _ = jobs
     effective_jobs = 1
-    chunk_size = _replay_chunk_size()
-    n_chunks = max(1, (len(targets) + chunk_size - 1) // chunk_size)
-    commands = [
-        Command(
-            ("lake", "env", "leanchecker", *chunk),
-            f"kernel replay chunk {index}/{n_chunks}",
-        )
-        for index, chunk in enumerate(split_evenly(targets, n_chunks), 1)
-    ]
+    commands = _replay_chunk_commands(targets)
     # parallelism 1: chunks run one after another, never concurrently.
     results = run_commands(commands, effective_jobs, runner)
     if report_failures(commands, results):
@@ -536,12 +566,95 @@ def replay(
     return 0
 
 
+def plan_shards(
+    root: Path, shards: int, base: str | None, runner: Runner = subprocess.run
+) -> dict[str, object]:
+    """Plan a sharded kernel replay (ADR-063): compute the replay target set and
+    how many disjoint shards it splits into. Emits `{shards, count, mode}` where
+    `shards` is the matrix index list `[0, 1, …, effective-1]` and `effective =
+    min(shards, len(targets))`. `count == 0` (no library change) yields an empty
+    matrix so the matrix job is skipped. Each replay_shard re-derives its own
+    slice from the same target set + the same shard count, so no module list is
+    passed between jobs (only the git SHA is shared — keeping leanchecker's input
+    locally-derived, the ADR-049 invariant)."""
+    targets, mode = compute_replay_targets(root, base, runner)
+    effective = min(max(shards, 1), len(targets)) if targets else 0
+    return {"shards": list(range(effective)), "count": len(targets), "mode": mode}
+
+
+def replay_shard(
+    root: Path,
+    shard_index: int,
+    shard_total: int,
+    runner: Runner = subprocess.run,
+    base: str | None = None,
+) -> int:
+    """Kernel-replay one shard of the target set (ADR-063). The targets are
+    recomputed from source (same SHA → identical set) and partitioned by
+    split_evenly into `shard_total` disjoint, covering slices; this checks slice
+    `shard_index`. Every module lands in exactly one shard, so across all shards
+    each olean is kernel-replayed exactly once — the same guarantee a single
+    serial replay gives. An out-of-range index (the set split into fewer slices
+    than the configured shard count) is a no-op, not an error."""
+    started = time.perf_counter()
+    targets, mode = compute_replay_targets(root, base, runner)
+    if not targets:
+        print(f"kernel replay shard {shard_index}: nothing to verify ({mode})")
+        return 0
+    parts = split_evenly(targets, shard_total)
+    if not 0 <= shard_index < len(parts):
+        print(
+            f"kernel replay shard {shard_index}: out of range "
+            f"({len(parts)} shard(s) for {len(targets)} module(s)) — empty"
+        )
+        return 0
+    shard_targets = parts[shard_index]
+    commands = _replay_chunk_commands(shard_targets)
+    results = run_commands(commands, 1, runner)  # serial: one leanchecker at a time
+    if report_failures(commands, results):
+        return 1
+    elapsed = time.perf_counter() - started
+    print(
+        f"replayed shard {shard_index + 1}/{len(parts)}: {len(shard_targets)} "
+        f"module(s) in {len(commands)} chunk(s) ({mode}, {fmt_duration(elapsed)})"
+    )
+    append_step_summary(
+        "Gate A kernel replay (shard)",
+        (
+            ("Shard", f"{shard_index + 1} of {len(parts)}"),
+            ("Modules", f"{len(shard_targets)} of {len(targets)}"),
+            ("Chunks", len(commands)),
+            ("Scope", mode),
+            ("Elapsed", fmt_duration(elapsed)),
+        ),
+    )
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("audit", "replay"))
+    parser.add_argument("command", choices=("audit", "replay", "plan", "replay-shard"))
     parser.add_argument("--jobs", type=int, default=4)
     parser.add_argument("--output", type=Path, default=Path("axiom-report.json"))
     parser.add_argument("--root", type=Path, default=Path("."))
+    parser.add_argument(
+        "--shards",
+        type=int,
+        default=8,
+        help="plan: max parallel replay shards (capped at the module count).",
+    )
+    parser.add_argument(
+        "--shard-index",
+        type=int,
+        default=0,
+        help="replay-shard: which shard (0-based) of --shard-total to replay.",
+    )
+    parser.add_argument(
+        "--shard-total",
+        type=int,
+        default=1,
+        help="replay-shard: total shard count (must equal plan's --shards).",
+    )
     parser.add_argument(
         "--base",
         default=None,
@@ -555,7 +668,19 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--jobs must be positive")
     if args.command == "audit":
         return audit(args.root, args.jobs, args.output, base=args.base)
-    return replay(args.root, args.jobs, base=args.base)
+    if args.command == "replay":
+        return replay(args.root, args.jobs, base=args.base)
+    if args.command == "plan":
+        if args.shards < 1:
+            parser.error("--shards must be positive")
+        print(json.dumps(plan_shards(args.root, args.shards, args.base)))
+        return 0
+    # replay-shard
+    if args.shard_total < 1:
+        parser.error("--shard-total must be positive")
+    return replay_shard(
+        args.root, args.shard_index, args.shard_total, base=args.base
+    )
 
 
 if __name__ == "__main__":

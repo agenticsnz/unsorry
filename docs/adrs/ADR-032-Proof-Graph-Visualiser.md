@@ -50,3 +50,30 @@ lands via a separate code-owner-reviewed PR.
 | Status | Approver | Date |
 |--------|----------|------|
 | Accepted | unsorry maintainers | 2026-06-13 |
+| Amended | unsorry maintainers | 2026-06-17 |
+
+## Amendment (2026-06-17): hybrid clustering, expand-on-click, shared layout
+
+**In the context of** the V1 decision to *omit* standalone goals from the diagram
+(they "carry no lineage and belong in the table"), which — once the corpus grew to
+762 goals with only ~56 in decomposition forests — meant the diagram silently
+represented under 8% of the graph and read as if most goals were missing,
+**we amend the diagram to a hybrid layout**: the decomposition forest is unchanged,
+and the remaining standalone goals are folded into **one collapsed summary cluster
+per status** (a stadium-shaped, status-coloured node `▸ <status> · <n>`), so every
+goal is accounted for without drawing ~700 illegible isolated boxes. On the
+interactive page a cluster **expands on click** (`toggleCluster`) into a status
+subgraph of its individual, clickable goal nodes, and collapses again — the client
+rebuilds the Mermaid source from the embedded model (`graph_payload.unconnected`),
+and its collapsed output is byte-identical to the server-rendered initial diagram.
+The static markdown shows the collapsed clusters (the full per-goal list stays in
+the table). We also bring the proof-graph page into **visual parity** with the
+home/leaderboard card (shared heading scale `text-5xl md:text-7xl` and section
+inset `px-6 md:px-10`) and remove the redundant header "Contributor leaderboard"
+cross-link (the shared top-nav already links it),
+**accepting that** expanding a large cluster renders many nodes (opt-in, so the
+default view stays light), and that the cluster logic is expressed twice — once in
+Python for markdown, once in JS for the interactive page — guarded by a parity test
+that asserts the two collapsed renderings match. The companion **sourcing
+leaderboard** (ADR-060) is surfaced in the same release as a fourth view on
+`docs/leaderboard.html`.
