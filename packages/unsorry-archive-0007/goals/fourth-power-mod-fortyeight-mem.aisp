@@ -1,0 +1,20 @@
+𝔸5.1.goal.fourth-power-mod-fortyeight-mem@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜fourth-power-mod-fortyeight-mem
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/fourth-power-mod-fortyeight-mem.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/fourth-power-mod-fortyeight-mem.lean
+  sha≜41df7d6a24a74f13fc4b6fe774efafa6aa1cb14271c3d1217e0c1d4c457a7120
+  aff≜-10
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
