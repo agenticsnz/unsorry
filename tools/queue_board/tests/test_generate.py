@@ -194,6 +194,32 @@ def test_render_html_empty_state():
     assert re.search(r"__[A-Z]+__", html) is None
 
 
+def test_render_html_solvers_collapsed_by_default():
+    html = render_html(build_board(
+        _subs(), proved_goals=set(), open_pr_branches=None, pr_status_known=False
+    ))
+    # Each solver is a collapsible section, collapsed by default (no `open` attr),
+    # with the solver name in the tap target (summary).
+    assert "<details" in html and "<summary" in html
+    assert "<details open" not in html
+    assert "@ruvnet" in html
+
+
+def test_render_html_sorted_biggest_queue_first():
+    html = render_html(build_board(
+        _subs(), proved_goals=set(), open_pr_branches=None, pr_status_known=False
+    ))
+    # ruvnet (2 submissions) ranks before macbook (1).
+    assert html.index("@ruvnet") < html.index("macbook")
+
+
+def test_render_html_no_adr_058_mention():
+    html = render_html(build_board(
+        _subs(), proved_goals=set(), open_pr_branches=None, pr_status_known=False
+    ))
+    assert "ADR-058" not in html
+
+
 def test_main_modes_mutually_exclusive(tmp_path):
     assert main(["--json", "--html", str(tmp_path)]) == 2
 
