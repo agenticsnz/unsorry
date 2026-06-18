@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜cauchy-schwarz-three-var-product
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/cauchy-schwarz-three-var-product.md
+  src≜packages/unsorry-archive-0006/backlog/cauchy-schwarz-three-var-product.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/cauchy-schwarz-three-var-product.lean
+  lean≜packages/unsorry-archive-0006/goals/cauchy-schwarz-three-var-product.lean
   sha≜cc12977749ded8d27a55b9129e359d56abcb0f9afa39b1a812dcfc00c369b3b1
   aff≜-20
 }
