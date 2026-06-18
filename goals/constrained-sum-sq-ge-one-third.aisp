@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜constrained-sum-sq-ge-one-third
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/constrained-sum-sq-ge-one-third.md
+  src≜packages/unsorry-archive-0006/backlog/constrained-sum-sq-ge-one-third.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/constrained-sum-sq-ge-one-third.lean
+  lean≜packages/unsorry-archive-0006/goals/constrained-sum-sq-ge-one-third.lean
   sha≜78809d96da1e05c45de38a1c38bee70b50f95f53288dace650db79b77e2d2ed4
   aff≜-20
 }
