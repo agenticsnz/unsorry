@@ -105,10 +105,41 @@ a tool-capable model). `-pi` is the shortcut that fills `OPENAI_BASE_URL`/key/mo
 your pi config. See [`tools/llm_providers/README.md`](tools/llm_providers/README.md) and
 [`docs/gemini-provider.md`](docs/gemini-provider.md).
 
-Coordinated `--prove` pushes claims, feature branches, and PRs through `origin`,
-so it requires write access to the shared repository. From a fork without that
-access, use `--prove-local`; it works from committed local `HEAD` and performs
-no remote operations.
+### Proving from a fork (no write access)
+
+You do **not** need write access to the shared repository to prove goals and have
+them merged. **Fork-native mode** ([ADR-068](docs/adrs/ADR-068-Fork-Native-Contribution-Mode.md)
+/ [SPEC-068-A](docs/adrs/specs/SPEC-068-A-Fork-Native-Contribution-Mode.md)) is the
+non-contributor route: fork `agenticsnz/unsorry`, then run the swarm against your
+fork and it takes care of the rest.
+
+```bash
+git clone https://github.com/<you>/unsorry && cd unsorry
+./swarm/run.sh          # fork auto-detected: claimless prover, cross-repo PRs, no dispatcher
+```
+
+In fork mode the agent (`./swarm/agent.sh --prove --fork`, auto-detected from a
+fork origin or forced with `--fork` / `UNSORRY_FORK=1`):
+
+- proves **claimlessly** — the `claims` branch is upstream-only and
+  fork-inaccessible, so there is no claim to push; it instead dedups read-only
+  against the upstream (skipping goals already proved or already PR'd) and keeps
+  your fork's `main` synced to the upstream automatically;
+- pushes each verified proof branch to **your fork** and opens a **cross-repo PR**
+  to `agenticsnz/unsorry`, where Gate A re-verifies it on the kernel (nobody
+  trusts your machine — the same trust boundary as any other PR);
+- leaves auto-merge to the upstream, which arms it on admissible fork PRs once the
+  gates are green.
+
+**One-time first PR.** GitHub requires a maintainer to approve a *new* fork
+contributor's **first** Actions run ("Approve and run"); after that, your PRs run
+and merge hands-off. Set `UNSORRY_SOLVER=<your-handle>` (or just authenticate `gh`
+as yourself) so the leaderboard credits you.
+
+This still re-verifies in CI, so duplicate fork proofs of the same goal only waste
+verifier compute (first-merge-wins), never soundness. To prove **without**
+submitting anything at all — purely local, no PR — use `--prove-local`, which
+works from committed local `HEAD` and performs no remote operations.
 
 Coordinated proof runs record optional leaderboard provenance in successful
 content-addressed library index entries and append one terminal fact under

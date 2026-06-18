@@ -1,0 +1,76 @@
+# Arm auto-merge on admissible fork prove PRs (ADR-068 / SPEC-068-A §6).
+#
+# A fork contributor running the swarm (ADR-068 fork-native mode) opens a
+# cross-repo `prove(<goal>):` PR but CANNOT arm auto-merge on it — they have no
+# write access to this repo. This scheduled job does it for them: it selects the
+# open cross-repo prove PRs whose diff touches only the proof allow-paths
+# (library/, goals/, proof-runs/ — never the gates, harness, or workflows) and
+# that are not already armed, then runs `gh pr merge --auto --squash`. GitHub
+# still blocks the merge until Gate A (soundness) + Gate B (hygiene) are green
+# (ADR-005), and Gate A re-verifies every fork PR on the kernel, so nothing is
+# trusted from the fork — this only arms the merge that the gates then gate.
+#
+# Token: a fork PR is opened by the fork user and so already triggers the required
+# workflows; this job needs only `pull-requests: write` to arm auto-merge. It uses
+# the admin `REFRESH_TOKEN` (the same secret the queue-dispatcher / refreshers
+# use) because the default GITHUB_TOKEN cannot enable auto-merge across the repo.
+# When the secret is unset the job degrades to a report-only notice.
+name: fork-automerge-enabler
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: "Max fork PRs to arm this run"
+        required: false
+        default: "20"
+
+# Never overlap runs — two passes would race to arm the same PRs.
+concurrency:
+  group: fork-automerge-enabler
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  enable:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Arm auto-merge on admissible fork prove PRs
+        env:
+          GH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+          LIMIT: ${{ github.event.inputs.limit || '20' }}
+        run: |
+          set -euo pipefail
+          if [ -z "${GH_TOKEN:-}" ]; then
+            echo "::notice::REFRESH_TOKEN unset — report-only; not arming any PRs."
+          fi
+          prs="$(gh pr list --state open --limit 200 \
+            --json number,title,isCrossRepository,files,autoMergeRequest 2>/dev/null || echo '[]')"
+          nums="$(printf '%s' "$prs" \
+            | python3 -m tools.repo.fork_automerge select --limit "${LIMIT}")"
+          if [ -z "${nums}" ]; then
+            echo "No admissible fork prove PRs to arm."
+            exit 0
+          fi
+          armed=0
+          for n in ${nums}; do
+            echo "admissible fork prove PR #${n}"
+            if [ -n "${GH_TOKEN:-}" ]; then
+              if gh pr merge --auto --squash "${n}"; then
+                echo "armed auto-merge on #${n}"
+                armed=$((armed + 1))
+              else
+                echo "::warning::could not arm auto-merge on #${n}"
+              fi
+            fi
+          done
+          echo "armed ${armed} fork prove PR(s)."
