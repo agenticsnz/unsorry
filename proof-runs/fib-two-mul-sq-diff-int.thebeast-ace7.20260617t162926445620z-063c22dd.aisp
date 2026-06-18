@@ -1,0 +1,8 @@
+𝔸5.1.run.fib-two-mul-sq-diff-int.thebeast-ace7.20260617t162926445620z-063c22dd@2026-06-17
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260617t162926445620z-063c22dd; goal≜fib-two-mul-sq-diff-int; agent≜thebeast-ace7; outcome≜proved}
+⟦Π:Provenance⟧{solver≜adam91holt; provider≜codex; effort≜xhigh}
+⟦Γ:Goal⟧{goal≜fib-two-mul-sq-diff-int}
+⟦Λ:Metrics⟧{attempts≜3; solve_s≜553; ended≜2026-06-17T16:29:26Z; lessons≜1}
+⟦Σ:Artifact⟧{sha≜f86d693c9fb72c772a8ad3a827af741419e90c71015787f37e16e36b35b45219}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
