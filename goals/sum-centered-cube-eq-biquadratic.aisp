@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sum-centered-cube-eq-biquadratic
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/sum-centered-cube-eq-biquadratic.lean
-  sha≜∅
-  aff≜-10
+  sha≜2b1687ca7163bb373f8ee043a97826e71fec0195fbad2e0566e010565ea67e05
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

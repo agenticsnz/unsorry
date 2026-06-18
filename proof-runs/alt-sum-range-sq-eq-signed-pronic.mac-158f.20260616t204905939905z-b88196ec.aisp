@@ -1,0 +1,8 @@
+𝔸5.1.run.alt-sum-range-sq-eq-signed-pronic.mac-158f.20260616t204905939905z-b88196ec@2026-06-16
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260616t204905939905z-b88196ec; goal≜alt-sum-range-sq-eq-signed-pronic; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-sum-induction}
+⟦Γ:Goal⟧{goal≜alt-sum-range-sq-eq-signed-pronic}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-16T20:49:05Z}
+⟦Σ:Artifact⟧{sha≜41acb1a7e58181472b791366255b32d91e8d31e94fd618a9cc13fb91850bc47e}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

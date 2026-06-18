@@ -49,19 +49,36 @@ available through `--prove-local`, and an operator can override the governor
 with `UNSORRY_SUBMISSION_GOVERNOR=0` for a deliberate emergency exception.
 
 Coordinated `--prove` queues verified work by default so it does not
-immediately become PR/CI load:
+immediately become PR/CI load. The simplest way to run the full governed flow
+is the one-command launcher, which starts the prover and the dispatcher together
+and stops them together:
 
 ```bash
-./swarm/agent.sh --prove
-./swarm/agent.sh --dispatch-queue
+./swarm/run.sh                 # one dispatcher + one resilient prover (recommended)
 ```
 
-The first command produces locally verified proof branches under
-`queued/prove/`; the second opens those branches as ordinary auto-merge PRs
-only when the governor admits more Gate A work. Both loops poll every 300s by
-default when saturated or empty. Existing proof PRs continue through the old
-path and drain normally. Set `UNSORRY_SUBMIT_MODE=pr` only for an
+It is equivalent to running both loops yourself:
+
+```bash
+./swarm/agent.sh --prove          # produces verified branches under queued/prove/
+./swarm/agent.sh --dispatch-queue # opens them as auto-merge PRs when the governor admits
+```
+
+The prover produces locally verified proof branches under `queued/prove/`; the
+dispatcher opens those branches as ordinary auto-merge PRs only when the governor
+admits more Gate A work. Both loops poll every 300s by default when saturated or
+empty. Run exactly **one** dispatcher (`run.sh` starts one); for more provers,
+start additional `./swarm/supervise.sh --prove` only. Existing proof PRs continue
+through the old path and drain normally. Set `UNSORRY_SUBMIT_MODE=pr` only for an
 operator-approved immediate-PR exception.
+
+> **If the repo's scheduled `queue-dispatcher` workflow is enabled, it already
+> _is_ the one dispatcher.** Launching `run.sh` then runs a second one. ADR-064
+> goal dedup keeps this mostly harmless (both skip a goal that is already proved
+> or already has an open PR), but they can still race within a pass. So when the
+> scheduled dispatcher is active, run a prover only — `./swarm/supervise.sh
+> --prove` — instead of `run.sh`. Use `run.sh` for a standalone deployment with
+> no scheduled dispatcher.
 
 Other flags:
 
@@ -88,10 +105,41 @@ a tool-capable model). `-pi` is the shortcut that fills `OPENAI_BASE_URL`/key/mo
 your pi config. See [`tools/llm_providers/README.md`](tools/llm_providers/README.md) and
 [`docs/gemini-provider.md`](docs/gemini-provider.md).
 
-Coordinated `--prove` pushes claims, feature branches, and PRs through `origin`,
-so it requires write access to the shared repository. From a fork without that
-access, use `--prove-local`; it works from committed local `HEAD` and performs
-no remote operations.
+### Proving from a fork (no write access)
+
+You do **not** need write access to the shared repository to prove goals and have
+them merged. **Fork-native mode** ([ADR-068](docs/adrs/ADR-068-Fork-Native-Contribution-Mode.md)
+/ [SPEC-068-A](docs/adrs/specs/SPEC-068-A-Fork-Native-Contribution-Mode.md)) is the
+non-contributor route: fork `agenticsnz/unsorry`, then run the swarm against your
+fork and it takes care of the rest.
+
+```bash
+git clone https://github.com/<you>/unsorry && cd unsorry
+./swarm/run.sh          # fork auto-detected: claimless prover, cross-repo PRs, no dispatcher
+```
+
+In fork mode the agent (`./swarm/agent.sh --prove --fork`, auto-detected from a
+fork origin or forced with `--fork` / `UNSORRY_FORK=1`):
+
+- proves **claimlessly** — the `claims` branch is upstream-only and
+  fork-inaccessible, so there is no claim to push; it instead dedups read-only
+  against the upstream (skipping goals already proved or already PR'd) and keeps
+  your fork's `main` synced to the upstream automatically;
+- pushes each verified proof branch to **your fork** and opens a **cross-repo PR**
+  to `agenticsnz/unsorry`, where Gate A re-verifies it on the kernel (nobody
+  trusts your machine — the same trust boundary as any other PR);
+- leaves auto-merge to the upstream, which arms it on admissible fork PRs once the
+  gates are green.
+
+**One-time first PR.** GitHub requires a maintainer to approve a *new* fork
+contributor's **first** Actions run ("Approve and run"); after that, your PRs run
+and merge hands-off. Set `UNSORRY_SOLVER=<your-handle>` (or just authenticate `gh`
+as yourself) so the leaderboard credits you.
+
+This still re-verifies in CI, so duplicate fork proofs of the same goal only waste
+verifier compute (first-merge-wins), never soundness. To prove **without**
+submitting anything at all — purely local, no PR — use `--prove-local`, which
+works from committed local `HEAD` and performs no remote operations.
 
 Coordinated proof runs record optional leaderboard provenance in successful
 content-addressed library index entries and append one terminal fact under

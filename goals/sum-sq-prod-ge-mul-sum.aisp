@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-sq-prod-ge-mul-sum
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-sq-prod-ge-mul-sum.md
+  src≜packages/unsorry-archive-0005/backlog/sum-sq-prod-ge-mul-sum.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-sq-prod-ge-mul-sum.lean
+  lean≜packages/unsorry-archive-0005/goals/sum-sq-prod-ge-mul-sum.lean
   sha≜439433043f89cec68c646dcfcf77f1cbed1e700a91c949f8a72b9077ff8bcb08
   aff≜-10
 }
