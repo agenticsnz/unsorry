@@ -12,8 +12,11 @@ from tools.leaderboard.generate import (
     render,
     render_attribution_gaps_json,
     render_json,
+    render_sourcing,
     render_svg,
     render_ui_json,
+    sourcing_contributors,
+    sourcing_payload,
     ui_payload,
 )
 
@@ -484,6 +487,12 @@ def test_docs_leaderboard_html_consumes_generated_ui_json():
     # Top 5 view: a third toggle tab rendering the top five contributors.
     assert 'id="tab-top5"' in html and 'id="view-top5"' in html
     assert "renderTop5" in html
+    # ADR-060 sourcing leaderboard: a fourth toggle view consuming the generated
+    # sourcing-leaderboard.json (who sourced each goal).
+    assert 'id="tab-sourcing"' in html and 'id="view-sourcing"' in html
+    assert "renderSourcing" in html
+    assert "metrics/sourcing-leaderboard.json" in html
+    assert "sourced_goals" in html
 
 
 def test_docs_index_links_readme():
@@ -577,3 +586,72 @@ def test_audit_provenance_cli_exit_codes(tmp_path):
     # Correct the attribution → audit is clean.
     _index(tmp_path, "b" * 64, "some-goal", provenance=_PHANTOM.format(solver="real"))
     assert main(["--audit-provenance", str(tmp_path)]) == 0
+
+
+# --- sourcing leaderboard (ADR-060 §6) ---------------------------------------
+
+
+def _sourcing_repo(tmp_path: Path) -> None:
+    """A repo where Ada sourced two open goals (diff 3+4) and Bo sourced one
+    proved goal (diff 5), each in their own add-commit."""
+    _git(tmp_path, "init")
+    _goal(tmp_path, "ada-one", 3)
+    _goal(tmp_path, "ada-two", 4)
+    _git(tmp_path, "add", "goals")
+    _git(tmp_path, "commit", "-m", "chore(sourcing): ada", author="Ada <ada@e.com>")
+    _goal(tmp_path, "bo-one", 5, status="proved")
+    _git(tmp_path, "add", "goals")
+    _git(tmp_path, "commit", "-m", "chore(sourcing): bo", author="Bo <bo@e.com>")
+
+
+def test_sourcing_attributes_by_git_add_author(tmp_path):
+    _sourcing_repo(tmp_path)
+    rows = sourcing_contributors(tmp_path)
+    assert [r["git_author"] for r in rows] == ["Ada <ada@e.com>", "Bo <bo@e.com>"]  # 2 goals > 1
+    ada, bo = rows
+    assert ada["sourced_goals"] == 2 and ada["difficulty_points"] == 7
+    assert ada["open"] == 2 and ada["proved"] == 0
+    assert bo["sourced_goals"] == 1 and bo["difficulty_points"] == 5
+    assert bo["proved"] == 1 and bo["open"] == 0
+
+
+def test_sourcing_applies_alias(tmp_path):
+    _sourcing_repo(tmp_path)
+    _alias(tmp_path, "Ada <ada@e.com>", github="ada-gh", display_name="Ada Lovelace")
+    ada = next(r for r in sourcing_contributors(tmp_path) if r["git_author"] == "Ada <ada@e.com>")
+    assert ada["github"] == "ada-gh"
+    assert ada["profile_url"] == "https://github.com/ada-gh"
+    assert "ada-gh" in ada["avatar_url"]
+
+
+def test_sourcing_payload_totals(tmp_path):
+    _sourcing_repo(tmp_path)
+    payload = sourcing_payload(tmp_path)
+    assert payload["schema_version"] == 1
+    assert payload["totals"] == {"sourcers": 2, "sourced_goals": 3, "difficulty_points": 12}
+
+
+def test_sourcing_markdown_lists_contributors(tmp_path):
+    _sourcing_repo(tmp_path)
+    md = render_sourcing(tmp_path)
+    assert "# Sourcing leaderboard" in md
+    assert "Ada" in md and "Bo" in md
+
+
+def test_main_sourcing_prints(tmp_path, capsys):
+    _sourcing_repo(tmp_path)
+    assert main(["--sourcing", str(tmp_path)]) == 0
+    assert "# Sourcing leaderboard" in capsys.readouterr().out
+    assert main(["--sourcing", "--json", str(tmp_path)]) == 0
+    assert json.loads(capsys.readouterr().out)["totals"]["sourced_goals"] == 3
+
+
+def test_write_and_check_cover_sourcing_artifact(tmp_path):
+    _sourcing_repo(tmp_path)
+    assert main(["--write", str(tmp_path)]) == 0
+    sourcing_json = tmp_path / "docs" / "metrics" / "sourcing-leaderboard.json"
+    assert sourcing_json.is_file()
+    assert json.loads(sourcing_json.read_text())["totals"]["sourcers"] == 2
+    assert main(["--check", str(tmp_path)]) == 0          # in sync right after a write
+    sourcing_json.write_text("{}\n", encoding="utf-8")     # tamper
+    assert main(["--check", str(tmp_path)]) == 1           # drift detected

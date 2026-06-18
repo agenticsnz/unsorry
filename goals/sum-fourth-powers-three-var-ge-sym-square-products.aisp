@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sum-fourth-powers-three-var-ge-sym-square-products
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/sum-fourth-powers-three-var-ge-sym-square-products.lean
-  sha≜∅
-  aff≜-10
+  sha≜39aab2d1d190b17200e1d10709859a4bb23c6ca593df8045559b48b4e5c95d80
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

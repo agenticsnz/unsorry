@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sum-decagonal-second-kind-closed-form
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/sum-decagonal-second-kind-closed-form.lean
-  sha≜∅
-  aff≜-10
+  sha≜29bb8252de301bef73ef40b4a45d347498ab5d1c0bac93870832680607b1a3ac
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

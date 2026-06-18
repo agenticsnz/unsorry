@@ -90,7 +90,7 @@ jobs:
           # artifacts write disjoint files — then pushes; a lost race just retries
           # onto the updated main. `[skip ci]` + the docs-only paths keep it from
           # re-firing.
-          paths="docs/leaderboard.md docs/leaderboard.svg docs/metrics/community-stats.json docs/metrics/leaderboard-ui.json docs/metrics/attribution-gaps.json"
+          paths="docs/leaderboard.md docs/leaderboard.svg docs/metrics/community-stats.json docs/metrics/leaderboard-ui.json docs/metrics/attribution-gaps.json docs/metrics/sourcing-leaderboard.json"
           for attempt in 1 2 3 4 5; do
             git fetch --quiet origin main
             git reset --hard --quiet origin/main

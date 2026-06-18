@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜nat-zero-lt-succ
   phase≜translate
-  status≜translated
+  status≜proved
   difficulty≜0
 }
 ⟦Σ:Source⟧{

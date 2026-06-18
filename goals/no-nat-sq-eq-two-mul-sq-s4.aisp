@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜no-nat-sq-eq-two-mul-sq-s4
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜decompositions/no-nat-sq-eq-two-mul-sq.d337a70018c9-90fd.aisp
+  src≜packages/unsorry-archive-0005/decompositions/no-nat-sq-eq-two-mul-sq.d337a70018c9-90fd.aisp
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/no-nat-sq-eq-two-mul-sq-s4.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0005/goals/no-nat-sq-eq-two-mul-sq-s4.lean
+  sha≜15cc9ae6a45d4604d0784795c99a8d1d7c2a5d308220dfbe84f448bed77cabec
   depth≜1
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜dvd-399-pow-nineteen-sub-self
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/dvd-399-pow-nineteen-sub-self.lean
-  sha≜∅
-  aff≜-20
+  sha≜06a395c60e03f3b2f71a4067cbdd89a94701915f494a4b326c5e7e907b5a9c66
+  aff≜-19
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
