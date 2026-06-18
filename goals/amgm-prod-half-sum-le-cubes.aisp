@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜amgm-prod-half-sum-le-cubes
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/amgm-prod-half-sum-le-cubes.md
+  src≜packages/unsorry-archive-0005/backlog/amgm-prod-half-sum-le-cubes.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/amgm-prod-half-sum-le-cubes.lean
+  lean≜packages/unsorry-archive-0005/goals/amgm-prod-half-sum-le-cubes.lean
   sha≜dbcc3a5f86007d3c16a399bcfec5546d5a8640f6d47bf856ff90ae473de255e0
   aff≜-20
 }

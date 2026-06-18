@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜alternating-sum-k-mul-choose-eq-zero
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜4
 }
 ⟦Σ:Source⟧{
-  src≜backlog/alternating-sum-k-mul-choose-eq-zero.md
+  src≜packages/unsorry-archive-0005/backlog/alternating-sum-k-mul-choose-eq-zero.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/alternating-sum-k-mul-choose-eq-zero.lean
+  lean≜packages/unsorry-archive-0005/goals/alternating-sum-k-mul-choose-eq-zero.lean
   sha≜f3089d2c23074c0826f40e946589b48242a3ea7d01aeed79837f48731f15385e
   aff≜-20
 }

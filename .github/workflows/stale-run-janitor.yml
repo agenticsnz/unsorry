@@ -1,0 +1,47 @@
+# Cancel Gate A runs that are stuck — a dead Namespace runner leaves its run
+# wedged `in_progress` past the timeout, and abandoned runs sit `queued` forever;
+# either way they keep eating the submission governor's in-flight budget
+# (UNSORRY_MAX_GATE_A_IN_FLIGHT), starving real verification and triggering
+# cancellation cascades (the "70 failing" zombie jam). This keeps the budget
+# honest. Uses the default GITHUB_TOKEN (actions: write) — no PR creation, so no
+# REFRESH_TOKEN needed. Conservative thresholds: never touches a normal (~15 min)
+# run or a briefly-queued one.
+name: stale-run-janitor
+
+on:
+  schedule:
+    - cron: "*/20 * * * *"
+  workflow_dispatch:
+    inputs:
+      in_progress_minutes:
+        description: "Cancel in_progress Gate A runs older than this"
+        default: "90"
+      queued_minutes:
+        description: "Cancel queued Gate A runs older than this"
+        default: "180"
+
+concurrency:
+  group: stale-run-janitor
+  cancel-in-progress: false
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  janitor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.12"
+      - name: Cancel stale Gate A runs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 -m tools.repo.stale_runs \
+            --workflow gate-a.yml \
+            --repo "${{ github.repository }}" \
+            --in-progress-minutes "${{ github.event.inputs.in_progress_minutes || '90' }}" \
+            --queued-minutes "${{ github.event.inputs.queued_minutes || '180' }}"
