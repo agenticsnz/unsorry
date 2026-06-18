@@ -1,0 +1,21 @@
+𝔸5.1.goal.four-var-qm-am-s1@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜four-var-qm-am-s1
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜decompositions/four-var-qm-am.oma-2-c50d.aisp
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/four-var-qm-am-s1.lean
+  sha≜edb2aad3ad65396368ed521dcba6cb84ebdcad48bee24670edc597e486d209f3
+  aff≜1
+  depth≜1
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
