@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜am-hm-two-var
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/am-hm-two-var.md
+  src≜packages/unsorry-archive-0005/backlog/am-hm-two-var.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/am-hm-two-var.lean
+  lean≜packages/unsorry-archive-0005/goals/am-hm-two-var.lean
   sha≜0bfd0e78cba870592f8ea3d854f683da0f68b469c66e2e8b36026b6be973e6ed
   aff≜-20
 }

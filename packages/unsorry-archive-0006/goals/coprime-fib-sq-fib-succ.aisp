@@ -1,0 +1,20 @@
+𝔸5.1.goal.coprime-fib-sq-fib-succ@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜coprime-fib-sq-fib-succ
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/coprime-fib-sq-fib-succ.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/coprime-fib-sq-fib-succ.lean
+  sha≜046934e220bcfcf76b75cb1f71ac11ada35292f048e9214ce6182207be6a598e
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
