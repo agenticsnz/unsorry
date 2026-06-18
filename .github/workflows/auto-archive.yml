@@ -1,0 +1,58 @@
+# Auto-archive the active proved set when it crosses the ceiling (ADR-041 /
+# SPEC-041-A §9). `tools/archive/auto_cut.sh` cuts one block per run and only when
+# no archive PR is already open, so it self-serialises behind merges. Keeping the
+# active set bounded keeps Gate A full-replay + `lake build --wfail` under memory,
+# which is what prevents the exit-137 OOM. Needs an admin PAT/App token as the
+# REFRESH_TOKEN secret (a GITHUB_TOKEN-opened PR does not trigger Gate A).
+name: auto-archive
+
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+    inputs:
+      ceiling:
+        description: "Cut when proved-not-archived >= this many goals"
+        default: "40"
+
+concurrency:
+  group: auto-archive
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Detect refresh token (#417)
+        id: tok
+        env:
+          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+        run: |
+          if [ -n "${REFRESH_TOKEN}" ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: No REFRESH_TOKEN — report only (#417)
+        if: steps.tok.outputs.present != 'true'
+        run: echo "::warning::REFRESH_TOKEN is unset — skipping auto-archive. A GITHUB_TOKEN-opened PR does not trigger Gate A, so the cut could never merge. Add an admin PAT/App token as the REFRESH_TOKEN secret to enable scheduled archiving."
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        if: steps.tok.outputs.present == 'true'
+        with:
+          ref: main # apply/immutability need main checked out with history
+          token: ${{ secrets.REFRESH_TOKEN }}
+          fetch-depth: 0
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        if: steps.tok.outputs.present == 'true'
+        with:
+          python-version: "3.12"
+      - name: Auto-archive one block if over the ceiling (ADR-041 §9)
+        if: steps.tok.outputs.present == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+          CEILING: ${{ github.event.inputs.ceiling || '40' }}
+        run: ./tools/archive/auto_cut.sh
