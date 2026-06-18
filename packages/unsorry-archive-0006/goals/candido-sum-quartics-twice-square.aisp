@@ -1,0 +1,20 @@
+𝔸5.1.goal.candido-sum-quartics-twice-square@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜candido-sum-quartics-twice-square
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/candido-sum-quartics-twice-square.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/candido-sum-quartics-twice-square.lean
+  sha≜4e4548b172a1a282f1ed538104d0e6fd95689969df69d133c667a3ab88e4bfa3
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
