@@ -1,0 +1,8 @@
+𝔸5.1.lemma.3c70ab926345@2026-06-17
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜3c70ab926345e9172b7dd1ef957a015e4fc4e93b703b8d9b19d8472d00ac44e7; goal≜sum-range-sq-mul-two-pow; name≜sum_range_sq_mul_two_pow}
+⟦Σ:Source⟧{src≜goals/sum-range-sq-mul-two-pow.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜claude; model≜template-sum-induction; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

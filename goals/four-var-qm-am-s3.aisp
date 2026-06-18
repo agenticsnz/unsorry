@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜four-var-qm-am-s3
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜decompositions/four-var-qm-am.oma-2-c50d.aisp
+  src≜packages/unsorry-archive-0007/decompositions/four-var-qm-am.oma-2-c50d.aisp
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/four-var-qm-am-s3.lean
+  lean≜packages/unsorry-archive-0007/goals/four-var-qm-am-s3.lean
   sha≜c46b3f42401daf231fc4cec90693abbb5a92d81b32519cbec91d0dcda0fc2b35
   aff≜1
   depth≜1
