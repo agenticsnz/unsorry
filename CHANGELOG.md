@@ -12,6 +12,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 `python3 -m tools.changelog --preview`; a release folds them in here with
 `python3 -m tools.changelog --release <version> <date>`. -->
 
+## [1.25.0] - 2026-06-18
+
+### Added
+
+- Added the **duplicate-verifier-waste metric** ([ADR-070](docs/adrs/ADR-070-Duplicate-Verifier-Waste-Metric.md) / [SPEC-070-A](docs/adrs/specs/SPEC-070-A-Duplicate-Verifier-Waste-Metric.md)) — Phase-2 step 2a, the evidence that gates whether the fork-writable lease (ADR-053) and identity/quota layer (ADR-054) are worth building. Claimless fork proving (ADR-068) lets two forks prove the same goal and each burn a Gate A run before first-merge-wins; this read-only metric (`tools.repo.fork_waste`, a pure unit-tested summariser over the `gh pr list` prove-PR history) reports how many cross-repo (fork) `prove(<goal>):` PRs were opened, merged, and **closed without merging** (the wasted ones), plus the fork-collision rate and an estimated wasted-Gate-A-run count. It is published as `docs/metrics/fork-waste.json` and refreshed by a scheduled `fork-waste` workflow (the `queue-board` pattern: `REFRESH_TOKEN`, report-only when unset, `[skip ci]` commit). The metric is advisory analytics only — nothing in the harness consumes it and it never gates selection, admission, or merge. The first snapshot reads **0 fork waste** (fork mode is new), so it confirms Phase-2 2c/2d are not yet justified — and will start accruing the moment forks begin contributing.
+
+## [1.24.0] - 2026-06-17
+
+### Added
+
+- Added the **fork auto-merge enabler** ([ADR-068](docs/adrs/ADR-068-Fork-Native-Contribution-Mode.md) / [SPEC-068-A](docs/adrs/specs/SPEC-068-A-Fork-Native-Contribution-Mode.md) §6) — the upstream side of fork-native contribution that makes it hands-off. A fork contributor's cross-repo `prove(<goal>):` PR cannot self-arm auto-merge (no upstream write), so a new scheduled workflow (`fork-automerge-enabler`, `REFRESH_TOKEN`, report-only when unset — the `queue-dispatcher` pattern) arms `--auto --squash` on admissible fork PRs. Admissibility is decided by a pure, unit-tested selector (`tools.repo.fork_automerge`): the PR must be **cross-repository**, carry a `prove(...)` title (ADR-026), touch **only** the proof allow-paths (`library/`, `goals/`, `proof-runs/` — never the gates, harness, or workflows; fail-closed on an unseen diff), and not already be armed. GitHub still blocks the merge until Gate A + Gate B are green (ADR-005) and Gate A re-verifies every fork PR on the kernel, so nothing is trusted from the fork — the enabler only arms the merge the gates then gate.
+- Added **fork-native contribution mode** to the prover ([ADR-068](docs/adrs/ADR-068-Fork-Native-Contribution-Mode.md) / [SPEC-068-A](docs/adrs/specs/SPEC-068-A-Fork-Native-Contribution-Mode.md)), so a contributor with **no write access** to the canonical repo can fork, run `./swarm/run.sh`, and have the swarm prove goals and land them. Fork mode is auto-detected when `origin` is a fork of `UNSORRY_UPSTREAM` (or forced with `--fork` / `UNSORRY_FORK=1`): the agent proves **claimlessly** (the `claims` branch is upstream-only and fork-inaccessible — it instead dedups read-only against the upstream and keeps the fork's `main` synced), pushes each verified proof branch to the contributor's **fork**, and opens a **cross-repo PR** to the upstream where Gate A re-verifies it on the kernel and auto-merge lands it. `swarm/run.sh` auto-detects a fork origin and launches the prover only (a fork cannot run the dispatcher). The canonical write-access path is unchanged (fork mode is default-off and additive); `--prove-local` remains the purely-local, no-submission option. Note: GitHub requires a one-time maintainer approval of a new fork contributor's first Actions run, after which it is hands-off.
+- `swarm/run.sh` now sources on demand **by default** ([ADR-069](docs/adrs/ADR-069-Launcher-Demand-Driven-Sourcing-Arm.md) / [SPEC-069-A](docs/adrs/specs/SPEC-069-A-Launcher-Demand-Driven-Sourcing-Arm.md)): the one-command launcher gains a third background arm — a `sourcer` loop running `./swarm/sourcing.sh --if-pool-empty` (ADR-067) — alongside the dispatcher and prover, torn down with them on exit. So a single `./swarm/run.sh` now proves, dispatches, **and** replenishes the backlog exactly when (and only when) the prove pool runs dry — no second command or cron needed. v1.23.0 shipped the `--if-pool-empty` mechanism but left the launcher unwired, so the automatic, default-on behaviour was absent; this closes ADR-067's deferred follow-up at the launcher level, leaving the prove arm / `agent.sh` / ADR-017 untouched. The arm only *adds* automatic empty-pool top-up — explicit `./swarm/sourcing.sh` (no flag) still sources on demand at any pool depth, so making auto-sourcing the default never suppresses a manual source. Default-on; set `UNSORRY_SOURCE_ON_EMPTY=0` to omit the arm (e.g. a deployment topped up by a scheduled sourcing job) and `UNSORRY_SOURCING_WAIT` (default 300s) to tune the re-poll interval. `run.sh` also gains its first hermetic `--self-test`, wired into `agent-lint.yml`.
+
+## [1.23.0] - 2026-06-17
+
+### Added
+
+- Added a demand-driven mode to the goal-sourcing runner (`swarm/sourcing.sh`, [ADR-067](docs/adrs/ADR-067-Demand-Driven-Sourcing.md) / [SPEC-067-A](docs/adrs/specs/SPEC-067-A-Demand-Driven-Sourcing.md)): the new `--if-pool-empty` flag makes sourcing source **only when there are no problems left to solve** — when no `goals/<slug>.aisp` carries `status≜open` on the freshly-synced `main` — and otherwise no-op with exit 0 (no Claude call, no PR). It re-checks the pool before every cycle, so a supervisor or cron can keep a single `./swarm/sourcing.sh --if-pool-empty` running that replenishes the backlog exactly when, and only when, the prove arm (`agent.sh`) runs dry — the complement of the prove arm's empty-pool stop. The flag is default-off (every existing invocation is byte-for-byte unchanged), reuses the same `status≜open` marker `supervise.sh` already reads (no new claim/proved/index plumbing), and keeps ADR-062's exit-code contract so `supervise.sh` wraps it unchanged.
+
+### Fixed
+
+- Fixed the leaderboard's view-toggle menu (the **Leaderboard / Top 5 / Proofs over time / Sourcing** tabs) overflowing off the right edge on mobile — the fourth tab, **Sourcing**, sat entirely off-screen and was clipped by the card. The `inline-flex` strip was ~479px wide inside a ~310px mobile content area and its `overflow-x` scroll never engaged, so the last tab was simply unreachable. The strip now **wraps to multiple rows on narrow viewports** (every tab visible) and still hugs its content in a single row from `sm:` up. (Verified at 320/360/390px.)
+
+## [1.22.2] - 2026-06-17
+
+### Fixed
+
+- Fixed the leaderboard view-section headers (Goals sourced, Model distribution, Top 5, Proofs over time) overflowing off the right edge on narrow viewports. The heading and its subtitle sat in a non-wrapping `flex … justify-between` row, so a long subtitle (e.g. the Sourcing view's "who added each goal · ADR-060") spilled off-screen. The headers now stack — subtitle under the heading — on mobile and restore the side-by-side layout from `sm:` up.
+
+## [1.22.1] - 2026-06-17
+
+### Fixed
+
+- Fixed a mobile layout glitch on the [leaderboard](docs/leaderboard.html) **Sourcing** view where the `N sourced` bar label overflowed the bar area on narrow viewports and was clipped by the card (it spilled off to the right and wasn't visible). The label now shows just the count on small screens and restores the full ` sourced` wording from `sm:` up, so it always fits — matching the contributor view's shorter `N pts` label.
+- Fixed the queued-proofs board ([`docs/queue.html`](docs/queue.html)) dumping every solver's full submission list at once — unwieldy with hundreds of queued proofs. Each solver is now a **collapsible section, collapsed by default** (native `<details>`/`<summary>`, ADR-066): the page opens as a short, scannable list of solver names ranked biggest-queue-first, and tapping a solver reveals that solver's queued proofs. The internal `ADR-058` reference was also dropped from the page copy.
+
+## [1.22.0] - 2026-06-17
+
+### Added
+
+- Added a **queued-proofs board** ([ADR-066](docs/adrs/ADR-066-Queued-Proofs-Board.md) / [SPEC-066-A](docs/adrs/specs/SPEC-066-A-Queued-Proofs-Board.md)) — a new `docs/queue.html` page (plus a machine-readable `docs/queue.json`) in the shared site UX (Home · Leaderboard · Proof graph · **Queue**) that shows the proofs submitted to the `queued/prove/*` queue (ADR-058) but not yet merged, grouped by **solver**. Generated by `tools.queue_board`: unlike the leaderboard / proof-graph / targets generators it sources the queue from **git refs** rather than the `main` working tree (the queue lives on ephemeral branches that fill and drain without any merge), resolves each submission's solver from the index entry's `⟦Π:Provenance⟧{solver≜…}` with a git-author + contributor-alias fallback (so `reroute-*` branches credit the real solver, not the bot that pushed them), excludes goals already proved on `main` (ADR-064 parity), and labels each submission *waiting* or *in-flight* from the set of open prove-PR head refs. A new scheduled `queue-board` workflow (cron `*/15`, `REFRESH_TOKEN`, retry-rebase — the proofs-visualisation.yml pattern) refreshes it on `main`, degrading to report-only when the token is unset. The shared top-nav is now defined once in `tools/site_nav.py` (DRY) and gains the Queue tab across every page.
+
 ## [1.21.0] - 2026-06-17
 
 ### Added
