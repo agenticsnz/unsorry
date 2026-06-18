@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sum-triple-product-eq
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜3
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/sum-triple-product-eq.lean
-  sha≜∅
-  aff≜-10
+  sha≜ff7997363447c30a9e9c008348e72300eef2f62f75abf07e7b1f010d31157fe4
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

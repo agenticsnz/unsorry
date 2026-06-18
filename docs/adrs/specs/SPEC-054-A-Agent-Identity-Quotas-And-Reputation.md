@@ -91,9 +91,37 @@ Public leaderboards should credit work without exposing unnecessary secrets or
 private account metadata. Governance actions that affect access should retain
 enough reason and evidence for later review.
 
-## 7. Out of Scope
+## 7. Phase-2 enforcement slice (the fork onramp)
+
+The minimal, evidence-gated realisation that controls fork-contribution abuse
+without a full identity service or a lease (gated on the ADR-070 metric; sequenced
+in SPEC-053-A §8.2). It enforces a subset of §2/§4/§5 at the one chokepoint that
+already exists — the `fork-automerge-enabler` (ADR-068 / SPEC-068-A §6):
+
+- **Identity** = the GitHub account that opened the cross-repo PR; `owner_id` is
+  that account (or a maintainer-mapped fleet owner). No new identity record store
+  is required for the slice — the PR carries the identity.
+- **Quota at the chokepoint.** Extend the `tools.repo.fork_automerge` selector so a
+  fork PR is admissible only if its owner is under `max_prs_open` (per-owner open
+  cross-repo prove PRs), not on the **denylist**, within its tier's ceiling, and
+  the global **emergency pause** is off. These are read from a small policy file
+  (`tools/repo/fork_policy.*`), versioned in-repo and auditable.
+- **Tiers.** A new owner is `trial` (low concurrency); promotion to `trusted`
+  reads accepted-proof provenance (§ below) — no manual maintenance.
+- **Emergency pause / revocation** reuse the enabler's existing fail-soft: pause =
+  arm nothing this run; revoke = denylist entry with a reason.
+
+### 7.1 Reputation derivation (no parallel store)
+
+`ReputationEvent`s of type "accepted verified work" (§3) are **derived** from the
+existing `⟦Π:Provenance⟧{solver≜…}` of merged `library/index` entries (ADR-023),
+not separately recorded. A `trial → trusted` promotion is a threshold on that
+derived count. Negative events (lease hoarding, repeated infra failures, abuse)
+are recorded explicitly, since they have no merged-proof footprint.
+
+## 8. Out of Scope
 
 - Cryptographic identity protocol selection.
 - Payments, collateral, or token economics.
 - Verification correctness.
-- Claim substrate implementation.
+- Claim substrate implementation (SPEC-053-A owns it).
