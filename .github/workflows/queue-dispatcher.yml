@@ -62,6 +62,14 @@ jobs:
         if: steps.tok.outputs.present == 'true'
         with:
           python-version: "3.12"
+      - name: Preflight — REFRESH_TOKEN can open PRs (ADR-065)
+        # Fail fast with a clear message if the token lacks pull-request-write,
+        # instead of attempting every dispatch and dying on opaque GraphQL
+        # "Resource not accessible by personal access token (createPullRequest)".
+        if: steps.tok.outputs.present == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+        run: python3 -m tools.repo.doctor --check pr-token --repo "${{ github.repository }}"
       - name: Dispatch queued proofs (governor-metered)
         if: steps.tok.outputs.present == 'true'
         env:
