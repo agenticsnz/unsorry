@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜schur-inequality-deg-one
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜4
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/schur-inequality-deg-one.lean
-  sha≜∅
+  sha≜f451c1454a323c201ec57e4a746906564e583bc938c8426fb1ed4ab4ad0249de
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
