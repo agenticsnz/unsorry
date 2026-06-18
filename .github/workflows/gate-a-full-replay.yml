@@ -48,7 +48,7 @@ env:
 jobs:
   full-replay:
     name: gate-a-full-replay
-    runs-on: namespace-profile-unsorry-replay
+    runs-on: namespace-profile-unsorry-1
     # Generous: a serial full replay of the whole library in small chunks is the
     # slowest path; the small chunk trades wall-clock for memory headroom.
     timeout-minutes: 180

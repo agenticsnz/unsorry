@@ -1,0 +1,8 @@
+𝔸5.1.run.sum-hexagonal-eq.mac-158f.20260617t164959773308z-b7c0a8aa@2026-06-17
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260617t164959773308z-b7c0a8aa; goal≜sum-hexagonal-eq; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-sum-induction}
+⟦Γ:Goal⟧{goal≜sum-hexagonal-eq}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-17T16:49:59Z}
+⟦Σ:Artifact⟧{sha≜6f2e3fd835897483c81425d75afee80a4c68fd4c1f84974ab7ca699afddc236c}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
