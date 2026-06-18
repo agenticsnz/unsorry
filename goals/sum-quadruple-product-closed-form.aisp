@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sum-quadruple-product-closed-form
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/sum-quadruple-product-closed-form.lean
-  sha≜∅
-  aff≜-10
+  sha≜9dfd7f81f84e6465761b5ed94fffed4fb21bc91bd190b4ed52546151551d1011
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

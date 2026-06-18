@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜lcm-self-succ
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/lcm-self-succ.md
+  src≜packages/unsorry-archive-0005/backlog/lcm-self-succ.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/lcm-self-succ.lean
+  lean≜packages/unsorry-archive-0005/goals/lcm-self-succ.lean
   sha≜001a26a07a1e6f63147b5111f65b604b277fbbec7ac7f8f58ed28b1f93bbad8b
   aff≜-20
 }

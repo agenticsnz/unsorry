@@ -1,0 +1,21 @@
+𝔸5.1.goal.no-nat-sq-eq-two-mul-sq-s2@2026-06-14
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜no-nat-sq-eq-two-mul-sq-s2
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜decompositions/no-nat-sq-eq-two-mul-sq.d337a70018c9-90fd.aisp
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/no-nat-sq-eq-two-mul-sq-s2.lean
+  sha≜bbca966f016cfb8dc70a97fe2f9f9950c5fdf4b66cbdd7c00f7eac257b28abce
+  aff≜-9
+  depth≜1
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

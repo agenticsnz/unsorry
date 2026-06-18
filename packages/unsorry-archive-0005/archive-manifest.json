@@ -1,0 +1,179 @@
+{
+  "block_id": "unsorry-archive-0005",
+  "target_size": 40,
+  "proof_count": 40,
+  "status": "frozen",
+  "source_commit": "cf5cf4f1aa471acc06153595211bf8118cc5a960",
+  "validation_commit": null,
+  "pins": {
+    "lean_toolchain": "leanprover/lean4:v4.30.0",
+    "mathlib": "v4.30.0"
+  },
+  "notes": [
+    "ADR-041 proof archive block 0005.",
+    "Whole decomposition trees + standalone proved goals only (invariant A).",
+    "Active goal records remain as archived metadata pointing at this package."
+  ],
+  "goals": [
+    {
+      "goal": "abstract-regular-polyhedron-realizable-iff",
+      "module": "Unsorry.AbstractRegularPolyhedronRealizableIff"
+    },
+    {
+      "goal": "am-gm-three-cube-s2",
+      "module": "Unsorry.AmGmThreeCubeS2"
+    },
+    {
+      "goal": "am-gm-three-cube",
+      "module": "Unsorry.AmGmThreeCube"
+    },
+    {
+      "goal": "am-gm-three-cube-s2-s2",
+      "module": "Unsorry.AmGmThreeCubeS2S2"
+    },
+    {
+      "goal": "am-gm-three-cube-s2-s2-s2",
+      "module": "Unsorry.AmGmThreeCubeS2S2S2"
+    },
+    {
+      "goal": "am-gm-three-cube-s2-s2-s1",
+      "module": "Unsorry.AmGmThreeCubeS2S2S1"
+    },
+    {
+      "goal": "am-gm-three-cube-s1",
+      "module": "Unsorry.AmGmThreeCubeS1"
+    },
+    {
+      "goal": "am-gm-three-cube-s2-s1",
+      "module": "Unsorry.AmGmThreeCubeS2S1"
+    },
+    {
+      "goal": "am-hm-two-var-s3",
+      "module": "Unsorry.AmHmTwoVarS3"
+    },
+    {
+      "goal": "am-hm-two-var-s2",
+      "module": "Unsorry.AmHmTwoVarS2"
+    },
+    {
+      "goal": "am-hm-two-var",
+      "module": "Unsorry.AmHmTwoVar"
+    },
+    {
+      "goal": "am-hm-two-var-s1",
+      "module": "Unsorry.AmHmTwoVarS1"
+    },
+    {
+      "goal": "coprime-succ-sq-add",
+      "module": "Unsorry.CoprimeSuccSqAdd"
+    },
+    {
+      "goal": "cube-sum-ge-three-prod-s3",
+      "module": "Unsorry.CubeSumGeThreeProdS3"
+    },
+    {
+      "goal": "cube-sum-ge-three-prod",
+      "module": "Unsorry.CubeSumGeThreeProd"
+    },
+    {
+      "goal": "cube-sum-ge-three-prod-s1",
+      "module": "Unsorry.CubeSumGeThreeProdS1"
+    },
+    {
+      "goal": "cube-sum-ge-three-prod-s2",
+      "module": "Unsorry.CubeSumGeThreeProdS2"
+    },
+    {
+      "goal": "gcd-consec-odd-eq-one",
+      "module": "Unsorry.GcdConsecOddEqOne"
+    },
+    {
+      "goal": "lcm-self-succ",
+      "module": "Unsorry.LcmSelfSucc"
+    },
+    {
+      "goal": "no-int-sq-eq-eight-mul-add-three",
+      "module": "Unsorry.NoIntSqEqEightMulAddThree"
+    },
+    {
+      "goal": "no-nat-sq-eq-two-mul-sq-s4",
+      "module": "Unsorry.NoNatSqEqTwoMulSqS4"
+    },
+    {
+      "goal": "no-nat-sq-eq-two-mul-sq-s2",
+      "module": "Unsorry.NoNatSqEqTwoMulSqS2"
+    },
+    {
+      "goal": "no-nat-sq-eq-two-mul-sq-s3",
+      "module": "Unsorry.NoNatSqEqTwoMulSqS3"
+    },
+    {
+      "goal": "no-nat-sq-eq-two-mul-sq-s1",
+      "module": "Unsorry.NoNatSqEqTwoMulSqS1"
+    },
+    {
+      "goal": "no-nat-sq-eq-two-mul-sq",
+      "module": "Unsorry.NoNatSqEqTwoMulSq"
+    },
+    {
+      "goal": "pow-four-add-pow-four-ge-cube-mul",
+      "module": "Unsorry.PowFourAddPowFourGeCubeMul"
+    },
+    {
+      "goal": "realization-edge-in-set",
+      "module": "Unsorry.RealizationEdgeInSet"
+    },
+    {
+      "goal": "six-dvd-pow-three-sub-self",
+      "module": "Unsorry.SixDvdPowThreeSubSelf"
+    },
+    {
+      "goal": "six-dvd-three-consecutive-int",
+      "module": "Unsorry.SixDvdThreeConsecutiveInt"
+    },
+    {
+      "goal": "sixth-power-mod-seven",
+      "module": "Unsorry.SixthPowerModSeven"
+    },
+    {
+      "goal": "sophie-germain-factor-dvd",
+      "module": "Unsorry.SophieGermainFactorDvd"
+    },
+    {
+      "goal": "sq-mod-seven",
+      "module": "Unsorry.SqModSeven"
+    },
+    {
+      "goal": "square-of-sum-ge-three-pairwise",
+      "module": "Unsorry.SquareOfSumGeThreePairwise"
+    },
+    {
+      "goal": "sum-cubes-ge-sym-quadratic-two-var",
+      "module": "Unsorry.SumCubesGeSymQuadraticTwoVar"
+    },
+    {
+      "goal": "sum-sq-prod-ge-mul-sum",
+      "module": "Unsorry.SumSqProdGeMulSum"
+    },
+    {
+      "goal": "weighted-am-gm-cubed",
+      "module": "Unsorry.WeightedAmGmCubed"
+    },
+    {
+      "goal": "abc-nine-le-sum-times-pairsum",
+      "module": "Unsorry.AbcNineLeSumTimesPairsum"
+    },
+    {
+      "goal": "alt-sum-range-two-k-add-one-eq-signed-n",
+      "module": "Unsorry.AltSumRangeTwoKAddOneEqSignedN"
+    },
+    {
+      "goal": "alternating-sum-k-mul-choose-eq-zero",
+      "module": "Unsorry.AlternatingSumKMulChooseEqZero"
+    },
+    {
+      "goal": "amgm-prod-half-sum-le-cubes",
+      "module": "Unsorry.AmgmProdHalfSumLeCubes"
+    }
+  ]
+}
