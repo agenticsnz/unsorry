@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜fib-add-two-sq-sub-fib-sq-eq-fib-two-mul-add-two
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/fib-add-two-sq-sub-fib-sq-eq-fib-two-mul-add-two.md
+  src≜packages/unsorry-archive-0007/backlog/fib-add-two-sq-sub-fib-sq-eq-fib-two-mul-add-two.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/fib-add-two-sq-sub-fib-sq-eq-fib-two-mul-add-two.lean
+  lean≜packages/unsorry-archive-0007/goals/fib-add-two-sq-sub-fib-sq-eq-fib-two-mul-add-two.lean
   sha≜cc3ee160a8d13d2e9532b6b7de12d3760cc4871b2cd4ff69a1a8c7c4161748b9
   aff≜-20
 }
