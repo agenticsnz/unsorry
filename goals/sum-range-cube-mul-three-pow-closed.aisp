@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-cube-mul-three-pow-closed
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜3
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/sum-range-cube-mul-three-pow-closed.lean
-  sha≜∅
-  aff≜-10
+  sha≜5cd097848a0813ef59373a18dc9f714ca6d0534d7a760cb4a5001a50a1c14d33
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

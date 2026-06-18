@@ -1,0 +1,20 @@
+𝔸5.1.goal.gcd-2n3-4n5-dvd-two@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gcd-2n3-4n5-dvd-two
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/gcd-2n3-4n5-dvd-two.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/gcd-2n3-4n5-dvd-two.lean
+  sha≜30b859d384290d5d3643ecec3feeb804b4e78cb698b5814339f9e4a47fffd9f1
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

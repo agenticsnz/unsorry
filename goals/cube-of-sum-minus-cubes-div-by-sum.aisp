@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜cube-of-sum-minus-cubes-div-by-sum
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/cube-of-sum-minus-cubes-div-by-sum.md
+  src≜packages/unsorry-archive-0006/backlog/cube-of-sum-minus-cubes-div-by-sum.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/cube-of-sum-minus-cubes-div-by-sum.lean
+  lean≜packages/unsorry-archive-0006/goals/cube-of-sum-minus-cubes-div-by-sum.lean
   sha≜cf99f64af9f4a0531b05648ff5435c558a945d33808ccfb172196f634bf17a56
   aff≜-20
 }
