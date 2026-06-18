@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜square-of-sum-ge-three-pairwise
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/square-of-sum-ge-three-pairwise.md
+  src≜packages/unsorry-archive-0005/backlog/square-of-sum-ge-three-pairwise.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/square-of-sum-ge-three-pairwise.lean
+  lean≜packages/unsorry-archive-0005/goals/square-of-sum-ge-three-pairwise.lean
   sha≜30486b0b7a7f6a5c7cc4958e68a0d4d34d69cf64877e39cd28df246226bff4ad
   aff≜-10
 }

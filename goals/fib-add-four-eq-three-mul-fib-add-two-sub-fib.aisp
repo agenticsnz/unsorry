@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜fib-add-four-eq-three-mul-fib-add-two-sub-fib
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/fib-add-four-eq-three-mul-fib-add-two-sub-fib.md
+  src≜packages/unsorry-archive-0007/backlog/fib-add-four-eq-three-mul-fib-add-two-sub-fib.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/fib-add-four-eq-three-mul-fib-add-two-sub-fib.lean
+  lean≜packages/unsorry-archive-0007/goals/fib-add-four-eq-three-mul-fib-add-two-sub-fib.lean
   sha≜b990352c64db3ef015705e9df22c109ac4c272c879af51ce17d1f8e5eb1d1ca7
   aff≜-20
 }
