@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜bezout-eleven-thirteen-eq-one
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/bezout-eleven-thirteen-eq-one.md
+  src≜packages/unsorry-archive-0006/backlog/bezout-eleven-thirteen-eq-one.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/bezout-eleven-thirteen-eq-one.lean
+  lean≜packages/unsorry-archive-0006/goals/bezout-eleven-thirteen-eq-one.lean
   sha≜48bf42d6bc22c1d57c3503cf9521b900aa6f97908958aca3098d65a6f430478c
   aff≜-20
 }
