@@ -15,12 +15,14 @@
 
 Check out the proofs the team has delivered so far: [Proof graph](docs/proofs-contributors-visualisation.html) · [Visual leaderboard](docs/leaderboard.html) · [Queue](docs/queue.html)
 
-…and what's submitted but not yet merged, grouped by solver: the [queued-proofs board](docs/queue.html) (ADR-066).
-
 [![Unsorry leaderboard](docs/leaderboard.svg)](docs/leaderboard.html)
-
 [![Unsorry proof graph](docs/proof-graph.svg)](docs/proofs-contributors-visualisation.html)
 
+### 10 days of madness: 'Tell me a Fable' - The story of unsorry
+- [YouTube](https://youtu.be/Lr6Io2A07N8?t=1612&si=dNVLumJzvW2RWBq5)
+- [Slides](https://docs.google.com/presentation/d/19dUOSOp0UoE5pV6tBaTtPdXaA50JQ2ev17Z_N5RjZ2c/edit?usp=drivesdk)
+
+## Design
 Three design decisions make this safe with untrusted, intermittent, rag-tag contributors:
 
 1. **The kernel is the only truth oracle.** Every contribution is re-verified by the Lean kernel in CI. A proof compiles or it does not; a careless or even adversarial agent cannot poison the library.

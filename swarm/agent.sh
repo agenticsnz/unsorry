@@ -176,7 +176,7 @@ Environment:
                     already exist (default: 40; set -1 to disable this limit)
   UNSORRY_MAX_GATE_A_IN_FLIGHT
                     Pause coordinated --prove when queued + in-progress Gate A
-                    workflow runs reach this count (default: 20; set -1 to
+                    workflow runs reach this count (default: 8; set -1 to
                     disable this limit)
   UNSORRY_GOVERNOR_SCAN_LIMIT
                     Max PR/runs rows fetched per governor query (default: 200)
@@ -1632,6 +1632,22 @@ queued_branch_refs() {
   git for-each-ref --format='%(refname:short)' refs/remotes/origin/queued/prove
 }
 
+# ADR-071: a final fresh "is this goal already taken?" check, run immediately
+# before opening a PR. ADR-064's pass-start checks (goal_already_proved /
+# open_pr_goals) go stale during a long pass and in the gap before gh pr create:
+# a sibling proof of the same goal can MERGE, or a concurrent dispatcher can OPEN
+# a PR, leaving this branch a dead "already proved" duplicate (the #2059/#2179
+# class, all created after ADR-064 landed). Re-fetch origin/main and re-list open
+# PRs for the handful actually being dispatched — cheap (git grep + one core-API
+# list, no 30/min search API). Best-effort: any infra error degrades to "not
+# taken" so dispatch still proceeds.
+goal_taken_fresh() {
+  local goal="$1"
+  fetch_main_ref || true
+  goal_already_proved "$goal" && return 0
+  dispatch_open_pr_goals | grep -qxF "$goal"
+}
+
 # ADR-064: goals that already have an OPEN prove PR, collected in ONE list-API
 # call (core quota, 5000/h). The dispatch loop checks membership in this set
 # rather than a per-branch open_prove_pr_exists, whose `gh ... --search` hits the
@@ -1688,6 +1704,14 @@ dispatch_queue() {
     if ! submission_governor_allows; then
       [ "$dispatched" -gt 0 ] && return "$failures"
       return 0
+    fi
+    # ADR-071: re-check against current state right before creating the PR — a
+    # sibling proof may have merged, or another dispatcher opened a PR, since the
+    # pass-start checks. This is where the post-ADR-064 duplicates leaked.
+    if goal_taken_fresh "$goal"; then
+      log "queue dispatcher skipped $branch — goal $goal was taken during this pass (merged or already PR'd)"
+      seen_goals="$seen_goals$goal "
+      continue
     fi
     if dispatch_queued_proof_branch "$branch"; then
       dispatched=$((dispatched + 1))
@@ -1866,6 +1890,24 @@ claim_goal() {
     git -C "$CLAIMS_WT" add "$file" || break
     git -C "$CLAIMS_WT" commit -q -m "claim: $goal $AGENT_ID" || break
     if git -C "$CLAIMS_WT" push -q origin claims 2>/dev/null; then
+      # ADR-072: post-SUCCESS recheck. Claim files are per-agent
+      # (claims/<goal>.<agent>.aisp), so a rival's claim lands as a CLEAN
+      # fast-forward — no push rejection — whenever our base already contained it
+      # (we fetched after they pushed). The only recheck above runs on rejection,
+      # so two agents whose claims both pushed cleanly would BOTH prove the goal:
+      # the prove-time race that creates the sibling branches behind the
+      # post-ADR-064 duplicates. Re-fetch and re-apply the per-mode cap; if other
+      # agents now meet it, withdraw. Conservative: a tight tie can make both
+      # withdraw and the goal is re-selected next cycle — never two provers on one
+      # goal. Best-effort: a failed re-fetch leaves the claim (TTL/Gate-B catch it).
+      if git -C "$CLAIMS_WT" fetch -q origin claims 2>/dev/null \
+        && git -C "$CLAIMS_WT" reset --hard -q origin/claims \
+        && ! py_helper "$recheck" "$CLAIMS_WT/claims" "$goal" "$AGENT_ID"; then
+        release_claim "$goal" || true
+        emit_event collision "$goal"
+        log "lost $goal on post-claim recheck — withdrawing"
+        return 1
+      fi
       emit_event claimed "$goal"
       log "claimed $goal (attempt $attempt)"
       return 0
@@ -3915,6 +3957,38 @@ test_release_push_reentrancy() {
 # (claim filenames are per-agent — first-push-wins never collides on path).
 # Prove mode must withdraw (SPEC-007-A prove step 4: PROVE_CLAIM_CAP, cap 1);
 # translate mode must still claim (TRANSLATE_CLAIM_CAP, cap 2).
+test_claim_post_success_recheck() {
+  # ADR-072: when a rival's per-agent claim is already in our base, our own claim
+  # pushes as a CLEAN fast-forward (no rejection) — the on-rejection recheck never
+  # runs. The post-SUCCESS recheck must then catch the rival and withdraw, so two
+  # agents never both prove one goal.
+  local AGENT_ID=agent-self UNSORRY_WORKDIR UNSORRY_TTL CLAIMS_WT PROVE FORK_MODE=0
+  local tmp ttl now_ts
+  tmp="$(mktemp -d "$SESSION_TMP/postrecheck.XXXXXX")" || return 1
+  ttl="$(py_helper ttl)" || return 1
+  UNSORRY_WORKDIR="$tmp" UNSORRY_TTL="$ttl" CLAIMS_WT="$tmp/clone"
+  make_claims_fixture "$tmp" "$ttl" || { log "  fixture setup failed"; return 1; }
+  now_ts="$(py_helper now)" || return 1
+  # Live rival claim on origin AND synced into our worktree → our push is a clean
+  # fast-forward that succeeds without rejection.
+  advance_claims_remote "$tmp" "$ttl" nat-add-comm "$now_ts" \
+    || { log "  fixture advance failed"; return 1; }
+  git -C "$CLAIMS_WT" fetch -q origin claims || return 1
+  git -C "$CLAIMS_WT" reset --hard -q origin/claims || return 1
+  PROVE=1
+  if claim_goal nat-add-comm; then
+    log "  post-success recheck did not withdraw on a live rival (clean-ff race)"
+    return 1
+  fi
+  if git -C "$tmp/origin.git" ls-tree -r --name-only claims \
+    | grep -qx "claims/nat-add-comm.agent-self.aisp"; then
+    log "  withdrawn claim still on origin/claims after clean-ff race"
+    return 1
+  fi
+  grep -q '"event": "collision", "goal": "nat-add-comm"' "$tmp/metrics.jsonl" \
+    || { log "  no collision event on post-success withdrawal"; return 1; }
+}
+
 test_claim_recheck_prove_cap() {
   local AGENT_ID=agent-self UNSORRY_WORKDIR UNSORRY_TTL CLAIMS_WT PROVE
   local tmp ttl now_ts
@@ -5078,6 +5152,31 @@ test_dispatch_goal_dedup() {
     || { log "  expected one dispatch total (g2 proved, g3 has open PR), got '$sent'"; return 1; }
 }
 
+test_dispatch_skips_taken_midpass() {
+  # ADR-071: a goal that passes the pass-start checks (not proved, no open PR)
+  # but is taken — merged or PR'd by a sibling/concurrent dispatcher — by the
+  # time the pre-create fresh check runs must NOT be dispatched. This is the
+  # post-ADR-064 duplicate leak.
+  local ONCE=0 DRY_RUN=0 UNSORRY_DISPATCH_LIMIT=10 sent="" rc
+  fetch_queued_prove_branches() { return 0; }
+  fetch_main_ref() { return 0; }
+  queued_branch_refs() { printf 'origin/queued/prove/g1/agent-a-1111\n'; }
+  goal_already_proved() { return 1; }      # not proved at pass start
+  dispatch_open_pr_goals() { return 0; }   # no open PRs at pass start
+  queued_branch_has_pr() { return 1; }
+  submission_governor_allows() { return 0; }
+  goal_taken_fresh() { [ "$1" = g1 ]; }    # but taken by the time we re-check
+  dispatch_queued_proof_branch() { printf -v sent '%s%s\n' "$sent" "$1"; return 0; }
+  dispatch_queue
+  rc=$?
+  unset -f fetch_queued_prove_branches fetch_main_ref queued_branch_refs \
+    goal_already_proved dispatch_open_pr_goals queued_branch_has_pr \
+    submission_governor_allows goal_taken_fresh dispatch_queued_proof_branch
+  [ "$rc" -eq 0 ] || { log "  dispatch_queue returned $rc"; return 1; }
+  [ "$(printf '%s' "$sent" | grep -cv '^$')" -eq 0 ] \
+    || { log "  expected 0 dispatches (g1 taken mid-pass), got '$sent'"; return 1; }
+}
+
 run_self_tests() {
   local tests=(
     test_agent_id_generation
@@ -5115,6 +5214,7 @@ run_self_tests() {
     test_claim_push_reentrancy
     test_release_push_reentrancy
     test_claim_recheck_prove_cap
+    test_claim_post_success_recheck
     test_camel_name
     test_lean_statement_helpers
     test_lean_sha_determinism
@@ -5153,6 +5253,7 @@ run_self_tests() {
     test_submission_governor_allows_with_stubbed_gh
     test_queued_branch_claim_guard
     test_dispatch_goal_dedup
+    test_dispatch_skips_taken_midpass
     test_demote_open_prove_records_telemetry_only
     test_floored_recompose_noop_records_telemetry_only
     test_render_decomp_gateb
@@ -5417,7 +5518,7 @@ main() {
     UNSORRY_SUBMISSION_GOVERNOR="${UNSORRY_SUBMISSION_GOVERNOR:-1}"
     UNSORRY_SUBMISSION_FREEZE="${UNSORRY_SUBMISSION_FREEZE:-0}"
     UNSORRY_MAX_OPEN_PROVE_PRS="${UNSORRY_MAX_OPEN_PROVE_PRS:-40}"
-    UNSORRY_MAX_GATE_A_IN_FLIGHT="${UNSORRY_MAX_GATE_A_IN_FLIGHT:-20}"
+    UNSORRY_MAX_GATE_A_IN_FLIGHT="${UNSORRY_MAX_GATE_A_IN_FLIGHT:-8}"
     UNSORRY_GOVERNOR_SCAN_LIMIT="${UNSORRY_GOVERNOR_SCAN_LIMIT:-200}"
     UNSORRY_DISPATCH_LIMIT="${UNSORRY_DISPATCH_LIMIT:-1}"
     UNSORRY_GOVERNOR_WAIT="${UNSORRY_GOVERNOR_WAIT:-300}"
@@ -5571,7 +5672,7 @@ main() {
   UNSORRY_SUBMISSION_FREEZE="${UNSORRY_SUBMISSION_FREEZE:-0}"
   UNSORRY_SUBMIT_MODE="${UNSORRY_SUBMIT_MODE:-queue}"
   UNSORRY_MAX_OPEN_PROVE_PRS="${UNSORRY_MAX_OPEN_PROVE_PRS:-40}"
-  UNSORRY_MAX_GATE_A_IN_FLIGHT="${UNSORRY_MAX_GATE_A_IN_FLIGHT:-20}"
+  UNSORRY_MAX_GATE_A_IN_FLIGHT="${UNSORRY_MAX_GATE_A_IN_FLIGHT:-8}"
   UNSORRY_GOVERNOR_SCAN_LIMIT="${UNSORRY_GOVERNOR_SCAN_LIMIT:-200}"
   UNSORRY_GOVERNOR_WAIT="${UNSORRY_GOVERNOR_WAIT:-300}"
   case "$UNSORRY_SUBMISSION_GOVERNOR" in

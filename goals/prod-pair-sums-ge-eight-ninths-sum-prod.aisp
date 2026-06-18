@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜prod-pair-sums-ge-eight-ninths-sum-prod
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜4
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/prod-pair-sums-ge-eight-ninths-sum-prod.lean
-  sha≜∅
+  sha≜1e94fa89cc4650ab33a99bf0bd79f57ae56b72325260073157b067cf23317dce
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sumsq-times-recip-sq-ge-nine
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜3
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/sumsq-times-recip-sq-ge-nine.lean
-  sha≜∅
+  sha≜d7ef9a6295cd48a78564771fbf4a81e5f6e141854704a5c5cab3530bacb4550f
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
