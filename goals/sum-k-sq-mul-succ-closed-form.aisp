@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sum-k-sq-mul-succ-closed-form
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/sum-k-sq-mul-succ-closed-form.lean
-  sha≜∅
-  aff≜-10
+  sha≜1f9ac41bd7de2912a08f66aee56578926c040d03cd435b339499d11a30027ddb
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
