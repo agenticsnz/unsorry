@@ -1,0 +1,20 @@
+𝔸5.1.goal.cube-mod-eighteen-mem@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜cube-mod-eighteen-mem
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/cube-mod-eighteen-mem.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/cube-mod-eighteen-mem.lean
+  sha≜95bf593360d35dd1d7eea18f9100f8f21480eb370dffdc884492be441f593478
+  aff≜-19
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
