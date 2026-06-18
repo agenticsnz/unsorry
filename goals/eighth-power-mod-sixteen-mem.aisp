@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜eighth-power-mod-sixteen-mem
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/eighth-power-mod-sixteen-mem.md
+  src≜packages/unsorry-archive-0006/backlog/eighth-power-mod-sixteen-mem.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/eighth-power-mod-sixteen-mem.lean
+  lean≜packages/unsorry-archive-0006/goals/eighth-power-mod-sixteen-mem.lean
   sha≜3ae3f177bcda700fdbbd0fcf75985a1663b1b249da46cc1c0eb07243d22bf060
   aff≜-20
 }
