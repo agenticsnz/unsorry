@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sum-icc-four-div-three-consec-odd-telescope
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/sum-icc-four-div-three-consec-odd-telescope.lean
-  sha≜∅
+  sha≜fd4b0028e3d134825d9240fe170a851cd021e287ccb49f89156ba8d68378ba6a
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

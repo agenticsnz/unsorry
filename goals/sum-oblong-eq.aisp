@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sum-oblong-eq
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/sum-oblong-eq.lean
-  sha≜∅
-  aff≜-10
+  sha≜9704ec30efec1708e8db3d94c5b5182c1110e5f9cfdda1db042e1de95699c8ae
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -32,10 +32,10 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y shellcheck
       - name: shellcheck
         if: steps.admission.outputs.admitted == 'true'
-        run: shellcheck swarm/agent.sh swarm/supervise.sh swarm/sourcing.sh
+        run: shellcheck swarm/agent.sh swarm/supervise.sh swarm/sourcing.sh swarm/run.sh
       - name: bash syntax check
         if: steps.admission.outputs.admitted == 'true'
-        run: bash -n swarm/agent.sh && bash -n swarm/supervise.sh && bash -n swarm/sourcing.sh
+        run: bash -n swarm/agent.sh && bash -n swarm/supervise.sh && bash -n swarm/sourcing.sh && bash -n swarm/run.sh
       - name: agent self-test
         if: steps.admission.outputs.admitted == 'true'
         run: ./swarm/agent.sh --self-test
@@ -45,3 +45,6 @@ jobs:
       - name: sourcing self-test
         if: steps.admission.outputs.admitted == 'true'
         run: ./swarm/sourcing.sh --self-test
+      - name: run.sh self-test
+        if: steps.admission.outputs.admitted == 'true'
+        run: ./swarm/run.sh --self-test
