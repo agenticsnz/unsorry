@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜gcd-3n2-5n4-dvd-two
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/gcd-3n2-5n4-dvd-two.md
+  src≜packages/unsorry-archive-0007/backlog/gcd-3n2-5n4-dvd-two.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/gcd-3n2-5n4-dvd-two.lean
+  lean≜packages/unsorry-archive-0007/goals/gcd-3n2-5n4-dvd-two.lean
   sha≜61dff5886c68eb79adaafe2f5061136c6d4d82f5f33e4698d0e5acc7b2fde919
   aff≜-10
 }
