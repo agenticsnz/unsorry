@@ -1,0 +1,20 @@
+𝔸5.1.goal.geud-42-pow-187-sub-self@2026-06-19
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜geud-42-pow-187-sub-self
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/geud-42-pow-187-sub-self.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/geud-42-pow-187-sub-self.lean
+  sha≜ea51289870fed5466dd744e383b5a5408a29bb42a00252c479470aa850591f7a
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
