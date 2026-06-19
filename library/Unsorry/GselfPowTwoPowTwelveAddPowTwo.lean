@@ -1,0 +1,4 @@
+import Mathlib
+
+theorem gself_pow_two_pow_twelve_add_pow_two (n : ℤ) : (n^2) ∣ (n^12 + n^2) := by
+  exact ⟨n^10 + 1, by ring⟩
