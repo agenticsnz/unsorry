@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜gcd-lin-3n2-5n3
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/gcd-lin-3n2-5n3.md
+  src≜packages/unsorry-archive-0011/backlog/gcd-lin-3n2-5n3.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/gcd-lin-3n2-5n3.lean
+  lean≜packages/unsorry-archive-0011/goals/gcd-lin-3n2-5n3.lean
   sha≜6077a0e4e88095a339d64466786e43ce33eeab7e6103e79f49bc220466dcf03d
   aff≜-9
 }

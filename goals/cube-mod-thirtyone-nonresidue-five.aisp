@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜cube-mod-thirtyone-nonresidue-five
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/cube-mod-thirtyone-nonresidue-five.md
+  src≜packages/unsorry-archive-0011/backlog/cube-mod-thirtyone-nonresidue-five.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/cube-mod-thirtyone-nonresidue-five.lean
+  lean≜packages/unsorry-archive-0011/goals/cube-mod-thirtyone-nonresidue-five.lean
   sha≜3c5a5d2307103c55e12558ce5f1f99f7a848339db791b8b7b8c61ecb1d32e9a4
   aff≜-9
 }

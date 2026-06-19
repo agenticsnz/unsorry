@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜fifth-power-mod-eleven
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/fifth-power-mod-eleven.md
+  src≜packages/unsorry-archive-0010/backlog/fifth-power-mod-eleven.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/fifth-power-mod-eleven.lean
+  lean≜packages/unsorry-archive-0010/goals/fifth-power-mod-eleven.lean
   sha≜34b27ac2469c6fe02a438cf838808ab4989bad5eb6e07afe93576340a8159e89
   aff≜-9
 }
