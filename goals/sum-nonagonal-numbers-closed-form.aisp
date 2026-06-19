@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-nonagonal-numbers-closed-form
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-nonagonal-numbers-closed-form.md
+  src≜packages/unsorry-archive-0010/backlog/sum-nonagonal-numbers-closed-form.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-nonagonal-numbers-closed-form.lean
+  lean≜packages/unsorry-archive-0010/goals/sum-nonagonal-numbers-closed-form.lean
   sha≜e19addb052623d8f09d456f264745517ff825865e7049adaa3c28375b38b82f4
   aff≜-10
 }

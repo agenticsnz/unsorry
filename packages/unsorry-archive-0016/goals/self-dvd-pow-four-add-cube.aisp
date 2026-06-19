@@ -1,0 +1,20 @@
+𝔸5.1.goal.self-dvd-pow-four-add-cube@2026-06-17
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜self-dvd-pow-four-add-cube
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/self-dvd-pow-four-add-cube.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/self-dvd-pow-four-add-cube.lean
+  sha≜90e8d9ea6b452fe3fa964b901efe74eaba639d1dfd31b30e62cc7ddd278da31c
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

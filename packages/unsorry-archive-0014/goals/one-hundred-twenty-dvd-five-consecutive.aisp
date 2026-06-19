@@ -1,0 +1,20 @@
+𝔸5.1.goal.one-hundred-twenty-dvd-five-consecutive@2026-06-14
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜one-hundred-twenty-dvd-five-consecutive
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/one-hundred-twenty-dvd-five-consecutive.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/one-hundred-twenty-dvd-five-consecutive.lean
+  sha≜a2e7963872363095f1dd3014f6a2647e9e4995d0724528ba135ba789c02266b6
+  aff≜-19
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

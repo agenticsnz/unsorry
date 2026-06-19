@@ -1,0 +1,20 @@
+𝔸5.1.goal.pred-dvd-square-sub-one@2026-06-17
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜pred-dvd-square-sub-one
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/pred-dvd-square-sub-one.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/pred-dvd-square-sub-one.lean
+  sha≜f239ab47251cc6bb287433cd286f57802932d8294e98226d23633cf7f99bb870
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

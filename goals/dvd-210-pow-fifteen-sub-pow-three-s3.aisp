@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜dvd-210-pow-fifteen-sub-pow-three-s3
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜decompositions/dvd-210-pow-fifteen-sub-pow-three.oma-2-c50d.aisp
+  src≜packages/unsorry-archive-0011/decompositions/dvd-210-pow-fifteen-sub-pow-three.oma-2-c50d.aisp
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/dvd-210-pow-fifteen-sub-pow-three-s3.lean
+  lean≜packages/unsorry-archive-0011/goals/dvd-210-pow-fifteen-sub-pow-three-s3.lean
   sha≜a3d986257cec3bc7997db0015e469c750f3a62dafd6a5d935acbcd0163723b3a
   aff≜1
   depth≜1

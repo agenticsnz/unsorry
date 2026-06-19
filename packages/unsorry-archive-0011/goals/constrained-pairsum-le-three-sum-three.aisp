@@ -1,0 +1,20 @@
+𝔸5.1.goal.constrained-pairsum-le-three-sum-three@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜constrained-pairsum-le-three-sum-three
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/constrained-pairsum-le-three-sum-three.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/constrained-pairsum-le-three-sum-three.lean
+  sha≜fbb1f0d2d7e54fdd106928e9d57a1197f496359d812319e961a435dbdeda716d
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
