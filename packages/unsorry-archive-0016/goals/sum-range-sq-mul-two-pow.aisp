@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-range-sq-mul-two-pow@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-range-sq-mul-two-pow
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-range-sq-mul-two-pow.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-range-sq-mul-two-pow.lean
+  sha≜3c70ab926345e9172b7dd1ef957a015e4fc4e93b703b8d9b19d8472d00ac44e7
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

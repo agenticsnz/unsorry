@@ -1,0 +1,1 @@
+Added an auto-maintained ADR index in `docs/adrs/`: a generated `README.md` table (ADR · Title · Status · Date) plus a structured `adrs.json`, derived from the `ADR-*.md` headers by `python3 -m tools.adr_index` and kept in sync post-merge by the new `adr-index` workflow (ADR-073).

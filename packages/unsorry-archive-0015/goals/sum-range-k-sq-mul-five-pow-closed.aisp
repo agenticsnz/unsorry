@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-range-k-sq-mul-five-pow-closed@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-range-k-sq-mul-five-pow-closed
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-range-k-sq-mul-five-pow-closed.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-range-k-sq-mul-five-pow-closed.lean
+  sha≜c4eba89c0959279fc7845a4f86e775a36a853bcaff98e741e2c7dcf37db07f83
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
