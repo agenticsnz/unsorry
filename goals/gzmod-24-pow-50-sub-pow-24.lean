@@ -1,0 +1,4 @@
+import Mathlib
+
+theorem gzmod_24_pow_50_sub_pow_24 (n : ℤ) : (24 : ℤ) ∣ n ^ 50 - n ^ 24 := by
+  sorry
