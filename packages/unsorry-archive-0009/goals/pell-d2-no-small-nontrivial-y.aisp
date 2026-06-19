@@ -1,0 +1,20 @@
+𝔸5.1.goal.pell-d2-no-small-nontrivial-y@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜pell-d2-no-small-nontrivial-y
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/pell-d2-no-small-nontrivial-y.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/pell-d2-no-small-nontrivial-y.lean
+  sha≜5e550c4cd63395d0c148c16528fc8e8b2c82141799410da1baae2c24079fe9ac
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
