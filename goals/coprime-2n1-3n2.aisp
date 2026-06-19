@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜coprime-2n1-3n2
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/coprime-2n1-3n2.md
+  src≜packages/unsorry-archive-0011/backlog/coprime-2n1-3n2.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/coprime-2n1-3n2.lean
+  lean≜packages/unsorry-archive-0011/goals/coprime-2n1-3n2.lean
   sha≜8603c36b15421ebb8c09afce39f0a094c12ea892028b0c5aa2e6e55add0746b4
   aff≜-9
 }

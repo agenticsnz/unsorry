@@ -397,6 +397,10 @@ jobs:
         env:
           BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || (github.event_name == 'push' && github.event.before || '') }}
           SHARDS: ${{ vars.UNSORRY_REPLAY_SHARDS || '8' }}
+          # leanchecker holds ~all of mathlib (~10 GB) resident per process; on a
+          # 16 GB runner 30 oleans/invocation (the default) OOMs, and Namespace
+          # blocks swapon. Cap the per-invocation peak (mathlib + a few oleans).
+          UNSORRY_REPLAY_CHUNK: ${{ vars.UNSORRY_REPLAY_CHUNK || '6' }}
         run: |
           set -euo pipefail
           if [ "$BASE_SHA" = "0000000000000000000000000000000000000000" ] || [ -z "$BASE_SHA" ]; then

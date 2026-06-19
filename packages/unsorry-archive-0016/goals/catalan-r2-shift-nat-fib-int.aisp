@@ -1,0 +1,20 @@
+𝔸5.1.goal.catalan-r2-shift-nat-fib-int@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜catalan-r2-shift-nat-fib-int
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/catalan-r2-shift-nat-fib-int.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/catalan-r2-shift-nat-fib-int.lean
+  sha≜930f9960b12865e03cde67e8747f6bf394912d01a7f6f7a12df4c4e9c97bfed7
+  aff≜-19
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-id-div-two-pow-eq-two-sub
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-id-div-two-pow-eq-two-sub.md
+  src≜packages/unsorry-archive-0013/backlog/sum-range-id-div-two-pow-eq-two-sub.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-id-div-two-pow-eq-two-sub.lean
+  lean≜packages/unsorry-archive-0013/goals/sum-range-id-div-two-pow-eq-two-sub.lean
   sha≜30dd1fa4e3132fa9cf1f3cc30194ee26187c91f530064fb7297ab5ac6ae27994
   aff≜-9
 }
