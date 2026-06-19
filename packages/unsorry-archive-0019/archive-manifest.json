@@ -1,0 +1,39 @@
+{
+  "block_id": "unsorry-archive-0019",
+  "target_size": 40,
+  "proof_count": 5,
+  "status": "frozen",
+  "source_commit": "bd6e826771a24226e999855dd45238988eb6eda5",
+  "validation_commit": null,
+  "pins": {
+    "lean_toolchain": "leanprover/lean4:v4.30.0",
+    "mathlib": "v4.30.0"
+  },
+  "notes": [
+    "ADR-041 proof archive block 0019.",
+    "Whole decomposition trees + standalone proved goals only (invariant A).",
+    "Active goal records remain as archived metadata pointing at this package."
+  ],
+  "goals": [
+    {
+      "goal": "gpow-diff-eight-pow-four",
+      "module": "Unsorry.GpowDiffEightPowFour"
+    },
+    {
+      "goal": "gpow-diff-eight-pow-five",
+      "module": "Unsorry.GpowDiffEightPowFive"
+    },
+    {
+      "goal": "gpow-diff-eight-pow-eight",
+      "module": "Unsorry.GpowDiffEightPowEight"
+    },
+    {
+      "goal": "gfac-d3-c5",
+      "module": "Unsorry.GfacD3C5"
+    },
+    {
+      "goal": "gfac-d3-c6",
+      "module": "Unsorry.GfacD3C6"
+    }
+  ]
+}

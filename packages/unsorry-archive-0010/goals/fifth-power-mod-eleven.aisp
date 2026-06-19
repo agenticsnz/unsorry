@@ -1,0 +1,20 @@
+𝔸5.1.goal.fifth-power-mod-eleven@2026-06-14
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜fifth-power-mod-eleven
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/fifth-power-mod-eleven.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/fifth-power-mod-eleven.lean
+  sha≜34b27ac2469c6fe02a438cf838808ab4989bad5eb6e07afe93576340a8159e89
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
