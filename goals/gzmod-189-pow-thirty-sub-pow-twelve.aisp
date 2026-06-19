@@ -1,0 +1,20 @@
+𝔸5.1.goal.gzmod-189-pow-thirty-sub-pow-twelve@2026-06-18
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gzmod-189-pow-thirty-sub-pow-twelve
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/gzmod-189-pow-thirty-sub-pow-twelve.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/gzmod-189-pow-thirty-sub-pow-twelve.lean
+  sha≜8f9edc357dca071d994f0c1fb8b94b9bbceebf4b291a79976e1dcccad6f63eac
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
