@@ -1,0 +1,20 @@
+𝔸5.1.goal.shifted-sum-sq-ge-twice-sum-three-var@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜shifted-sum-sq-ge-twice-sum-three-var
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/shifted-sum-sq-ge-twice-sum-three-var.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/shifted-sum-sq-ge-twice-sum-three-var.lean
+  sha≜e28d5aad4fc1ec17acd0cc292e674ac49ec028f416472db5b66516b291841092
+  aff≜-10
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
