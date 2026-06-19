@@ -1,0 +1,20 @@
+𝔸5.1.goal.dvd-5040-seven-consecutive-product@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜dvd-5040-seven-consecutive-product
+  phase≜prove
+  status≜proved
+  difficulty≜4
+}
+⟦Σ:Source⟧{
+  src≜backlog/dvd-5040-seven-consecutive-product.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/dvd-5040-seven-consecutive-product.lean
+  sha≜5e8db99623823d91a1159c096e1c0e2caaf2f54213ec5beabdf03849b09eab9f
+  aff≜-19
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

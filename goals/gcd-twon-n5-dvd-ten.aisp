@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜gcd-twon-n5-dvd-ten
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/gcd-twon-n5-dvd-ten.md
+  src≜packages/unsorry-archive-0008/backlog/gcd-twon-n5-dvd-ten.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/gcd-twon-n5-dvd-ten.lean
+  lean≜packages/unsorry-archive-0008/goals/gcd-twon-n5-dvd-ten.lean
   sha≜b518f57c58adaa9dbbfae832db0878d978468849aea54fc8edd840e7f5d27520
   aff≜-10
 }

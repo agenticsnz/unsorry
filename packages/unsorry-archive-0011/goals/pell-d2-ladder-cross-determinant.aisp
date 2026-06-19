@@ -1,0 +1,20 @@
+𝔸5.1.goal.pell-d2-ladder-cross-determinant@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜pell-d2-ladder-cross-determinant
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/pell-d2-ladder-cross-determinant.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/pell-d2-ladder-cross-determinant.lean
+  sha≜f3f54f92a2c9c6b3601030ef30ab9d69039f9704c74edbc7172cad8829dffb51
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
