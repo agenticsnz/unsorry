@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-range-succ-sq-mul-two-pow-closed@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-range-succ-sq-mul-two-pow-closed
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-range-succ-sq-mul-two-pow-closed.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-range-succ-sq-mul-two-pow-closed.lean
+  sha≜0c3a2d8740f6ae19f2bd916553fbce7a5124092918a4bf930467fdb765d86160
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
