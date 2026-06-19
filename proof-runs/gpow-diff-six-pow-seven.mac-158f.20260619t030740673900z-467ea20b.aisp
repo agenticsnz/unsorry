@@ -1,0 +1,8 @@
+𝔸5.1.run.gpow-diff-six-pow-seven.mac-158f.20260619t030740673900z-467ea20b@2026-06-19
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260619t030740673900z-467ea20b; goal≜gpow-diff-six-pow-seven; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-ring-cofactor}
+⟦Γ:Goal⟧{goal≜gpow-diff-six-pow-seven}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-19T03:07:40Z}
+⟦Σ:Artifact⟧{sha≜d27771ec0e44e9bdebc3355f7996896ac19158aad8252b37b565e38199de663e}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
