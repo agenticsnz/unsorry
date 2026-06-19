@@ -1,0 +1,8 @@
+𝔸5.1.run.catalan-r2-shift-nat-fib-int.thebeast-ace7.20260617t161655190116z-f11e5b92@2026-06-17
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260617t161655190116z-f11e5b92; goal≜catalan-r2-shift-nat-fib-int; agent≜thebeast-ace7; outcome≜proved}
+⟦Π:Provenance⟧{solver≜adam91holt; provider≜codex; effort≜xhigh}
+⟦Γ:Goal⟧{goal≜catalan-r2-shift-nat-fib-int}
+⟦Λ:Metrics⟧{attempts≜3; solve_s≜622; ended≜2026-06-17T16:16:55Z; lessons≜2}
+⟦Σ:Artifact⟧{sha≜930f9960b12865e03cde67e8747f6bf394912d01a7f6f7a12df4c4e9c97bfed7}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

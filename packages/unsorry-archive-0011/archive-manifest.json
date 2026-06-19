@@ -1,0 +1,179 @@
+{
+  "block_id": "unsorry-archive-0011",
+  "target_size": 40,
+  "proof_count": 40,
+  "status": "frozen",
+  "source_commit": "bd6e826771a24226e999855dd45238988eb6eda5",
+  "validation_commit": null,
+  "pins": {
+    "lean_toolchain": "leanprover/lean4:v4.30.0",
+    "mathlib": "v4.30.0"
+  },
+  "notes": [
+    "ADR-041 proof archive block 0011.",
+    "Whole decomposition trees + standalone proved goals only (invariant A).",
+    "Active goal records remain as archived metadata pointing at this package."
+  ],
+  "goals": [
+    {
+      "goal": "fourth-power-mod-eight-mem",
+      "module": "Unsorry.FourthPowerModEightMem"
+    },
+    {
+      "goal": "fourth-power-mod-thirteen-mem",
+      "module": "Unsorry.FourthPowerModThirteenMem"
+    },
+    {
+      "goal": "gcd-lin-3n2-5n3",
+      "module": "Unsorry.GcdLin3n25n3"
+    },
+    {
+      "goal": "amgm-four-cross-three-var",
+      "module": "Unsorry.AmgmFourCrossThreeVar"
+    },
+    {
+      "goal": "coprime-2n1-3n2",
+      "module": "Unsorry.Coprime2n13n2"
+    },
+    {
+      "goal": "coprime-n-sq-n-add-one",
+      "module": "Unsorry.CoprimeNSqNAddOne"
+    },
+    {
+      "goal": "dvd-330-pow-twentyone-sub-self",
+      "module": "Unsorry.Dvd330PowTwentyoneSubSelf"
+    },
+    {
+      "goal": "dvd-798-pow-nineteen-sub-self",
+      "module": "Unsorry.Dvd798PowNineteenSubSelf"
+    },
+    {
+      "goal": "dvd-510-pow-seventeen-sub-self",
+      "module": "Unsorry.Dvd510PowSeventeenSubSelf"
+    },
+    {
+      "goal": "cube-mod-thirtyone-nonresidue-five",
+      "module": "Unsorry.CubeModThirtyoneNonresidueFive"
+    },
+    {
+      "goal": "cube-mod-twentyseven-mem",
+      "module": "Unsorry.CubeModTwentysevenMem"
+    },
+    {
+      "goal": "constrained-pairsum-le-three-sum-three",
+      "module": "Unsorry.ConstrainedPairsumLeThreeSumThree"
+    },
+    {
+      "goal": "cube-mod-twentyone-mem",
+      "module": "Unsorry.CubeModTwentyoneMem"
+    },
+    {
+      "goal": "diff-sixth-power-dvd-by-sum",
+      "module": "Unsorry.DiffSixthPowerDvdBySum"
+    },
+    {
+      "goal": "dvd-264-pow-thirteen-sub-pow-three",
+      "module": "Unsorry.Dvd264PowThirteenSubPowThree"
+    },
+    {
+      "goal": "dvd-210-pow-fifteen-sub-pow-three-s1",
+      "module": "Unsorry.Dvd210PowFifteenSubPowThreeS1"
+    },
+    {
+      "goal": "dvd-210-pow-fifteen-sub-pow-three",
+      "module": "Unsorry.Dvd210PowFifteenSubPowThree"
+    },
+    {
+      "goal": "dvd-210-pow-fifteen-sub-pow-three-s4",
+      "module": "Unsorry.Dvd210PowFifteenSubPowThreeS4"
+    },
+    {
+      "goal": "dvd-210-pow-fifteen-sub-pow-three-s2",
+      "module": "Unsorry.Dvd210PowFifteenSubPowThreeS2"
+    },
+    {
+      "goal": "dvd-210-pow-fifteen-sub-pow-three-s3",
+      "module": "Unsorry.Dvd210PowFifteenSubPowThreeS3"
+    },
+    {
+      "goal": "dvd-455-pow-thirteen-sub-self",
+      "module": "Unsorry.Dvd455PowThirteenSubSelf"
+    },
+    {
+      "goal": "dvd-462-pow-thirtyone-sub-self",
+      "module": "Unsorry.Dvd462PowThirtyoneSubSelf"
+    },
+    {
+      "goal": "dvd-66-pow-twentyone-sub-pow-eleven",
+      "module": "Unsorry.Dvd66PowTwentyoneSubPowEleven"
+    },
+    {
+      "goal": "constrained-prod-le-sum-cubes-third",
+      "module": "Unsorry.ConstrainedProdLeSumCubesThird"
+    },
+    {
+      "goal": "constrained-sum-le-sumsq-prod-one",
+      "module": "Unsorry.ConstrainedSumLeSumsqProdOne"
+    },
+    {
+      "goal": "consec-prod-succ-coprime",
+      "module": "Unsorry.ConsecProdSuccCoprime"
+    },
+    {
+      "goal": "cube-mod-fortythree-mem",
+      "module": "Unsorry.CubeModFortythreeMem"
+    },
+    {
+      "goal": "cube-mod-thirtyseven-mem",
+      "module": "Unsorry.CubeModThirtysevenMem"
+    },
+    {
+      "goal": "cyclic-quartic-ge-asym-cubic-cross",
+      "module": "Unsorry.CyclicQuarticGeAsymCubicCross"
+    },
+    {
+      "goal": "diff-two-squares-zmod-sixteen-ne-two-six",
+      "module": "Unsorry.DiffTwoSquaresZmodSixteenNeTwoSix"
+    },
+    {
+      "goal": "dvd-120-five-consecutive-product",
+      "module": "Unsorry.Dvd120FiveConsecutiveProduct"
+    },
+    {
+      "goal": "dvd-138-pow-fortyfive-sub-pow-twentythree",
+      "module": "Unsorry.Dvd138PowFortyfiveSubPowTwentythree"
+    },
+    {
+      "goal": "numderangements-add-two-int-form",
+      "module": "Unsorry.NumderangementsAddTwoIntForm"
+    },
+    {
+      "goal": "pell-brahmagupta-composition-d2",
+      "module": "Unsorry.PellBrahmaguptaCompositionD2"
+    },
+    {
+      "goal": "pell-d2-convergent-cross-difference",
+      "module": "Unsorry.PellD2ConvergentCrossDifference"
+    },
+    {
+      "goal": "pell-d2-ladder-cross-determinant",
+      "module": "Unsorry.PellD2LadderCrossDeterminant"
+    },
+    {
+      "goal": "pell-d2-negative-seven-ladder-preserves",
+      "module": "Unsorry.PellD2NegativeSevenLadderPreserves"
+    },
+    {
+      "goal": "pell-d2-rational-bound-above",
+      "module": "Unsorry.PellD2RationalBoundAbove"
+    },
+    {
+      "goal": "pell-d2-rational-bound-gap",
+      "module": "Unsorry.PellD2RationalBoundGap"
+    },
+    {
+      "goal": "pell-d2-y-even",
+      "module": "Unsorry.PellD2YEven"
+    }
+  ]
+}

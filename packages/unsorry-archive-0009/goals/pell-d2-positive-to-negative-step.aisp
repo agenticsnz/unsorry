@@ -1,0 +1,20 @@
+𝔸5.1.goal.pell-d2-positive-to-negative-step@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜pell-d2-positive-to-negative-step
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/pell-d2-positive-to-negative-step.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/pell-d2-positive-to-negative-step.lean
+  sha≜02ebc9df1277b42087a8e67810bb10377abae59e31781e270e21830cc64a7192
+  aff≜-10
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

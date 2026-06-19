@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-centered-cube-eq-biquadratic
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-centered-cube-eq-biquadratic.md
+  src≜packages/unsorry-archive-0014/backlog/sum-centered-cube-eq-biquadratic.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-centered-cube-eq-biquadratic.lean
+  lean≜packages/unsorry-archive-0014/goals/sum-centered-cube-eq-biquadratic.lean
   sha≜2b1687ca7163bb373f8ee043a97826e71fec0195fbad2e0566e010565ea67e05
   aff≜-9
 }
