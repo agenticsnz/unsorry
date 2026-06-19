@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-stella-octangula-closed-form
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-stella-octangula-closed-form.md
+  src≜packages/unsorry-archive-0015/backlog/sum-stella-octangula-closed-form.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-stella-octangula-closed-form.lean
+  lean≜packages/unsorry-archive-0015/goals/sum-stella-octangula-closed-form.lean
   sha≜ba0ee7b0b66e552467bae0cceeab1961fe4d065e78a7189c1ac454addea9c4b3
   aff≜-9
 }
