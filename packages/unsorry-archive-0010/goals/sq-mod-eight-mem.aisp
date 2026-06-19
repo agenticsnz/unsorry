@@ -1,0 +1,20 @@
+𝔸5.1.goal.sq-mod-eight-mem@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sq-mod-eight-mem
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/sq-mod-eight-mem.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sq-mod-eight-mem.lean
+  sha≜0f5028cf9e49866a7ded93f2ffd228b3e2225bf2b382d588c51cab1e6545c6e0
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

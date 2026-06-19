@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜cube-of-sum-le-nine-sum-cubes
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/cube-of-sum-le-nine-sum-cubes.md
+  src≜packages/unsorry-archive-0014/backlog/cube-of-sum-le-nine-sum-cubes.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/cube-of-sum-le-nine-sum-cubes.lean
+  lean≜packages/unsorry-archive-0014/goals/cube-of-sum-le-nine-sum-cubes.lean
   sha≜633bf88af264f764f7f0c5db21cd42c7c71255ee60101f6c82daf2f8dadf7ff2
   aff≜-20
 }
