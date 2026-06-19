@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜constrained-prod-le-sum-cubes-third
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/constrained-prod-le-sum-cubes-third.md
+  src≜packages/unsorry-archive-0011/backlog/constrained-prod-le-sum-cubes-third.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/constrained-prod-le-sum-cubes-third.lean
+  lean≜packages/unsorry-archive-0011/goals/constrained-prod-le-sum-cubes-third.lean
   sha≜e4ead727856e798b1ba6c2ec50b51456eb3459d026d665c5cc920230a9d9b4b0
   aff≜-9
 }

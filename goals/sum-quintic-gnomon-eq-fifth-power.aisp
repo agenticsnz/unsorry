@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-quintic-gnomon-eq-fifth-power
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-quintic-gnomon-eq-fifth-power.md
+  src≜packages/unsorry-archive-0015/backlog/sum-quintic-gnomon-eq-fifth-power.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-quintic-gnomon-eq-fifth-power.lean
+  lean≜packages/unsorry-archive-0015/goals/sum-quintic-gnomon-eq-fifth-power.lean
   sha≜072c9e52daf07805e88b9002469b78778c9651393b036587029c31e83923cad1
   aff≜-9
 }
