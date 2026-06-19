@@ -1,0 +1,20 @@
+𝔸5.1.goal.gpow-sum-five-pow-six@2026-06-19
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gpow-sum-five-pow-six
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/gpow-sum-five-pow-six.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/gpow-sum-five-pow-six.lean
+  sha≜515d660593dfb81b915eb62c010dd088267b6d88bff6e902d175c30f7ea0fb0a
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
