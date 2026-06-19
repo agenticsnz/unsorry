@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜pell-d2-x-odd
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/pell-d2-x-odd.md
+  src≜packages/unsorry-archive-0009/backlog/pell-d2-x-odd.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/pell-d2-x-odd.lean
+  lean≜packages/unsorry-archive-0009/goals/pell-d2-x-odd.lean
   sha≜de0a8c26697cf114a229eac86eb9cc862b2dc9e67fa6a1e2641f9a3453c69438
   aff≜-20
 }

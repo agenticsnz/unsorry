@@ -15,10 +15,10 @@ on:
     inputs:
       in_progress_minutes:
         description: "Cancel in_progress Gate A runs older than this"
-        default: "90"
+        default: "60"
       queued_minutes:
         description: "Cancel queued Gate A runs older than this"
-        default: "180"
+        default: "10000000"
 
 concurrency:
   group: stale-run-janitor
@@ -43,5 +43,5 @@ jobs:
           python3 -m tools.repo.stale_runs \
             --workflow gate-a.yml \
             --repo "${{ github.repository }}" \
-            --in-progress-minutes "${{ github.event.inputs.in_progress_minutes || '90' }}" \
-            --queued-minutes "${{ github.event.inputs.queued_minutes || '180' }}"
+            --in-progress-minutes "${{ github.event.inputs.in_progress_minutes || '60' }}" \
+            --queued-minutes "${{ github.event.inputs.queued_minutes || '10000000' }}"
