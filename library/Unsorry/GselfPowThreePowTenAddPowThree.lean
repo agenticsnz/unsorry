@@ -1,0 +1,4 @@
+import Mathlib
+
+theorem gself_pow_three_pow_ten_add_pow_three (n : ℤ) : (n^3) ∣ (n^10 + n^3) := by
+  exact ⟨n^7 + 1, by ring⟩
