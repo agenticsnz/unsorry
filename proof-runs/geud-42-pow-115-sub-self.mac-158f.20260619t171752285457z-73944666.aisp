@@ -1,0 +1,8 @@
+𝔸5.1.run.geud-42-pow-115-sub-self.mac-158f.20260619t171752285457z-73944666@2026-06-19
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260619t171752285457z-73944666; goal≜geud-42-pow-115-sub-self; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-ring-cofactor}
+⟦Γ:Goal⟧{goal≜geud-42-pow-115-sub-self}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-19T17:17:52Z}
+⟦Σ:Artifact⟧{sha≜7ea9e00eda8855c0a70bc672a005d929b2e83ce7241fbf0f397a2bdd712a60e8}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

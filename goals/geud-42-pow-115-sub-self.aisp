@@ -1,0 +1,20 @@
+𝔸5.1.goal.geud-42-pow-115-sub-self@2026-06-19
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜geud-42-pow-115-sub-self
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/geud-42-pow-115-sub-self.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/geud-42-pow-115-sub-self.lean
+  sha≜7ea9e00eda8855c0a70bc672a005d929b2e83ce7241fbf0f397a2bdd712a60e8
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
