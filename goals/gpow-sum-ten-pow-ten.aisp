@@ -1,0 +1,20 @@
+𝔸5.1.goal.gpow-sum-ten-pow-ten@2026-06-19
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gpow-sum-ten-pow-ten
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/gpow-sum-ten-pow-ten.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/gpow-sum-ten-pow-ten.lean
+  sha≜9b7dc6d340018a502aad3e286740f92d219f9ffd7d01714a962b73348b89d5b5
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
