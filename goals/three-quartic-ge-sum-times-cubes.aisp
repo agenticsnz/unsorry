@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜three-quartic-ge-sum-times-cubes
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜3
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/three-quartic-ge-sum-times-cubes.lean
-  sha≜∅
+  sha≜53e47df75f953fff54b7a78941f83325c18a944ad1652deea67301e8cd2ebfaf
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
