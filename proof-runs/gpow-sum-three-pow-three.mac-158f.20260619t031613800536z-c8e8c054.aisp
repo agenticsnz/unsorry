@@ -1,0 +1,8 @@
+𝔸5.1.run.gpow-sum-three-pow-three.mac-158f.20260619t031613800536z-c8e8c054@2026-06-19
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260619t031613800536z-c8e8c054; goal≜gpow-sum-three-pow-three; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-ring-cofactor}
+⟦Γ:Goal⟧{goal≜gpow-sum-three-pow-three}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-19T03:16:13Z}
+⟦Σ:Artifact⟧{sha≜7ee48b7d951820892b49c058e2bc60e55a9250d152eed458f00ae38fffdc7c38}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
