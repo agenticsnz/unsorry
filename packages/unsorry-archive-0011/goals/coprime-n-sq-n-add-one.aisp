@@ -1,0 +1,20 @@
+𝔸5.1.goal.coprime-n-sq-n-add-one@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜coprime-n-sq-n-add-one
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/coprime-n-sq-n-add-one.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/coprime-n-sq-n-add-one.lean
+  sha≜512d1a07d92ea5e6450b3068338e478a8bdebb6b368704212687ab12be86b5d7
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

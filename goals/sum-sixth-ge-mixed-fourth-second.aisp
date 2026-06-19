@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-sixth-ge-mixed-fourth-second
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-sixth-ge-mixed-fourth-second.md
+  src≜packages/unsorry-archive-0013/backlog/sum-sixth-ge-mixed-fourth-second.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-sixth-ge-mixed-fourth-second.lean
-  sha≜∅
-  aff≜-10
+  lean≜packages/unsorry-archive-0013/goals/sum-sixth-ge-mixed-fourth-second.lean
+  sha≜ac982fda9d8e813cff6fa51386035b8c57ea081c27f8243c55d42badda0eec12
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

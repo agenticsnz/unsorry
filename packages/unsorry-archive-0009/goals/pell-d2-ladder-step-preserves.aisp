@@ -1,0 +1,20 @@
+𝔸5.1.goal.pell-d2-ladder-step-preserves@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜pell-d2-ladder-step-preserves
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/pell-d2-ladder-step-preserves.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/pell-d2-ladder-step-preserves.lean
+  sha≜edc8e30925574bf17ddc375c28afa827181108a29373248f50a624352a49ea61
+  aff≜-10
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
