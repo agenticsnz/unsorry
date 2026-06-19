@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜pell-d3-no-small-nontrivial-y
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/pell-d3-no-small-nontrivial-y.md
+  src≜packages/unsorry-archive-0009/backlog/pell-d3-no-small-nontrivial-y.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/pell-d3-no-small-nontrivial-y.lean
+  lean≜packages/unsorry-archive-0009/goals/pell-d3-no-small-nontrivial-y.lean
   sha≜46d0fddaaf61ef738aa5850cfcb451d7a1e8cd231a14f16cd4316b179e1cb35e
   aff≜-20
 }
