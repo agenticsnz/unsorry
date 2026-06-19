@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-centered-hexagonal-eq-cube
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-centered-hexagonal-eq-cube.md
+  src≜packages/unsorry-archive-0014/backlog/sum-centered-hexagonal-eq-cube.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-centered-hexagonal-eq-cube.lean
+  lean≜packages/unsorry-archive-0014/goals/sum-centered-hexagonal-eq-cube.lean
   sha≜a3dc8ebfa63e5cf293fa631199a6417da658984033466977b8b4dbf88c853f79
   aff≜-9
 }

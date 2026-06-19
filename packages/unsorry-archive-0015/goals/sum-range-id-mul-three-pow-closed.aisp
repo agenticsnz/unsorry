@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-range-id-mul-three-pow-closed@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-range-id-mul-three-pow-closed
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-range-id-mul-three-pow-closed.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-range-id-mul-three-pow-closed.lean
+  sha≜be87dbaf79763e3139d3af5ace1fc32ccded3b4cd6b8d3e4da563ae7f7bc17ee
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜alternating-sum-shifted-choose-eq-one
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜4
 }
 ⟦Σ:Source⟧{
-  src≜backlog/alternating-sum-shifted-choose-eq-one.md
+  src≜packages/unsorry-archive-0016/backlog/alternating-sum-shifted-choose-eq-one.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/alternating-sum-shifted-choose-eq-one.lean
-  sha≜∅
-  aff≜-20
+  lean≜packages/unsorry-archive-0016/goals/alternating-sum-shifted-choose-eq-one.lean
+  sha≜d435b629fdd231e7bd332ffb46fbee2481070882067bf271fb82ddcee37ace32
+  aff≜-19
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
