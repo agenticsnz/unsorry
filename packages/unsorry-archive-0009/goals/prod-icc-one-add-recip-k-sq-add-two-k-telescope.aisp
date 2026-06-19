@@ -1,0 +1,20 @@
+𝔸5.1.goal.prod-icc-one-add-recip-k-sq-add-two-k-telescope@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜prod-icc-one-add-recip-k-sq-add-two-k-telescope
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/prod-icc-one-add-recip-k-sq-add-two-k-telescope.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/prod-icc-one-add-recip-k-sq-add-two-k-telescope.lean
+  sha≜04d703f90504e0993ecaec7fecdb1c0609637e3670a826f1c3f0c9329500fe22
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
