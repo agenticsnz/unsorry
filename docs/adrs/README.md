@@ -2,7 +2,7 @@
 
 # Architecture Decision Records
 
-Index of the 72 ADRs in this directory, generated from the `ADR-*.md` headers and kept in sync by the `adr-index` workflow. See [ADR-001](ADR-001-Adopt-Development-Protocols.md) and [the development protocols](../protocols.md) for the WH(Y) format and process.
+Index of the 73 ADRs in this directory, generated from the `ADR-*.md` headers and kept in sync by the `adr-index` workflow. See [ADR-001](ADR-001-Adopt-Development-Protocols.md) and [the development protocols](../protocols.md) for the WH(Y) format and process.
 
 | ADR | Title | Status | Date |
 |-----|-------|--------|------|
@@ -78,3 +78,4 @@ Index of the 72 ADRs in this directory, generated from the `ADR-*.md` headers an
 | [ADR-071](ADR-071-Fresh-Dispatch-Dedup-Recheck.md) | Fresh Pre-Create Dedup Re-check at Dispatch | Accepted | 2026-06-18 |
 | [ADR-072](ADR-072-Post-Success-Claim-Recheck.md) | Post-Success Claim Recheck (Prove-Time Race Fix) | Accepted | 2026-06-18 |
 | [ADR-073](ADR-073-ADR-Index-Generated-README.md) | Generated ADR Index (README + JSON), Refreshed Post-Merge | Accepted | 2026-06-18 |
+| [ADR-074](ADR-074-Proof-Import-Narrowing.md) | Deterministic Proof Import Narrowing (Best-Effort, Verify-Fallback) | Accepted | 2026-06-19 |
