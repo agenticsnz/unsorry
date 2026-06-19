@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-range-cube-mul-three-pow-closed@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-range-cube-mul-three-pow-closed
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-range-cube-mul-three-pow-closed.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-range-cube-mul-three-pow-closed.lean
+  sha≜5cd097848a0813ef59373a18dc9f714ca6d0534d7a760cb4a5001a50a1c14d33
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

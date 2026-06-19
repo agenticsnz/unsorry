@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-icc-cube-diff-recip-telescope@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-icc-cube-diff-recip-telescope
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-icc-cube-diff-recip-telescope.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-icc-cube-diff-recip-telescope.lean
+  sha≜283602f932bd52cd11c74279b73c4c60552226d2fb5a119ce1170728294ed885
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
