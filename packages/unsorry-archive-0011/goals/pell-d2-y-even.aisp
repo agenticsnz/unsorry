@@ -1,0 +1,20 @@
+𝔸5.1.goal.pell-d2-y-even@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜pell-d2-y-even
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/pell-d2-y-even.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/pell-d2-y-even.lean
+  sha≜85463cd742e7bcf2dc4e90388a7472ac33479ae3aa0c30d7abf754db9e98e6ec
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -3,35 +3,21 @@
   "sourcers": [
     {
       "avatar_url": "https://github.com/cgbarlow.png?size=96",
-      "difficulty_points": 1723,
+      "difficulty_points": 1724,
       "display_name": "Chris Barlow",
       "earliest_sourced": "2026-06-10",
       "git_author": "Chris Barlow <cgbarlow@gmail.com>",
       "github": "cgbarlow",
       "latest_sourced": "2026-06-19",
-      "open": 159,
+      "open": 148,
       "profile_url": "https://github.com/cgbarlow",
-      "proved": 327,
-      "sourced_goals": 720,
+      "proved": 7,
+      "sourced_goals": 721,
       "sourcer": "cgbarlow"
     },
     {
-      "avatar_url": "https://github.com/perttu.png?size=96",
-      "difficulty_points": 49,
-      "display_name": "Perttu Isotalo",
-      "earliest_sourced": "2026-06-12",
-      "git_author": "Perttu Isotalo <pisotalo@isotalo.org>",
-      "github": "perttu",
-      "latest_sourced": "2026-06-19",
-      "open": 1,
-      "profile_url": "https://github.com/perttu",
-      "proved": 14,
-      "sourced_goals": 40,
-      "sourcer": "perttu"
-    },
-    {
       "avatar_url": "https://github.com/ohdearquant.png?size=96",
-      "difficulty_points": 42,
+      "difficulty_points": 881,
       "display_name": "ohdearquant",
       "earliest_sourced": "2026-06-18",
       "git_author": "OceanLi <quantocean.li@gmail.com>",
@@ -39,28 +25,56 @@
       "latest_sourced": "2026-06-19",
       "open": 0,
       "profile_url": "https://github.com/ohdearquant",
-      "proved": 38,
-      "sourced_goals": 38,
+      "proved": 280,
+      "sourced_goals": 369,
       "sourcer": "ohdearquant"
     },
     {
+      "avatar_url": "https://github.com/perttu.png?size=96",
+      "difficulty_points": 58,
+      "display_name": "Perttu Isotalo",
+      "earliest_sourced": "2026-06-12",
+      "git_author": "Perttu Isotalo <pisotalo@isotalo.org>",
+      "github": "perttu",
+      "latest_sourced": "2026-06-19",
+      "open": 1,
+      "profile_url": "https://github.com/perttu",
+      "proved": 8,
+      "sourced_goals": 49,
+      "sourcer": "perttu"
+    },
+    {
+      "avatar_url": "https://github.com/chat-bit-01.png?size=96",
+      "difficulty_points": 63,
+      "display_name": "chat-bit-01",
+      "earliest_sourced": "2026-06-19",
+      "git_author": "chat-bit-01 <chatuser55@gmail.com>",
+      "github": "chat-bit-01",
+      "latest_sourced": "2026-06-19",
+      "open": 0,
+      "profile_url": "https://github.com/chat-bit-01",
+      "proved": 13,
+      "sourced_goals": 21,
+      "sourcer": "chat-bit-01"
+    },
+    {
       "avatar_url": null,
-      "difficulty_points": 20,
+      "difficulty_points": 21,
       "display_name": "adam91holt",
       "earliest_sourced": "2026-06-14",
       "git_author": "adam91holt <mail@adamholt.co.nz>",
       "github": null,
-      "latest_sourced": "2026-06-14",
+      "latest_sourced": "2026-06-19",
       "open": 5,
       "profile_url": null,
       "proved": 4,
-      "sourced_goals": 20,
+      "sourced_goals": 21,
       "sourcer": null
     }
   ],
   "totals": {
-    "difficulty_points": 1834,
-    "sourced_goals": 818,
-    "sourcers": 4
+    "difficulty_points": 2747,
+    "sourced_goals": 1181,
+    "sourcers": 5
   }
 }
