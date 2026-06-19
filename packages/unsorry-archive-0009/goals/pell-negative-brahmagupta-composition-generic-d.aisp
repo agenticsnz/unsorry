@@ -1,0 +1,20 @@
+𝔸5.1.goal.pell-negative-brahmagupta-composition-generic-d@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜pell-negative-brahmagupta-composition-generic-d
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/pell-negative-brahmagupta-composition-generic-d.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/pell-negative-brahmagupta-composition-generic-d.lean
+  sha≜c8e0cedbdaced8402b58cc5bd7bc0e62d55a28d3d900448bb6eba1ea94caebe4
+  aff≜-10
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

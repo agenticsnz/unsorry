@@ -1,0 +1,20 @@
+𝔸5.1.goal.prod-range-one-sub-recip-succ-sq@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜prod-range-one-sub-recip-succ-sq
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/prod-range-one-sub-recip-succ-sq.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/prod-range-one-sub-recip-succ-sq.lean
+  sha≜6d24032d11aec887b339c8c703313b0ba2164912fcb7cb0ccd0b0dc1a029e8e3
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
