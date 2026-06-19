@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜coprime-n-sq-n-add-one
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/coprime-n-sq-n-add-one.md
+  src≜packages/unsorry-archive-0011/backlog/coprime-n-sq-n-add-one.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/coprime-n-sq-n-add-one.lean
+  lean≜packages/unsorry-archive-0011/goals/coprime-n-sq-n-add-one.lean
   sha≜512d1a07d92ea5e6450b3068338e478a8bdebb6b368704212687ab12be86b5d7
   aff≜-9
 }
