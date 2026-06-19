@@ -2641,6 +2641,7 @@ Fix the module so both pass. Write the corrected $target."
     # vacuous statement under the goal's name fails here, not just in review.
     write_binding_module "$prwt" "$goal" "$camel" || { err="(could not emit binding obligation)"; continue; }
     if prove_local_verify "$prwt" "$camel"; then
+      minimize_proof_imports "$prwt" "$camel"   # ADR-074: best-effort, never fails the proof
       PROOF_SOLVE_SECONDS=$(( $(date +%s) - proof_started ))
       log "proof of $goal verified locally — statement bound (attempt $attempt)"
       return 0
@@ -2654,6 +2655,38 @@ Fix the module so both pass. Write the corrected $target."
   # consumed by write_proof_run_record on the failed/decomposed outcome.
   PROOF_LAST_ERROR="$err"
   return 1
+}
+
+# ADR-074: after a proof verifies, try a deterministically narrower import set and
+# re-verify; on ANY failure restore the original file byte-for-byte. Best-effort by
+# design — narrowing can never reject a sound proof, it only shrinks the mathlib
+# closure that Gate A's build / kernel replay / axiom audit must load (~2x faster
+# audit when it applies, #2397). Gated by UNSORRY_MIN_IMPORTS (default 1; set 0 to
+# disable). tools.proof.min_imports prints the narrowed module (rc 0) or nothing
+# (rc 1 when there is no known narrowing for this proof).
+minimize_proof_imports() {
+  [ "${UNSORRY_MIN_IMPORTS:-1}" = "1" ] || return 0
+  local prwt="$1" camel="$2"
+  local rel="library/Unsorry/$camel.lean"
+  local target="$prwt/$rel"
+  [ -f "$target" ] || return 0
+  local narrowed bak
+  narrowed="$(mktemp)" || return 0
+  if ! ( cd "$prwt" && python3 -m tools.proof.min_imports "$rel" ) > "$narrowed" 2>/dev/null \
+     || [ ! -s "$narrowed" ]; then
+    rm -f "$narrowed"; return 0
+  fi
+  bak="$(mktemp)" || { rm -f "$narrowed"; return 0; }
+  cp "$target" "$bak"
+  cp "$narrowed" "$target"
+  if prove_local_verify "$prwt" "$camel" >/dev/null 2>&1; then
+    log "narrowed imports for $camel — re-verified (ADR-074)"
+  else
+    cp "$bak" "$target"
+    log "narrowed imports for $camel did not build — kept import Mathlib (ADR-074)"
+  fi
+  rm -f "$narrowed" "$bak"
+  return 0
 }
 
 # ADR-011 / SPEC-011-A: write library/Unsorry/<Camel>Binding.lean — a kernel
