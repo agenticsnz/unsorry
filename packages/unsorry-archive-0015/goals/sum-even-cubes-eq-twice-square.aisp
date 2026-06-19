@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-even-cubes-eq-twice-square@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-even-cubes-eq-twice-square
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-even-cubes-eq-twice-square.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-even-cubes-eq-twice-square.lean
+  sha≜ea82be086e772488c4bc103f48e9da2540776f29e54bfb0a90745105cd3e4624
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-id-mul-four-pow-closed
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-id-mul-four-pow-closed.md
+  src≜packages/unsorry-archive-0016/backlog/sum-range-id-mul-four-pow-closed.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-id-mul-four-pow-closed.lean
+  lean≜packages/unsorry-archive-0016/goals/sum-range-id-mul-four-pow-closed.lean
   sha≜cc1ab96182c37043d6b9bef6dc774884c2cf9e934043c114f5ca6c6493d2c67f
   aff≜-9
 }

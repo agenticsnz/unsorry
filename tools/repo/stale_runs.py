@@ -74,8 +74,16 @@ def main(argv: list[str] | None = None) -> int:
         description="Cancel Gate A runs stuck in_progress/queued past a limit.")
     ap.add_argument("--workflow", default="gate-a.yml")
     ap.add_argument("--repo", default=None, help="owner/name (default: gh's repo)")
-    ap.add_argument("--in-progress-minutes", type=float, default=90.0)
-    ap.add_argument("--queued-minutes", type=float, default=180.0)
+    # in_progress zombies (a dead/preempted runner orphans the run) clog the
+    # runner budget, so catch them fast — but stay above the 45-min cold-build
+    # timeout so a legitimately-slow run is never killed.
+    ap.add_argument("--in-progress-minutes", type=float, default=60.0)
+    # Queued cancellation is OFF by default (huge threshold). Under a backlog,
+    # runs queue legitimately for a long time waiting for a free runner, and
+    # cancelling them just forces a re-run (churn) — it does NOT free a runner.
+    # Truly-superseded queued runs are auto-cancelled by the workflow's
+    # cancel-in-progress concurrency, so the janitor never needs to.
+    ap.add_argument("--queued-minutes", type=float, default=10_000_000.0)
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args(argv)
 
