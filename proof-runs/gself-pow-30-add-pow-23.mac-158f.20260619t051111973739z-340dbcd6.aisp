@@ -1,0 +1,8 @@
+𝔸5.1.run.gself-pow-30-add-pow-23.mac-158f.20260619t051111973739z-340dbcd6@2026-06-19
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260619t051111973739z-340dbcd6; goal≜gself-pow-30-add-pow-23; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-ring-cofactor}
+⟦Γ:Goal⟧{goal≜gself-pow-30-add-pow-23}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-19T05:11:11Z}
+⟦Σ:Artifact⟧{sha≜c8e13e5a7802420a131a432edeccb93729f2c680c0313a0e884e9c0075464d50}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
