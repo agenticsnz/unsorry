@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜prod-pair-sums-ge-eight-ninths-sum-prod
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜4
 }
 ⟦Σ:Source⟧{
-  src≜backlog/prod-pair-sums-ge-eight-ninths-sum-prod.md
+  src≜packages/unsorry-archive-0014/backlog/prod-pair-sums-ge-eight-ninths-sum-prod.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/prod-pair-sums-ge-eight-ninths-sum-prod.lean
+  lean≜packages/unsorry-archive-0014/goals/prod-pair-sums-ge-eight-ninths-sum-prod.lean
   sha≜1e94fa89cc4650ab33a99bf0bd79f57ae56b72325260073157b067cf23317dce
   aff≜-20
 }
