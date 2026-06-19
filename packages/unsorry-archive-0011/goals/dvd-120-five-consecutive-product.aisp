@@ -1,0 +1,20 @@
+𝔸5.1.goal.dvd-120-five-consecutive-product@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜dvd-120-five-consecutive-product
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/dvd-120-five-consecutive-product.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/dvd-120-five-consecutive-product.lean
+  sha≜dfe607ddca949d13346222878d498ac8f1c0cb077b295489f4aaa960f8b56697
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

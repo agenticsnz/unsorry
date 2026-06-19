@@ -1,0 +1,20 @@
+𝔸5.1.goal.dvd-210-pow-fifteen-sub-pow-three@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜dvd-210-pow-fifteen-sub-pow-three
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/dvd-210-pow-fifteen-sub-pow-three.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/dvd-210-pow-fifteen-sub-pow-three.lean
+  sha≜fed59761a8db26d1df54a25147608fb2778269a99ebdea502b26f6380bedad1c
+  aff≜-19
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

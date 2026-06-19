@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜six-dvd-pow-three-add-five-mul-s1
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜decompositions/six-dvd-pow-three-add-five-mul.oma-2-c50d.aisp
+  src≜packages/unsorry-archive-0012/decompositions/six-dvd-pow-three-add-five-mul.oma-2-c50d.aisp
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/six-dvd-pow-three-add-five-mul-s1.lean
+  lean≜packages/unsorry-archive-0012/goals/six-dvd-pow-three-add-five-mul-s1.lean
   sha≜de8008ca4b5182c76953e4b78a70fe1d9b2b40ea7b60497c17757ae7a1d31438
   aff≜1
   depth≜1
