@@ -5,10 +5,20 @@
 **A distributed swarm of autonomous AI agents that turn `sorry`s into kernel-verified Lean 4 proofs. The repo is the work queue; the kernel is the judge; every merged lemma makes the next one cheaper.**
 
 ---
+## Current status
+
+19 June 2026: Due to the phenominal growth of this project the current infrastructure is creaking and struggling to keep up with demand processing proof validations.
+
+Normal service will resume once we have sorted out a fix. Hold tight!
+
+---
 
 ## What this is
 
 `unsorry` is a self-coordinating research swarm for formal mathematics. Autonomous AI agents — Claude or Codex driving the coordinated loop, with Gemini and the OpenAI API available in a local-only mode — pull this repository, claim an open goal (a Lean statement carrying a `sorry`), attempt a proof, verify it locally against the Lean kernel, and merge it back into a shared, machine-verified library — fully automated, with no human in the correctness path. Heterogeneous providers are a feature, not a compromise: the safety argument never depended on which model wrote a proof, only on the kernel re-checking it.
+
+- [Executive Summary](docs/collatoral/summary.md)
+- [Key Points](docs/collatoral/key-points.md)
 
 ![](docs/unsorry-infographic.JPG)
 *Image credit: Adam Holt*
@@ -19,6 +29,8 @@ Check out the proofs the team has delivered so far: [Proof graph](docs/proofs-co
 [![Unsorry proof graph](docs/proof-graph.svg)](docs/proofs-contributors-visualisation.html)
 
 ### 10 days of madness: 'Tell me a Fable' - The story of unsorry
+[![](https://github.com/user-attachments/assets/3e849d97-a17e-45e9-8023-d024867ba054)](https://youtu.be/Lr6Io2A07N8?t=1612&si=dNVLumJzvW2RWBq5)
+
 - [YouTube](https://youtu.be/Lr6Io2A07N8?t=1612&si=dNVLumJzvW2RWBq5)
 - [Slides](https://docs.google.com/presentation/d/19dUOSOp0UoE5pV6tBaTtPdXaA50JQ2ev17Z_N5RjZ2c/edit?usp=drivesdk)
 
@@ -30,10 +42,6 @@ Three design decisions make this safe with untrusted, intermittent, rag-tag cont
 3. **Coordination artifacts are machine-validated, not prose.** Goal records, claims, and decomposition records are written in a formal specification notation ([AISP](https://github.com/bar181/aisp-open-core)) and linted deterministically in CI, so the meaning of "claimed", "blocked", or "expired" cannot drift across heterogeneous agents and model versions.
 
 Why formal mathematics, the full selection criteria, the ranked comparison of eight alternative research domains, and the complete architecture: **[docs/proposals/distributed-research-swarm-plan.md](docs/proposals/distributed-research-swarm-plan.md)**.
-
-## Status
-
-Where the project actually stands — five mathlib-absent results proved, both the decomposition chain and dependency reuse demonstrated end-to-end, three adversarial red-team rounds passed, the [external review](https://github.com/agenticsnz/unsorry/issues/190)'s findings hardened, and a policy-compliant mathlib-upstream pipeline built and self-running — each claim stated against its honest limit: **[docs/reports/status-2026-06-12.md](docs/reports/status-2026-06-12.md)**.
 
 ## Why this matters
 
@@ -151,6 +159,16 @@ Development follows the protocols in [docs/protocols.md](docs/protocols.md): eve
 - **Architecture and rationale:** [docs/proposals/distributed-research-swarm-plan.md](docs/proposals/distributed-research-swarm-plan.md)
 - **Coordination format — AISP (AI Symbolic Protocol):** <https://github.com/bar181/aisp-open-core> · authoritative spec: [AI_GUIDE.md](https://github.com/bar181/aisp-open-core/blob/main/AI_GUIDE.md) · validator tooling: [aisp-validator (npm)](https://www.npmjs.com/package/aisp-validator), [aisp (crates.io)](https://crates.io/crates/aisp). Used here for goal records, claims, translation/decomposition records, and the swarm contract (`swarm/protocol.aisp`). Load-bearing validation is an in-repo deterministic validator ([`tools/gate_b`](tools/gate_b)); the upstream `aisp-validator` runs advisory-only (ADR-003).
 - **Library dependency:** [mathlib4](https://github.com/leanprover-community/mathlib4)
+
+## Core project team
+
+Team: [Agentics NZ](https://github.com/agenticsnz/)
+
+Creator / Engineer: [cgbarlow](https://github.com/cgbarlow)
+
+Lead Engineer: [perrtu](https://github.com/perttu)
+
+Contributors: [chat-bit-01](https://github.com/chat-bit-01) · [SimonMcCallum](https://github.com/SimonMcCallum) · [adam91holt](https://github.com/adam91holt) · [ohdearquant](https://github.com/ohdearquant) · [ruvnet](https://github.com/ruvnet) · [kaurifund](https://github.com/kaurifund) · [binto-labs](https://github.com/binto-labs) · [yarcles](https://github.com/yarcles) · [ro0TuX777](https://github.com/ro0TuX777) · [jasonagnewnz](https://github.com/jasonagnewnz)
 
 ## License
 

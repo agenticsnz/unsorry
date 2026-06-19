@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜pairsum-sq-le-three-sum-sq-products
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/pairsum-sq-le-three-sum-sq-products.md
+  src≜packages/unsorry-archive-0014/backlog/pairsum-sq-le-three-sum-sq-products.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/pairsum-sq-le-three-sum-sq-products.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0014/goals/pairsum-sq-le-three-sum-sq-products.lean
+  sha≜e96f7294db785825a330a274ceacb808df78496c123c769495a3804bc9667255
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

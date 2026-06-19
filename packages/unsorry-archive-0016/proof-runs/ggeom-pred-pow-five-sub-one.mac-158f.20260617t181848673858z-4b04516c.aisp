@@ -1,0 +1,8 @@
+𝔸5.1.run.ggeom-pred-pow-five-sub-one.mac-158f.20260617t181848673858z-4b04516c@2026-06-17
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260617t181848673858z-4b04516c; goal≜ggeom-pred-pow-five-sub-one; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-ring-cofactor}
+⟦Γ:Goal⟧{goal≜ggeom-pred-pow-five-sub-one}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-17T18:18:48Z}
+⟦Σ:Artifact⟧{sha≜3a413cfed99eda33362b0dc913f986bcb7cdb4b603294400c59a5efaf932d8cc}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
