@@ -1,0 +1,20 @@
+𝔸5.1.goal.four-not-dvd-sq-add-two@2026-06-14
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜four-not-dvd-sq-add-two
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/four-not-dvd-sq-add-two.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/four-not-dvd-sq-add-two.lean
+  sha≜55aa0e472ce5c55042a542562794b5173df5ab6d1eb8ef416f2c92c8e75ff15d
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

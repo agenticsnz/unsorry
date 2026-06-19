@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-sixth-power-two-var-ge-mixed-fourth-second@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-sixth-power-two-var-ge-mixed-fourth-second
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-sixth-power-two-var-ge-mixed-fourth-second.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-sixth-power-two-var-ge-mixed-fourth-second.lean
+  sha≜89dc7c4d840c2610f69c8fd6517749fb2f2997e6385c731ebf460aab9a37bae6
+  aff≜-10
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
