@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜gcd-two-pow-add-one-sub-one-dvd-two
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/gcd-two-pow-add-one-sub-one-dvd-two.md
+  src≜packages/unsorry-archive-0008/backlog/gcd-two-pow-add-one-sub-one-dvd-two.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/gcd-two-pow-add-one-sub-one-dvd-two.lean
+  lean≜packages/unsorry-archive-0008/goals/gcd-two-pow-add-one-sub-one-dvd-two.lean
   sha≜136bf4677a9f6f4b6dd70cb52f9794a2c4869d8a033d7b6663a8fe019113075a
   aff≜-10
 }

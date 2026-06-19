@@ -1,0 +1,20 @@
+𝔸5.1.goal.constrained-sum-le-sumsq-prod-one@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜constrained-sum-le-sumsq-prod-one
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/constrained-sum-le-sumsq-prod-one.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/constrained-sum-le-sumsq-prod-one.lean
+  sha≜76adfd0ccbf3fb5fe2667a59ad77c054b54ba7296c6f57259c64dd9bf6b8c010
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

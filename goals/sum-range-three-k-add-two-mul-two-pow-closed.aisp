@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-three-k-add-two-mul-two-pow-closed
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-three-k-add-two-mul-two-pow-closed.md
+  src≜packages/unsorry-archive-0013/backlog/sum-range-three-k-add-two-mul-two-pow-closed.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-three-k-add-two-mul-two-pow-closed.lean
+  lean≜packages/unsorry-archive-0013/goals/sum-range-three-k-add-two-mul-two-pow-closed.lean
   sha≜ba2c440f061c2b434c54accbde5aaefe9e4a17de40ab5f4c24f58e4df86c031e
   aff≜-9
 }

@@ -1,0 +1,20 @@
+𝔸5.1.goal.self-dvd-cube-add-square@2026-06-17
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜self-dvd-cube-add-square
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/self-dvd-cube-add-square.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/self-dvd-cube-add-square.lean
+  sha≜db35e9f6aa20b451f0c9322d2c6630027cff9ba040352aedb4294946573d2fe9
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
