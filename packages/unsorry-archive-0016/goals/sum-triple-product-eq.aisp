@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-triple-product-eq@2026-06-14
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-triple-product-eq
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-triple-product-eq.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-triple-product-eq.lean
+  sha≜ff7997363447c30a9e9c008348e72300eef2f62f75abf07e7b1f010d31157fe4
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
