@@ -1,0 +1,20 @@
+𝔸5.1.goal.pell-d2-rational-bound-above@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜pell-d2-rational-bound-above
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/pell-d2-rational-bound-above.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/pell-d2-rational-bound-above.lean
+  sha≜4a83e7b199c4187dc59e29da91f2fbb3a938b1643392c91329ccce527b51d3bb
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-k-sq-mul-two-pow@2026-06-14
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-k-sq-mul-two-pow
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-k-sq-mul-two-pow.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-k-sq-mul-two-pow.lean
+  sha≜1a36d701c957a7297ef39ae5aa523bb2f5a88e2fa819a6cf1c643a286fa1a65f
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

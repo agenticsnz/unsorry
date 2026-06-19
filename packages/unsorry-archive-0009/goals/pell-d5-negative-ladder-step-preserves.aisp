@@ -1,0 +1,20 @@
+𝔸5.1.goal.pell-d5-negative-ladder-step-preserves@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜pell-d5-negative-ladder-step-preserves
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/pell-d5-negative-ladder-step-preserves.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/pell-d5-negative-ladder-step-preserves.lean
+  sha≜1437b0b97bd95997191d65ae618a0515bd67b3b6c6638a2c2e7a7b4a4914f9d4
+  aff≜-10
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

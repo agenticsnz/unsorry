@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-fourth-powers-ge-cube-times-sum
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-fourth-powers-ge-cube-times-sum.md
+  src≜packages/unsorry-archive-0010/backlog/sum-fourth-powers-ge-cube-times-sum.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-fourth-powers-ge-cube-times-sum.lean
+  lean≜packages/unsorry-archive-0010/goals/sum-fourth-powers-ge-cube-times-sum.lean
   sha≜59c76dd9108598ea71fced282aa4ec9cb2bf826bfe0d7d6315a5ad01926df91e
   aff≜-10
 }
