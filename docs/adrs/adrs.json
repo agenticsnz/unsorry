@@ -1,0 +1,582 @@
+{
+  "generated_by": "python3 -m tools.adr_index --write",
+  "count": 72,
+  "adrs": [
+    {
+      "id": "ADR-001",
+      "number": 1,
+      "title": "Adopt Development Protocols",
+      "status": "Accepted",
+      "date": "2026-06-10",
+      "file": "ADR-001-Adopt-Development-Protocols.md"
+    },
+    {
+      "id": "ADR-002",
+      "number": 2,
+      "title": "Lean 4 + mathlib4 Pinned to Release Tags",
+      "status": "Accepted",
+      "date": "2026-06-10",
+      "file": "ADR-002-Lean4-Mathlib-Pinned-Release-Tags.md"
+    },
+    {
+      "id": "ADR-003",
+      "number": 3,
+      "title": "AISP Coordination Format with In-Repo Validation",
+      "status": "Accepted",
+      "date": "2026-06-10",
+      "file": "ADR-003-AISP-Coordination-Format.md"
+    },
+    {
+      "id": "ADR-004",
+      "number": 4,
+      "title": "Claims on a Dedicated Branch, First-Push-Wins",
+      "status": "Accepted",
+      "date": "2026-06-10",
+      "file": "ADR-004-Claims-Branch-First-Push-Wins.md"
+    },
+    {
+      "id": "ADR-005",
+      "number": 5,
+      "title": "Autonomous Merge Policy",
+      "status": "Accepted",
+      "date": "2026-06-10",
+      "file": "ADR-005-Autonomous-Merge-Policy.md"
+    },
+    {
+      "id": "ADR-006",
+      "number": 6,
+      "title": "Gate A Soundness Enforcement",
+      "status": "Accepted",
+      "date": "2026-06-10",
+      "file": "ADR-006-Gate-A-Soundness-Enforcement.md"
+    },
+    {
+      "id": "ADR-007",
+      "number": 7,
+      "title": "Agent Identity and Budgets",
+      "status": "Accepted",
+      "date": "2026-06-10",
+      "file": "ADR-007-Agent-Identity-and-Budgets.md"
+    },
+    {
+      "id": "ADR-009",
+      "number": 9,
+      "title": "Goal Decomposition on Prove-Budget Exhaustion",
+      "status": "Accepted",
+      "date": "2026-06-10",
+      "file": "ADR-009-Goal-Decomposition.md"
+    },
+    {
+      "id": "ADR-010",
+      "number": 10,
+      "title": "Affinity-Weighted, Gap-Based Goal Selection",
+      "status": "Accepted",
+      "date": "2026-06-10",
+      "file": "ADR-010-Affinity-Gap-Selection.md"
+    },
+    {
+      "id": "ADR-011",
+      "number": 11,
+      "title": "Statement-Binding Gate",
+      "status": "Accepted",
+      "date": "2026-06-10",
+      "file": "ADR-011-Statement-Binding-Gate.md"
+    },
+    {
+      "id": "ADR-012",
+      "number": 12,
+      "title": "Backlog Sourcing",
+      "status": "Accepted",
+      "date": "2026-06-10",
+      "file": "ADR-012-Backlog-Sourcing.md"
+    },
+    {
+      "id": "ADR-013",
+      "number": 13,
+      "title": "Model & Effort Policy for Proof Runs",
+      "status": "Accepted",
+      "date": "2026-06-11",
+      "file": "ADR-013-Model-Effort-Policy.md"
+    },
+    {
+      "id": "ADR-014",
+      "number": 14,
+      "title": "Cross-Goal Dependency Reuse",
+      "status": "Accepted",
+      "date": "2026-06-11",
+      "file": "ADR-014-Dependency-Reuse.md"
+    },
+    {
+      "id": "ADR-015",
+      "number": 15,
+      "title": "Progressive Effort Escalation",
+      "status": "Accepted",
+      "date": "2026-06-11",
+      "file": "ADR-015-Progressive-Effort-Escalation.md"
+    },
+    {
+      "id": "ADR-016",
+      "number": 16,
+      "title": "Infrastructure-Failure Guard",
+      "status": "Accepted",
+      "date": "2026-06-11",
+      "file": "ADR-016-Infrastructure-Failure-Guard.md"
+    },
+    {
+      "id": "ADR-017",
+      "number": 17,
+      "title": "Swarm Supervisor and In-Flight-Work Guard",
+      "status": "Accepted",
+      "date": "2026-06-11",
+      "file": "ADR-017-Swarm-Supervisor.md"
+    },
+    {
+      "id": "ADR-018",
+      "number": 18,
+      "title": "Goal-Statement Immutability",
+      "status": "Accepted",
+      "date": "2026-06-12",
+      "file": "ADR-018-Goal-Statement-Immutability.md"
+    },
+    {
+      "id": "ADR-019",
+      "number": 19,
+      "title": "CI Supply-Chain & Workflow Protection",
+      "status": "Accepted",
+      "date": "2026-06-12",
+      "file": "ADR-019-CI-Supply-Chain-Protection.md"
+    },
+    {
+      "id": "ADR-020",
+      "number": 20,
+      "title": "Human-Sponsored Upstreaming",
+      "status": "Accepted (sponsor signed up: Chris Barlow, 2026-06-12)",
+      "date": "2026-06-12",
+      "file": "ADR-020-Human-Sponsored-Upstreaming.md"
+    },
+    {
+      "id": "ADR-021",
+      "number": 21,
+      "title": "Sponsor PR Helper",
+      "status": "Accepted",
+      "date": "2026-06-12",
+      "file": "ADR-021-Sponsor-PR-Helper.md"
+    },
+    {
+      "id": "ADR-022",
+      "number": 22,
+      "title": "Local Provider Smoke Mode",
+      "status": "Accepted",
+      "date": "2026-06-13",
+      "file": "ADR-022-Local-Provider-Smoke-Mode.md"
+    },
+    {
+      "id": "ADR-023",
+      "number": 23,
+      "title": "Optional Proof Provenance and Leaderboard",
+      "status": "Accepted",
+      "date": "2026-06-13",
+      "file": "ADR-023-Proof-Provenance-Leaderboard.md"
+    },
+    {
+      "id": "ADR-024",
+      "number": 24,
+      "title": "Cross-Cycle Lesson Memory",
+      "status": "Accepted",
+      "date": "2026-06-13",
+      "file": "ADR-024-Cross-Cycle-Lesson-Memory.md"
+    },
+    {
+      "id": "ADR-025",
+      "number": 25,
+      "title": "OpenAI-Compatible Local Endpoints and pi-coder Config",
+      "status": "Accepted",
+      "date": "2026-06-13",
+      "file": "ADR-025-OpenAI-Compatible-Endpoints-and-Pi-Config.md"
+    },
+    {
+      "id": "ADR-026",
+      "number": 26,
+      "title": "PR Convention Enforcement and Trunk-Based Workflow",
+      "status": "Accepted",
+      "date": "2026-06-13",
+      "file": "ADR-026-PR-Convention-Enforcement.md"
+    },
+    {
+      "id": "ADR-027",
+      "number": 27,
+      "title": "Proof / Harness PR Separation",
+      "status": "Accepted",
+      "date": "2026-06-13",
+      "file": "ADR-027-Proof-Harness-PR-Separation.md"
+    },
+    {
+      "id": "ADR-028",
+      "number": 28,
+      "title": "Protocol-Compliance Gate (Spec-per-ADR)",
+      "status": "Accepted",
+      "date": "2026-06-13",
+      "file": "ADR-028-Protocol-Compliance-Gate.md"
+    },
+    {
+      "id": "ADR-029",
+      "number": 29,
+      "title": "Harness Commit Authorship from GitHub Identity",
+      "status": "Accepted",
+      "date": "2026-06-13",
+      "file": "ADR-029-Harness-Commit-Authorship.md"
+    },
+    {
+      "id": "ADR-030",
+      "number": 30,
+      "title": "Domain-Agnostic Distributed-Workload Engine (Plugin Seam)",
+      "status": "Proposed",
+      "date": "2026-06-13",
+      "file": "ADR-030-Distributed-Workload-Engine.md"
+    },
+    {
+      "id": "ADR-031",
+      "number": 31,
+      "title": "Roadmap to Freek #50 (The Number of Platonic Solids)",
+      "status": "Accepted",
+      "date": "2026-06-13",
+      "file": "ADR-031-Freek-50-Platonic-Solids-Roadmap.md"
+    },
+    {
+      "id": "ADR-032",
+      "number": 32,
+      "title": "Proof Graph Visualiser",
+      "status": "Accepted",
+      "date": "2026-06-13",
+      "file": "ADR-032-Proof-Graph-Visualiser.md"
+    },
+    {
+      "id": "ADR-033",
+      "number": 33,
+      "title": "Incremental (Diff-Scoped) Kernel Replay",
+      "status": "Accepted",
+      "date": "2026-06-14",
+      "file": "ADR-033-Incremental-Kernel-Replay.md"
+    },
+    {
+      "id": "ADR-034",
+      "number": 34,
+      "title": "Recompose Failure Must Not Bury a Proved Subtree",
+      "status": "Accepted",
+      "date": "2026-06-14",
+      "file": "ADR-034-Recompose-Failure-No-Bury.md"
+    },
+    {
+      "id": "ADR-035",
+      "number": 35,
+      "title": "Non-Trivial Theorem Enforcement",
+      "status": "Accepted",
+      "date": "2026-06-14",
+      "file": "ADR-035-Non-Trivial-Theorem-Enforcement.md"
+    },
+    {
+      "id": "ADR-036",
+      "number": 36,
+      "title": "Refresh the Targets Board Post-Merge, Not In-PR",
+      "status": "Accepted",
+      "date": "2026-06-14",
+      "file": "ADR-036-Targets-Board-Post-Merge-Refresh.md"
+    },
+    {
+      "id": "ADR-037",
+      "number": 37,
+      "title": "Corroborated Solver Provenance — a Phantom-Attribution Guard",
+      "status": "Accepted",
+      "date": "2026-06-14",
+      "file": "ADR-037-Corroborated-Solver-Provenance.md"
+    },
+    {
+      "id": "ADR-038",
+      "number": 38,
+      "title": "Shared Web-Surface Design Language",
+      "status": "Accepted",
+      "date": "2026-06-14",
+      "file": "ADR-038-Shared-Web-Surface-Design-Language.md"
+    },
+    {
+      "id": "ADR-039",
+      "number": 39,
+      "title": "Re-exec the Agent When the Harness Updates",
+      "status": "Accepted",
+      "date": "2026-06-14",
+      "file": "ADR-039-Self-Updating-Harness.md"
+    },
+    {
+      "id": "ADR-040",
+      "number": 40,
+      "title": "Changelog Fragments (one file per change)",
+      "status": "Accepted",
+      "date": "2026-06-14",
+      "file": "ADR-040-Changelog-Fragments.md"
+    },
+    {
+      "id": "ADR-041",
+      "number": 41,
+      "title": "OpenAI `--prove` Text-Extraction Fallback",
+      "status": "Accepted",
+      "date": "2026-06-14",
+      "file": "ADR-041-OpenAI-Prove-Text-Extraction-Fallback.md"
+    },
+    {
+      "id": "ADR-041",
+      "number": 41,
+      "title": "Proof Archive Blocks",
+      "status": "Accepted",
+      "date": "2026-06-14",
+      "file": "ADR-041-Proof-Archive-Blocks.md"
+    },
+    {
+      "id": "ADR-042",
+      "number": 42,
+      "title": "Run the Agent in an Isolated Per-Agent Worktree",
+      "status": "Accepted",
+      "date": "2026-06-14",
+      "file": "ADR-042-Isolated-Agent-Worktree.md"
+    },
+    {
+      "id": "ADR-043",
+      "number": 43,
+      "title": "The Identity Engine — mass-source mathlib-absent elementary identities at scale",
+      "status": "Accepted",
+      "date": "2026-06-14",
+      "file": "ADR-043-Identity-Engine.md"
+    },
+    {
+      "id": "ADR-044",
+      "number": 44,
+      "title": "Idle Recovery of Goals Parked Below the Viability Floor",
+      "status": "Accepted",
+      "date": "2026-06-15",
+      "file": "ADR-044-Idle-Recovery-Of-Parked-Goals.md"
+    },
+    {
+      "id": "ADR-045",
+      "number": 45,
+      "title": "Persistent Library Build Cache for Gate A",
+      "status": "Accepted",
+      "date": "2026-06-15",
+      "file": "ADR-045-Gate-A-Library-Build-Cache.md"
+    },
+    {
+      "id": "ADR-046",
+      "number": 46,
+      "title": "Namespace `.lake` Cache Volume for Gate A",
+      "status": "Accepted",
+      "date": "2026-06-15",
+      "file": "ADR-046-Gate-A-Namespace-Cache-Volume.md"
+    },
+    {
+      "id": "ADR-048",
+      "number": 48,
+      "title": "Verify-on-Ingest — Kernel-Verify Each Proof Once, Then Trust Immutability",
+      "status": "Accepted",
+      "date": "2026-06-15",
+      "file": "ADR-048-Verify-On-Ingest.md"
+    },
+    {
+      "id": "ADR-049",
+      "number": 49,
+      "title": "Decentralised CI Runner Architecture — Tiered Split with a Mandatory Cheap Central Re-check",
+      "status": "Accepted",
+      "date": "2026-06-15",
+      "file": "ADR-049-Decentralised-CI-Runner-Architecture.md"
+    },
+    {
+      "id": "ADR-050",
+      "number": 50,
+      "title": "Autonomous Trunk Skeleton for Reusable Agentic Work Orchestration",
+      "status": "Proposed",
+      "date": "2026-06-15",
+      "file": "ADR-050-Autonomous-Trunk-Skeleton.md"
+    },
+    {
+      "id": "ADR-051",
+      "number": 51,
+      "title": "Autonomous Trunk Experience Layer for Contributors, Operators, and Agent Fleets",
+      "status": "Proposed",
+      "date": "2026-06-15",
+      "file": "ADR-051-Autonomous-Trunk-Experience-Layer.md"
+    },
+    {
+      "id": "ADR-052",
+      "number": 52,
+      "title": "Verification Tiers and Auditability Evidence for Autonomous Work",
+      "status": "Proposed",
+      "date": "2026-06-15",
+      "file": "ADR-052-Verification-Tiers-And-Auditability.md"
+    },
+    {
+      "id": "ADR-053",
+      "number": 53,
+      "title": "Volunteer-Scale Claim Substrate",
+      "status": "Proposed",
+      "date": "2026-06-15",
+      "file": "ADR-053-Volunteer-Scale-Claim-Substrate.md"
+    },
+    {
+      "id": "ADR-054",
+      "number": 54,
+      "title": "Agent Identity, Quotas, and Reputation",
+      "status": "Proposed",
+      "date": "2026-06-15",
+      "file": "ADR-054-Agent-Identity-Quotas-And-Reputation.md"
+    },
+    {
+      "id": "ADR-055",
+      "number": 55,
+      "title": "Repository Runtime Reconciler",
+      "status": "Proposed",
+      "date": "2026-06-15",
+      "file": "ADR-055-Repository-Runtime-Reconciler.md"
+    },
+    {
+      "id": "ADR-056",
+      "number": 56,
+      "title": "Repo-as-OS Control Plane and Operator Interface",
+      "status": "Proposed",
+      "date": "2026-06-15",
+      "file": "ADR-056-Repo-As-OS-Control-Plane.md"
+    },
+    {
+      "id": "ADR-057",
+      "number": 57,
+      "title": "Structured Reasoning and Decision Communication Protocol",
+      "status": "Proposed",
+      "date": "2026-06-16",
+      "file": "ADR-057-Structured-Reasoning-And-Decision-Communication.md"
+    },
+    {
+      "id": "ADR-058",
+      "number": 58,
+      "title": "Runner Pool Segmentation and Verification Capacity Governance",
+      "status": "Proposed",
+      "date": "2026-06-16",
+      "file": "ADR-058-Runner-Pool-Segmentation-And-Verification-Capacity.md"
+    },
+    {
+      "id": "ADR-059",
+      "number": 59,
+      "title": "Fetch Resilience on the Shared Object Store",
+      "status": "Accepted",
+      "date": "2026-06-16",
+      "file": "ADR-059-Fetch-Resilience-On-Shared-Object-Store.md"
+    },
+    {
+      "id": "ADR-060",
+      "number": 60,
+      "title": "Contributor-Facing Goal-Sourcing Skill",
+      "status": "Proposed",
+      "date": "2026-06-16",
+      "file": "ADR-060-Contributor-Goal-Sourcing-Skill.md"
+    },
+    {
+      "id": "ADR-061",
+      "number": 61,
+      "title": "Unique ADR/SPEC Numbering Gate",
+      "status": "Accepted",
+      "date": "2026-06-17",
+      "file": "ADR-061-Unique-ADR-Numbering-Gate.md"
+    },
+    {
+      "id": "ADR-062",
+      "number": 62,
+      "title": "Swarm Goal-Sourcing Runner",
+      "status": "Proposed",
+      "date": "2026-06-17",
+      "file": "ADR-062-Swarm-Goal-Sourcing-Runner.md"
+    },
+    {
+      "id": "ADR-063",
+      "number": 63,
+      "title": "Sharded Gate A Kernel Replay",
+      "status": "Proposed",
+      "date": "2026-06-17",
+      "file": "ADR-063-Sharded-Gate-A-Kernel-Replay.md"
+    },
+    {
+      "id": "ADR-064",
+      "number": 64,
+      "title": "Goal-Level Dispatch Deduplication",
+      "status": "Accepted",
+      "date": "2026-06-17",
+      "file": "ADR-064-Goal-Level-Dispatch-Deduplication.md"
+    },
+    {
+      "id": "ADR-065",
+      "number": 65,
+      "title": "Operator Preflight Doctor",
+      "status": "Accepted",
+      "date": "2026-06-17",
+      "file": "ADR-065-Operator-Preflight-Doctor.md"
+    },
+    {
+      "id": "ADR-066",
+      "number": 66,
+      "title": "Queued-Proofs Board",
+      "status": "Accepted",
+      "date": "2026-06-17",
+      "file": "ADR-066-Queued-Proofs-Board.md"
+    },
+    {
+      "id": "ADR-067",
+      "number": 67,
+      "title": "Demand-Driven Sourcing",
+      "status": "Proposed",
+      "date": "2026-06-17",
+      "file": "ADR-067-Demand-Driven-Sourcing.md"
+    },
+    {
+      "id": "ADR-068",
+      "number": 68,
+      "title": "Fork-Native Contribution Mode",
+      "status": "Proposed",
+      "date": "2026-06-17",
+      "file": "ADR-068-Fork-Native-Contribution-Mode.md"
+    },
+    {
+      "id": "ADR-069",
+      "number": 69,
+      "title": "Launcher Demand-Driven Sourcing Arm",
+      "status": "Proposed",
+      "date": "2026-06-17",
+      "file": "ADR-069-Launcher-Demand-Driven-Sourcing-Arm.md"
+    },
+    {
+      "id": "ADR-070",
+      "number": 70,
+      "title": "Duplicate-Verifier-Waste Metric",
+      "status": "Proposed",
+      "date": "2026-06-18",
+      "file": "ADR-070-Duplicate-Verifier-Waste-Metric.md"
+    },
+    {
+      "id": "ADR-071",
+      "number": 71,
+      "title": "Fresh Pre-Create Dedup Re-check at Dispatch",
+      "status": "Accepted",
+      "date": "2026-06-18",
+      "file": "ADR-071-Fresh-Dispatch-Dedup-Recheck.md"
+    },
+    {
+      "id": "ADR-072",
+      "number": 72,
+      "title": "Post-Success Claim Recheck (Prove-Time Race Fix)",
+      "status": "Accepted",
+      "date": "2026-06-18",
+      "file": "ADR-072-Post-Success-Claim-Recheck.md"
+    },
+    {
+      "id": "ADR-073",
+      "number": 73,
+      "title": "Generated ADR Index (README + JSON), Refreshed Post-Merge",
+      "status": "Accepted",
+      "date": "2026-06-18",
+      "file": "ADR-073-ADR-Index-Generated-README.md"
+    }
+  ]
+}
