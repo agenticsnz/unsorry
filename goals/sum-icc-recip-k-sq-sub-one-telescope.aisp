@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-icc-recip-k-sq-sub-one-telescope
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-icc-recip-k-sq-sub-one-telescope.md
+  src≜packages/unsorry-archive-0010/backlog/sum-icc-recip-k-sq-sub-one-telescope.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-icc-recip-k-sq-sub-one-telescope.lean
+  lean≜packages/unsorry-archive-0010/goals/sum-icc-recip-k-sq-sub-one-telescope.lean
   sha≜108ad6eb2cd8a69dc2eb5313b013c0f03f8caac5702184ba87988e6ee18d0fac
   aff≜-10
 }
