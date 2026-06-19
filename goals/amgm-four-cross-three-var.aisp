@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜amgm-four-cross-three-var
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/amgm-four-cross-three-var.md
+  src≜packages/unsorry-archive-0011/backlog/amgm-four-cross-three-var.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/amgm-four-cross-three-var.lean
+  lean≜packages/unsorry-archive-0011/goals/amgm-four-cross-three-var.lean
   sha≜4a3804f39bd28b53ccbb29f9a0af9149be69d95b61c432bc17370d7002d536ab
   aff≜-9
 }
