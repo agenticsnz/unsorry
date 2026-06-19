@@ -1,0 +1,8 @@
+𝔸5.1.run.gpow-sum-ten-pow-seventeen.mac-158f.20260619t102408296441z-57d48416@2026-06-19
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260619t102408296441z-57d48416; goal≜gpow-sum-ten-pow-seventeen; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-ring-cofactor}
+⟦Γ:Goal⟧{goal≜gpow-sum-ten-pow-seventeen}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-19T10:24:08Z}
+⟦Σ:Artifact⟧{sha≜a1e9c5495b317232b7341e2df6f9fe4c7f79690ef19ca9185785fb4302fe6b38}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
