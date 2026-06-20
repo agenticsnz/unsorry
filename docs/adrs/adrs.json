@@ -1,6 +1,6 @@
 {
   "generated_by": "python3 -m tools.adr_index --write",
-  "count": 74,
+  "count": 76,
   "adrs": [
     {
       "id": "ADR-001",
@@ -593,6 +593,22 @@
       "status": "Accepted",
       "date": "2026-06-20",
       "file": "ADR-075-Solver-Fair-Queue-Dispatch-Order.md"
+    },
+    {
+      "id": "ADR-076",
+      "number": 76,
+      "title": "Sharded Fork Goal Selection",
+      "status": "Proposed",
+      "date": "2026-06-20",
+      "file": "ADR-076-Sharded-Fork-Goal-Selection.md"
+    },
+    {
+      "id": "ADR-077",
+      "number": 77,
+      "title": "Roadmap GitHub Project, Synced from Repo State",
+      "status": "Proposed",
+      "date": "2026-06-20",
+      "file": "ADR-077-Roadmap-Project-Synced-From-Repo-State.md"
     }
   ]
 }

@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-icc-eight-k-div-odd-sq-pair-telescope
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-icc-eight-k-div-odd-sq-pair-telescope.md
+  src≜packages/unsorry-archive-0034/backlog/sum-icc-eight-k-div-odd-sq-pair-telescope.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-icc-eight-k-div-odd-sq-pair-telescope.lean
+  lean≜packages/unsorry-archive-0034/goals/sum-icc-eight-k-div-odd-sq-pair-telescope.lean
   sha≜798777ff69424d563027dfcc8798af4824a0fdd4993b27aee86825d0e3c99259
   aff≜-10
 }

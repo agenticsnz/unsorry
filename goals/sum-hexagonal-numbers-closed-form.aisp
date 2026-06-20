@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-hexagonal-numbers-closed-form
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-hexagonal-numbers-closed-form.md
+  src≜packages/unsorry-archive-0034/backlog/sum-hexagonal-numbers-closed-form.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-hexagonal-numbers-closed-form.lean
+  lean≜packages/unsorry-archive-0034/goals/sum-hexagonal-numbers-closed-form.lean
   sha≜bb91729f7a65b6094f0c915d156a9b49689d4e60da6565b18f23711f5bcd58b3
   aff≜-10
 }

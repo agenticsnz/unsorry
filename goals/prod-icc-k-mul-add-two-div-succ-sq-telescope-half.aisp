@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜prod-icc-k-mul-add-two-div-succ-sq-telescope-half
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/prod-icc-k-mul-add-two-div-succ-sq-telescope-half.md
+  src≜packages/unsorry-archive-0033/backlog/prod-icc-k-mul-add-two-div-succ-sq-telescope-half.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/prod-icc-k-mul-add-two-div-succ-sq-telescope-half.lean
+  lean≜packages/unsorry-archive-0033/goals/prod-icc-k-mul-add-two-div-succ-sq-telescope-half.lean
   sha≜f9fdfc2c93c49040ed7f9fb73dafe3c93d9690d379852c0887a5a19527ae6b83
   aff≜-20
 }

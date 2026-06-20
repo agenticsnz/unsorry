@@ -22,21 +22,6 @@
     },
     {
       "alias_mapped": true,
-      "date": "2026-06-14",
-      "difficulty": 1,
-      "display_name": "chat-bit-01",
-      "git_add_commit": "91742dae23d480010d5297ecb5c31eb824203679",
-      "git_add_date": "2026-06-14",
-      "git_author": "chat-bit-01 <chatuser55@gmail.com>",
-      "git_author_name": "chat-bit-01",
-      "goal": "nesbitt-inequality-s2",
-      "mapped_github": "chat-bit-01",
-      "path": "library/index/c825189d82bd965f2f4b82bc256e324bc03f7af5755e13aab5046ef0fec9092f.aisp",
-      "review_status": "candidate",
-      "sha": "c825189d82bd965f2f4b82bc256e324bc03f7af5755e13aab5046ef0fec9092f"
-    },
-    {
-      "alias_mapped": true,
       "date": "2026-06-12",
       "difficulty": 1,
       "display_name": "Chris Barlow",
@@ -4624,6 +4609,21 @@
       "path": "packages/unsorry-archive-0020/library/index/53e47df75f953fff54b7a78941f83325c18a944ad1652deea67301e8cd2ebfaf.aisp",
       "review_status": "candidate",
       "sha": "53e47df75f953fff54b7a78941f83325c18a944ad1652deea67301e8cd2ebfaf"
+    },
+    {
+      "alias_mapped": true,
+      "date": "2026-06-14",
+      "difficulty": 1,
+      "display_name": "chat-bit-01",
+      "git_add_commit": "91742dae23d480010d5297ecb5c31eb824203679",
+      "git_add_date": "2026-06-14",
+      "git_author": "chat-bit-01 <chatuser55@gmail.com>",
+      "git_author_name": "chat-bit-01",
+      "goal": "nesbitt-inequality-s2",
+      "mapped_github": "chat-bit-01",
+      "path": "packages/unsorry-archive-0033/library/index/c825189d82bd965f2f4b82bc256e324bc03f7af5755e13aab5046ef0fec9092f.aisp",
+      "review_status": "candidate",
+      "sha": "c825189d82bd965f2f4b82bc256e324bc03f7af5755e13aab5046ef0fec9092f"
     }
   ],
   "schema_version": 1,

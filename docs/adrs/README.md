@@ -2,7 +2,7 @@
 
 # Architecture Decision Records
 
-Index of the 74 ADRs in this directory, generated from the `ADR-*.md` headers and kept in sync by the `adr-index` workflow. See [ADR-001](ADR-001-Adopt-Development-Protocols.md) and [the development protocols](../protocols.md) for the WH(Y) format and process.
+Index of the 76 ADRs in this directory, generated from the `ADR-*.md` headers and kept in sync by the `adr-index` workflow. See [ADR-001](ADR-001-Adopt-Development-Protocols.md) and [the development protocols](../protocols.md) for the WH(Y) format and process.
 
 | ADR | Title | Status | Date |
 |-----|-------|--------|------|
@@ -80,3 +80,5 @@ Index of the 74 ADRs in this directory, generated from the `ADR-*.md` headers an
 | [ADR-073](ADR-073-ADR-Index-Generated-README.md) | Generated ADR Index (README + JSON), Refreshed Post-Merge | Accepted | 2026-06-18 |
 | [ADR-074](ADR-074-Proof-Import-Narrowing.md) | Deterministic Proof Import Narrowing (Best-Effort, Verify-Fallback) | Accepted | 2026-06-19 |
 | [ADR-075](ADR-075-Solver-Fair-Queue-Dispatch-Order.md) | Solver-Fair Queue Dispatch Order | Accepted | 2026-06-20 |
+| [ADR-076](ADR-076-Sharded-Fork-Goal-Selection.md) | Sharded Fork Goal Selection | Proposed | 2026-06-20 |
+| [ADR-077](ADR-077-Roadmap-Project-Synced-From-Repo-State.md) | Roadmap GitHub Project, Synced from Repo State | Proposed | 2026-06-20 |

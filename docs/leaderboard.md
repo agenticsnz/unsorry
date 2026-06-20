@@ -4,36 +4,36 @@
 
 Verified output comes from active `library/index` records plus archived index records only after their active copy has been retired; append-only terminal-run telemetry comes from `proof-runs/`. Rates cover only logged runs and never guess historical failures from Git history. Timing is contributor-reported local proof plus verification time.
 
-**1422 verified proofs · 1114 attributed · 308 historical/unknown · 492 logged terminal runs.**
+**1526 verified proofs · 1218 attributed · 308 historical/unknown · 524 logged terminal runs.**
 
 ## Efficiency Baseline
 
 | Metric | Value |
 |--------|------:|
-| Successful terminal runs | 173 |
-| Failed terminal runs | 319 |
-| Decomposed after failure | 18 |
-| Failed without decomposition | 301 |
-| Run success rate | 35.2% |
-| Provider attempts | 536 |
-| Failed attempts | 363 |
-| Attempt yield | 32.3% |
-| Recorded run time | 89h 51m |
-| Median / p90 run time | 4m 26s / 31m 56s |
-| Verified successes per recorded hour | 1.93 |
-| Proofs with run telemetry | 173 (12.2%) |
+| Successful terminal runs | 198 |
+| Failed terminal runs | 326 |
+| Decomposed after failure | 20 |
+| Failed without decomposition | 306 |
+| Run success rate | 37.8% |
+| Provider attempts | 581 |
+| Failed attempts | 383 |
+| Attempt yield | 34.1% |
+| Recorded run time | 90h 25m |
+| Median / p90 run time | 4m 12s / 31m 54s |
+| Verified successes per recorded hour | 2.19 |
+| Proofs with run telemetry | 198 (13.0%) |
 
 ## Work Queue
 
-**1548 goals · 1213 archived · 2 blocked · 115 open · 209 proved · 9 translated.**
+**1616 goals · 1315 archived · 3 blocked · 78 open · 211 proved · 9 translated.**
 
 ## Efficiency by Difficulty
 
 | Difficulty | Runs | Successes | Run success | Failed attempts | Median time |
 |-----------:|-----:|----------:|------------:|----------------:|------------:|
-| 1 | 186 | 130 | 69.9% | 71 | 0s |
-| 2 | 141 | 3 | 2.1% | 158 | 7m 47s |
-| 3 | 142 | 37 | 26.1% | 114 | 8m 9s |
+| 1 | 221 | 158 | 71.5% | 92 | 0s |
+| 2 | 139 | 1 | 0.7% | 157 | 7m 58s |
+| 3 | 141 | 36 | 25.5% | 114 | 8m 6s |
 | 4 | 21 | 3 | 14.3% | 18 | 6m 5s |
 | 5 | 2 | 0 | 0.0% | 2 | 31m 25s |
 
@@ -41,8 +41,9 @@ Verified output comes from active `library/index` records plus archived index re
 
 | Goal | Status | Difficulty | Runs | Failed attempts | Recorded time |
 |------|--------|-----------:|-----:|----------------:|--------------:|
+| `sq-add-sq-eq-three-mul-sq-s4` | `blocked` | 1 | 5 | 13 | 1h 43m |
+| `sq-add-sq-eq-three-mul-sq-s4-s3-s2` | `open` | 1 | 3 | 9 | 20m 15s |
 | `am-hm-two-var` | `archived` | 2 | 4 | 8 | 53m 57s |
-| `sq-add-sq-eq-three-mul-sq-s4` | `open` | 1 | 3 | 7 | 1h 26m |
 | `four-var-qm-am` | `archived` | 2 | 3 | 5 | 1h 50m |
 | `am-gm-three-cube-s2` | `archived` | 1 | 3 | 5 | 49m 21s |
 | `am-gm-three-cube-s2-s2` | `archived` | 1 | 3 | 5 | 44m 53s |
@@ -50,7 +51,6 @@ Verified output comes from active `library/index` records plus archived index re
 | `consecutive-cubes-diff-odd` | `archived` | 2 | 3 | 5 | 21m 11s |
 | `dvd-210-pow-fifteen-sub-pow-three-s2` | `archived` | 1 | 4 | 4 | 1h 20m |
 | `four-var-qm-am-s2` | `archived` | 1 | 4 | 4 | 1h 12m |
-| `dvd-210-pow-fifteen-sub-pow-three-s4` | `archived` | 1 | 4 | 4 | 53m 3s |
 
 ## Contributor Leaderboard
 
@@ -58,33 +58,33 @@ Rank uses Score (difficulty points + dispatch credit). Explicit `solver≜...` p
 
 | Rank | Contributor | Proof credit | Explicit | Inferred | Runs | Run success | Difficulty points | Dispatch (0.9 ea) | Score |
 |-----:|-------------|-------------:|---------:|---------:|-----:|------------:|------------------:|------------------:|------:|
-| 1 | [@ohdearquant](https://github.com/ohdearquant) | 778 | 777 | 1 | 22 | 100.0% | 1655 | 0.0 | 184950 |
-| 2 | [@chat-bit-01](https://github.com/chat-bit-01) | 269 | 22 | 247 | 0 | — | 640 | 0.0 | 70725 |
-| 3 | [@cgbarlow](https://github.com/cgbarlow) | 191 | 144 | 47 | 338 | 25.4% | 297 | 103.5 | 44825 |
-| 4 | [@perttu](https://github.com/perttu) | 100 | 96 | 4 | 75 | 84.0% | 164 | 105.3 | 29430 |
-| 5 | [@ruvnet](https://github.com/ruvnet) | 62 | 62 | 0 | 0 | — | 154 | 0.0 | 16950 |
-| 6 | [@adam91holt](https://github.com/adam91holt) | 12 | 12 | 0 | 57 | 3.5% | 27 | 0.0 | 3000 |
+| 1 | [@ohdearquant](https://github.com/ohdearquant) | 804 | 803 | 1 | 48 | 100.0% | 1681 | 0.0 | 188200 |
+| 2 | [@chat-bit-01](https://github.com/chat-bit-01) | 301 | 54 | 247 | 0 | — | 736 | 0.0 | 81125 |
+| 3 | [@cgbarlow](https://github.com/cgbarlow) | 191 | 144 | 47 | 338 | 24.6% | 297 | 187.2 | 53195 |
+| 4 | [@perttu](https://github.com/perttu) | 105 | 101 | 4 | 82 | 81.7% | 169 | 105.3 | 30055 |
+| 5 | [@ruvnet](https://github.com/ruvnet) | 97 | 97 | 0 | 0 | — | 262 | 0.0 | 28625 |
+| 6 | [@adam91holt](https://github.com/adam91holt) | 18 | 18 | 0 | 56 | 0.0% | 43 | 0.0 | 4750 |
 | 7 | [@binto](https://github.com/binto) | 9 | 0 | 9 | 0 | — | 19 | 0.0 | 2125 |
 | 8 | [@yarcles](https://github.com/yarcles) | 1 | 1 | 0 | 0 | — | 1 | 0.0 | 125 |
 
 ## Attribution Notes
 
-**1114 explicit solver credits · 308 inferred git credits · 0 uncredited proof records.**
+**1218 explicit solver credits · 308 inferred git credits · 0 uncredited proof records.**
 
-Git add-author attribution covers 1422 of 1422 proof index files. It is used only where explicit `solver≜` provenance is missing.
+Git add-author attribution covers 1526 of 1526 proof index files. It is used only where explicit `solver≜` provenance is missing.
 
 ## Providers and Models
 
 | Provider / model | Verified proofs | Runs | Run success | Failed attempts | Solvers | Median time | Successes / recorded hour |
 |------------------|----------------:|-----:|------------:|----------------:|--------:|------------:|-------------------------:|
-| `claude / template-ring-cofactor` | 443 | 156 | 100.0% | 0 | 3 | 0s | — |
-| `claude / template-zmod-decide` | 342 | 0 | — | 0 | 2 | — | — |
-| `openrouter / unknown` | 62 | 0 | — | 0 | 1 | — | — |
-| `claude / opus` | 57 | 18 | 72.2% | 16 | 4 | 8m 5s | 3.73 |
+| `claude / template-ring-cofactor` | 472 | 184 | 100.0% | 0 | 3 | 0s | — |
+| `claude / template-zmod-decide` | 374 | 0 | — | 0 | 2 | — | — |
+| `openrouter / unknown` | 97 | 0 | — | 0 | 1 | — | — |
+| `claude / opus` | 57 | 19 | 57.9% | 25 | 4 | 9m 29s | 2.93 |
 | `claude / template-sum-induction` | 52 | 0 | — | 0 | 1 | — | — |
 | `claude / template-zmod-crt` | 42 | 0 | — | 0 | 1 | — | — |
-| `codex / unknown` | 29 | 65 | 4.6% | 85 | 2 | 8m 3s | 0.29 |
-| `openai / leanstral-2603` | 21 | 202 | 0.5% | 205 | 1 | 6m 29s | 0.02 |
+| `codex / unknown` | 37 | 69 | 4.3% | 96 | 2 | 7m 37s | 0.28 |
+| `openai / leanstral-2603` | 21 | 201 | 0.0% | 205 | 1 | 6m 30s | 0.00 |
 | `claude / template-decide` | 19 | 0 | — | 0 | 1 | — | — |
 | `claude / template-sum-closedform` | 18 | 0 | — | 0 | 1 | — | — |
 | `claude / template-nlinarith` | 10 | 0 | — | 0 | 1 | — | — |
@@ -104,6 +104,15 @@ Git add-author attribution covers 1422 of 1422 proof index files. It is used onl
 
 | Ended (UTC) | Goal | Solver | Provider / model | Outcome | Attempts | Failed attempts | Time |
 |-------------|------|--------|------------------|---------|---------:|----------------:|-----:|
+| `2026-06-20T13:12:14Z` | `sq-add-sq-eq-three-mul-sq-s4-s3-s2` | [@cgbarlow](https://github.com/cgbarlow) | `claude / opus` | `failed` | 3 | 3 | 9m 50s |
+| `2026-06-20T12:16:50Z` | `sq-add-sq-eq-three-mul-sq-s4-s3-s2` | [@perttu](https://github.com/perttu) | `codex / unknown` | `failed` | 3 | 3 | 5m 36s |
+| `2026-06-20T11:54:27Z` | `sq-add-sq-eq-three-mul-sq-s4-s3-s2` | [@perttu](https://github.com/perttu) | `codex / unknown` | `failed` | 3 | 3 | 4m 49s |
+| `2026-06-20T11:17:48Z` | `sq-add-sq-eq-three-mul-sq-s4-s3-s1` | [@perttu](https://github.com/perttu) | `codex / unknown` | `proved` | 1 | 0 | 2m 59s |
+| `2026-06-20T10:21:53Z` | `sq-add-sq-eq-three-mul-sq-s4-s3` | [@perttu](https://github.com/perttu) | `codex / unknown` | `decomposed` | 3 | 3 | 7m 26s |
+| `2026-06-20T10:19:49Z` | `sq-add-sq-eq-three-mul-sq-s4-s1` | [@cgbarlow](https://github.com/cgbarlow) | `claude / opus` | `failed` | 3 | 3 | 8m 21s |
+| `2026-06-20T10:04:53Z` | `sq-add-sq-eq-three-mul-sq-s4-s4` | [@perttu](https://github.com/perttu) | `codex / unknown` | `proved` | 1 | 0 | 2m 39s |
+| `2026-06-20T09:43:53Z` | `sq-add-sq-eq-three-mul-sq-s4` | [@cgbarlow](https://github.com/cgbarlow) | `claude / opus` | `failed` | 3 | 3 | 9m 38s |
+| `2026-06-20T09:32:53Z` | `sq-add-sq-eq-three-mul-sq-s4` | [@adam91holt](https://github.com/adam91holt) | `codex / unknown` | `decomposed` | 3 | 3 | 6m 53s |
 | `2026-06-19T17:33:38Z` | `gbinom-sp-0-2-3-5` | [@ohdearquant](https://github.com/ohdearquant) | `claude / template-ring-cofactor` | `proved` | 1 | 0 | 0s |
 | `2026-06-19T17:33:09Z` | `gbinom-sp-0-1-4-5` | [@ohdearquant](https://github.com/ohdearquant) | `claude / template-ring-cofactor` | `proved` | 1 | 0 | 0s |
 | `2026-06-19T17:32:02Z` | `gbinom-sp-0-2-7` | [@ohdearquant](https://github.com/ohdearquant) | `claude / template-ring-cofactor` | `proved` | 1 | 0 | 0s |
@@ -115,15 +124,6 @@ Git add-author attribution covers 1422 of 1422 proof index files. It is used onl
 | `2026-06-19T17:29:23Z` | `gbinom-poly-nmul2mulnp1mul2mulnm1` | [@ohdearquant](https://github.com/ohdearquant) | `claude / template-ring-cofactor` | `proved` | 1 | 0 | 0s |
 | `2026-06-19T17:28:55Z` | `gbinom-poly-nmulnpow2m7` | [@ohdearquant](https://github.com/ohdearquant) | `claude / template-ring-cofactor` | `proved` | 1 | 0 | 0s |
 | `2026-06-19T17:28:27Z` | `gbinom-poly-nmulnpow2p2` | [@ohdearquant](https://github.com/ohdearquant) | `claude / template-ring-cofactor` | `proved` | 1 | 0 | 0s |
-| `2026-06-19T17:28:04Z` | `gbinom-ap-k9-step2-dvd` | [@ohdearquant](https://github.com/ohdearquant) | `claude / template-ring-cofactor` | `proved` | 1 | 0 | 0s |
-| `2026-06-19T17:27:17Z` | `gbinom-ap-k8-step2-dvd` | [@cgbarlow](https://github.com/cgbarlow) | `claude / template-ring-cofactor` | `proved` | 1 | 0 | 0s |
-| `2026-06-19T17:26:29Z` | `gbinom-ap-k7-step2-dvd` | [@perttu](https://github.com/perttu) | `claude / template-ring-cofactor` | `proved` | 1 | 0 | 0s |
-| `2026-06-19T17:25:18Z` | `gbinom-ap-k6-step2-dvd` | [@perttu](https://github.com/perttu) | `claude / template-ring-cofactor` | `proved` | 1 | 0 | 0s |
-| `2026-06-19T17:24:51Z` | `gbinom-ap-k5-step2-dvd` | [@perttu](https://github.com/perttu) | `claude / template-ring-cofactor` | `proved` | 1 | 0 | 0s |
-| `2026-06-19T17:23:23Z` | `gbinom-ap-k4-step3-dvd` | [@perttu](https://github.com/perttu) | `claude / template-ring-cofactor` | `proved` | 1 | 0 | 0s |
-| `2026-06-19T17:22:41Z` | `gbinom-falling-seven-fact-dvd` | [@ohdearquant](https://github.com/ohdearquant) | `claude / template-ring-cofactor` | `proved` | 1 | 0 | 0s |
-| `2026-06-19T17:22:06Z` | `gbinom-falling-six-fact-dvd` | [@perttu](https://github.com/perttu) | `claude / template-ring-cofactor` | `proved` | 1 | 0 | 0s |
-| `2026-06-19T17:21:45Z` | `gbinom-falling-five-fact-dvd` | [@cgbarlow](https://github.com/cgbarlow) | `claude / template-ring-cofactor` | `proved` | 1 | 0 | 0s |
 
 ## Interpretation
 
