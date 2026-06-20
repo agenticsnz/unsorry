@@ -1664,6 +1664,79 @@ queued_branch_refs() {
   git for-each-ref --format='%(refname:short)' refs/remotes/origin/queued/prove
 }
 
+# ADR-075: re-order the queued branches by a per-solver round-robin so one
+# high-volume contributor cannot starve the rest. `git for-each-ref` returns
+# refs lexically by name, i.e. by goal — so a contributor whose ~1,585 machine
+# -named `g…` goals sort to the front (the @ohdearquant case) monopolises every
+# governed dispatch slot while a contributor whose goals sort late (@ruvnet's
+# `s…` cluster sat at queue ranks 1850–2002 of 2003) never drains. Round-robin
+# gives every *active* solver one branch per round (max-min fairness): small
+# backlogs clear promptly, the large one drains at the same per-round rate.
+#
+# Soundness is untouched — this only reorders; dedup (ADR-064/071), the governor
+# (ADR-058) and Gate A still decide what merges. Solver per branch is read from
+# the authoritative queue board (`docs/queue.json` on origin/main, which resolves
+# `solver≜`/git-author provenance, ADR-066) — note a re-routed branch is authored
+# by the operator, so the board's provenance, not the commit author, is the only
+# correct solver key. A branch absent from the board (pushed since the last board
+# refresh) falls back to its agent-id token; an unreadable board degrades to the
+# prior lexical order. Reads refs on stdin, emits them reordered on stdout,
+# verbatim. Disable with `UNSORRY_FAIR_DISPATCH=0` (reverts to lexical).
+fair_dispatch_order() {
+  [ "${UNSORRY_FAIR_DISPATCH:-1}" = 0 ] && { cat; return 0; }
+  # Program via process substitution (not a stdin heredoc) so the piped refs stay
+  # on this command's stdin for the script to read.
+  python3 <(cat <<'PY'
+import sys, json, subprocess, collections
+
+def board_map():
+    """branch -> solver key, from the authoritative queue board on origin/main."""
+    try:
+        out = subprocess.run(["git", "show", "origin/main:docs/queue.json"],
+                             capture_output=True, text=True, check=True).stdout
+        data = json.loads(out)
+    except Exception:
+        return {}
+    m = {}
+    for grp in data.get("solvers", []):
+        key = grp.get("github") or grp.get("solver") or "unknown"
+        for e in grp.get("queued", []):
+            b = e.get("branch")
+            if b:
+                m[b] = "solver:" + key
+    return m
+
+def token_key(ref):
+    # [origin/]queued/prove/<goal>/<agent-id>-<hex> -> agent:<agent-id>
+    seg = ref.rsplit("/", 1)[-1]
+    return "agent:" + (seg.rsplit("-", 1)[0] if "-" in seg else seg)
+
+refs = [ln.rstrip("\n") for ln in sys.stdin if ln.strip()]
+board = board_map()
+buckets = collections.OrderedDict()
+for ref in refs:
+    norm = ref[len("origin/"):] if ref.startswith("origin/") else ref
+    key = board.get(norm) or token_key(ref)
+    buckets.setdefault(key, []).append(ref)
+
+# Round-robin across buckets in a deterministic (sorted-key) order: round i emits
+# the i-th branch of every bucket that still has one. Each active solver therefore
+# gets exactly one branch per round until its backlog is exhausted.
+order = sorted(buckets)
+i = 0
+while True:
+    progressed = False
+    for k in order:
+        lst = buckets[k]
+        if i < len(lst):
+            print(lst[i]); progressed = True
+    if not progressed:
+        break
+    i += 1
+PY
+)
+}
+
 # ADR-071: a final fresh "is this goal already taken?" check, run immediately
 # before opening a PR. ADR-064's pass-start checks (goal_already_proved /
 # open_pr_goals) go stale during a long pass and in the gap before gh pr create:
@@ -1752,7 +1825,7 @@ dispatch_queue() {
       failures=$((failures + 1))
     fi
     [ "$dispatched" -ge "$limit" ] && break
-  done < <(queued_branch_refs)
+  done < <(queued_branch_refs | fair_dispatch_order)
   [ "$failures" -eq 0 ]
 }
 
@@ -5254,6 +5327,51 @@ test_dispatch_skips_taken_midpass() {
     || { log "  expected 0 dispatches (g1 taken mid-pass), got '$sent'"; return 1; }
 }
 
+test_dispatch_solver_fairness() {
+  # ADR-075: dispatch order is a per-solver round-robin (by agent-id token when a
+  # branch is not in the board), not lexical-by-goal, so a minority backlog is not
+  # starved behind a high-volume one. Five branches from token "big" (goals that
+  # sort first) and one from "small" (a goal that sorts last): with a dispatch
+  # limit of 2, the round-robin must still dispatch the lone "small" branch — under
+  # the old lexical order limit=2 would take two "big" goals and never reach it.
+  local ONCE=0 DRY_RUN=0 UNSORRY_DISPATCH_LIMIT=2 sent="" sent_lex="" rc
+  unset UNSORRY_FAIR_DISPATCH
+  fetch_queued_prove_branches() { return 0; }
+  fetch_main_ref() { return 0; }
+  queued_branch_refs() {
+    printf 'origin/queued/prove/abig1/big-1111\n'
+    printf 'origin/queued/prove/abig2/big-2222\n'
+    printf 'origin/queued/prove/abig3/big-3333\n'
+    printf 'origin/queued/prove/abig4/big-4444\n'
+    printf 'origin/queued/prove/abig5/big-5555\n'
+    printf 'origin/queued/prove/zsmall/small-9999\n'
+  }
+  goal_already_proved() { return 1; }
+  dispatch_open_pr_goals() { return 0; }
+  queued_branch_has_pr() { return 1; }
+  submission_governor_allows() { return 0; }
+  goal_taken_fresh() { return 1; }
+  dispatch_queued_proof_branch() { printf -v sent '%s%s\n' "$sent" "$1"; return 0; }
+  dispatch_queue
+  rc=$?
+  # Toggle off -> lexical fall-through: the same limit dispatches two "big" goals
+  # and never the "small" one, proving the round-robin is what surfaces it.
+  UNSORRY_FAIR_DISPATCH=0
+  dispatch_queued_proof_branch() { printf -v sent_lex '%s%s\n' "$sent_lex" "$1"; return 0; }
+  dispatch_queue
+  unset UNSORRY_FAIR_DISPATCH
+  unset -f fetch_queued_prove_branches fetch_main_ref queued_branch_refs \
+    goal_already_proved dispatch_open_pr_goals queued_branch_has_pr \
+    submission_governor_allows goal_taken_fresh dispatch_queued_proof_branch
+  [ "$rc" -eq 0 ] || { log "  dispatch_queue returned $rc"; return 1; }
+  printf '%s' "$sent" | grep -q '^queued/prove/zsmall/' \
+    || { log "  fair order must dispatch the starved 'small' branch within the limit, got '$sent'"; return 1; }
+  [ "$(printf '%s' "$sent" | grep -cv '^$')" -eq 2 ] \
+    || { log "  expected 2 dispatches under the limit, got '$sent'"; return 1; }
+  ! printf '%s' "$sent_lex" | grep -q '^queued/prove/zsmall/' \
+    || { log "  toggle off should fall back to lexical (no 'small' within limit), got '$sent_lex'"; return 1; }
+}
+
 run_self_tests() {
   local tests=(
     test_agent_id_generation
@@ -5332,6 +5450,7 @@ run_self_tests() {
     test_queued_branch_claim_guard
     test_dispatch_goal_dedup
     test_dispatch_skips_taken_midpass
+    test_dispatch_solver_fairness
     test_demote_open_prove_records_telemetry_only
     test_floored_recompose_noop_records_telemetry_only
     test_render_decomp_gateb

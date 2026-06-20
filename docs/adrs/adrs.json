@@ -1,6 +1,6 @@
 {
   "generated_by": "python3 -m tools.adr_index --write",
-  "count": 73,
+  "count": 74,
   "adrs": [
     {
       "id": "ADR-001",
@@ -585,6 +585,14 @@
       "status": "Accepted",
       "date": "2026-06-19",
       "file": "ADR-074-Proof-Import-Narrowing.md"
+    },
+    {
+      "id": "ADR-075",
+      "number": 75,
+      "title": "Solver-Fair Queue Dispatch Order",
+      "status": "Accepted",
+      "date": "2026-06-20",
+      "file": "ADR-075-Solver-Fair-Queue-Dispatch-Order.md"
     }
   ]
 }
