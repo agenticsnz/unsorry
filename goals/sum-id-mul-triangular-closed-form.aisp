@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-id-mul-triangular-closed-form
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-id-mul-triangular-closed-form.md
+  src≜packages/unsorry-archive-0034/backlog/sum-id-mul-triangular-closed-form.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-id-mul-triangular-closed-form.lean
+  lean≜packages/unsorry-archive-0034/goals/sum-id-mul-triangular-closed-form.lean
   sha≜ce8b7c0a4ba1bf3129ae1b00ce3af9db3228e4703d893904acfefebb618cc56a
   aff≜-9
 }
