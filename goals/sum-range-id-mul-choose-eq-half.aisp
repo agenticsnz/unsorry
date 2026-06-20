@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-id-mul-choose-eq-half
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-id-mul-choose-eq-half.md
+  src≜packages/unsorry-archive-0035/backlog/sum-range-id-mul-choose-eq-half.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-id-mul-choose-eq-half.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0035/goals/sum-range-id-mul-choose-eq-half.lean
+  sha≜604e15e8abe8ac11d58b2b892622baeadbfa56a6c9b7f45bfe9533bb74b6b953
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

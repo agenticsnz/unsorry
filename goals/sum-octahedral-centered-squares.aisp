@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-octahedral-centered-squares
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-octahedral-centered-squares.md
+  src≜packages/unsorry-archive-0034/backlog/sum-octahedral-centered-squares.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-octahedral-centered-squares.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0034/goals/sum-octahedral-centered-squares.lean
+  sha≜accca49be626e50e39ed88e71f86d70b5b05387d1a2882562f2d1c452563cc7d
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

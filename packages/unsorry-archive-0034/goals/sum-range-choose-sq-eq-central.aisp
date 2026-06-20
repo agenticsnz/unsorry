@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-range-choose-sq-eq-central@2026-06-14
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-range-choose-sq-eq-central
+  phase≜prove
+  status≜proved
+  difficulty≜4
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-range-choose-sq-eq-central.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-range-choose-sq-eq-central.lean
+  sha≜6c35f021b73a06664bf51976e2d6fdb23abda0d0c0f87c6aa98042ae91fafea0
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
