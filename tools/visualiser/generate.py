@@ -86,6 +86,10 @@ class Node:
     model: str | None
     agent: str | None = None
     pr: str | None = None
+    #: GitHub user who merged the prove PR (the squash-merge author). This is who
+    #: *landed* the proof, NOT who solved it — kept distinct from ``solver`` so the
+    #: merger is never mistaken for the solver (ADR-023).
+    merged_by: str | None = None
 
 
 @dataclass(frozen=True)
@@ -213,11 +217,10 @@ def build_graph(root: Path) -> Graph:
     def _node(goal) -> Node:
         solver, model, aisp_date = _prov(goal.id)
         commit = git_prov.get(goal.id)
-        # Fill the solver gap with the GitHub user who merged the prove PR; keep
-        # an explicitly recorded AISP solver where present. Goals with no
-        # prove-PR (pre-convention) keep solver unknown.
-        if solver is None and commit is not None:
-            solver = commit.merged_by
+        # `solver` is the explicit AISP/run provenance only — never the merger.
+        # The squash-merge author is who *landed* the PR, not who solved it, so
+        # surfacing it as the solver mis-credits dispatchers (and contradicts
+        # ADR-023 "never guess"). It is reported separately as `merged_by`.
         return Node(
             id=goal.id,
             status=goal.status,
@@ -227,6 +230,7 @@ def build_graph(root: Path) -> Graph:
             date=(commit.date if commit else None) or aisp_date,
             agent=commit.agent if commit else None,
             pr=commit.pr if commit else None,
+            merged_by=commit.merged_by if commit else None,
         )
 
     nodes = tuple(_node(goal) for goal in sorted(goal_records, key=lambda g: g.id))
@@ -367,9 +371,10 @@ def render_markdown(graph: Graph) -> str:
         f"Solving agent, PR and the GitHub user who merged it are resolved from the "
         f"`prove(…)` merge commits ({attributed} of {n_proved} proved goals carry a "
         "per-goal prove-PR; the rest predate that convention and are left blank). The "
-        "solver shows the recorded AISP login where present, otherwise the merging "
-        "GitHub user; the model comes from recorded provenance only — never guessed "
-        "(ADR-023).",
+        "**solver** shows the recorded AISP login only — never guessed (ADR-023), so a "
+        "goal with no recorded solver shows “—”; **merged by** is the GitHub user who "
+        "landed the PR (who merged it, not who solved it), shown in its own column so "
+        "the two are never conflated. The model comes from recorded provenance only.",
         "",
         "## Dependency lineage",
         "",
@@ -386,15 +391,16 @@ def render_markdown(graph: Graph) -> str:
         "",
         "## All goals",
         "",
-        "| Goal | Status | Difficulty | Agent | Solver / model | PR | Proved |",
-        "| --- | --- | --- | --- | --- | --- | --- |",
+        "| Goal | Status | Difficulty | Agent | Solver / model | Merged by | PR | Proved |",
+        "| --- | --- | --- | --- | --- | --- | --- | --- |",
     ]
     for node in sorted(graph.nodes, key=lambda n: (_ORDER.get(n.status, 9), n.id)):
         link = f"[`{node.id}`]({BLOB_BASE}/goals/{node.id}.lean)"
         pr = f"[#{node.pr}]({PR_BASE}/{node.pr})" if node.pr else "—"
         lines.append(
             f"| {link} | {node.status} | {node.difficulty or '—'} "
-            f"| {node.agent or '—'} | {_provenance(node)} | {pr} | {node.date or '—'} |"
+            f"| {node.agent or '—'} | {_provenance(node)} | {_cell(node.merged_by)} "
+            f"| {pr} | {node.date or '—'} |"
         )
     lines.append("")
     return "\n".join(lines)
@@ -548,8 +554,9 @@ __MERMAID__
           <th data-col="2">Diff<span class="sort-ind"></span></th>
           <th data-col="3">Agent<span class="sort-ind"></span></th>
           <th data-col="4">Solver / model<span class="sort-ind"></span></th>
-          <th data-col="5">PR<span class="sort-ind"></span></th>
-          <th data-col="6">Proved<span class="sort-ind"></span></th>
+          <th data-col="5">Merged by<span class="sort-ind"></span></th>
+          <th data-col="6">PR<span class="sort-ind"></span></th>
+          <th data-col="7">Proved<span class="sort-ind"></span></th>
         </tr></thead>
         <tbody id="rows">
 __ROWS__
@@ -578,6 +585,7 @@ __ROWS__
       `<dt>Agent</dt><dd>${esc(n.agent) || "—"}</dd>` +
       `<dt>Solver</dt><dd>${esc(n.solver) || "—"}</dd>` +
       `<dt>Model</dt><dd>${model}</dd>` +
+      `<dt>Merged by</dt><dd>${esc(n.merged_by) || "—"}</dd>` +
       `<dt>PR</dt><dd>${pr}</dd>` +
       `<dt>Proved</dt><dd>${esc(n.date) || "—"}</dd></dl>`;
     document.querySelectorAll("tr.sel").forEach(r => r.classList.remove("sel"));
@@ -589,7 +597,7 @@ __ROWS__
   function applyFilter() {
     const term = q.value.toLowerCase(), s = st.value;
     document.querySelectorAll("#rows tr").forEach(r => {
-      const hay = [r.dataset.id, r.dataset.agent, r.dataset.solver].join(" ").toLowerCase();
+      const hay = [r.dataset.id, r.dataset.agent, r.dataset.solver, r.dataset.merged].join(" ").toLowerCase();
       const ok = hay.includes(term) && (!s || r.dataset.status === s);
       r.style.display = ok ? "" : "none";
     });
@@ -730,12 +738,14 @@ def render_html(graph: Graph) -> str:
         )
         rows.append(
             f'<tr data-id="{_html_escape(node.id)}" data-status="{node.status}" '
-            f'data-agent="{_html_escape(node.agent)}" data-solver="{_html_escape(node.solver)}">'
+            f'data-agent="{_html_escape(node.agent)}" data-solver="{_html_escape(node.solver)}" '
+            f'data-merged="{_html_escape(node.merged_by)}">'
             f'<td><a class="lnk" href="{BLOB_BASE}/goals/{node.id}.lean"><code>{_html_escape(node.id)}</code></a></td>'
             f'<td><span class="badge {node.status}">{node.status}</span></td>'
             f"<td>{node.difficulty or '—'}</td>"
             f"<td>{_html_escape(node.agent) or '—'}</td>"
             f"<td>{_html_escape(node.solver) or '—'} {('· ' + model) if node.model else ''}</td>"
+            f"<td>{_html_escape(node.merged_by) or '—'}</td>"
             f"<td>{pr}</td>"
             f"<td>{_html_escape(node.date) or '—'}</td></tr>"
         )

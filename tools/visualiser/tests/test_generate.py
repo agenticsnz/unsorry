@@ -266,3 +266,42 @@ def test_main_write_and_check_both_artifacts(tmp_path):
     main(["--write", str(root)])
     (root / "docs" / "proof-graph.svg").write_text("stale", encoding="utf-8")
     assert main(["--check", str(root)]) == 1
+
+
+def test_solver_is_aisp_only_merger_is_separate(tmp_path, monkeypatch):
+    # A proved goal with no recorded AISP solver must NOT show the merger as its
+    # solver; the merger is reported separately as `merged_by` (ADR-023 — the
+    # generator never guesses). parent-s2 is proved in the fixture but has no index.
+    from tools.visualiser import generate as gen
+
+    root = _repo(tmp_path)
+    monkeypatch.setattr(
+        gen, "git_provenance",
+        lambda r: {"parent-s2": gen.ProveCommit(
+            agent="a-1", pr="9", date="2026-06-14", merged_by="Chris Barlow")},
+    )
+    by_id = {n.id: n for n in gen.build_graph(root).nodes}
+    assert by_id["parent-s2"].solver is None
+    assert by_id["parent-s2"].merged_by == "Chris Barlow"
+    assert by_id["parent-s2"].agent == "a-1" and by_id["parent-s2"].pr == "9"
+    # An explicit AISP solver is untouched (and not a merger).
+    assert by_id["parent-s1"].solver == "alice"
+
+
+def test_render_surfaces_merged_by_column(tmp_path, monkeypatch):
+    from tools.visualiser import generate as gen
+
+    root = _repo(tmp_path)
+    monkeypatch.setattr(
+        gen, "git_provenance",
+        lambda r: {"parent-s2": gen.ProveCommit("a-1", "9", "2026-06-14", "Chris Barlow")},
+    )
+    graph = gen.build_graph(root)
+    md = gen.render_markdown(graph)
+    assert "| Merged by |" in md and "Chris Barlow" in md
+    # The merger never appears in the Solver column (everything before "Merged by").
+    assert "Chris Barlow" not in md.split("Merged by", 1)[0]
+    html = gen.render_html(graph)
+    assert ">Merged by<" in html
+    assert 'data-merged="Chris Barlow"' in html
+    assert "n.merged_by" in html  # detail panel wired
