@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-octagonal-running-closed-form@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-octagonal-running-closed-form
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-octagonal-running-closed-form.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-octagonal-running-closed-form.lean
+  sha≜7372cf5ebe77777ce52059f4f6f4a01b026c8e17ec5953cec0dfa117365cf291
+  aff≜-10
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

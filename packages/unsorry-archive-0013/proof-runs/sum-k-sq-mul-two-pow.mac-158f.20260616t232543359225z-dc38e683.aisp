@@ -1,0 +1,8 @@
+𝔸5.1.run.sum-k-sq-mul-two-pow.mac-158f.20260616t232543359225z-dc38e683@2026-06-16
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260616t232543359225z-dc38e683; goal≜sum-k-sq-mul-two-pow; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-sum-closedform}
+⟦Γ:Goal⟧{goal≜sum-k-sq-mul-two-pow}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-16T23:25:43Z}
+⟦Σ:Artifact⟧{sha≜1a36d701c957a7297ef39ae5aa523bb2f5a88e2fa819a6cf1c643a286fa1a65f}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜realization-edge-relation
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/realization-edge-relation.md
+  src≜packages/unsorry-archive-0033/backlog/realization-edge-relation.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/realization-edge-relation.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0033/goals/realization-edge-relation.lean
+  sha≜0f44f8012823784ab85eeaf6ea0d1c15c7610093755ed5532eab085372ce7a84
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

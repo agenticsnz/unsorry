@@ -78,6 +78,27 @@ Reputation may consider:
 
 Reputation must not override verifier results.
 
+## Phase-2 enforcement (the fork onramp)
+
+When this layer is built (evidence-gated on the ADR-070 metric, after ADR-068's
+claimless onramp), two facts make a cheap first slice possible without standing up
+a full identity service:
+
+- **The enforcement chokepoint already exists.** The `fork-automerge-enabler`
+  (ADR-068 / SPEC-068-A §6) is the single upstream gate every fork contribution
+  passes through. The minimal ADR-054 slice extends its admissibility selector
+  (`tools.repo.fork_automerge`) with per-owner open-PR caps, a denylist, trial vs
+  trusted tiering, and an emergency pause — most of the abuse controls above,
+  reusing Phase-1 infrastructure, before any lease (SPEC-053-A §8.2 / §8.4).
+- **Reputation is derivable, not newly tracked.** "Accepted verified work" is
+  already recorded as the `⟦Π:Provenance⟧{solver≜…}` of every merged
+  `library/index` entry (ADR-023). Tier promotion (`trial → trusted`) can read
+  that existing signal rather than maintain a parallel reputation store.
+
+Identity stays bound to the GitHub account (today's de-facto boundary); the
+`owner_id` is the accountable human/fleet behind it. This layer controls *access*;
+the kernel still decides *correctness*.
+
 ## References
 
 | Reference ID | Title | Type | Location |
@@ -86,6 +107,8 @@ Reputation must not override verifier results.
 | REF-2 | Volunteer-scale claim substrate | Decision | ADR-053-Volunteer-Scale-Claim-Substrate.md |
 | REF-3 | Proof provenance and leaderboard | Decision | ADR-023-Proof-Provenance-Leaderboard.md |
 | REF-4 | Verification Tiers and Auditability | Decision | ADR-052-Verification-Tiers-And-Auditability.md |
+| REF-5 | Fork-Native Contribution Mode (the enforcement chokepoint) | Decision | ADR-068-Fork-Native-Contribution-Mode.md |
+| REF-6 | Duplicate-Verifier-Waste Metric (the Phase-2 gate) | Decision | ADR-070-Duplicate-Verifier-Waste-Metric.md |
 
 ## Status History
 

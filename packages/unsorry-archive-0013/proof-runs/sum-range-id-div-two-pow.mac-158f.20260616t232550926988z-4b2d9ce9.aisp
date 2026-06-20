@@ -1,0 +1,8 @@
+𝔸5.1.run.sum-range-id-div-two-pow.mac-158f.20260616t232550926988z-4b2d9ce9@2026-06-16
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260616t232550926988z-4b2d9ce9; goal≜sum-range-id-div-two-pow; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-sum-closedform}
+⟦Γ:Goal⟧{goal≜sum-range-id-div-two-pow}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-16T23:25:50Z}
+⟦Σ:Artifact⟧{sha≜e6b64cd0f428ecd50e18db8b0d74ab598b7fa442ce153c76ba5bc8c394084600}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

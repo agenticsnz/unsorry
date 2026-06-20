@@ -1,0 +1,8 @@
+𝔸5.1.run.sum-range-succ-mul-two-pow-eq-closed.mac-158f.20260617t002102051912z-44aa61df@2026-06-17
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260617t002102051912z-44aa61df; goal≜sum-range-succ-mul-two-pow-eq-closed; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-sum-induction}
+⟦Γ:Goal⟧{goal≜sum-range-succ-mul-two-pow-eq-closed}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-17T00:21:02Z}
+⟦Σ:Artifact⟧{sha≜6f2dd4b10034c06a08f71a6eb4b0a05d1f0450bc450e7bcbc98d03101b46a44a}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

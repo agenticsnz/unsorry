@@ -1,0 +1,8 @@
+𝔸5.1.run.sum-four-consecutive-eq-hyper-tetrahedral.mac-158f.20260617t001941795391z-d49741fe@2026-06-17
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260617t001941795391z-d49741fe; goal≜sum-four-consecutive-eq-hyper-tetrahedral; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-sum-induction}
+⟦Γ:Goal⟧{goal≜sum-four-consecutive-eq-hyper-tetrahedral}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-17T00:19:41Z}
+⟦Σ:Artifact⟧{sha≜e79a12726ce9fe27121c0821bf33bc43d668d3a41639a2d5ad52ccd1f0870e4b}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

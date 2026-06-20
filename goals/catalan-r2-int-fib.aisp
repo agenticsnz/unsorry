@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜catalan-r2-int-fib
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/catalan-r2-int-fib.md
+  src≜packages/unsorry-archive-0006/backlog/catalan-r2-int-fib.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/catalan-r2-int-fib.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0006/goals/catalan-r2-int-fib.lean
+  sha≜d7680235ffe32907c8a4448d5a805be30bd10e56f6055ce65f9f7d4bd238268c
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

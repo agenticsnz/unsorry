@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜dvd-1806-pow-fortythree-sub-self
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/dvd-1806-pow-fortythree-sub-self.md
+  src≜packages/unsorry-archive-0013/backlog/dvd-1806-pow-fortythree-sub-self.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/dvd-1806-pow-fortythree-sub-self.lean
-  sha≜∅
-  aff≜-20
+  lean≜packages/unsorry-archive-0013/goals/dvd-1806-pow-fortythree-sub-self.lean
+  sha≜bfc03838c3c0102be061da9d81b3f82a9a332e24a18925e10e118eb9b510bc63
+  aff≜-19
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

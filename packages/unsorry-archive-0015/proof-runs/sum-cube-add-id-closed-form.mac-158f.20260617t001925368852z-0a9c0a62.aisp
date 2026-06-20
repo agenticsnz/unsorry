@@ -1,0 +1,8 @@
+𝔸5.1.run.sum-cube-add-id-closed-form.mac-158f.20260617t001925368852z-0a9c0a62@2026-06-17
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260617t001925368852z-0a9c0a62; goal≜sum-cube-add-id-closed-form; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-sum-induction}
+⟦Γ:Goal⟧{goal≜sum-cube-add-id-closed-form}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-17T00:19:25Z}
+⟦Σ:Artifact⟧{sha≜5535a34e15285f4076dc537c20705612b492500cad99f16de04cf8131f964c24}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

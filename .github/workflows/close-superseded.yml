@@ -1,0 +1,50 @@
+# Close stranded direct proof PRs once their re-route lands (ADR-058 cleanup).
+# When a queued re-route (or a peer) proves a goal, the original stranded direct
+# `prove(...)` PR is superseded; `tools.repo.close_superseded` closes exactly
+# those — never a PR whose goal is still open — implementing "close the originals
+# once their re-routes land" for #1904 / #1909. Closing a PR needs only the
+# default GITHUB_TOKEN (no admin PAT), so this runs unconditionally.
+name: close-superseded
+
+on:
+  schedule:
+    - cron: "20,50 * * * *" # twice hourly, offset from queue-dispatcher's */15
+  workflow_dispatch:
+    inputs:
+      author:
+        description: "Restrict to one PR author (blank = all)"
+        required: false
+        default: ""
+      dry_run:
+        description: "Report only, do not close (true/false)"
+        required: false
+        default: "false"
+
+concurrency:
+  group: close-superseded
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  sweep:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          ref: main
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.12"
+      - name: Close superseded direct proof PRs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          AUTHOR: ${{ github.event.inputs.author }}
+          DRY_RUN: ${{ github.event.inputs.dry_run }}
+        run: |
+          args=()
+          [ -n "${AUTHOR}" ] && args+=(--author "${AUTHOR}")
+          [ "${DRY_RUN}" = "true" ] && args+=(--dry-run)
+          python3 -m tools.repo.close_superseded "${args[@]}"

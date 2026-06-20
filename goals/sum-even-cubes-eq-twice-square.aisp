@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-even-cubes-eq-twice-square
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-even-cubes-eq-twice-square.md
+  src≜packages/unsorry-archive-0015/backlog/sum-even-cubes-eq-twice-square.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-even-cubes-eq-twice-square.lean
-  sha≜∅
-  aff≜-10
+  lean≜packages/unsorry-archive-0015/goals/sum-even-cubes-eq-twice-square.lean
+  sha≜ea82be086e772488c4bc103f48e9da2540776f29e54bfb0a90745105cd3e4624
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

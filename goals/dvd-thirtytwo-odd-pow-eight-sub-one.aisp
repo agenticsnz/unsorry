@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜dvd-thirtytwo-odd-pow-eight-sub-one
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/dvd-thirtytwo-odd-pow-eight-sub-one.md
+  src≜packages/unsorry-archive-0008/backlog/dvd-thirtytwo-odd-pow-eight-sub-one.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/dvd-thirtytwo-odd-pow-eight-sub-one.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0008/goals/dvd-thirtytwo-odd-pow-eight-sub-one.lean
+  sha≜b0ad75aa15384688f4acc742a6b9a48d998014774b364d39c4170e7c666b8959
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

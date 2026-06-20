@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-icc-five-k-sub-two-mul-three-pow-pred-closed
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-icc-five-k-sub-two-mul-three-pow-pred-closed.md
+  src≜packages/unsorry-archive-0015/backlog/sum-icc-five-k-sub-two-mul-three-pow-pred-closed.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-icc-five-k-sub-two-mul-three-pow-pred-closed.lean
-  sha≜∅
-  aff≜-10
+  lean≜packages/unsorry-archive-0015/goals/sum-icc-five-k-sub-two-mul-three-pow-pred-closed.lean
+  sha≜3a4c5dd7642c495d121a787dd06fcef1fff34f25339d5ca6de7e92596015cb9a
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

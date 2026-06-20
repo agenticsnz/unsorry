@@ -1,0 +1,8 @@
+𝔸5.1.run.sum-centered-triangular-running-closed-form.mac-158f.20260617t001923135916z-a97a3031@2026-06-17
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260617t001923135916z-a97a3031; goal≜sum-centered-triangular-running-closed-form; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-sum-induction}
+⟦Γ:Goal⟧{goal≜sum-centered-triangular-running-closed-form}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-17T00:19:23Z}
+⟦Σ:Artifact⟧{sha≜5162f8d42050c86104b476978f4779e081981ea7f94699690e3c6f913ac7701b}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

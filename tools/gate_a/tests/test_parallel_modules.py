@@ -4,14 +4,17 @@ from pathlib import Path
 
 from tools.gate_a.parallel_modules import (
     audit,
+    compute_replay_targets,
     forces_full_audit,
     forces_full_replay,
     goal_module_for_path,
     import_graph,
     library_module_for_path,
     module_names,
+    plan_shards,
     replay,
     replay_scope,
+    replay_shard,
     scoped_audit_targets,
     split_evenly,
 )
@@ -380,3 +383,164 @@ def test_audit_incremental_runs_only_scoped_modules(tmp_path: Path):
     ]
     audited = {arg for call in calls for arg in call if arg.startswith(("Unsorry.", "goals."))}
     assert audited == {"Unsorry.A", "Unsorry.ABinding", "Unsorry.B", "goals.one"}
+
+
+# --- sharded kernel replay (ADR-063) ----------------------------------------
+
+def _many_lib(tmp_path: Path, n: int) -> set[str]:
+    d = tmp_path / "library" / "Unsorry"
+    d.mkdir(parents=True, exist_ok=True)
+    for i in range(n):
+        (d / f"M{i}.lean").write_text("theorem t : True := trivial\n")
+    return {f"Unsorry.M{i}" for i in range(n)}
+
+
+def _shard_modules(tmp_path, shard_total, *, base=None, changed=""):
+    """Run every shard 0..shard_total-1; return the list of module-sets each replayed."""
+    per_shard = []
+    for index in range(shard_total):
+        recorded: list[str] = []
+
+        def runner(argv, _rec=recorded, **_kw):
+            argv = tuple(argv)
+            if argv[0] == "git" and "diff" in argv:
+                return completed(argv, stdout=changed)
+            if argv[:3] == ("lake", "env", "leanchecker"):
+                _rec.extend(argv[3:])
+            return completed(argv)
+
+        assert replay_shard(tmp_path, index, shard_total, runner, base=base) == 0
+        per_shard.append(set(recorded))
+    return per_shard
+
+
+def test_shards_partition_covers_every_module_exactly_once(tmp_path):
+    # THE soundness invariant (ADR-063): across all shards, every olean is
+    # kernel-replayed exactly once — the shards are disjoint AND covering, so the
+    # sharded replay checks the same set a single serial replay would.
+    all_modules = _many_lib(tmp_path, 25)
+    per_shard = _shard_modules(tmp_path, 4)
+    union: set[str] = set()
+    for modules in per_shard:
+        assert union.isdisjoint(modules)  # disjoint: no module in two shards
+        union |= modules
+    assert union == all_modules  # covering: no module skipped
+
+
+def test_shards_partition_covers_incremental_scope_exactly_once(tmp_path):
+    # Same exactly-once guarantee on the incremental path: the shards partition
+    # the changed + reverse-import closure, nothing outside it, nothing twice.
+    _write_lib(tmp_path, {"A": [], "B": ["A"], "C": [], "ABinding": ["A"]})
+    per_shard = _shard_modules(
+        tmp_path, 3, base="origin/main", changed="library/Unsorry/A.lean\n"
+    )
+    union: set[str] = set()
+    for modules in per_shard:
+        assert union.isdisjoint(modules)
+        union |= modules
+    assert union == {"Unsorry.A", "Unsorry.ABinding", "Unsorry.B"}  # C excluded
+
+
+def test_plan_shards_full_library(tmp_path):
+    _many_lib(tmp_path, 10)
+    plan = plan_shards(tmp_path, 4, None)
+    assert plan["mode"] == "full"
+    assert plan["count"] == 10
+    assert plan["shards"] == [0, 1, 2, 3]
+
+
+def test_plan_shards_caps_at_module_count(tmp_path):
+    _many_lib(tmp_path, 3)
+    plan = plan_shards(tmp_path, 8, None)  # 8 requested, only 3 modules
+    assert plan["count"] == 3
+    assert plan["shards"] == [0, 1, 2]  # capped — no empty shards
+
+
+def test_plan_shards_empty_on_no_library_change(tmp_path):
+    _write_lib(tmp_path, {"A": []})
+    runner, _ = _runner_for(tmp_path, "docs/readme.md\n")
+    plan = plan_shards(tmp_path, 8, "origin/main", runner)
+    assert plan["count"] == 0
+    assert plan["shards"] == []  # empty matrix -> matrix job skipped
+    assert plan["mode"] == "none"
+
+
+def test_plan_shards_fail_closed_to_full_on_git_failure(tmp_path):
+    # An untrusted diff must plan the FULL set, never an empty one (fail-closed).
+    _write_lib(tmp_path, {"A": [], "B": []})
+    runner, _ = _runner_for(tmp_path, "", git_rc=128)
+    plan = plan_shards(tmp_path, 8, "deadbeef", runner)
+    assert plan["mode"] == "full"
+    assert plan["count"] == 2
+
+
+def test_plan_shards_fail_closed_to_full_on_global_impact(tmp_path):
+    _write_lib(tmp_path, {"A": [], "B": ["A"]})
+    runner, _ = _runner_for(tmp_path, "lean-toolchain\n")
+    plan = plan_shards(tmp_path, 8, "origin/main", runner)
+    assert plan["mode"] == "full"
+    assert plan["count"] == 2
+
+
+def test_replay_shard_runs_only_its_slice(tmp_path):
+    _many_lib(tmp_path, 8)
+    targets, _ = compute_replay_targets(tmp_path, None)
+    expected = set(split_evenly(targets, 4)[1])  # slice 1 of 4
+    recorded: list[str] = []
+
+    def runner(argv, **_kw):
+        argv = tuple(argv)
+        if argv[:3] == ("lake", "env", "leanchecker"):
+            recorded.extend(argv[3:])
+        return completed(argv)
+
+    assert replay_shard(tmp_path, 1, 4, runner) == 0
+    assert set(recorded) == expected
+
+
+def test_replay_shard_out_of_range_is_noop(tmp_path):
+    _many_lib(tmp_path, 3)
+    calls: list[tuple] = []
+
+    def runner(argv, **_kw):
+        argv = tuple(argv)
+        if argv[:3] == ("lake", "env", "leanchecker"):
+            calls.append(argv)
+        return completed(argv)
+
+    # 3 modules split into 5 -> only 3 shards exist; index 4 is a no-op, not red.
+    assert replay_shard(tmp_path, 4, 5, runner) == 0
+    assert calls == []
+
+
+def test_replay_shard_propagates_failure(tmp_path):
+    _many_lib(tmp_path, 8)
+
+    def runner(argv, **_kw):
+        argv = tuple(argv)
+        rc = 1 if (argv[:3] == ("lake", "env", "leanchecker") and "Unsorry.M0" in argv) else 0
+        return completed(argv, returncode=rc)
+
+    # a failing module in shard 0 turns that shard red
+    assert replay_shard(tmp_path, 0, 4, runner) == 1
+
+
+def test_replay_shard_fail_closed_full_on_git_failure(tmp_path):
+    # If git can't diff, a shard must replay from the FULL set (fail-closed),
+    # never silently skip — same invariant as the serial replay.
+    all_modules = _many_lib(tmp_path, 6)
+    union: set[str] = set()
+    for index in range(3):
+        recorded: list[str] = []
+
+        def runner(argv, _rec=recorded, **_kw):
+            argv = tuple(argv)
+            if argv[0] == "git" and "diff" in argv:
+                return completed(argv, returncode=128)  # git can't answer
+            if argv[:3] == ("lake", "env", "leanchecker"):
+                _rec.extend(argv[3:])
+            return completed(argv)
+
+        assert replay_shard(tmp_path, index, 3, runner, base="deadbeef") == 0
+        union |= set(recorded)
+    assert union == all_modules  # FULL set covered despite the git failure

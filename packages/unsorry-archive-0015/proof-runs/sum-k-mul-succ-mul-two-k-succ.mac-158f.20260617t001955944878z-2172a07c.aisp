@@ -1,0 +1,8 @@
+𝔸5.1.run.sum-k-mul-succ-mul-two-k-succ.mac-158f.20260617t001955944878z-2172a07c@2026-06-17
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260617t001955944878z-2172a07c; goal≜sum-k-mul-succ-mul-two-k-succ; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-sum-induction}
+⟦Γ:Goal⟧{goal≜sum-k-mul-succ-mul-two-k-succ}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-17T00:19:55Z}
+⟦Σ:Artifact⟧{sha≜bb6f3c03406443b6d0f71c696d1c5153630648e718499dfadf45a26e560cedc9}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
