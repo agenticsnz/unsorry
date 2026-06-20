@@ -1,7 +1,7 @@
 𝔸5.1.run.sum-range-id-mul-four-pow-closed.mac-158f.20260617t165042262489z-c6898b02@2026-06-17
 γ≔unsorry.proof.run
 ⟦Ω:Run⟧{id≜20260617t165042262489z-c6898b02; goal≜sum-range-id-mul-four-pow-closed; agent≜mac-158f; outcome≜proved}
-⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-sum-induction}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜opus}
 ⟦Γ:Goal⟧{goal≜sum-range-id-mul-four-pow-closed}
 ⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-17T16:50:42Z}
 ⟦Σ:Artifact⟧{sha≜cc1ab96182c37043d6b9bef6dc774884c2cf9e934043c114f5ca6c6493d2c67f}

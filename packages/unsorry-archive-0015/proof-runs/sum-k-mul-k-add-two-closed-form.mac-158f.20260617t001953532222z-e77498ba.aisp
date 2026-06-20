@@ -1,7 +1,7 @@
 𝔸5.1.run.sum-k-mul-k-add-two-closed-form.mac-158f.20260617t001953532222z-e77498ba@2026-06-17
 γ≔unsorry.proof.run
 ⟦Ω:Run⟧{id≜20260617t001953532222z-e77498ba; goal≜sum-k-mul-k-add-two-closed-form; agent≜mac-158f; outcome≜proved}
-⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-sum-induction}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜opus}
 ⟦Γ:Goal⟧{goal≜sum-k-mul-k-add-two-closed-form}
 ⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-17T00:19:53Z}
 ⟦Σ:Artifact⟧{sha≜7b420e56013aaca2b079052cb230a34d920cc48a1c92a007bf23d33f61f4650a}

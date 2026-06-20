@@ -1,7 +1,7 @@
 𝔸5.1.run.dvd-266-pow-nineteen-sub-self.mac-158f.20260616t235434617285z-8a0d5db7@2026-06-16
 γ≔unsorry.proof.run
 ⟦Ω:Run⟧{id≜20260616t235434617285z-8a0d5db7; goal≜dvd-266-pow-nineteen-sub-self; agent≜mac-158f; outcome≜proved}
-⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-zmod-crt}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜opus}
 ⟦Γ:Goal⟧{goal≜dvd-266-pow-nineteen-sub-self}
 ⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-16T23:54:34Z}
 ⟦Σ:Artifact⟧{sha≜d532bc742b3daa6c405c0044708c32c12e136ffb219b4c08ddf7b143fbab08a2}
