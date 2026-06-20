@@ -23,7 +23,7 @@
 ![](docs/unsorry-infographic.JPG)
 *Image credit: Adam Holt*
 
-Check out the proofs the team has delivered so far: [Proof graph](docs/proofs-contributors-visualisation.html) · [Visual leaderboard](docs/leaderboard.html) · [Queue](docs/queue.html)
+Check out the proofs the team has delivered so far: [**Proof showcase**](docs/showcase.html) (curated highlights) · [Proof graph](docs/proofs-contributors-visualisation.html) · [Visual leaderboard](docs/leaderboard.html) · [Queue](docs/queue.html)
 
 [![Unsorry leaderboard](docs/leaderboard.svg)](docs/leaderboard.html)
 [![Unsorry proof graph](docs/proof-graph.svg)](docs/proofs-contributors-visualisation.html)
