@@ -1,0 +1,179 @@
+{
+  "block_id": "unsorry-archive-0033",
+  "target_size": 40,
+  "proof_count": 40,
+  "status": "frozen",
+  "source_commit": "d4e27dfa23b929c845c6ff54289e96d614d79f18",
+  "validation_commit": null,
+  "pins": {
+    "lean_toolchain": "leanprover/lean4:v4.30.0",
+    "mathlib": "v4.30.0"
+  },
+  "notes": [
+    "ADR-041 proof archive block 0033.",
+    "Whole decomposition trees + standalone proved goals only (invariant A).",
+    "Active goal records remain as archived metadata pointing at this package."
+  ],
+  "goals": [
+    {
+      "goal": "nat-sq-lt-two-pow-s2-s3",
+      "module": "Unsorry.NatSqLtTwoPowS2S3"
+    },
+    {
+      "goal": "nat-sq-lt-two-pow-s1",
+      "module": "Unsorry.NatSqLtTwoPowS1"
+    },
+    {
+      "goal": "nat-sq-lt-two-pow",
+      "module": "Unsorry.NatSqLtTwoPow"
+    },
+    {
+      "goal": "nat-sq-lt-two-pow-s2-s1",
+      "module": "Unsorry.NatSqLtTwoPowS2S1"
+    },
+    {
+      "goal": "nat-sq-lt-two-pow-s2",
+      "module": "Unsorry.NatSqLtTwoPow"
+    },
+    {
+      "goal": "nat-sq-lt-two-pow-s2-s2",
+      "module": "Unsorry.NatSqLtTwoPowS2S2"
+    },
+    {
+      "goal": "pow-five-add-pow-five-ge-quartic-mul",
+      "module": "Unsorry.PowFiveAddPowFiveGeQuarticMul"
+    },
+    {
+      "goal": "prod-one-sub-inv-sq-telescope",
+      "module": "Unsorry.ProdOneSubInvSqTelescope"
+    },
+    {
+      "goal": "quartic-plus-four-not-prime",
+      "module": "Unsorry.QuarticPlusFourNotPrime"
+    },
+    {
+      "goal": "realization-edge-relation",
+      "module": "Unsorry.RealizationEdgeRelation"
+    },
+    {
+      "goal": "hexagonal-eq-triangular-odd-index",
+      "module": "Unsorry.HexagonalEqTriangularOddIndex"
+    },
+    {
+      "goal": "nicomachus-sum-cubes-eq-sum-id-sq",
+      "module": "Unsorry.NicomachusSumCubesEqSumIdSq"
+    },
+    {
+      "goal": "prime-pow-eight-mod-480",
+      "module": "Unsorry.PrimePowEightMod480"
+    },
+    {
+      "goal": "prime-pow-six-mod-504",
+      "module": "Unsorry.PrimePowSixMod504"
+    },
+    {
+      "goal": "prod-icc-k-mul-add-two-div-succ-sq-telescope",
+      "module": "Unsorry.ProdIccKMulAddTwoDivSuccSqTelescope"
+    },
+    {
+      "goal": "prod-icc-k-mul-add-two-div-succ-sq-telescope-half",
+      "module": "Unsorry.ProdIccKMulAddTwoDivSuccSqTelescopeHalf"
+    },
+    {
+      "goal": "prod-icc-k-sq-div-pred-mul-succ-telescope",
+      "module": "Unsorry.ProdIccKSqDivPredMulSuccTelescope"
+    },
+    {
+      "goal": "prod-icc-one-add-recip-eq-succ",
+      "module": "Unsorry.ProdIccOneAddRecipEqSucc"
+    },
+    {
+      "goal": "prod-icc-one-add-recip-k-sq-sub-one-telescope",
+      "module": "Unsorry.ProdIccOneAddRecipKSqSubOneTelescope"
+    },
+    {
+      "goal": "prod-icc-one-add-recip-pronic",
+      "module": "Unsorry.ProdIccOneAddRecipPronic"
+    },
+    {
+      "goal": "prod-icc-one-sub-recip-sq-eq-frac",
+      "module": "Unsorry.ProdIccOneSubRecipSqEqFrac"
+    },
+    {
+      "goal": "prod-icc-one-sub-two-div-pronic",
+      "module": "Unsorry.ProdIccOneSubTwoDivPronic"
+    },
+    {
+      "goal": "prod-icc-succ-add-three-div-self-eq-binom-shift",
+      "module": "Unsorry.ProdIccSuccAddThreeDivSelfEqBinomShift"
+    },
+    {
+      "goal": "prod-icc-succ-sq-div-k-mul-add-two-telescope",
+      "module": "Unsorry.ProdIccSuccSqDivKMulAddTwoTelescope"
+    },
+    {
+      "goal": "quartic-n4-plus-four-composite",
+      "module": "Unsorry.QuarticN4PlusFourComposite"
+    },
+    {
+      "goal": "quartic-n4-plus-four-not-prime",
+      "module": "Unsorry.QuarticN4PlusFourNotPrime"
+    },
+    {
+      "goal": "sophie-germain-plus-factor-dvd",
+      "module": "Unsorry.SophieGermainPlusFactorDvd"
+    },
+    {
+      "goal": "sq-mod-five-ne-two-three",
+      "module": "Unsorry.SqModFiveNeTwoThree"
+    },
+    {
+      "goal": "sq-mod-ten-ne-two-three-seven-eight",
+      "module": "Unsorry.SqModTenNeTwoThreeSevenEight"
+    },
+    {
+      "goal": "sum-centered-triangular-closed-form",
+      "module": "Unsorry.SumCenteredTriangularClosedForm"
+    },
+    {
+      "goal": "sum-decagonal-closed-form",
+      "module": "Unsorry.SumDecagonalClosedForm"
+    },
+    {
+      "goal": "sum-heptagonal-closed-form",
+      "module": "Unsorry.SumHeptagonalClosedForm"
+    },
+    {
+      "goal": "sum-heptagonal-numbers-closed-form",
+      "module": "Unsorry.SumHeptagonalNumbersClosedForm"
+    },
+    {
+      "goal": "sum-hexagonal-numbers-closed-form",
+      "module": "Unsorry.SumHexagonalNumbersClosedForm"
+    },
+    {
+      "goal": "sum-icc-eight-k-div-odd-sq-pair-telescope",
+      "module": "Unsorry.SumIccEightKDivOddSqPairTelescope"
+    },
+    {
+      "goal": "sum-octagonal-running-closed-form",
+      "module": "Unsorry.SumOctagonalRunningClosedForm"
+    },
+    {
+      "goal": "sum-octahedral-centered-squares",
+      "module": "Unsorry.SumOctahedralCenteredSquares"
+    },
+    {
+      "goal": "gpow-sum-four-pow-two",
+      "module": "Unsorry.GpowSumFourPowTwo"
+    },
+    {
+      "goal": "gpow-sum-four-pow-three",
+      "module": "Unsorry.GpowSumFourPowThree"
+    },
+    {
+      "goal": "gpow-sum-four-pow-four",
+      "module": "Unsorry.GpowSumFourPowFour"
+    }
+  ]
+}

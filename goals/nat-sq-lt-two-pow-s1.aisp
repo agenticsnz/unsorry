@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜nat-sq-lt-two-pow-s1
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜decompositions/nat-sq-lt-two-pow.d337a70018c9-90fd.aisp
+  src≜packages/unsorry-archive-0033/decompositions/nat-sq-lt-two-pow.d337a70018c9-90fd.aisp
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/nat-sq-lt-two-pow-s1.lean
+  lean≜packages/unsorry-archive-0033/goals/nat-sq-lt-two-pow-s1.lean
   sha≜b78c7ffa0da72d4338127243b6eb92d7245265b8a334b49ee4a2f64008f6f7ba
   aff≜1
   depth≜1

@@ -1,0 +1,21 @@
+𝔸5.1.goal.nat-sq-lt-two-pow-s2-s3@2026-06-14
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜nat-sq-lt-two-pow-s2-s3
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜decompositions/nat-sq-lt-two-pow-s2.oma-2-c50d.aisp
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/nat-sq-lt-two-pow-s2-s3.lean
+  sha≜deb0475cc5476db2dd3f91fb99a1af7b470fc905d30b30c41262a797ffe53367
+  aff≜1
+  depth≜2
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

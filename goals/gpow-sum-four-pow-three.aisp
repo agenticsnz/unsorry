@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜gpow-sum-four-pow-three
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/gpow-sum-four-pow-three.md
+  src≜packages/unsorry-archive-0033/backlog/gpow-sum-four-pow-three.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/gpow-sum-four-pow-three.lean
+  lean≜packages/unsorry-archive-0033/goals/gpow-sum-four-pow-three.lean
   sha≜428e9621a689983c0f6436aadb1aa3d757566887da5e43091ef124c66c56156c
   aff≜0
 }
