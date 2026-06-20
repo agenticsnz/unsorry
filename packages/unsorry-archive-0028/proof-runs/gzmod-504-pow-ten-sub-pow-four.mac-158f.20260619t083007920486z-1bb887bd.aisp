@@ -1,0 +1,8 @@
+𝔸5.1.run.gzmod-504-pow-ten-sub-pow-four.mac-158f.20260619t083007920486z-1bb887bd@2026-06-19
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260619t083007920486z-1bb887bd; goal≜gzmod-504-pow-ten-sub-pow-four; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-zmod-decide}
+⟦Γ:Goal⟧{goal≜gzmod-504-pow-ten-sub-pow-four}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-19T08:30:07Z}
+⟦Σ:Artifact⟧{sha≜3fd613e3fbefb23a8077cd14f0e5b84eb77c33df39a3a3e3f9ea0d5bc24fc32a}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

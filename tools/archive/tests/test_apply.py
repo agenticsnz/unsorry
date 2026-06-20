@@ -58,3 +58,49 @@ def test_retire_never_prefixes_empty_sentinel(tmp_path: Path):
     out = goal.read_text(encoding="utf-8")
     assert "lean≜∅" in out  # the empty sentinel is never prefixed
     assert "packages/unsorry-archive-0005/∅" not in out
+
+
+def _proved(goal: str, theorem: str, module_path: str):
+    from tools.archive.plan import ProvedGoal
+    return ProvedGoal(
+        goal=goal, sha="a" * 4, theorem=theorem, module=f"Unsorry.{goal}",
+        module_path=module_path, goal_path=f"goals/{goal}.lean",
+        index_path=f"library/index/{'a' * 4}.aisp", proof_run_paths=(),
+        proved_at="2026-06-14T00:00:00Z",
+    )
+
+
+def test_binding_satisfiable_when_theorem_in_own_module(tmp_path: Path):
+    _write(tmp_path / "library" / "Unsorry" / "Foo.lean",
+           "import Mathlib\n\ntheorem foo : True := trivial\n")
+    g = _proved("foo", "foo", "library/Unsorry/Foo.lean")
+    assert apply._binding_unsatisfiable_in_block(tmp_path, [g]) == set()
+
+
+def test_binding_unsatisfiable_when_theorem_module_not_in_block(tmp_path: Path):
+    # The goal's binding theorem lives in a module that is NOT among the block's
+    # modules (the nat-sq-lt-two-pow-s2 / block 0033 pathology). It must be flagged.
+    _write(tmp_path / "library" / "Unsorry" / "Bar.lean",
+           "import Mathlib\n\ntheorem unrelated : True := trivial\n")
+    g = _proved("parent", "step_lemma", "library/Unsorry/Bar.lean")
+    assert apply._binding_unsatisfiable_in_block(tmp_path, [g]) == {"parent"}
+
+
+def test_binding_private_decl_is_not_referenceable(tmp_path: Path):
+    # A private declaration cannot be the binding target (check_statement_binding
+    # rule) -> unsatisfiable even though the name textually appears.
+    _write(tmp_path / "library" / "Unsorry" / "Baz.lean",
+           "import Mathlib\n\nprivate theorem hidden : True := trivial\n")
+    g = _proved("g", "hidden", "library/Unsorry/Baz.lean")
+    assert apply._binding_unsatisfiable_in_block(tmp_path, [g]) == {"g"}
+
+
+def test_binding_satisfied_by_shared_module_in_block(tmp_path: Path):
+    # Theorem declared in ANOTHER goal's module that IS co-located in the block.
+    _write(tmp_path / "library" / "Unsorry" / "Shared.lean",
+           "import Mathlib\n\ntheorem shared_lemma : True := trivial\n")
+    _write(tmp_path / "library" / "Unsorry" / "User.lean",
+           "import Mathlib\n\ntheorem user_thm : True := trivial\n")
+    user = _proved("user", "user_thm", "library/Unsorry/User.lean")
+    parent = _proved("parent", "shared_lemma", "library/Unsorry/Shared.lean")
+    assert apply._binding_unsatisfiable_in_block(tmp_path, [user, parent]) == set()

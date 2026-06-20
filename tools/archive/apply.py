@@ -24,6 +24,7 @@ import argparse
 import json
 import re
 import shutil
+import sys
 from pathlib import Path
 
 from tools.archive.plan import (
@@ -122,7 +123,50 @@ def select_block(root: Path, size: int) -> list[ProvedGoal]:
                 selected_set.add(m)
         if len(selected) >= size:
             break
-    return [by_id[g] for g in selected]
+
+    # Defer goals whose statement-binding theorem will NOT be declared inside the
+    # package. A recompose/shared proof can put a goal's binding theorem in a module
+    # owned by another goal; if that module is left active (or was archived in an
+    # earlier block), the package fails Gate A's binding validation in isolation
+    # ("no library module declares '<name>'", e.g. nat-sq-lt-two-pow-s2 / block
+    # 0033). Drop the whole component of any such goal — one inconsistent goal must
+    # not poison the block (and stall all archiving). Iterate: removing a module can
+    # orphan another goal that relied on it.
+    result = [by_id[g] for g in selected]
+    while result:
+        bad = _binding_unsatisfiable_in_block(root, result)
+        if not bad:
+            break
+        drop: set[str] = set()
+        for gid in bad:
+            comp = components.get(gid)
+            drop |= set(comp) if comp is not None else {gid}
+        kept = [g for g in result if g.goal not in drop]
+        for gid in sorted(drop):
+            print(f"[archive] deferring {gid}: binding theorem not declared within "
+                  f"the block (shared/recompose module not co-located)", file=sys.stderr)
+        result = kept
+    return result
+
+
+# Match check_statement_binding._module_declaring's rule: a referenceable (non-
+# private) `theorem/lemma <name>`. Replicated here (not imported) so the cutter's
+# pre-check mirrors exactly what Gate A's package validation will later enforce.
+def _declares_referenceable(text: str, name: str) -> bool:
+    decl = re.compile(rf"^(?P<mods>[^\n]*?)\b(?:theorem|lemma)\s+{re.escape(name)}\b",
+                      re.MULTILINE)
+    return any("private" not in m.group("mods").split() for m in decl.finditer(text))
+
+
+def _binding_unsatisfiable_in_block(root: Path, goals: list[ProvedGoal]) -> set[str]:
+    """Goal ids whose binding theorem is NOT declared in any module that the block
+    would contain — i.e. would fail the package's statement-binding validation."""
+    blob = "\n".join(
+        (root / g.module_path).read_text(encoding="utf-8")
+        for g in goals
+        if g.module_path and (root / g.module_path).is_file()
+    )
+    return {g.goal for g in goals if g.theorem and not _declares_referenceable(blob, g.theorem)}
 
 
 def _move(root: Path, rel: str, pkg: Path) -> None:

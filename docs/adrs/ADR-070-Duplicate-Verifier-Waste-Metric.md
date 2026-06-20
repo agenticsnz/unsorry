@@ -6,7 +6,7 @@
 | **Initiative** | volunteer-scale orchestration / Phase-2 instrumentation |
 | **Proposed By** | unsorry maintainers |
 | **Date** | 2026-06-18 |
-| **Status** | Proposed |
+| **Status** | Accepted |
 
 ## Context
 
@@ -106,3 +106,4 @@ Per goal and aggregate, over all `prove(<goal>):` PRs:
 | Status | Approver | Date |
 |--------|----------|------|
 | Proposed | unsorry maintainers | 2026-06-18 |
+| Accepted (implemented — duplicate-verifier-waste metric, #2161) | unsorry maintainers | 2026-06-19 |
