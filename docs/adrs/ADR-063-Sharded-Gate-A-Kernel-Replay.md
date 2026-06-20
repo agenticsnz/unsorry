@@ -6,7 +6,7 @@
 | **Initiative** | verification capacity / throughput |
 | **Proposed By** | unsorry maintainers |
 | **Date** | 2026-06-17 |
-| **Status** | Proposed |
+| **Status** | Accepted |
 
 ## Context
 
@@ -140,3 +140,4 @@ documented fast-follow via the same planner.
 | Status | Approver | Date |
 |--------|----------|------|
 | Proposed | unsorry maintainers | 2026-06-17 |
+| Accepted (implemented — sharded replay, now the required Gate A job, #1917) | unsorry maintainers | 2026-06-19 |
