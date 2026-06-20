@@ -1,0 +1,48 @@
+# Close coordination/prove PRs whose action `main` has already satisfied —
+# duplicate decompositions (first-merge-wins, losers conflict), stacked unblocks,
+# prove PRs for already-proved goals. Duplicates consume Gate A runs, the
+# in-flight governor budget, and queue space, so reaping them keeps the queue lean.
+#
+# Conservative: closes only on a positive already-satisfied signal (see
+# tools/repo/superseded_prs.py). Default GITHUB_TOKEN (pull-requests: write to
+# close; opens nothing, so no REFRESH_TOKEN). Event-driven on Gate A completion
+# (a merge to main is what newly-supersedes competitors) + an hourly backstop.
+name: superseded-pr-janitor
+
+on:
+  workflow_run:
+    workflows: ["gate-a"]
+    types: [completed]
+  schedule:
+    - cron: "41 * * * *"
+  workflow_dispatch:
+    inputs:
+      apply:
+        description: "Set false for a dry-run (report only)"
+        default: "true"
+
+concurrency:
+  group: superseded-pr-janitor
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  janitor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          ref: main # need goals/ + decompositions/ state to decide what's satisfied
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.12"
+      - name: Close superseded coordination/prove PRs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 -m tools.repo.superseded_prs \
+            --repo "${{ github.repository }}" \
+            ${{ (github.event.inputs.apply == 'false') && ' ' || '--apply' }}
