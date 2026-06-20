@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜quartic-four-var-ge-four-prod
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/quartic-four-var-ge-four-prod.md
+  src≜packages/unsorry-archive-0020/backlog/quartic-four-var-ge-four-prod.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/quartic-four-var-ge-four-prod.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0020/goals/quartic-four-var-ge-four-prod.lean
+  sha≜46cd32405d4d519f8d4b49604fcd0b5bf49e1881b256b52f779add1fe2d8b80a
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

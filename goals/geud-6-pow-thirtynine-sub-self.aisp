@@ -1,0 +1,20 @@
+𝔸5.1.goal.geud-6-pow-thirtynine-sub-self@2026-06-19
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜geud-6-pow-thirtynine-sub-self
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/geud-6-pow-thirtynine-sub-self.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/geud-6-pow-thirtynine-sub-self.lean
+  sha≜c595ae88d6dcd8f4a476f53a09287bcc2617980472cc4d067802d3822c464e07
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

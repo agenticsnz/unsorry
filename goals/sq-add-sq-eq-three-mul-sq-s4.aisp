@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sq-add-sq-eq-three-mul-sq-s4
   phase≜prove
-  status≜open
+  status≜blocked
   difficulty≜1
 }
 ⟦Σ:Source⟧{
@@ -15,7 +15,7 @@
 ⟦Λ:Artifact⟧{
   lean≜goals/sq-add-sq-eq-three-mul-sq-s4.lean
   sha≜∅
-  aff≜-20
+  aff≜-30
   depth≜1
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
