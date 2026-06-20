@@ -1204,6 +1204,42 @@ resolve_solver() {
   SOLVER="$solver"
 }
 
+# Credit-integrity guard (proof attribution). resolve_solver trusts UNSORRY_SOLVER
+# verbatim, so a config that hard-codes someone else's handle credits THEM for
+# every proof this machine produces — observed in practice as several contributors
+# funnelling leaderboard credit to one handle via a shared config. This is the
+# universal prover chokepoint: run.sh guards before launch, but supervise.sh and a
+# direct agent.sh call do not — and it re-runs on every #428 re-exec, so a freshly
+# updated harness enforces it even on a long-lived loop. Pure decision (no I/O),
+# exercised hermetically by --self-test; echoes one of ok | ack | block | unknown.
+#   solver: resolved $SOLVER (resolve_solver already validated it non-empty)
+#   login : gh-resolved login (empty -> unknown; cannot compare, e.g. offline)
+#   ack   : $UNSORRY_SOLVER_OK (truthy -> a mismatch is a deliberate override)
+solver_credit_decision() {
+  local solver="$1" login="$2" ack="$3"
+  [ -z "$login" ] && { echo unknown; return; }
+  [ "${solver,,}" = "${login,,}" ] && { echo ok; return; }
+  case "$ack" in
+    1|true|TRUE|yes|YES|on|ON) echo ack ;;
+    *) echo block ;;
+  esac
+}
+
+# Resolve the login and act on the decision before any proving. A `block` is a
+# configuration error (exit 2 → supervise.sh treats it as fatal, no retry loop),
+# so a mis-credited prover never silently runs.
+guard_solver_credit() {
+  local login decision
+  login="$(gh api user --jq .login 2>/dev/null || true)"
+  decision="$(solver_credit_decision "$SOLVER" "$login" "${UNSORRY_SOLVER_OK:-}")"
+  case "$decision" in
+    ok) : ;;
+    unknown) log "WARNING: could not resolve your GitHub login (offline / gh not authenticated) — proof credit unverified; proofs will be credited to '$SOLVER'." ;;
+    ack) log "WARNING: proofs will be credited to '$SOLVER', NOT your GitHub login '$login' (UNSORRY_SOLVER_OK=1 — deliberate override)." ;;
+    block) die_config "proof credit would go to '$SOLVER', but your GitHub account is '$login' — every proof this machine produces would be mis-credited on the leaderboard, not credited to you. Fix: export UNSORRY_SOLVER=$login (or unset it to default to your login). Deliberately proving under another handle, e.g. an org? export UNSORRY_SOLVER_OK=1." ;;
+  esac
+}
+
 # ADR-029 / SPEC-029-A: author the harness's own commits (proof PRs, claims,
 # telemetry) as the authenticated GitHub account so verified work links to a
 # real profile regardless of the operator's local git config. A fresh machine
@@ -3336,6 +3372,25 @@ test_solver_resolution() {
     || { log "  authenticated GitHub solver was not resolved"; return 1; }
 }
 
+test_solver_credit_decision() {
+  local got
+  while IFS='|' read -r solver login ack want; do
+    [ -z "$want" ] && continue
+    got="$(solver_credit_decision "$solver" "$login" "$ack")"
+    [ "$got" = "$want" ] \
+      || { log "  credit(solver='$solver' login='$login' ack='$ack'): want $want got $got"; return 1; }
+  done <<'CASES'
+alice|alice||ok
+Alice|alice||ok
+alice|Alice||ok
+bob|alice||block
+bob|alice|1|ack
+bob|alice|yes|ack
+bob|||unknown
+CASES
+  return 0
+}
+
 test_git_identity_resolution() {
   local UNSORRY_SOLVER_NAME="" UNSORRY_SOLVER_EMAIL=""
   local GIT_AUTHOR_NAME="" GIT_AUTHOR_EMAIL=""
@@ -5442,6 +5497,7 @@ run_self_tests() {
     test_fetch_retry_delay
     test_git_fetch_retry
     test_harness_is_stale
+    test_solver_credit_decision
     test_relocate_into_worktree_noop
     test_require_main_checkout_isolated
     test_ensure_agent_worktree
@@ -5953,6 +6009,7 @@ main() {
     esac
     gh auth status >/dev/null 2>&1 || die_config "gh is not authenticated"
     [ "$PROVE" -eq 1 ] && resolve_solver
+    [ "$PROVE" -eq 1 ] && guard_solver_credit
     [ "$PROVE" -eq 1 ] && resolve_git_identity
     [ "$PROVE" -eq 1 ] && require_cmd lake  # prove verify builds locally
   fi
