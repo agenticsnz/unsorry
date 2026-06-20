@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sum-icc-choose-hockey-stick-s1
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜1
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/sum-icc-choose-hockey-stick-s1.lean
-  sha≜∅
+  sha≜e2d4ceafa325f38df0a15f21cbf110d45ea30a8a591256a3abf26ba70acf5893
   aff≜-20
   depth≜1
 }
