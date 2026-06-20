@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-range-recip-three-consec-shifted@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-range-recip-three-consec-shifted
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-range-recip-three-consec-shifted.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-range-recip-three-consec-shifted.lean
+  sha≜c8f4cc20a167d6e7122dc59eafef680bf42720384075d903469ff1efea75a363
+  aff≜-10
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

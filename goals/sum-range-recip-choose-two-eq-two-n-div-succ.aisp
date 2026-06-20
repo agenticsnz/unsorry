@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-recip-choose-two-eq-two-n-div-succ
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-recip-choose-two-eq-two-n-div-succ.md
+  src≜packages/unsorry-archive-0038/backlog/sum-range-recip-choose-two-eq-two-n-div-succ.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-recip-choose-two-eq-two-n-div-succ.lean
+  lean≜packages/unsorry-archive-0038/goals/sum-range-recip-choose-two-eq-two-n-div-succ.lean
   sha≜c39cd39e98f4ac7299e73b1e38cdb0f75493f705a8ba4e3204bfdeb5ef22359e
   aff≜-10
 }

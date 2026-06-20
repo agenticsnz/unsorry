@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-succ-div-factorial-add-two-telescope
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-succ-div-factorial-add-two-telescope.md
+  src≜packages/unsorry-archive-0038/backlog/sum-range-succ-div-factorial-add-two-telescope.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-succ-div-factorial-add-two-telescope.lean
+  lean≜packages/unsorry-archive-0038/goals/sum-range-succ-div-factorial-add-two-telescope.lean
   sha≜4ac0acd05503c0b011a978ab8526c3dd7c00a67d4a278a575bb634070e36972b
   aff≜-10
 }

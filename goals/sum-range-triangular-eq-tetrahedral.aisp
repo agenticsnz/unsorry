@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-triangular-eq-tetrahedral
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-triangular-eq-tetrahedral.md
+  src≜packages/unsorry-archive-0038/backlog/sum-range-triangular-eq-tetrahedral.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-triangular-eq-tetrahedral.lean
+  lean≜packages/unsorry-archive-0038/goals/sum-range-triangular-eq-tetrahedral.lean
   sha≜d920a6b061a4d3c3e4e67938b73bc14856d69546c27aeaa6a7df532d6df9518e
   aff≜-10
 }

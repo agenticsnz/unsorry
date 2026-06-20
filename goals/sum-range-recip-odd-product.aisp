@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-recip-odd-product
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-recip-odd-product.md
+  src≜packages/unsorry-archive-0038/backlog/sum-range-recip-odd-product.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-recip-odd-product.lean
+  lean≜packages/unsorry-archive-0038/goals/sum-range-recip-odd-product.lean
   sha≜9c28f3fe0796e2eba3480f36aa031526d0e274be12063e4657c5b049d8ce4a0d
   aff≜-10
 }

@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-recip-five-step-residue-one
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-recip-five-step-residue-one.md
+  src≜packages/unsorry-archive-0038/backlog/sum-range-recip-five-step-residue-one.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-recip-five-step-residue-one.lean
+  lean≜packages/unsorry-archive-0038/goals/sum-range-recip-five-step-residue-one.lean
   sha≜07e885c9afa2fa7c2c5b993b9bad5375b12737791f7f6596d115ecf533a362d9
   aff≜-10
 }
