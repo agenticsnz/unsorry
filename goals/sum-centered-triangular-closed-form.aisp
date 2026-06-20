@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-centered-triangular-closed-form
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-centered-triangular-closed-form.md
+  src≜packages/unsorry-archive-0033/backlog/sum-centered-triangular-closed-form.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-centered-triangular-closed-form.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0033/goals/sum-centered-triangular-closed-form.lean
+  sha≜995a69742af2668bbb6c33d5a0343756c0f0e1517bf4d6753c8a34842d5591d6
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

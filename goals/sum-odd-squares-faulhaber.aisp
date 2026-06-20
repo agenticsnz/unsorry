@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-odd-squares-faulhaber
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-odd-squares-faulhaber.md
+  src≜packages/unsorry-archive-0034/backlog/sum-odd-squares-faulhaber.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-odd-squares-faulhaber.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0034/goals/sum-odd-squares-faulhaber.lean
+  sha≜232df4935f13e28be9567f0a4a83ef4299f44bfd34e38df5dc3dbca73457d865
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

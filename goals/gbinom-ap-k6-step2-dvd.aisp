@@ -1,0 +1,20 @@
+𝔸5.1.goal.gbinom-ap-k6-step2-dvd@2026-06-19
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gbinom-ap-k6-step2-dvd
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/gbinom-ap-k6-step2-dvd.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/gbinom-ap-k6-step2-dvd.lean
+  sha≜1d7193489fabfdf8072539ad29eb51ca630f0930317c881b66c9d4eba6755503
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

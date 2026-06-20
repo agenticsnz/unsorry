@@ -1,0 +1,20 @@
+𝔸5.1.goal.gpow-sum-one-pow-fifteen@2026-06-19
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gpow-sum-one-pow-fifteen
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/gpow-sum-one-pow-fifteen.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/gpow-sum-one-pow-fifteen.lean
+  sha≜d6c3bb08d9e98ef74b1ba9d789afef5356bf4a175893a66424123b9feee7b572
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
