@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sq-add-sq-eq-three-mul-sq-s4
   phase≜prove
-  status≜open
+  status≜blocked
   difficulty≜1
 }
 ⟦Σ:Source⟧{
