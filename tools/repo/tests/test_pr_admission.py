@@ -86,3 +86,25 @@ def test_non_proof_maintenance_pr_after_cutover_is_admitted() -> None:
         DEFAULT_CUTOVER,
     )
     assert verdict.admitted
+
+
+def test_unblock_coordination_pr_after_cutover_is_admitted() -> None:
+    # ADR-009 unblock PR on a feature/goal-* branch — title is unblock(...), not
+    # prove(...), so it must NOT be auto-closed as a direct proof (issue #3128).
+    verdict = decide(
+        "2026-06-16T22:30:00Z",
+        "feature/goal-sum-icc-choose-hockey-stick-unblock-beast-dddd-427102",
+        "unblock(sum-icc-choose-hockey-stick): sub-lemmas proved",
+        DEFAULT_CUTOVER,
+    )
+    assert verdict.admitted
+
+
+def test_decompose_coordination_pr_after_cutover_is_admitted() -> None:
+    verdict = decide(
+        "2026-06-16T22:30:00Z",
+        "feature/goal-sq-add-sq-eq-three-mul-sq-s4-decompose-agent-abc123",
+        "decompose(sq-add-sq-eq-three-mul-sq-s4): 3 sub-lemmas",
+        DEFAULT_CUTOVER,
+    )
+    assert verdict.admitted
