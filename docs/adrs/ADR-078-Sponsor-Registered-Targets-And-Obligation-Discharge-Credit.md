@@ -4,7 +4,7 @@
 |-------|-------|
 | **Decision ID** | ADR-078 |
 | **Initiative** | Aim the board at the swarm plan's Phase 2: credit progress on real, sponsor-registered proof targets, not standalone atoms |
-| **Proposed By** | Ocean (ohdearquant), drafted by Leo |
+| **Proposed By** | Ocean (@ohdearquant), drafted by Leo |
 | **Date** | 2026-06-20 |
 | **Status** | Proposed |
 
@@ -72,4 +72,4 @@ Ocean is ready to register the first one. He will open-source the full Lion proo
 
 | Status | Approver | Date |
 |--------|----------|------|
-| Proposed | Ocean (ohdearquant) | 2026-06-20 |
+| Proposed | Ocean (@ohdearquant) | 2026-06-20 |
