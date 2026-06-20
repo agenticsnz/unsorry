@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import json
 import math
+import os
 import re
 import statistics
 import subprocess
@@ -1032,27 +1033,95 @@ def _success_rate_percent(value: float | None) -> float | None:
     return None if value is None else round(value * 100, 2)
 
 
-def _proof_timeline(proof_list: list[Proof]) -> list[dict]:
-    """Cumulative count of library proofs by calendar date (issue #738).
+#: ``prove(<goal>)`` / ``recompose(<goal>)`` squash-merge subject (ADR-026) —
+#: the authoritative record of a proof landing on the branch. Only the goal id is
+#: needed here (the merge *timestamp* comes from the commit, not the subject).
+_PROVE_GOAL_RE = re.compile(r"^(?:prove|recompose)\((?P<goal>[a-z0-9][a-z0-9-]*)\):")
 
-    A deterministic series for the leaderboard's "proofs over time" view: one
-    entry per date on which at least one proof index landed, carrying that day's
-    count and the running cumulative total. Proofs without a parseable date are
-    ignored so the series stays monotonic in time.
+
+def parse_merge_log(text: str) -> dict[str, str]:
+    """Map goal → UTC merge-hour timestamp from ``<iso-hour>\\0<subject>`` lines.
+
+    ``git log`` is newest-first, so the *last* assignment per goal wins — the
+    oldest ``prove(<goal>)`` commit, i.e. the merge that first landed the proof.
+    Pure and testable; no git access here.
     """
-    by_date: dict[str, int] = defaultdict(int)
-    for proof in proof_list:
-        day = (proof.date or "")[:10]
-        if day:
-            by_date[day] += 1
+    result: dict[str, str] = {}
+    for line in text.splitlines():
+        timestamp, _, subject = line.partition("\x00")
+        match = _PROVE_GOAL_RE.match(subject)
+        if match and timestamp:
+            result[match.group("goal")] = timestamp
+    return result
+
+
+def merge_times(root: Path) -> dict[str, str]:
+    """Resolve goal → UTC merge-hour timestamp from the ``prove(...)`` commits.
+
+    The commit timestamp is normalised to UTC and truncated to the hour (via git's
+    ``format-local`` under ``TZ=UTC``) so the merge timeline can bucket hourly —
+    the AISP solve ``@date`` carries no time, so it can only bucket daily, whereas
+    the merge time records to the second. Degrades to ``{}`` outside a git checkout
+    so the AISP-only path (and the fixture tests) stay green.
+    """
+    try:
+        proc = subprocess.run(
+            [
+                "git", "-C", str(root), "log", "--no-merges",
+                "--date=format-local:%Y-%m-%dT%H:00:00Z", "--format=%cd%x00%s",
+            ],
+            capture_output=True,
+            text=True,
+            check=False,
+            env={**os.environ, "TZ": "UTC"},
+        )
+    except (OSError, ValueError):
+        return {}
+    if proc.returncode != 0:
+        return {}
+    return parse_merge_log(proc.stdout)
+
+
+def _cumulative_series(buckets: list[str]) -> list[dict]:
+    """Cumulative proof count per non-empty time bucket, in ascending order.
+
+    Shared by both proofs-over-time series. Empty bucket keys — a proof with no
+    recorded solve date, or no ``prove(...)`` commit on the merge series — are
+    dropped so the series stays monotonic in time.
+    """
+    by_bucket: dict[str, int] = defaultdict(int)
+    for bucket in buckets:
+        if bucket:
+            by_bucket[bucket] += 1
     cumulative = 0
     series: list[dict] = []
-    for day in sorted(by_date):
-        cumulative += by_date[day]
+    for bucket in sorted(by_bucket):
+        cumulative += by_bucket[bucket]
         series.append(
-            {"date": day, "proofs": by_date[day], "cumulative_proofs": cumulative}
+            {"t": bucket, "proofs": by_bucket[bucket], "cumulative_proofs": cumulative}
         )
     return series
+
+
+def proof_timelines(proof_list: list[Proof], merges: dict[str, str]) -> dict:
+    """The two proofs-over-time series for the leaderboard toggle (issue #738).
+
+    ``merge`` (the default): bucketed hourly by the git merge timestamp — when
+    each proof landed on the branch — so a merge wave clearing a solve backlog
+    reads as recent slope rather than a flat tail. ``solve``: bucketed daily by
+    the recorded AISP ``@date`` (a date-only source — daily is the finest honest
+    bucket). The ``merge`` series is empty outside a git checkout; ``default``
+    names the series the page should show first.
+    """
+    return {
+        "default": "merge",
+        "merge": _cumulative_series(
+            [merges.get(proof.goal, "") for proof in proof_list]
+        ),
+        "solve": _cumulative_series(
+            [(proof.date or "")[:10] for proof in proof_list]
+        ),
+    }
 
 
 def ui_payload(root: Path) -> dict:
@@ -1146,9 +1215,11 @@ def ui_payload(root: Path) -> dict:
             }
             for model in stats["models"]
         ],
-        # Cumulative library proofs by date — the "proofs over time" line graph
-        # toggled on the leaderboard page (issue #738).
-        "timeline": _proof_timeline(proofs(root)),
+        # Cumulative library proofs over time — the "proofs over time" line graph
+        # on the leaderboard page (issue #738), with a solve/merge toggle: merge
+        # (hourly, default) keys on when each proof landed; solve (daily) keys on
+        # the recorded AISP solve date.
+        "timelines": proof_timelines(proofs(root), merge_times(root)),
     }
 
 

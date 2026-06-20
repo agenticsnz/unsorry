@@ -515,12 +515,14 @@ def test_docs_leaderboard_html_consumes_generated_ui_json():
     assert "LocalDataStore" not in html
     assert "seedData" not in html
     assert "pravatar" not in html
-    # Issue #738: shared top-nav + proofs-over-time toggle consuming payload.timeline.
+    # Issue #738: shared top-nav + proofs-over-time toggle consuming payload.timelines.
     assert 'href="index.html"' in html
     assert 'href="proofs-contributors-visualisation.html"' in html
     assert 'id="tab-leaderboard"' in html and 'id="tab-timeline"' in html
     assert 'id="view-timeline"' in html
-    assert "renderTimeline" in html and "payload.timeline" in html
+    assert "renderTimeline" in html and "payload.timelines" in html
+    # Solve/merge basis toggle (merge is the default).
+    assert 'id="tl-mode-merge"' in html and 'id="tl-mode-solve"' in html
     # Top 5 view: a third toggle tab rendering the top five contributors.
     assert 'id="tab-top5"' in html and 'id="view-top5"' in html
     assert "renderTop5" in html
@@ -542,14 +544,69 @@ def test_docs_index_links_readme():
 
 
 def test_ui_payload_includes_proof_timeline(tmp_path):
-    # Issue #738: cumulative proofs-over-time series for the leaderboard line graph.
+    # Issue #738: proofs-over-time toggle — a solve series (daily, by AISP @date)
+    # and a merge series (hourly, by prove-commit time; empty without a checkout).
     _goal(tmp_path, "g1", 1)
     _goal(tmp_path, "g2", 2)
     _index(tmp_path, "a" * 64, "g1")
     _index(tmp_path, "b" * 64, "g2")
     payload = ui_payload(tmp_path)
-    assert payload["timeline"] == [
-        {"date": "2026-06-13", "proofs": 2, "cumulative_proofs": 2}
+    assert payload["timelines"]["default"] == "merge"
+    assert payload["timelines"]["solve"] == [
+        {"t": "2026-06-13", "proofs": 2, "cumulative_proofs": 2}
+    ]
+    # No git history in the fixture dir → the merge series degrades to empty.
+    assert payload["timelines"]["merge"] == []
+
+
+def test_parse_merge_log_keeps_oldest_prove_commit_per_goal():
+    # git log is newest-first, so the oldest prove(<goal>) commit (the proof's
+    # first landing) must win; recompose counts; non-prove subjects are ignored.
+    from tools.leaderboard.generate import parse_merge_log
+
+    text = (
+        "2026-06-20T17:00:00Z\x00recompose(g1): g1 by claude (#9)\n"
+        "2026-06-19T08:00:00Z\x00prove(g1): g1 by claude (#3)\n"
+        "2026-06-19T09:00:00Z\x00prove(g2): g2 by ruvnet (#4)\n"
+        "2026-06-19T10:00:00Z\x00docs: refresh leaderboard\n"
+    )
+    assert parse_merge_log(text) == {
+        "g1": "2026-06-19T08:00:00Z",
+        "g2": "2026-06-19T09:00:00Z",
+    }
+
+
+def test_merge_timeline_buckets_by_prove_commit_hour(tmp_path):
+    # With a real checkout, the merge series buckets each proof by its prove-commit
+    # hour (UTC). The wall-clock is the commit's, so assert the bucket shape.
+    import re as _re
+
+    from tools.leaderboard.generate import merge_times, proof_timelines, proofs
+
+    _goal(tmp_path, "g1", 1)
+    _index(tmp_path, "a" * 64, "g1")
+    _git(tmp_path, "init")
+    _git(tmp_path, "add", "goals", "library/index")
+    _git(
+        tmp_path,
+        "commit",
+        "-m",
+        "prove(g1): g1 by claude (#1)",
+        author="Claude <c@e.com>",
+    )
+
+    mt = merge_times(tmp_path)
+    assert set(mt) == {"g1"}
+    assert _re.fullmatch(r"\d{4}-\d{2}-\d{2}T\d{2}:00:00Z", mt["g1"])
+
+    series = proof_timelines(proofs(tmp_path), mt)
+    assert series["default"] == "merge"
+    assert series["merge"] == [
+        {"t": mt["g1"], "proofs": 1, "cumulative_proofs": 1}
+    ]
+    # The solve series still buckets by the recorded AISP @date, not the commit.
+    assert series["solve"] == [
+        {"t": "2026-06-13", "proofs": 1, "cumulative_proofs": 1}
     ]
 
 
