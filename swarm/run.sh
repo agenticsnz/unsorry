@@ -93,6 +93,44 @@ source_arm_enabled() {
   esac
 }
 
+# A long-lived run.sh keeps the launcher it was started with: a newer run.sh
+# (e.g. one that first gained the credit guard below) can be on origin/main yet
+# never in this process, so the guard a stale launcher lacks never runs and the
+# whole swarm comes up on old code. agent.sh self-re-execs its harness (#428);
+# the launcher must do the same. This pure decision (no I/O, so --self-test
+# covers it) reports whether our own blob changed; the caller fetches, fast-
+# forwards a clean checkout to origin/main and re-execs when it did.
+run_harness_stale() {  # <before-sha> <after-sha> → 0 (stale) iff both known and differ
+  [ "$1" != unknown ] && [ "$2" != unknown ] && [ "$1" != "$2" ]
+}
+
+# Pull latest and re-exec the launcher before any work is in flight. Best-effort:
+# offline (fetch fails) or a dirty/diverged tree (e.g. a fork, or .lake churn) is
+# left untouched — the prover/dispatcher/sourcer loops self-sync downstream — so
+# the swarm is never blocked from starting. Opt out with UNSORRY_RUN_NO_SELF_UPDATE=1.
+self_update_to_latest() {
+  [ "${_RUN_REEXECED:-0}" = 1 ] && return 0
+  [ "${UNSORRY_RUN_NO_SELF_UPDATE:-0}" = 1 ] && return 0
+  command -v git >/dev/null 2>&1 || return 0
+  git rev-parse --is-inside-work-tree >/dev/null 2>&1 || return 0
+  local before after
+  before="$(git hash-object swarm/run.sh 2>/dev/null || echo unknown)"
+  if ! git fetch -q origin main 2>/dev/null; then
+    log "self-update: git fetch failed (offline?) — running on the current tree"
+    return 0
+  fi
+  # Only advance a clean checkout sitting on a fast-forwardable main; anything
+  # dirty or diverged is left for the downstream loops to reconcile.
+  if [ -z "$(git status --porcelain 2>/dev/null)" ]; then
+    git merge -q --ff-only origin/main 2>/dev/null || true
+  fi
+  after="$(git hash-object swarm/run.sh 2>/dev/null || echo unknown)"
+  if run_harness_stale "$before" "$after"; then
+    log "launcher updated on origin/main ($before → $after) — re-exec'ing to run the latest code (#428)"
+    _RUN_REEXECED=1 exec "$0" "$@"
+  fi
+}
+
 # Credit-integrity guard (proof attribution). `agent.sh:resolve_solver` trusts
 # UNSORRY_SOLVER verbatim, so a config that hard-codes someone else's handle
 # credits THEM for every proof this machine produces — observed in practice as
@@ -186,6 +224,19 @@ bob|alice|yes|ack
 bob|||unknown
 CASES
 
+  # launcher staleness (pure): stale iff the blob changed and both shas are known
+  local s before after want
+  while IFS='|' read -r before after want; do
+    [ -z "$want" ] && continue
+    if run_harness_stale "$before" "$after"; then s=stale; else s=fresh; fi
+    [ "$s" = "$want" ] || { printf "  FAIL: stale(before='%s' after='%s') want %s got %s\n" "$before" "$after" "$want" "$s" >&2; fails=$((fails + 1)); }
+  done <<'STALECASES'
+aaa|bbb|stale
+aaa|aaa|fresh
+aaa|unknown|fresh
+unknown|bbb|fresh
+STALECASES
+
   if [ "$fails" -eq 0 ]; then
     echo "run.sh self-test: OK"
     return 0
@@ -252,6 +303,10 @@ if [ ! -f swarm/agent.sh ] || [ ! -f swarm/supervise.sh ] || [ ! -f swarm/sourci
   echo "swarm/run.sh: run from the repository root" >&2
   exit 2
 fi
+
+# Run the LATEST launcher before guarding credit or starting any loop: a process
+# launched before the guard existed would never enforce it on stale code.
+self_update_to_latest "$@"
 
 # Credit-integrity guard: refuse to silently run proofs that would be credited to
 # someone else (covers fork mode too — it runs before the fork branch below).
