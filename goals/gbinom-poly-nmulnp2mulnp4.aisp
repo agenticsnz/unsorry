@@ -1,0 +1,20 @@
+𝔸5.1.goal.gbinom-poly-nmulnp2mulnp4@2026-06-19
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gbinom-poly-nmulnp2mulnp4
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/gbinom-poly-nmulnp2mulnp4.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/gbinom-poly-nmulnp2mulnp4.lean
+  sha≜b8fcef02975ce73574c8ca1c2185af3683398e6eaec5584eea117647ee9e6129
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -68,8 +68,21 @@ jobs:
             fi
           } > comment.md
           echo "phantoms=$code" >> "$GITHUB_OUTPUT"
+          # ADR-037: the advisory must stay "visible and reviewable". On a fork PR
+          # the GITHUB_TOKEN is forced read-only (regardless of the declared
+          # pull-requests: write), so the sticky comment below cannot post — but the
+          # job-summary works with a read-only token. Mirror the advisory there so
+          # fork contributors still SEE any phantom warning in the Checks UI.
+          cat comment.md >> "$GITHUB_STEP_SUMMARY"
       - name: Sticky advisory comment
-        if: steps.admission.outputs.admitted == 'true'
+        # ADR-037: advisory is non-blocking and "always exits 0". A fork PR gets a
+        # read-only GITHUB_TOKEN, so posting/patching a PR comment is guaranteed to
+        # fail and would turn this advisory into a spurious red X. Only attempt the
+        # comment on a same-repo PR (where the token can write); fork contributors
+        # get the same content via the step summary written above. continue-on-error
+        # is belt-and-braces for any transient comment failure on same-repo PRs.
+        if: steps.admission.outputs.admitted == 'true' && github.event.pull_request.head.repo.full_name == github.repository
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
           PR: ${{ github.event.pull_request.number }}

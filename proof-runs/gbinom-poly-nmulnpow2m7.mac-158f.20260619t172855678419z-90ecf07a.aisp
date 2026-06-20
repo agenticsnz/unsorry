@@ -1,0 +1,8 @@
+𝔸5.1.run.gbinom-poly-nmulnpow2m7.mac-158f.20260619t172855678419z-90ecf07a@2026-06-19
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260619t172855678419z-90ecf07a; goal≜gbinom-poly-nmulnpow2m7; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-ring-cofactor}
+⟦Γ:Goal⟧{goal≜gbinom-poly-nmulnpow2m7}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-19T17:28:55Z}
+⟦Σ:Artifact⟧{sha≜4a60a206fb0943c5d929b377904d93a2966531f4a8a77e88221d5468986ee3e3}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

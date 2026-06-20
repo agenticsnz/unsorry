@@ -1,0 +1,20 @@
+𝔸5.1.goal.quartic-n4-plus-four-not-prime@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜quartic-n4-plus-four-not-prime
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/quartic-n4-plus-four-not-prime.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/quartic-n4-plus-four-not-prime.lean
+  sha≜db285339f36510c4f456043f693d0ca12b2461c9c36cac6b7a3ed4dbb94c3f7a
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
