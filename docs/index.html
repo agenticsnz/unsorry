@@ -35,6 +35,7 @@
         <!-- Top navigation — shared across home / leaderboard / proof graph (issue #738). -->
         <nav class="flex items-center gap-1 mb-8 text-sm font-medium" aria-label="Primary">
             <a href="index.html" aria-current="page" class="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-800">Home</a>
+            <a href="showcase.html" class="px-3 py-1.5 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors">Showcase</a>
             <a href="leaderboard.html" class="px-3 py-1.5 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors">Leaderboard</a>
             <a href="proofs-contributors-visualisation.html" class="px-3 py-1.5 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors">Proof graph</a>
             <a href="queue.html" class="px-3 py-1.5 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors">Queue</a>
@@ -71,6 +72,10 @@
         </header>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <a href="showcase.html" class="group block rounded-2xl border border-slate-200 p-6 hover:border-brand-blue hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all md:col-span-2">
+                <h2 class="text-lg font-bold text-slate-800 mb-1 flex items-center gap-2">Proof showcase <span aria-hidden="true" class="text-slate-400 group-hover:translate-x-1 transition-transform">→</span></h2>
+                <p class="text-sm text-slate-500 leading-relaxed">A hand-picked tour of standout theorems the swarm has proved — a classic absent from mathlib, a proof that reuses the swarm's own lemma, a 13-lemma decomposition, and more. Start here.</p>
+            </a>
             <a href="leaderboard.html" class="group block rounded-2xl border border-slate-200 p-6 hover:border-brand-blue hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all">
                 <h2 class="text-lg font-bold text-slate-800 mb-1 flex items-center gap-2">Leaderboard <span aria-hidden="true" class="text-slate-400 group-hover:translate-x-1 transition-transform">→</span></h2>
                 <p class="text-sm text-slate-500 leading-relaxed">Contributor standings by score, model distribution, and a cumulative proofs-over-time view.</p>

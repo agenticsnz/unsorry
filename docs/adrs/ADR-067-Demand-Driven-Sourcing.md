@@ -6,7 +6,7 @@
 | **Initiative** | problem supply / swarm autonomy |
 | **Proposed By** | unsorry maintainers |
 | **Date** | 2026-06-17 |
-| **Status** | Proposed |
+| **Status** | Accepted |
 
 ## Context
 
@@ -150,3 +150,4 @@ for one tick.
 | Status | Approver | Date |
 |--------|----------|------|
 | Proposed | unsorry maintainers | 2026-06-17 |
+| Accepted (implemented — --if-pool-empty sourcing, #2112) | unsorry maintainers | 2026-06-19 |

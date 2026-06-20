@@ -24,9 +24,58 @@ jobs:
             --created-at "$CREATED_AT" \
             --head-ref "$HEAD_REF" \
             --title "$TITLE" >> "$GITHUB_OUTPUT"
+      # Per-contributor fairness cap (ADR-054). Only at submission time
+      # (opened/reopened) so a contributor's already-admitted PRs keep draining
+      # and only NEW over-cap submissions are turned away (FIFO fairness). Counts
+      # the author's open queued/prove PRs (incl. this one) and rejects if over cap.
+      - id: quota
+        if: >-
+          steps.admission.outputs.admitted == 'true' &&
+          (github.event.action == 'opened' || github.event.action == 'reopened') &&
+          startsWith(github.event.pull_request.head.ref, 'queued/prove/')
+        env:
+          GH_TOKEN: ${{ github.token }}
+          AUTHOR: ${{ github.event.pull_request.user.login }}
+          CAP: ${{ vars.UNSORRY_MAX_OPEN_PROVE_PRS_PER_AUTHOR || '20' }}
+        run: |
+          set -euo pipefail
+          count=$(gh pr list --repo "$GITHUB_REPOSITORY" --author "$AUTHOR" \
+            --state open --limit 300 --json headRefName \
+            -q '[.[] | select(.headRefName | startswith("queued/prove/"))] | length')
+          echo "author=$AUTHOR open_prove_prs=$count cap=$CAP"
+          python3 -m tools.repo.pr_admission quota \
+            --open-count "$count" --cap "$CAP" >> "$GITHUB_OUTPUT"
       - name: Admit PR
-        if: steps.admission.outputs.admitted == 'true'
+        if: steps.admission.outputs.admitted == 'true' && steps.quota.outputs.admitted != 'false'
         run: echo "${{ steps.admission.outputs.reason }}"
+      - name: Close over-quota prove PR
+        if: steps.quota.outputs.admitted == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          REASON: ${{ steps.quota.outputs.reason }}
+        run: |
+          set -euo pipefail
+          gh label create over-author-quota \
+            --repo "$GITHUB_REPOSITORY" \
+            --color FBCA04 \
+            --description "Prove PR over the per-contributor open-PR cap (ADR-054)" \
+            --force >/dev/null
+          gh pr edit "$PR" --repo "$GITHUB_REPOSITORY" --add-label over-author-quota
+          {
+            echo "This PR is being closed by repository admission control."
+            echo
+            echo "$REASON."
+            echo
+            echo "The shared open-PR budget is finite, and a per-contributor cap keeps it"
+            echo "fair so any contributor can land work (ADR-054). The goal returns to the"
+            echo "pool — once your open prove-PR count drops back under the cap, the producer"
+            echo "will queue it (or another contributor's) again automatically. Nothing was"
+            echo "lost: re-running the producer from current \`main\` re-proves and re-queues."
+          } > quota-comment.md
+          gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" -F body=@quota-comment.md >/dev/null
+          gh api -X PATCH "repos/$GITHUB_REPOSITORY/pulls/$PR" -f state=closed >/dev/null
+          exit 1
       - name: Close post-cutover direct proof PR
         if: steps.admission.outputs.admitted != 'true'
         env:

@@ -1,0 +1,155 @@
+{
+  "block_id": "unsorry-archive-0035",
+  "target_size": 40,
+  "proof_count": 34,
+  "status": "frozen",
+  "source_commit": "73ac393cdd9dc60acf0153ecf8e5f43195b24a68",
+  "validation_commit": null,
+  "pins": {
+    "lean_toolchain": "leanprover/lean4:v4.30.0",
+    "mathlib": "v4.30.0"
+  },
+  "notes": [
+    "ADR-041 proof archive block 0035.",
+    "Whole decomposition trees + standalone proved goals only (invariant A).",
+    "Active goal records remain as archived metadata pointing at this package."
+  ],
+  "goals": [
+    {
+      "goal": "sum-range-choose-mul-k-mul-comp-eq",
+      "module": "Unsorry.SumRangeChooseMulKMulCompEq"
+    },
+    {
+      "goal": "sum-range-compositions-count-eq-two-pow",
+      "module": "Unsorry.SumRangeCompositionsCountEqTwoPow"
+    },
+    {
+      "goal": "sum-range-cube-sym-choose-sq-eq-zero",
+      "module": "Unsorry.SumRangeCubeSymChooseSqEqZero"
+    },
+    {
+      "goal": "sum-range-disp-mul-choose-eq-zero",
+      "module": "Unsorry.SumRangeDispMulChooseEqZero"
+    },
+    {
+      "goal": "sum-range-disp-mul-choose-sq-eq-zero",
+      "module": "Unsorry.SumRangeDispMulChooseSqEqZero"
+    },
+    {
+      "goal": "sum-range-even-cols-eq-two-pow",
+      "module": "Unsorry.SumRangeEvenColsEqTwoPow"
+    },
+    {
+      "goal": "sum-range-fib-mul-two-pow-rev-eq",
+      "module": "Unsorry.SumRangeFibMulTwoPowRevEq"
+    },
+    {
+      "goal": "sum-range-fib-prod-shift-even-nat",
+      "module": "Unsorry.SumRangeFibProdShiftEvenNat"
+    },
+    {
+      "goal": "sum-range-fib-sq-eq-prod",
+      "module": "Unsorry.SumRangeFibSqEqProd"
+    },
+    {
+      "goal": "sum-range-fib-sq-mul-two-eq",
+      "module": "Unsorry.SumRangeFibSqMulTwoEq"
+    },
+    {
+      "goal": "sum-range-fib-two-mul-succ-eq-fib-pred",
+      "module": "Unsorry.SumRangeFibTwoMulSuccEqFibPred"
+    },
+    {
+      "goal": "sum-range-four-consecutive-product",
+      "module": "Unsorry.SumRangeFourConsecutiveProduct"
+    },
+    {
+      "goal": "sum-range-four-mul-add-one",
+      "module": "Unsorry.SumRangeFourMulAddOne"
+    },
+    {
+      "goal": "sum-range-half-even-row-choose-eq",
+      "module": "Unsorry.SumRangeHalfEvenRowChooseEq"
+    },
+    {
+      "goal": "sum-range-id-mul-add-two",
+      "module": "Unsorry.SumRangeIdMulAddTwo"
+    },
+    {
+      "goal": "sum-range-id-mul-choose-eq-half",
+      "module": "Unsorry.SumRangeIdMulChooseEqHalf"
+    },
+    {
+      "goal": "gzmod-112-pow-twenty-sub-pow-eight",
+      "module": "Unsorry.Gzmod112PowTwentySubPowEight"
+    },
+    {
+      "goal": "gzmod-120-pow-eighteen-sub-pow-six",
+      "module": "Unsorry.Gzmod120PowEighteenSubPowSix"
+    },
+    {
+      "goal": "gzmod-120-pow-eleven-sub-pow-seven",
+      "module": "Unsorry.Gzmod120PowElevenSubPowSeven"
+    },
+    {
+      "goal": "gzmod-120-pow-eleven-sub-pow-three",
+      "module": "Unsorry.Gzmod120PowElevenSubPowThree"
+    },
+    {
+      "goal": "gzmod-120-pow-fifteen-sub-pow-seven",
+      "module": "Unsorry.Gzmod120PowFifteenSubPowSeven"
+    },
+    {
+      "goal": "gzmod-120-pow-fifteen-sub-pow-three",
+      "module": "Unsorry.Gzmod120PowFifteenSubPowThree"
+    },
+    {
+      "goal": "gzmod-120-pow-fourteen-sub-pow-six",
+      "module": "Unsorry.Gzmod120PowFourteenSubPowSix"
+    },
+    {
+      "goal": "gzmod-120-pow-nine-sub-pow-five",
+      "module": "Unsorry.Gzmod120PowNineSubPowFive"
+    },
+    {
+      "goal": "gzmod-120-pow-seven-sub-pow-three",
+      "module": "Unsorry.Gzmod120PowSevenSubPowThree"
+    },
+    {
+      "goal": "gzmod-120-pow-seventeen-sub-pow-five",
+      "module": "Unsorry.Gzmod120PowSeventeenSubPowFive"
+    },
+    {
+      "goal": "gzmod-120-pow-thirteen-sub-pow-five",
+      "module": "Unsorry.Gzmod120PowThirteenSubPowFive"
+    },
+    {
+      "goal": "gzmod-132-pow-eighteen-sub-pow-eight",
+      "module": "Unsorry.Gzmod132PowEighteenSubPowEight"
+    },
+    {
+      "goal": "gzmod-132-pow-fifteen-sub-pow-five",
+      "module": "Unsorry.Gzmod132PowFifteenSubPowFive"
+    },
+    {
+      "goal": "gzmod-132-pow-fourteen-sub-pow-four",
+      "module": "Unsorry.Gzmod132PowFourteenSubPowFour"
+    },
+    {
+      "goal": "gzmod-132-pow-seventeen-sub-pow-seven",
+      "module": "Unsorry.Gzmod132PowSeventeenSubPowSeven"
+    },
+    {
+      "goal": "gzmod-132-pow-sixteen-sub-pow-six",
+      "module": "Unsorry.Gzmod132PowSixteenSubPowSix"
+    },
+    {
+      "goal": "gzmod-132-pow-thirteen-sub-pow-three",
+      "module": "Unsorry.Gzmod132PowThirteenSubPowThree"
+    },
+    {
+      "goal": "gpow-sum-one-pow-two",
+      "module": "Unsorry.GpowSumOnePowTwo"
+    }
+  ]
+}

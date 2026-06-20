@@ -98,6 +98,10 @@ Environment:
   UNSORRY_FORK      Set to 1 to force fork-native mode (ADR-068); otherwise it is
                     auto-detected when origin is a fork of UNSORRY_UPSTREAM
   UNSORRY_UPSTREAM  Canonical repo a fork submits to (default: agenticsnz/unsorry)
+  UNSORRY_FORK_SHARDS
+                    Fork-mode goal-selection shards K (ADR-076; default 8). Each
+                    fork prefers goals in cksum(agent)%K so independent forks pick
+                    different goals (advisory; falls through when its slice is dry)
   UNSORRY_SOLVER    GitHub handle credited for verified proofs (default: gh api user)
   UNSORRY_SOLVER_NAME, UNSORRY_SOLVER_EMAIL
                     Override the git commit author/committer the harness uses
@@ -118,6 +122,13 @@ Environment:
                     pins every attempt; else unset; dropped fail-soft when the
                     installed claude lacks --effort)
   UNSORRY_WORKDIR   Claims worktree + metrics.jsonl home (default: ~/.unsorry/work)
+  UNSORRY_GOAL_LOCK_DIR
+                    Fork-mode goal-lock dir shared by co-located provers so they
+                    don't all grind the same goal (ADR-068; default:
+                    ~/.unsorry/goal-locks). MUST be a path common to every
+                    co-located prover — if they run as different users or with
+                    isolated homes, point this at a shared path or the lock is a
+                    no-op. Ignored outside fork mode
   UNSORRY_NO_ISOLATE
                     Set to 1 to run the swarm loop in the launch dir instead of
                     relocating into a per-agent worktree (ADR-042). The launch
@@ -178,6 +189,11 @@ Environment:
                     Pause coordinated --prove when queued + in-progress Gate A
                     workflow runs reach this count (default: 8; set -1 to
                     disable this limit)
+  UNSORRY_MAX_GOALS_IN_FLIGHT
+                    Per-contributor fairness cap: pause claiming new goals when
+                    this agent already holds this many goals in flight (its own
+                    queued-but-unmerged prove branches), so one fleet cannot
+                    queue the whole pool and starve others (default: 25)
   UNSORRY_GOVERNOR_SCAN_LIMIT
                     Max PR/runs rows fetched per governor query (default: 200)
 EOF
@@ -1022,14 +1038,35 @@ utc_today() {
 }
 
 # <short-hostname>-<4 hex> (ADR-007), sanitised to the contract Id grammar.
-generate_agent_id() {
-  local host hex
+# Normalised short hostname used as the agent-id prefix. Factored out so the
+# generator and the copied-identity self-heal (resolve_agent_id) agree exactly.
+local_host() {
+  local host
   host="$(hostname -s 2>/dev/null || hostname)"
   host="$(printf '%s' "$host" | tr '[:upper:]' '[:lower:]' \
     | tr -c 'a-z0-9-' '-' | tr -s '-' | sed -e 's/^-*//' -e 's/-*$//')"
   [ -n "$host" ] || host="agent"
+  printf '%s' "$host"
+}
+
+generate_agent_id() {
+  local hex
   hex="$(od -An -N2 -tx1 /dev/urandom | tr -d ' \n')"
-  printf '%s-%s\n' "$host" "$hex"
+  printf '%s-%s\n' "$(local_host)" "$hex"
+}
+
+# Pure: does <id> look like an auto-generated id for <host>? Used to detect a
+# COPIED ~/.unsorry/agent-id (one generated on another machine). Only ids in the
+# generated `<host>-<4 hex>` shape are judged; a custom-shaped id (suffix not
+# 4 hex) is treated as a deliberate operator choice and left alone. Returns 0
+# (local / leave it) or 1 (foreign / regenerate).
+agent_id_host_matches() {
+  local id="$1" host="$2" suffix="${1##*-}"
+  case "$suffix" in
+    [0-9a-f][0-9a-f][0-9a-f][0-9a-f]) ;;
+    *) return 0 ;;
+  esac
+  [ "${id%-*}" = "$host" ]
 }
 
 # Unique feature-branch name: feature/goal-<goal>-<kind>-<AGENT_ID>-<6 hex>.
@@ -1146,6 +1183,17 @@ resolve_agent_id() {
     id="$UNSORRY_AGENT_ID"
   elif [ -f "$id_file" ]; then
     id="$(tr -d ' \t\n' < "$id_file")"
+    # Self-heal a COPIED identity: the default id encodes this host, so a persisted
+    # id whose host-prefix is not this machine's was generated elsewhere (a cloned
+    # ~/.unsorry/agent-id from someone's setup). Sharing one swarm id mis-credits
+    # proofs and collides on claims, so regenerate a local one. An explicitly
+    # EXPORTED UNSORRY_AGENT_ID is honoured above and never auto-changed.
+    if ! agent_id_host_matches "$id" "$(local_host)"; then
+      local fresh; fresh="$(generate_agent_id)"
+      log "agent identity '$id' was generated on another machine (this host is '$(local_host)') — regenerating '$fresh' (copied ~/.unsorry/agent-id; export UNSORRY_AGENT_ID to override)"
+      id="$fresh"
+      printf '%s\n' "$id" > "$id_file"
+    fi
   else
     id="$(generate_agent_id)"
     mkdir -p "$(dirname "$id_file")"
@@ -1165,6 +1213,42 @@ resolve_solver() {
   [[ "$solver" =~ ^[A-Za-z0-9]([A-Za-z0-9-]{0,37}[A-Za-z0-9])?$ ]] \
     || die_config "UNSORRY_SOLVER '$solver' is not a valid GitHub handle"
   SOLVER="$solver"
+}
+
+# Credit-integrity guard (proof attribution). resolve_solver trusts UNSORRY_SOLVER
+# verbatim, so a config that hard-codes someone else's handle credits THEM for
+# every proof this machine produces — observed in practice as several contributors
+# funnelling leaderboard credit to one handle via a shared config. This is the
+# universal prover chokepoint: run.sh guards before launch, but supervise.sh and a
+# direct agent.sh call do not — and it re-runs on every #428 re-exec, so a freshly
+# updated harness enforces it even on a long-lived loop. Pure decision (no I/O),
+# exercised hermetically by --self-test; echoes one of ok | ack | block | unknown.
+#   solver: resolved $SOLVER (resolve_solver already validated it non-empty)
+#   login : gh-resolved login (empty -> unknown; cannot compare, e.g. offline)
+#   ack   : $UNSORRY_SOLVER_OK (truthy -> a mismatch is a deliberate override)
+solver_credit_decision() {
+  local solver="$1" login="$2" ack="$3"
+  [ -z "$login" ] && { echo unknown; return; }
+  [ "${solver,,}" = "${login,,}" ] && { echo ok; return; }
+  case "$ack" in
+    1|true|TRUE|yes|YES|on|ON) echo ack ;;
+    *) echo block ;;
+  esac
+}
+
+# Resolve the login and act on the decision before any proving. A `block` is a
+# configuration error (exit 2 → supervise.sh treats it as fatal, no retry loop),
+# so a mis-credited prover never silently runs.
+guard_solver_credit() {
+  local login decision
+  login="$(gh api user --jq .login 2>/dev/null || true)"
+  decision="$(solver_credit_decision "$SOLVER" "$login" "${UNSORRY_SOLVER_OK:-}")"
+  case "$decision" in
+    ok) : ;;
+    unknown) log "WARNING: could not resolve your GitHub login (offline / gh not authenticated) — proof credit unverified; proofs will be credited to '$SOLVER'." ;;
+    ack) log "WARNING: proofs will be credited to '$SOLVER', NOT your GitHub login '$login' (UNSORRY_SOLVER_OK=1 — deliberate override)." ;;
+    block) die_config "proof credit would go to '$SOLVER', but your GitHub account is '$login' — every proof this machine produces would be mis-credited on the leaderboard, not credited to you. Fix: export UNSORRY_SOLVER=$login (or unset it to default to your login). Deliberately proving under another handle, e.g. an org? export UNSORRY_SOLVER_OK=1." ;;
+  esac
 }
 
 # ADR-029 / SPEC-029-A: author the harness's own commits (proof PRs, claims,
@@ -1294,6 +1378,52 @@ fork_pr_head_ref() {
   local branch="$1"
   if [ "$FORK_MODE" = 1 ]; then printf '%s:%s\n' "$FORK_OWNER" "$branch"
   else printf '%s\n' "$branch"; fi
+}
+
+# ADR-076 sharded fork goal selection (Phase-2 step 2c). cksum is CRC-32 and
+# portable (Linux + macOS), so every machine maps a given string to the SAME
+# shard — that cross-machine stability is what lets two uncoordinated forks
+# prefer disjoint slices. Bucket 0..K-1.
+fork_shard() {
+  local s="$1" k="$2" h
+  h="$(printf '%s' "$s" | cksum | cut -d' ' -f1)"
+  printf '%s\n' "$(( h % k ))"
+}
+
+# The shard count K (UNSORRY_FORK_SHARDS, default 8); a non-positive-integer
+# value degrades to the default rather than erroring (selection must not die on
+# a misconfigured advisory knob).
+fork_shard_count() {
+  local k="${UNSORRY_FORK_SHARDS:-8}"
+  case "$k" in ''|*[!0-9]*) k=8 ;; esac
+  [ "$k" -ge 1 ] || k=8
+  printf '%s\n' "$k"
+}
+
+# ADR-076: reorder a ranked candidate list (stdin) so goals in THIS agent's shard
+# come first, the rest after — each group in input (rank) order, so the ADR-010
+# affinity/gap priority is preserved within the shard and across the fall-through
+# tail. Pure (stdin + args), hermetically testable.
+shard_reorder() {
+  local agent="$1" k="$2" mine cand
+  mine="$(fork_shard "$agent" "$k")"
+  local -a in=() out=()
+  while IFS= read -r cand; do
+    [ -n "$cand" ] || continue
+    if [ "$(fork_shard "$cand" "$k")" = "$mine" ]; then in+=("$cand"); else out+=("$cand"); fi
+  done
+  printf '%s\n' ${in[@]+"${in[@]}"} ${out[@]+"${out[@]}"}
+}
+
+# ADR-076: in fork mode, shard-reorder the candidate stream so independent
+# cross-fork provers prefer different goals (advisory; no coordination). A
+# pass-through on the canonical path — selection there is byte-for-byte unchanged.
+fork_maybe_shard() {
+  if [ "$FORK_MODE" = 1 ]; then
+    shard_reorder "$AGENT_ID" "$(fork_shard_count)"
+  else
+    cat
+  fi
 }
 
 require_main_checkout() {
@@ -1452,6 +1582,141 @@ ensure_agent_worktree() {
   fi
 }
 
+# Multi-runner safety (ADR-042): pick an agent identity not already held by a LIVE
+# co-located runner, so N runners spawned on one host get DISTINCT ids + worktrees
+# instead of silently sharing one worktree/claim and all working the same goal
+# (observed when a wrapper forks several runners). The lock is a mkdir'd directory
+# holding the owner PID; a directory whose PID is dead is stale and reclaimed
+# (self-healing across crashes — no flock, so it works on macOS too). The base id
+# is reused whenever free (claim continuity across restarts); only a *live*
+# collision forks a random-suffixed id. Sets AGENT_ID to the acquired identity.
+claim_agent_identity() {
+  local workdir="$1" base="$2" id="$2" lockdir owner attempt=0
+  while :; do
+    lockdir="$workdir/agent-main-$id.lock"
+    if mkdir "$lockdir" 2>/dev/null; then
+      printf '%s\n' "$$" > "$lockdir/pid"
+      AGENT_ID="$id"
+      return 0
+    fi
+    owner="$(cat "$lockdir/pid" 2>/dev/null)"
+    if [ "$owner" = "$$" ]; then AGENT_ID="$id"; return 0; fi
+    if [ -z "$owner" ] || ! kill -0 "$owner" 2>/dev/null; then
+      rm -rf "$lockdir" 2>/dev/null   # stale (dead owner) -> reclaim the base id
+      continue
+    fi
+    attempt=$((attempt + 1))
+    [ "$attempt" -gt 64 ] && die_config "no free agent identity under '$base' after 64 tries"
+    id="$base-$(od -An -N2 -tx1 /dev/urandom | tr -d ' \n')"
+  done
+}
+
+# ADR-068 follow-up (the #3140 author's flagged gap): fork mode is claimless, so
+# co-located fork provers — sharing one host but each with its own fork checkout,
+# UNSORRY_AGENT_ID and UNSORRY_WORKDIR — have no claims branch to dedup against
+# and, because _rank() is fully deterministic, every one of them independently
+# picks the SAME top goal and grinds it in parallel. A fork-local goal lock fixes
+# that: at selection an agent skips any goal a LIVE sibling already locked. The
+# lock dir MUST be shared across the co-located provers (NOT under a per-agent
+# UNSORRY_WORKDIR, which is distinct per prover), so it lives at a path common to
+# them: UNSORRY_GOAL_LOCK_DIR, default ~/.unsorry/goal-locks — shared by all
+# provers that run as the same user (the default keys off $HOME). Provers with
+# isolated homes (different Unix users / containers) must set it to a common
+# path. Same primitive as claim_agent_identity: a mkdir'd directory holding the
+# owner identity (atomic, no flock, macOS-safe); a dead owner is self-healing —
+# the next prover reclaims it, so a crashed prover needs no manual cleanup. The
+# owner is recorded as "<pid> <starttime>" (not a bare PID) so a PID reused after
+# a reboot cannot masquerade as the original holder. This is purely a fork-mode
+# coordination layer: the canonical claims path (claim_goal / release_claim,
+# ADR-004) is upstream-only and left completely untouched.
+
+# Per-machine lock dir, resolved once. Shared by all co-located provers that run
+# as the SAME user (the default keys off $HOME) — that sharing is the whole point,
+# a per-agent dir would never collide. Provers with isolated homes (different Unix
+# users / containers) MUST point UNSORRY_GOAL_LOCK_DIR at a common path or the
+# lock silently does nothing (see usage()).
+goal_lock_dir() {
+  printf '%s\n' "${UNSORRY_GOAL_LOCK_DIR:-$HOME/.unsorry/goal-locks}"
+}
+
+# A PID alone is not a stable owner identity: ~/.unsorry/goal-locks is on
+# persistent disk and survives reboots, after which the OS reuses PIDs from 1 —
+# a leftover lock whose recorded PID now belongs to an unrelated live process
+# would read as "live" and strand the goal forever (no TTL, no reaper). So the
+# lock records "<pid> <starttime>" and liveness requires BOTH kill -0 AND a
+# start-time match, which a reused PID cannot satisfy. ps -o lstart= is portable
+# (Linux + macOS, matching this primitive's flock-free macOS-safe contract);
+# empty start-time (kernel thread / race) degrades gracefully to the PID check.
+goal_lock_token() {
+  printf '%s %s\n' "$1" "$(ps -o lstart= -p "$1" 2>/dev/null | tr -s ' ')"
+}
+
+# True if the owner token "<pid> <starttime>" names a live process that is still
+# the same process that took the lock (defeats PID reuse across a reboot).
+goal_lock_owner_live() {
+  local token="$1" pid
+  pid="${token%% *}"
+  [ -n "$pid" ] || return 1
+  kill -0 "$pid" 2>/dev/null || return 1
+  # Re-derive the current token for that PID; a reused PID yields a different
+  # start-time and so fails this match. If we recorded no start-time, fall back
+  # to the bare kill -0 result above.
+  [ "$token" = "$(goal_lock_token "$pid")" ] || [ "$token" = "$pid " ] || [ "$token" = "$pid" ]
+}
+
+# Try to take the fork-local lock for <goal>. No-op success outside fork mode.
+# Returns 0 when acquired (or already held by us), 1 when a LIVE sibling holds it
+# (caller skips to the next ranked goal). A stale lock (dead owner) is reclaimed.
+acquire_goal_lock() {
+  [ "$FORK_MODE" = 1 ] || return 0
+  local goal="$1" dir lockdir owner mine
+  dir="$(goal_lock_dir)"
+  if ! mkdir -p "$dir" 2>/dev/null; then
+    # best-effort: never block proving on a lock-dir failure, but make the
+    # degraded coordination visible — siblings may now duplicate this goal.
+    log "warning: cannot create goal-lock dir '$dir' — fork dedup disabled this cycle (ADR-068)"
+    return 0
+  fi
+  lockdir="$dir/goal-$goal.lock"
+  mine="$(goal_lock_token "$$")"
+  while :; do
+    if mkdir "$lockdir" 2>/dev/null; then
+      printf '%s\n' "$mine" > "$lockdir/pid"
+      return 0
+    fi
+    owner="$(cat "$lockdir/pid" 2>/dev/null)"
+    if [ "${owner%% *}" = "$$" ]; then return 0; fi   # already ours -> idempotent
+    if [ -z "$owner" ]; then
+      # An empty pid is the brief window between a sibling's mkdir and its pid
+      # write, OR a truly stale lock. Re-read once before reclaiming so we never
+      # rm -rf a lock an in-progress acquirer is about to own (the read-after-
+      # mkdir race the claim_goal/ADR-072 recheck guards against, same reasoning).
+      owner="$(cat "$lockdir/pid" 2>/dev/null)"
+    fi
+    if [ -z "$owner" ] || ! goal_lock_owner_live "$owner"; then
+      # Stale (dead owner / reused PID). Reclaim atomically: rename the stale dir
+      # aside so two simultaneous reclaimers cannot both rm a third prover's fresh
+      # lock — only the mv winner deletes, the losers loop and re-mkdir cleanly.
+      mv "$lockdir" "$lockdir.stale.$$.$RANDOM" 2>/dev/null && rm -rf "$lockdir".stale.* 2>/dev/null
+      continue
+    fi
+    return 1   # a live sibling owns it -> skip this goal
+  done
+}
+
+# Release a fork-local goal lock we own. No-op outside fork mode or if not ours
+# (a sibling's lock is never removed). Called on every cycle-exit path, mirroring
+# release_claim; a missed release is self-healed by the next prover's PID check.
+release_goal_lock() {
+  [ "$FORK_MODE" = 1 ] || return 0
+  local goal="$1" lockdir owner
+  lockdir="$(goal_lock_dir)/goal-$goal.lock"
+  [ -d "$lockdir" ] || return 0
+  owner="$(cat "$lockdir/pid" 2>/dev/null)"
+  [ "${owner%% *}" = "$$" ] && rm -rf "$lockdir" 2>/dev/null
+  return 0
+}
+
 # ADR-042: relocate the running agent into its own worktree before any work, so
 # the operator's launch dir is never synced/built/claimed in (they can edit
 # proofs and the harness there freely) and two agents on one host don't share a
@@ -1469,10 +1734,17 @@ relocate_into_agent_worktree() {
 
   local workdir wt
   workdir="${UNSORRY_WORKDIR:-$HOME/.unsorry/work}"
+  mkdir -p "$workdir" || die_config "cannot create UNSORRY_WORKDIR '$workdir'"
   [ -n "${AGENT_ID:-}" ] || resolve_agent_id
+  # Multi-runner safety: claim a distinct identity if a live sibling already holds
+  # this one, then carry it forward so the re-exec (and all claims/worktrees) use
+  # the SAME acquired id. An explicit UNSORRY_AGENT_WORKTREE override opts out.
+  if [ -z "${UNSORRY_AGENT_WORKTREE:-}" ]; then
+    claim_agent_identity "$workdir" "$AGENT_ID"
+    export UNSORRY_AGENT_ID="$AGENT_ID"
+  fi
   wt="${UNSORRY_AGENT_WORKTREE:-$workdir/agent-main-$AGENT_ID}"
 
-  mkdir -p "$workdir" || die_config "cannot create UNSORRY_WORKDIR '$workdir'"
   ensure_agent_worktree "$wt"
 
   log "relocating into isolated agent worktree $wt (ADR-042); launch dir left untouched"
@@ -1632,6 +1904,79 @@ queued_branch_refs() {
   git for-each-ref --format='%(refname:short)' refs/remotes/origin/queued/prove
 }
 
+# ADR-075: re-order the queued branches by a per-solver round-robin so one
+# high-volume contributor cannot starve the rest. `git for-each-ref` returns
+# refs lexically by name, i.e. by goal — so a contributor whose ~1,585 machine
+# -named `g…` goals sort to the front (the @ohdearquant case) monopolises every
+# governed dispatch slot while a contributor whose goals sort late (@ruvnet's
+# `s…` cluster sat at queue ranks 1850–2002 of 2003) never drains. Round-robin
+# gives every *active* solver one branch per round (max-min fairness): small
+# backlogs clear promptly, the large one drains at the same per-round rate.
+#
+# Soundness is untouched — this only reorders; dedup (ADR-064/071), the governor
+# (ADR-058) and Gate A still decide what merges. Solver per branch is read from
+# the authoritative queue board (`docs/queue.json` on origin/main, which resolves
+# `solver≜`/git-author provenance, ADR-066) — note a re-routed branch is authored
+# by the operator, so the board's provenance, not the commit author, is the only
+# correct solver key. A branch absent from the board (pushed since the last board
+# refresh) falls back to its agent-id token; an unreadable board degrades to the
+# prior lexical order. Reads refs on stdin, emits them reordered on stdout,
+# verbatim. Disable with `UNSORRY_FAIR_DISPATCH=0` (reverts to lexical).
+fair_dispatch_order() {
+  [ "${UNSORRY_FAIR_DISPATCH:-1}" = 0 ] && { cat; return 0; }
+  # Program via process substitution (not a stdin heredoc) so the piped refs stay
+  # on this command's stdin for the script to read.
+  python3 <(cat <<'PY'
+import sys, json, subprocess, collections
+
+def board_map():
+    """branch -> solver key, from the authoritative queue board on origin/main."""
+    try:
+        out = subprocess.run(["git", "show", "origin/main:docs/queue.json"],
+                             capture_output=True, text=True, check=True).stdout
+        data = json.loads(out)
+    except Exception:
+        return {}
+    m = {}
+    for grp in data.get("solvers", []):
+        key = grp.get("github") or grp.get("solver") or "unknown"
+        for e in grp.get("queued", []):
+            b = e.get("branch")
+            if b:
+                m[b] = "solver:" + key
+    return m
+
+def token_key(ref):
+    # [origin/]queued/prove/<goal>/<agent-id>-<hex> -> agent:<agent-id>
+    seg = ref.rsplit("/", 1)[-1]
+    return "agent:" + (seg.rsplit("-", 1)[0] if "-" in seg else seg)
+
+refs = [ln.rstrip("\n") for ln in sys.stdin if ln.strip()]
+board = board_map()
+buckets = collections.OrderedDict()
+for ref in refs:
+    norm = ref[len("origin/"):] if ref.startswith("origin/") else ref
+    key = board.get(norm) or token_key(ref)
+    buckets.setdefault(key, []).append(ref)
+
+# Round-robin across buckets in a deterministic (sorted-key) order: round i emits
+# the i-th branch of every bucket that still has one. Each active solver therefore
+# gets exactly one branch per round until its backlog is exhausted.
+order = sorted(buckets)
+i = 0
+while True:
+    progressed = False
+    for k in order:
+        lst = buckets[k]
+        if i < len(lst):
+            print(lst[i]); progressed = True
+    if not progressed:
+        break
+    i += 1
+PY
+)
+}
+
 # ADR-071: a final fresh "is this goal already taken?" check, run immediately
 # before opening a PR. ADR-064's pass-start checks (goal_already_proved /
 # open_pr_goals) go stale during a long pass and in the gap before gh pr create:
@@ -1720,7 +2065,7 @@ dispatch_queue() {
       failures=$((failures + 1))
     fi
     [ "$dispatched" -ge "$limit" ] && break
-  done < <(queued_branch_refs)
+  done < <(queued_branch_refs | fair_dispatch_order)
   [ "$failures" -eq 0 ]
 }
 
@@ -1783,7 +2128,8 @@ validate_integer_knob() {
 # pause reason when the agent must not start new claim/PR-producing work; prints
 # nothing when admission is allowed.
 submission_governor_reason() {
-  local freeze="$1" open_prove="$2" gate_a_in_flight="$3" max_open="$4" max_gate="$5"
+  local freeze="$1" open_prove="$2" gate_a_in_flight="$3" max_open="$4" max_gate="$5" \
+        inflight="${6:-}" max_inflight="${7:-}"
   if env_truthy "$freeze"; then
     echo "submission freeze is active"
     return 0
@@ -1794,6 +2140,15 @@ submission_governor_reason() {
   fi
   if [ "$max_gate" -ge 0 ] && [ "$gate_a_in_flight" -ge "$max_gate" ]; then
     echo "Gate A queued+in-progress runs $gate_a_in_flight >= limit $max_gate"
+    return 0
+  fi
+  # Per-contributor fairness cap: an agent already holding this many goals in
+  # flight (its own queued-but-unmerged prove branches) must let them
+  # dispatch/merge before claiming more, so one fleet cannot queue the entire
+  # goal pool and starve other contributors. Empty/negative max disables it.
+  if [[ "$max_inflight" =~ ^[0-9]+$ ]] && [[ "$inflight" =~ ^[0-9]+$ ]] \
+     && [ "$inflight" -ge "$max_inflight" ]; then
+    echo "this agent holds $inflight goals in flight >= cap $max_inflight"
     return 0
   fi
   return 1
@@ -1816,12 +2171,23 @@ count_gate_a_runs() {
 # Fail closed on GitHub API errors: if the operator cannot see queue pressure,
 # the safe response during a flood is to avoid opening more proof PRs. This only
 # applies to coordinated --prove; --prove-local remains fully local.
+# Goals this agent is holding in flight = its own queued-but-unmerged prove
+# branches (a merged branch is deleted, so a present one is unmerged). Used by the
+# per-contributor fairness cap. Prints the count, or nothing if it cannot be read
+# (the governor then leaves the cap unenforced — fail-open).
+count_agent_inflight() {
+  fetch_queued_prove_branches >/dev/null 2>&1 || return 1
+  local n
+  n="$(queued_branch_refs 2>/dev/null | grep -cE "/${AGENT_ID}-[0-9a-f]+$")" || true
+  printf '%s\n' "${n:-0}"
+}
+
 submission_governor_allows() {
   [ "$PROVE" -eq 1 ] || return 0
   [ "$DRY_RUN" -eq 1 ] && return 0
   [ "${UNSORRY_SUBMISSION_GOVERNOR:-1}" = 0 ] && return 0
 
-  local open_prove queued in_progress gate_a_total reason
+  local open_prove queued in_progress gate_a_total reason inflight
   if ! open_prove="$(count_open_prove_prs 2>/dev/null)"; then
     log "submission governor paused: could not read open proof PR count"
     return 1
@@ -1839,11 +2205,16 @@ submission_governor_allows() {
   [[ "$in_progress" =~ ^[0-9]+$ ]] || { log "submission governor paused: invalid in-progress Gate A count '$in_progress'"; return 1; }
   gate_a_total=$((queued + in_progress))
 
-  if reason="$(submission_governor_reason "$UNSORRY_SUBMISSION_FREEZE" "$open_prove" "$gate_a_total" "$UNSORRY_MAX_OPEN_PROVE_PRS" "$UNSORRY_MAX_GATE_A_IN_FLIGHT")"; then
-    log "submission governor paused: $reason (open_prove_prs=$open_prove gate_a_queued=$queued gate_a_in_progress=$in_progress)"
+  # Per-contributor fairness cap (UNSORRY_MAX_GOALS_IN_FLIGHT, default 25). Unknown
+  # count (fetch failed) leaves it unenforced rather than blocking a live agent.
+  inflight="$(count_agent_inflight 2>/dev/null)"
+  [[ "$inflight" =~ ^[0-9]+$ ]] || inflight=""
+
+  if reason="$(submission_governor_reason "$UNSORRY_SUBMISSION_FREEZE" "$open_prove" "$gate_a_total" "$UNSORRY_MAX_OPEN_PROVE_PRS" "$UNSORRY_MAX_GATE_A_IN_FLIGHT" "$inflight" "${UNSORRY_MAX_GOALS_IN_FLIGHT:-25}")"; then
+    log "submission governor paused: $reason (open_prove_prs=$open_prove gate_a_queued=$queued gate_a_in_progress=$in_progress agent_in_flight=${inflight:-?})"
     return 1
   fi
-  log "submission governor open: open_prove_prs=$open_prove gate_a_queued=$queued gate_a_in_progress=$in_progress"
+  log "submission governor open: open_prove_prs=$open_prove gate_a_queued=$queued gate_a_in_progress=$in_progress agent_in_flight=${inflight:-?}"
   return 0
 }
 
@@ -2641,6 +3012,7 @@ Fix the module so both pass. Write the corrected $target."
     # vacuous statement under the goal's name fails here, not just in review.
     write_binding_module "$prwt" "$goal" "$camel" || { err="(could not emit binding obligation)"; continue; }
     if prove_local_verify "$prwt" "$camel"; then
+      minimize_proof_imports "$prwt" "$camel"   # ADR-074: best-effort, never fails the proof
       PROOF_SOLVE_SECONDS=$(( $(date +%s) - proof_started ))
       log "proof of $goal verified locally — statement bound (attempt $attempt)"
       return 0
@@ -2654,6 +3026,38 @@ Fix the module so both pass. Write the corrected $target."
   # consumed by write_proof_run_record on the failed/decomposed outcome.
   PROOF_LAST_ERROR="$err"
   return 1
+}
+
+# ADR-074: after a proof verifies, try a deterministically narrower import set and
+# re-verify; on ANY failure restore the original file byte-for-byte. Best-effort by
+# design — narrowing can never reject a sound proof, it only shrinks the mathlib
+# closure that Gate A's build / kernel replay / axiom audit must load (~2x faster
+# audit when it applies, #2397). Gated by UNSORRY_MIN_IMPORTS (default 1; set 0 to
+# disable). tools.proof.min_imports prints the narrowed module (rc 0) or nothing
+# (rc 1 when there is no known narrowing for this proof).
+minimize_proof_imports() {
+  [ "${UNSORRY_MIN_IMPORTS:-1}" = "1" ] || return 0
+  local prwt="$1" camel="$2"
+  local rel="library/Unsorry/$camel.lean"
+  local target="$prwt/$rel"
+  [ -f "$target" ] || return 0
+  local narrowed bak
+  narrowed="$(mktemp)" || return 0
+  if ! ( cd "$prwt" && python3 -m tools.proof.min_imports "$rel" ) > "$narrowed" 2>/dev/null \
+     || [ ! -s "$narrowed" ]; then
+    rm -f "$narrowed"; return 0
+  fi
+  bak="$(mktemp)" || { rm -f "$narrowed"; return 0; }
+  cp "$target" "$bak"
+  cp "$narrowed" "$target"
+  if prove_local_verify "$prwt" "$camel" >/dev/null 2>&1; then
+    log "narrowed imports for $camel — re-verified (ADR-074)"
+  else
+    cp "$bak" "$target"
+    log "narrowed imports for $camel did not build — kept import Mathlib (ADR-074)"
+  fi
+  rm -f "$narrowed" "$bak"
+  return 0
 }
 
 # ADR-011 / SPEC-011-A: write library/Unsorry/<Camel>Binding.lean — a kernel
@@ -2808,6 +3212,14 @@ prove_goal() {
   git branch -q -D "$branch" >/dev/null 2>&1 || true
 
   release_claim "$goal" || true
+  # ADR-068: drop the fork-local goal lock taken at selection so the next prover
+  # (or this one) can re-surface the goal. Co-located with release_claim, this
+  # frees it on the work-path exits below (success, decompose, demote, infra/
+  # error); the EARLY `return 1` setup failures above (camel-name/branch/
+  # open_pr_worktree) are covered by the belt-and-braces release in the cycle
+  # loop (after prove_goal returns) — between them every exit is covered. No-op
+  # outside fork mode; release is idempotent and only removes a lock we own.
+  release_goal_lock "$goal"
   if [ "$ok" -eq 1 ]; then
     return 0
   fi
@@ -3127,6 +3539,120 @@ test_agent_id_generation() {
   py_helper is-id "$id" || { log "  '$id' violates the contract Id grammar"; return 1; }
 }
 
+test_claim_agent_identity_multi_runner() {
+  # Nest under the suite sandbox (auto-removed by the run_self_test EXIT trap) and
+  # never `rm -rf` a path ourselves — a bare `mktemp -d` + manual cleanup here was
+  # the #3140 agent-lint regression on Linux CI.
+  local d live dead
+  d="$(mktemp -d "$SESSION_TMP/multirun.XXXXXX")" || return 1
+  # free identity -> base id is taken
+  AGENT_ID=""; claim_agent_identity "$d" "host-aa11"
+  [ "$AGENT_ID" = "host-aa11" ] || { log "  free id not taken: '$AGENT_ID'"; return 1; }
+  # a LIVE sibling holding the id -> caller must fork a distinct suffixed id
+  sleep 30 & live=$!
+  mkdir -p "$d/agent-main-host-bb22.lock"; printf '%s\n' "$live" > "$d/agent-main-host-bb22.lock/pid"
+  AGENT_ID=""; claim_agent_identity "$d" "host-bb22"
+  kill "$live" 2>/dev/null; wait "$live" 2>/dev/null
+  case "$AGENT_ID" in
+    host-bb22) log "  live collision was NOT forked"; return 1 ;;
+    host-bb22-*) : ;;
+    *) log "  forked id malformed: '$AGENT_ID'"; return 1 ;;
+  esac
+  # a STALE lock (dead owner) -> base id reclaimed
+  sleep 30 & dead=$!; kill "$dead" 2>/dev/null; wait "$dead" 2>/dev/null
+  mkdir -p "$d/agent-main-host-cc33.lock"; printf '%s\n' "$dead" > "$d/agent-main-host-cc33.lock/pid"
+  AGENT_ID=""; claim_agent_identity "$d" "host-cc33"
+  [ "$AGENT_ID" = "host-cc33" ] || { log "  stale lock not reclaimed: '$AGENT_ID'"; return 1; }
+}
+
+test_fork_goal_lock() {
+  # ADR-068 fork-local goal lock. Hermetic: temp dirs + a real backgrounded PID
+  # for liveness, no network/lake/claude. Nest under the suite sandbox (the
+  # run_self_test EXIT trap removes it) — never rm -rf a path of our own (the
+  # #3140 agent-lint regression). FORK_MODE drives the lock on; outside it both
+  # helpers are no-ops, so the canonical claims path is untouched.
+  local FORK_MODE=1 UNSORRY_GOAL_LOCK_DIR live
+  UNSORRY_GOAL_LOCK_DIR="$(mktemp -d "$SESSION_TMP/goallock.XXXXXX")" || return 1
+
+  # The owner is recorded as "<pid> <starttime>" (PID-reuse hardening), so assert
+  # on the leading PID field, not the whole token.
+  local pidfield
+  # free goal -> acquired, owner pid recorded.
+  acquire_goal_lock g-free || { log "  free goal was not acquired"; return 1; }
+  [ -d "$UNSORRY_GOAL_LOCK_DIR/goal-g-free.lock" ] \
+    || { log "  acquire did not create the lock dir"; return 1; }
+  pidfield="$(cut -d' ' -f1 "$UNSORRY_GOAL_LOCK_DIR/goal-g-free.lock/pid" 2>/dev/null)"
+  [ "$pidfield" = "$$" ] || { log "  lock pid is not ours"; return 1; }
+  # re-acquiring our own lock is idempotent (success).
+  acquire_goal_lock g-free || { log "  re-acquire of own lock failed"; return 1; }
+
+  # a LIVE sibling holding the goal -> we must skip (rc 1) and not touch the lock.
+  # Fixture the token exactly as acquire would (pid + matching start-time).
+  sleep 30 & live=$!
+  mkdir -p "$UNSORRY_GOAL_LOCK_DIR/goal-g-busy.lock"
+  goal_lock_token "$live" > "$UNSORRY_GOAL_LOCK_DIR/goal-g-busy.lock/pid"
+  if acquire_goal_lock g-busy; then
+    kill "$live" 2>/dev/null; wait "$live" 2>/dev/null
+    log "  live-owner collision was NOT skipped"; return 1
+  fi
+  pidfield="$(cut -d' ' -f1 "$UNSORRY_GOAL_LOCK_DIR/goal-g-busy.lock/pid" 2>/dev/null)"
+  [ "$pidfield" = "$live" ] \
+    || { kill "$live" 2>/dev/null; wait "$live" 2>/dev/null
+         log "  skip clobbered a live sibling's lock"; return 1; }
+
+  # PID-reuse defense: a live PID but a MISMATCHED start-time (the reboot-then-
+  # reuse scenario) must read as STALE and be reclaimed, not honoured as live.
+  mkdir -p "$UNSORRY_GOAL_LOCK_DIR/goal-g-reused.lock"
+  printf '%s 999\n' "$live" > "$UNSORRY_GOAL_LOCK_DIR/goal-g-reused.lock/pid"
+  acquire_goal_lock g-reused \
+    || { kill "$live" 2>/dev/null; wait "$live" 2>/dev/null
+         log "  reused-pid (start-time mismatch) lock not reclaimed"; return 1; }
+  pidfield="$(cut -d' ' -f1 "$UNSORRY_GOAL_LOCK_DIR/goal-g-reused.lock/pid" 2>/dev/null)"
+  [ "$pidfield" = "$$" ] \
+    || { kill "$live" 2>/dev/null; wait "$live" 2>/dev/null
+         log "  reused-pid lock not re-owned by us"; return 1; }
+  kill "$live" 2>/dev/null; wait "$live" 2>/dev/null
+
+  # a STALE lock (dead owner) -> reclaimed (rc 0, pid becomes ours).
+  local dead; sleep 30 & dead=$!; kill "$dead" 2>/dev/null; wait "$dead" 2>/dev/null
+  mkdir -p "$UNSORRY_GOAL_LOCK_DIR/goal-g-stale.lock"
+  printf '%s\n' "$dead" > "$UNSORRY_GOAL_LOCK_DIR/goal-g-stale.lock/pid"
+  acquire_goal_lock g-stale || { log "  stale lock not reclaimed"; return 1; }
+  pidfield="$(cut -d' ' -f1 "$UNSORRY_GOAL_LOCK_DIR/goal-g-stale.lock/pid" 2>/dev/null)"
+  [ "$pidfield" = "$$" ] || { log "  reclaimed lock pid is not ours"; return 1; }
+
+  # release frees our lock; a sibling's lock is never removed by our release.
+  release_goal_lock g-free
+  [ ! -e "$UNSORRY_GOAL_LOCK_DIR/goal-g-free.lock" ] \
+    || { log "  release did not remove our lock"; return 1; }
+  mkdir -p "$UNSORRY_GOAL_LOCK_DIR/goal-g-other.lock"
+  printf '%s\n' "999999" > "$UNSORRY_GOAL_LOCK_DIR/goal-g-other.lock/pid"
+  release_goal_lock g-other
+  [ -e "$UNSORRY_GOAL_LOCK_DIR/goal-g-other.lock" ] \
+    || { log "  release removed a lock we do not own"; return 1; }
+  # releasing a goal we never locked is a safe no-op (covers the early-return /
+  # loop-level belt-and-braces release for a goal whose lock was never taken).
+  release_goal_lock g-never || { log "  release of an unheld goal errored"; return 1; }
+
+  # outside fork mode both helpers are inert (canonical claims path untouched).
+  local FORK_MODE=0
+  acquire_goal_lock g-nofork || { log "  non-fork acquire returned failure"; return 1; }
+  [ ! -e "$UNSORRY_GOAL_LOCK_DIR/goal-g-nofork.lock" ] \
+    || { log "  non-fork acquire created a lock"; return 1; }
+}
+
+test_agent_id_host_matches() {
+  # generated shape, prefix == host -> local (0)
+  agent_id_host_matches "oma-2-a3f9" "oma-2" || { log "  local id judged foreign"; return 1; }
+  agent_id_host_matches "mac-158f" "mac"     || { log "  local id judged foreign (2)"; return 1; }
+  # generated shape, prefix != host -> foreign (1): the copied-config case
+  if agent_id_host_matches "mac-158f" "oma-2"; then log "  copied id judged local"; return 1; fi
+  if agent_id_host_matches "oma-2-a3f9" "mac"; then log "  copied id judged local (2)"; return 1; fi
+  # custom-shaped id (suffix not 4 hex) -> intentional, left alone (0)
+  agent_id_host_matches "myfleet-prod" "oma-2" || { log "  custom id judged foreign"; return 1; }
+  agent_id_host_matches "myfleet" "oma-2"      || { log "  hyphenless id judged foreign"; return 1; }
+}
+
 test_agent_id_validation() {
   local good bad
   for good in agent-alpha box-1a2b a0; do
@@ -3153,6 +3679,25 @@ test_solver_resolution() {
   unset -f gh
   [ "$SOLVER" = github-user ] \
     || { log "  authenticated GitHub solver was not resolved"; return 1; }
+}
+
+test_solver_credit_decision() {
+  local got
+  while IFS='|' read -r solver login ack want; do
+    [ -z "$want" ] && continue
+    got="$(solver_credit_decision "$solver" "$login" "$ack")"
+    [ "$got" = "$want" ] \
+      || { log "  credit(solver='$solver' login='$login' ack='$ack'): want $want got $got"; return 1; }
+  done <<'CASES'
+alice|alice||ok
+Alice|alice||ok
+alice|Alice||ok
+bob|alice||block
+bob|alice|1|ack
+bob|alice|yes|ack
+bob|||unknown
+CASES
+  return 0
 }
 
 test_git_identity_resolution() {
@@ -4938,6 +5483,52 @@ test_fork_pr_head_ref() {
   return 0
 }
 
+test_fork_shard() {
+  # ADR-076: deterministic, in range, default-on bad K.
+  local a b
+  a="$(fork_shard hello 8)"; b="$(fork_shard hello 8)"
+  [ "$a" = "$b" ] || { log "  fork_shard not deterministic ($a/$b)"; return 1; }
+  if [ "$a" -lt 0 ] || [ "$a" -ge 8 ]; then log "  fork_shard out of range: $a"; return 1; fi
+  ( UNSORRY_FORK_SHARDS=garbage; [ "$(fork_shard_count)" = 8 ] ) \
+    || { log "  bad K did not default to 8"; return 1; }
+  ( UNSORRY_FORK_SHARDS=0; [ "$(fork_shard_count)" = 8 ] ) \
+    || { log "  K=0 did not default to 8"; return 1; }
+  ( UNSORRY_FORK_SHARDS=4; [ "$(fork_shard_count)" = 4 ] ) \
+    || { log "  valid K not honoured"; return 1; }
+  return 0
+}
+
+test_shard_reorder() {
+  # In-shard goals come first (rank order preserved within each group), the rest
+  # after; with K=1 every goal is in-shard so order is unchanged; empty is safe.
+  local agent=agent-x k=8 mine out
+  mine="$(fork_shard "$agent" "$k")"
+  # Build a list with a known in-shard and out-of-shard goal so we can assert the
+  # partition without hardcoding cksum values.
+  local g list="" in_goal="" out_goal=""
+  for g in g1 g2 g3 g4 g5 g6 g7 g8 g9 g10; do
+    if [ "$(fork_shard "$g" "$k")" = "$mine" ]; then [ -z "$in_goal" ] && in_goal="$g"; \
+    else [ -z "$out_goal" ] && out_goal="$g"; fi
+    list="$list$g"$'\n'
+  done
+  if [ -z "$in_goal" ] || [ -z "$out_goal" ]; then
+    log "  fixture lacked both in- and out-of-shard goals"; return 1
+  fi
+  out="$(printf '%s' "$list" | shard_reorder "$agent" "$k")"
+  # Every in-shard goal must appear before every out-of-shard goal.
+  local in_pos out_pos
+  in_pos="$(printf '%s\n' "$out" | grep -nxF "$in_goal" | cut -d: -f1)"
+  out_pos="$(printf '%s\n' "$out" | grep -nxF "$out_goal" | cut -d: -f1)"
+  [ "$in_pos" -lt "$out_pos" ] || { log "  in-shard $in_goal ($in_pos) not before out $out_goal ($out_pos)"; return 1; }
+  # K=1 ⇒ no reorder (every goal in-shard, rank order intact).
+  out="$(printf 'a\nb\nc\n' | shard_reorder agent-x 1)"
+  [ "$out" = "$(printf 'a\nb\nc')" ] || { log "  K=1 changed order: '$out'"; return 1; }
+  # Empty input is safe.
+  out="$(printf '' | shard_reorder agent-x 8)"
+  [ -z "$out" ] || { log "  empty input produced output: '$out'"; return 1; }
+  return 0
+}
+
 test_detect_fork_mode() {
   # --fork override enters fork mode, derives the owner, and forces PR submit mode.
   local FORK_MODE=0 FORK_REQUEST=1 FORK_OWNER="" UNSORRY_FORK="" \
@@ -5027,6 +5618,20 @@ test_submission_governor_reason() {
     log "  disabled thresholds still paused"
     return 1
   fi
+  # per-contributor in-flight cap (args 6,7)
+  got="$(submission_governor_reason 0 0 0 40 20 25 25)"
+  [ "$got" = "this agent holds 25 goals in flight >= cap 25" ] \
+    || { log "  in-flight cap mismatch: '$got'"; return 1; }
+  if submission_governor_reason 0 0 0 40 20 10 25 >/dev/null; then
+    log "  under in-flight cap still paused"; return 1
+  fi
+  # cap omitted (5-arg form) or unreadable count must not pause
+  if submission_governor_reason 0 0 0 40 20 >/dev/null; then
+    log "  omitted in-flight args paused"; return 1
+  fi
+  if submission_governor_reason 0 0 0 40 20 "" 25 >/dev/null; then
+    log "  unreadable in-flight count paused"; return 1
+  fi
 }
 
 test_submission_governor_allows_with_stubbed_gh() {
@@ -5037,6 +5642,10 @@ test_submission_governor_allows_with_stubbed_gh() {
   local UNSORRY_MAX_OPEN_PROVE_PRS=40
   local UNSORRY_MAX_GATE_A_IN_FLIGHT=20
   local UNSORRY_GOVERNOR_SCAN_LIMIT=200
+  # keep this test focused on the open-PR / Gate A thresholds: stub the
+  # per-contributor in-flight count to a benign value (its own logic is covered
+  # by test_submission_governor_reason).
+  count_agent_inflight() { echo 0; }
 
   gh() {
     case "$1 $2 $3" in
@@ -5068,7 +5677,8 @@ test_submission_governor_allows_with_stubbed_gh() {
 
   UNSORRY_SUBMISSION_GOVERNOR=0
   submission_governor_allows \
-    || { log "  disabled governor did not allow"; return 1; }
+    || { unset -f count_agent_inflight; log "  disabled governor did not allow"; return 1; }
+  unset -f count_agent_inflight
 }
 
 test_queued_branch_claim_guard() {
@@ -5177,9 +5787,57 @@ test_dispatch_skips_taken_midpass() {
     || { log "  expected 0 dispatches (g1 taken mid-pass), got '$sent'"; return 1; }
 }
 
+test_dispatch_solver_fairness() {
+  # ADR-075: dispatch order is a per-solver round-robin (by agent-id token when a
+  # branch is not in the board), not lexical-by-goal, so a minority backlog is not
+  # starved behind a high-volume one. Five branches from token "big" (goals that
+  # sort first) and one from "small" (a goal that sorts last): with a dispatch
+  # limit of 2, the round-robin must still dispatch the lone "small" branch — under
+  # the old lexical order limit=2 would take two "big" goals and never reach it.
+  local ONCE=0 DRY_RUN=0 UNSORRY_DISPATCH_LIMIT=2 sent="" sent_lex="" rc
+  unset UNSORRY_FAIR_DISPATCH
+  fetch_queued_prove_branches() { return 0; }
+  fetch_main_ref() { return 0; }
+  queued_branch_refs() {
+    printf 'origin/queued/prove/abig1/big-1111\n'
+    printf 'origin/queued/prove/abig2/big-2222\n'
+    printf 'origin/queued/prove/abig3/big-3333\n'
+    printf 'origin/queued/prove/abig4/big-4444\n'
+    printf 'origin/queued/prove/abig5/big-5555\n'
+    printf 'origin/queued/prove/zsmall/small-9999\n'
+  }
+  goal_already_proved() { return 1; }
+  dispatch_open_pr_goals() { return 0; }
+  queued_branch_has_pr() { return 1; }
+  submission_governor_allows() { return 0; }
+  goal_taken_fresh() { return 1; }
+  dispatch_queued_proof_branch() { printf -v sent '%s%s\n' "$sent" "$1"; return 0; }
+  dispatch_queue
+  rc=$?
+  # Toggle off -> lexical fall-through: the same limit dispatches two "big" goals
+  # and never the "small" one, proving the round-robin is what surfaces it.
+  UNSORRY_FAIR_DISPATCH=0
+  dispatch_queued_proof_branch() { printf -v sent_lex '%s%s\n' "$sent_lex" "$1"; return 0; }
+  dispatch_queue
+  unset UNSORRY_FAIR_DISPATCH
+  unset -f fetch_queued_prove_branches fetch_main_ref queued_branch_refs \
+    goal_already_proved dispatch_open_pr_goals queued_branch_has_pr \
+    submission_governor_allows goal_taken_fresh dispatch_queued_proof_branch
+  [ "$rc" -eq 0 ] || { log "  dispatch_queue returned $rc"; return 1; }
+  printf '%s' "$sent" | grep -q '^queued/prove/zsmall/' \
+    || { log "  fair order must dispatch the starved 'small' branch within the limit, got '$sent'"; return 1; }
+  [ "$(printf '%s' "$sent" | grep -cv '^$')" -eq 2 ] \
+    || { log "  expected 2 dispatches under the limit, got '$sent'"; return 1; }
+  ! printf '%s' "$sent_lex" | grep -q '^queued/prove/zsmall/' \
+    || { log "  toggle off should fall back to lexical (no 'small' within limit), got '$sent_lex'"; return 1; }
+}
+
 run_self_tests() {
   local tests=(
     test_agent_id_generation
+    test_agent_id_host_matches
+    test_claim_agent_identity_multi_runner
+    test_fork_goal_lock
     test_agent_id_validation
     test_solver_resolution
     test_git_identity_resolution
@@ -5196,6 +5854,7 @@ run_self_tests() {
     test_fetch_retry_delay
     test_git_fetch_retry
     test_harness_is_stale
+    test_solver_credit_decision
     test_relocate_into_worktree_noop
     test_require_main_checkout_isolated
     test_ensure_agent_worktree
@@ -5246,6 +5905,8 @@ run_self_tests() {
     test_open_pr_claim_guard
     test_parse_github_nwo
     test_fork_pr_head_ref
+    test_fork_shard
+    test_shard_reorder
     test_detect_fork_mode
     test_fork_claimless
     test_fork_open_pr_dedup_targets_upstream
@@ -5254,6 +5915,7 @@ run_self_tests() {
     test_queued_branch_claim_guard
     test_dispatch_goal_dedup
     test_dispatch_skips_taken_midpass
+    test_dispatch_solver_fairness
     test_demote_open_prove_records_telemetry_only
     test_floored_recompose_noop_records_telemetry_only
     test_render_decomp_gateb
@@ -5402,13 +6064,14 @@ select_prove_candidates() {
   # An explicit --goal is an override of auto-selection: pass it as --force so a
   # named-but-sub-viable goal is still surfaced (ids are space-free, validated
   # by is-id, so the unquoted expansion splits into exactly two args).
+  # ADR-076: fork mode shard-reorders the ranked list (advisory; cat otherwise).
   while IFS= read -r cand; do
     [ -n "$cand" ] || continue
     goal_in_scope "$cand" || continue
     [ -n "${HANDLED[$cand]:-}" ] && continue
     printf '%s\n' "$cand"
   done < <(py_helper prove-candidates goals "$CLAIMS_WT/claims" library "$AGENT_ID" "" \
-             ${GOAL_FILTER:+--force "$GOAL_FILTER"})
+             ${GOAL_FILTER:+--force "$GOAL_FILTER"}) | fork_maybe_shard
 }
 
 # Local smoke has no claims or coordination. Reuse the production prove ranking
@@ -5457,7 +6120,7 @@ select_recovery_candidates() {
     goal_in_scope "$cand" || continue
     [ -n "${HANDLED[$cand]:-}" ] && continue
     printf '%s\n' "$cand"
-  done < <(py_helper recovery-candidates goals "$CLAIMS_WT/claims" library "$AGENT_ID")
+  done < <(py_helper recovery-candidates goals "$CLAIMS_WT/claims" library "$AGENT_ID") | fork_maybe_shard
 }
 
 # Walk a newline-separated candidate list (highest priority first), skipping
@@ -5479,10 +6142,21 @@ claim_from_pool() {
       log "skipping $cand — a queued prove branch is waiting for dispatch"
       continue
     fi
+    # ADR-068 fork-local goal lock: in fork mode claim_goal is a claimless no-op,
+    # so a mkdir-lock on a per-machine path is the only dedup between co-located
+    # provers. Skip past any goal a LIVE sibling already locked (no-op otherwise),
+    # mirroring the "in flight" skips above. Released by prove_goal on every exit.
+    if [ "$PROVE" -eq 1 ] && ! acquire_goal_lock "$cand"; then
+      log "skipping $cand — locked by a co-located fork prover (ADR-068)"
+      continue
+    fi
     if claim_goal "$cand"; then
       CLAIMED_GOAL="$cand"
       return 0
     fi
+    # Claim race lost (non-fork path only — claim_goal cannot fail in fork mode):
+    # drop the goal lock we just took so it does not strand this candidate.
+    release_goal_lock "$cand"
   done <<< "$pool"
   return 0
 }
@@ -5706,6 +6380,7 @@ main() {
     esac
     gh auth status >/dev/null 2>&1 || die_config "gh is not authenticated"
     [ "$PROVE" -eq 1 ] && resolve_solver
+    [ "$PROVE" -eq 1 ] && guard_solver_credit
     [ "$PROVE" -eq 1 ] && resolve_git_identity
     [ "$PROVE" -eq 1 ] && require_cmd lake  # prove verify builds locally
   fi
@@ -5813,6 +6488,16 @@ main() {
     if [ "$PROVE" -eq 1 ]; then
       prc=0
       prove_goal "$goal" || prc=$?
+      # ADR-068: release the fork-local goal lock here, in the loop, so it is
+      # dropped for EVERY prove_goal return — including the early `return 1`
+      # setup failures (camel-name, branch, open_pr_worktree) that exit before
+      # prove_goal's own release_claim/release_goal_lock line. Without this a
+      # transient worktree-add failure would strand the lock for the whole life
+      # of this (still-live) prover, blocking every co-located sibling off the
+      # goal — the inverse of the dedup this fix exists to provide. Belt-and-
+      # braced with the in-prove_goal release, mirroring how the translate arm
+      # also release_claim's at loop level; release_goal_lock is idempotent.
+      release_goal_lock "$goal"
       if [ "$prc" -eq 2 ]; then
         # ADR-016: the CLI cannot run (quota, auth, network). Every further
         # cycle would fail identically and poison the queue — stop cleanly.
