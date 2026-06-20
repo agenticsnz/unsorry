@@ -23,11 +23,17 @@ from tools.gate_b.records import parse_record
 
 
 SCORE_POLICY = (
-    "rank by credited verified proofs desc, difficulty_points desc; "
+    "rank by score desc; "
     "score = difficulty_points * 100 + credited_proofs * 25 "
-    "+ dispatch_difficulty * 100 (dispatch_difficulty = half the difficulty of "
-    "each proof PR you opened/landed for another contributor; self-dispatch excluded)"
+    "+ dispatch_points * 100 (dispatch_points = 0.9 flat for each proof PR you "
+    "opened/landed for another contributor; self-dispatch excluded — the system "
+    "does not run without dispatchers)"
 )
+
+# Flat credit, in difficulty-point units, for landing ANOTHER contributor's proof
+# PR. Dispatch is load-bearing infrastructure (no dispatch -> nothing merges), so
+# it is valued at nearly a full proof regardless of that proof's difficulty.
+DISPATCH_POINTS_PER_DISPATCH = 0.9
 
 
 @dataclass(frozen=True)
@@ -432,7 +438,7 @@ def credited_contributors(
                 "inferred_git_proofs": 0,
                 "difficulty_points": 0,
                 "dispatch_proofs": 0,
-                "dispatch_difficulty": 0.0,
+                "dispatch_points": 0.0,
                 "credit_sources": [],
             },
         )
@@ -457,10 +463,11 @@ def credited_contributors(
             row["credit_sources"].append(source)
 
     # Dispatch credit (fairness): the contributor who opened/landed a proof PR did
-    # real plumbing, so they earn HALF the proof's difficulty — but ONLY when they
-    # dispatched SOMEONE ELSE's proof. Opening your own PR (self-dispatch) earns
-    # nothing extra, so a high-volume prover cannot also farm dispatch points.
-    # Credited only to contributors who already have a proof row (no phantom rows).
+    # real plumbing — without dispatchers nothing merges — so they earn a flat
+    # DISPATCH_POINTS_PER_DISPATCH (≈ a full proof), but ONLY when they dispatched
+    # SOMEONE ELSE's proof. Opening your own PR (self-dispatch) earns nothing extra,
+    # so a high-volume prover cannot also farm dispatch points. Credited only to
+    # contributors who already have a proof row (no phantom rows).
     for proof in data.proofs:
         if not proof.solver:
             continue  # no explicit solver: the git-author IS the inferred prover
@@ -476,13 +483,13 @@ def credited_contributors(
         if drow is None:
             continue
         drow["dispatch_proofs"] += 1
-        drow["dispatch_difficulty"] += 0.5 * proof.difficulty
+        drow["dispatch_points"] += DISPATCH_POINTS_PER_DISPATCH
 
     for row in rows.values():
         handle = row.get("github") or row.get("solver")
         run_stats = _group_stats(contributor_runs.get(str(handle), []))
         row.update(run_stats)
-        row["dispatch_difficulty"] = round(row["dispatch_difficulty"], 1)
+        row["dispatch_points"] = round(row["dispatch_points"], 1)
         row["credit_sources"].sort()
         if row["explicit_solver_proofs"] and row["inferred_git_proofs"]:
             row["credit_source_summary"] = "explicit + inferred"
@@ -919,18 +926,22 @@ def render(root: Path) -> str:
         "",
         "## Contributor Leaderboard",
         "",
-        "Rank uses credited verified proofs. Explicit `solver≜...` provenance wins; "
-        "older proof records without solver provenance use git add-author attribution "
-        "as inferred historical credit. **Dispatch credit** awards half a proof's "
-        "difficulty to the contributor who opened/landed someone else's proof PR "
-        "(self-dispatch excluded); it is added to Score.",
+        "Rank uses Score (difficulty points + dispatch credit). Explicit `solver≜...` "
+        "provenance wins; older proof records without solver provenance use git "
+        "add-author attribution as inferred historical credit. **Dispatch credit** "
+        "awards 0.9 points to the contributor who opened/landed "
+        "someone else's proof PR (self-dispatch excluded); it is added to Score.",
         "",
-        "| Rank | Contributor | Proof credit | Explicit | Inferred | Runs | Run success | Difficulty points | Dispatch (½-diff) | Score |",
+        "| Rank | Contributor | Proof credit | Explicit | Inferred | Runs | Run success | Difficulty points | Dispatch (0.9 ea) | Score |",
         "|-----:|-------------|-------------:|---------:|---------:|-----:|------------:|------------------:|------------------:|------:|",
     ])
     if not stats["credited_contributors"]:
         lines.append("| — | No credited work yet | — | — | — | — | — | — | — | — |")
-    for rank, row in enumerate(stats["credited_contributors"], 1):
+    ranked = sorted(
+        stats["credited_contributors"],
+        key=lambda r: (-_score(r), str(r.get("display_name") or "").lower()),
+    )
+    for rank, row in enumerate(ranked, 1):
         contributor = (
             f"[@{row['github']}]({row['profile_url']})"
             if row.get("github") and row.get("profile_url")
@@ -940,7 +951,7 @@ def render(root: Path) -> str:
             f"| {rank} | {contributor} | {row['credited_proofs']} | "
             f"{row['explicit_solver_proofs']} | {row['inferred_git_proofs']} | "
             f"{row['runs']} | {_percent(row['run_success_rate'])} | "
-            f"{row['difficulty_points']} | {row['dispatch_difficulty']} | {_score(row)} |"
+            f"{row['difficulty_points']} | {row['dispatch_points']} | {_score(row)} |"
         )
 
     historical = stats["historical_attribution"]
@@ -1009,7 +1020,7 @@ def render_json(root: Path) -> str:
 
 
 def _score(row: dict) -> int:
-    dispatch = float(row.get("dispatch_difficulty", 0) or 0)
+    dispatch = float(row.get("dispatch_points", 0) or 0)
     return (
         int(row["difficulty_points"]) * 100
         + int(row["verified_proofs"]) * 25
@@ -1065,7 +1076,7 @@ def ui_payload(root: Path) -> dict:
                 "inferred_git_proofs": row["inferred_git_proofs"],
                 "difficulty_points": row["difficulty_points"],
                 "dispatch_proofs": row["dispatch_proofs"],
-                "dispatch_difficulty": row["dispatch_difficulty"],
+                "dispatch_points": row["dispatch_points"],
                 "runs": row["runs"],
                 "successes": row["successes"],
                 "run_success_rate": row["run_success_rate"],

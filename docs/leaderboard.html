@@ -270,6 +270,7 @@
                 <div class="hidden md:flex items-center gap-3 mt-1 opacity-70">
                     <span class="flex items-center gap-1 text-[11px] font-medium">${proofSvg} ${formatNumber(badges.proofs)} proofs</span>
                     <span class="flex items-center gap-1 text-[11px] font-medium">${difficultySvg} ${formatNumber(badges.difficulty)} diff</span>
+                    ${badges.dispatch ? `<span class="flex items-center gap-1 text-[11px] font-medium">${difficultySvg} ${formatNumber(badges.dispatch)} dispatch</span>` : ''}
                     <span class="flex items-center gap-1 text-[11px] font-medium">${rateSvg} ${formatPercent(badges.success_rate_percent)}</span>
                 </div>
             `;
@@ -298,7 +299,10 @@
             explicitProofs: Number(row.explicit_solver_proofs || 0),
             inferredProofs: Number(row.inferred_git_proofs || 0),
             creditSource: row.credit_source_summary || 'unknown',
-            badges: row.badges || { proofs: 0, difficulty: 0, success_rate_percent: null },
+            badges: {
+                ...(row.badges || { proofs: 0, difficulty: 0, success_rate_percent: null }),
+                dispatch: Number(row.dispatch_points || 0),
+            },
         }));
 
         const updateSummary = (payload) => {

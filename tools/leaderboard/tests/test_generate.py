@@ -225,19 +225,19 @@ def test_dispatch_credit_for_landing_anothers_proof(tmp_path):
     assert rows["alice"]["credited_proofs"] == 1
     assert rows["alice"]["difficulty_points"] == 4
     assert rows["alice"]["dispatch_proofs"] == 0
-    assert rows["alice"]["dispatch_difficulty"] == 0.0
+    assert rows["alice"]["dispatch_points"] == 0.0
 
-    # bob proved g2 (self-dispatch excluded) AND dispatched alice's g1 (diff 4 -> 2.0)
+    # bob proved g2 (self-dispatch excluded) AND dispatched alice's g1 (flat 0.9)
     assert rows["bob"]["credited_proofs"] == 1
     assert rows["bob"]["difficulty_points"] == 6
     assert rows["bob"]["dispatch_proofs"] == 1
-    assert rows["bob"]["dispatch_difficulty"] == 2.0
+    assert rows["bob"]["dispatch_points"] == 0.9
 
-    # score now includes dispatch: bob = 6*100 + 1*25 + 2.0*100 = 825; alice = 425
+    # score now includes dispatch: bob = 6*100 + 1*25 + 0.9*100 = 715; alice = 425
     contribs = {c["github"]: c for c in ui_payload(tmp_path)["contributors"]}
-    assert contribs["bob"]["score"] == 825
+    assert contribs["bob"]["score"] == 715
     assert contribs["bob"]["dispatch_proofs"] == 1
-    assert contribs["bob"]["dispatch_difficulty"] == 2.0
+    assert contribs["bob"]["dispatch_points"] == 0.9
     assert contribs["alice"]["score"] == 425
 
 
