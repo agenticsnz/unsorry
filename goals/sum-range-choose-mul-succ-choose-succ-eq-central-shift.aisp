@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-choose-mul-succ-choose-succ-eq-central-shift
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-choose-mul-succ-choose-succ-eq-central-shift.md
+  src≜packages/unsorry-archive-0034/backlog/sum-range-choose-mul-succ-choose-succ-eq-central-shift.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-choose-mul-succ-choose-succ-eq-central-shift.lean
+  lean≜packages/unsorry-archive-0034/goals/sum-range-choose-mul-succ-choose-succ-eq-central-shift.lean
   sha≜4fe91698d5529dab809da88e92aa030bc163e80f5d359c33d15d3983a76a6d1a
   aff≜-10
 }

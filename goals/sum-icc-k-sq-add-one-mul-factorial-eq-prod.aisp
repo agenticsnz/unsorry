@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-icc-k-sq-add-one-mul-factorial-eq-prod
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-icc-k-sq-add-one-mul-factorial-eq-prod.md
+  src≜packages/unsorry-archive-0034/backlog/sum-icc-k-sq-add-one-mul-factorial-eq-prod.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-icc-k-sq-add-one-mul-factorial-eq-prod.lean
+  lean≜packages/unsorry-archive-0034/goals/sum-icc-k-sq-add-one-mul-factorial-eq-prod.lean
   sha≜16fc6d6d7b77d1592811e2ea51d7e4c44ee26f31b6544b1b572a4fe83347afa3
   aff≜-9
 }

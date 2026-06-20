@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-choose-mul-succ-choose-eq
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-choose-mul-succ-choose-eq.md
+  src≜packages/unsorry-archive-0034/backlog/sum-range-choose-mul-succ-choose-eq.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-choose-mul-succ-choose-eq.lean
+  lean≜packages/unsorry-archive-0034/goals/sum-range-choose-mul-succ-choose-eq.lean
   sha≜32790f53d473ade7ec1aad1056317c2af7ffacff36a5f89f875c41939ea41f51
   aff≜-10
 }

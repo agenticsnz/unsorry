@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-pentagonal-running-eq-pyramidal
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-pentagonal-running-eq-pyramidal.md
+  src≜packages/unsorry-archive-0034/backlog/sum-pentagonal-running-eq-pyramidal.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-pentagonal-running-eq-pyramidal.lean
+  lean≜packages/unsorry-archive-0034/goals/sum-pentagonal-running-eq-pyramidal.lean
   sha≜bf9a03b0ca1183978c74091e93df3eb87ebd6abaea55e17277fbc0f446a05dcb
   aff≜-10
 }

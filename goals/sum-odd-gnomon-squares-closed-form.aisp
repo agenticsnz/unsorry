@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-odd-gnomon-squares-closed-form
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-odd-gnomon-squares-closed-form.md
+  src≜packages/unsorry-archive-0034/backlog/sum-odd-gnomon-squares-closed-form.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-odd-gnomon-squares-closed-form.lean
+  lean≜packages/unsorry-archive-0034/goals/sum-odd-gnomon-squares-closed-form.lean
   sha≜7611df14c60b28ebe946b403470e0137412079447d5327873e61f2ebf2b1fcde
   aff≜-10
 }
