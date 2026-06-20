@@ -1,7 +1,7 @@
 𝔸5.1.run.gfac-d5-c3.mac-158f.20260619t033106098940z-4e6b2016@2026-06-19
 γ≔unsorry.proof.run
 ⟦Ω:Run⟧{id≜20260619t033106098940z-4e6b2016; goal≜gfac-d5-c3; agent≜mac-158f; outcome≜proved}
-⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-ring-cofactor}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜python; model≜sympy}
 ⟦Γ:Goal⟧{goal≜gfac-d5-c3}
 ⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-19T03:31:06Z}
 ⟦Σ:Artifact⟧{sha≜a26e8f0e4e68f962862c1bb331d36afcf1562dfe4aa018288f5a69f5a29410ca}

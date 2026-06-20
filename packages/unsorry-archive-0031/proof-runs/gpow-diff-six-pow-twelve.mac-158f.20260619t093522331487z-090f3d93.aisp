@@ -1,7 +1,7 @@
 𝔸5.1.run.gpow-diff-six-pow-twelve.mac-158f.20260619t093522331487z-090f3d93@2026-06-19
 γ≔unsorry.proof.run
 ⟦Ω:Run⟧{id≜20260619t093522331487z-090f3d93; goal≜gpow-diff-six-pow-twelve; agent≜mac-158f; outcome≜proved}
-⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-ring-cofactor}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜python; model≜sympy}
 ⟦Γ:Goal⟧{goal≜gpow-diff-six-pow-twelve}
 ⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-19T09:35:22Z}
 ⟦Σ:Artifact⟧{sha≜698770c411caa618861cbf0035fa3f143848b726ef8f85fc25a8c4c6fef26107}

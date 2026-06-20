@@ -1,7 +1,7 @@
 𝔸5.1.run.ggeom-pred-pow-eight-sub-one.mac-158f.20260617t181930618523z-9910f576@2026-06-17
 γ≔unsorry.proof.run
 ⟦Ω:Run⟧{id≜20260617t181930618523z-9910f576; goal≜ggeom-pred-pow-eight-sub-one; agent≜mac-158f; outcome≜proved}
-⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-ring-cofactor}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜python; model≜sympy}
 ⟦Γ:Goal⟧{goal≜ggeom-pred-pow-eight-sub-one}
 ⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-17T18:19:30Z}
 ⟦Σ:Artifact⟧{sha≜6e6b3a93e0e034abd42fbb2785f563a2f574b3d7f03972c1cc7485892cbbb986}

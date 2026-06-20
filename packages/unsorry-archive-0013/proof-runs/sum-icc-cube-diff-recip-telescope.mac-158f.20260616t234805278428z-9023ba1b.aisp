@@ -1,7 +1,7 @@
 𝔸5.1.run.sum-icc-cube-diff-recip-telescope.mac-158f.20260616t234805278428z-9023ba1b@2026-06-16
 γ≔unsorry.proof.run
 ⟦Ω:Run⟧{id≜20260616t234805278428z-9023ba1b; goal≜sum-icc-cube-diff-recip-telescope; agent≜mac-158f; outcome≜proved}
-⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-telescope}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜python; model≜sympy}
 ⟦Γ:Goal⟧{goal≜sum-icc-cube-diff-recip-telescope}
 ⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-16T23:48:05Z}
 ⟦Σ:Artifact⟧{sha≜283602f932bd52cd11c74279b73c4c60552226d2fb5a119ce1170728294ed885}

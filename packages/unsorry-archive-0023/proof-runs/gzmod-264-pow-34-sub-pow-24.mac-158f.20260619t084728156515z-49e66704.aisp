@@ -1,7 +1,7 @@
 𝔸5.1.run.gzmod-264-pow-34-sub-pow-24.mac-158f.20260619t084728156515z-49e66704@2026-06-19
 γ≔unsorry.proof.run
 ⟦Ω:Run⟧{id≜20260619t084728156515z-49e66704; goal≜gzmod-264-pow-34-sub-pow-24; agent≜mac-158f; outcome≜proved}
-⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-zmod-decide}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜python; model≜sympy}
 ⟦Γ:Goal⟧{goal≜gzmod-264-pow-34-sub-pow-24}
 ⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-19T08:47:28Z}
 ⟦Σ:Artifact⟧{sha≜303d553072744d19cf9fb91a84ecdc9f14eaf6ad5787adb3220cce73ec68c533}

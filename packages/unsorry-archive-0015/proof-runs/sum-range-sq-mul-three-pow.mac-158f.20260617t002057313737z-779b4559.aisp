@@ -1,7 +1,7 @@
 𝔸5.1.run.sum-range-sq-mul-three-pow.mac-158f.20260617t002057313737z-779b4559@2026-06-17
 γ≔unsorry.proof.run
 ⟦Ω:Run⟧{id≜20260617t002057313737z-779b4559; goal≜sum-range-sq-mul-three-pow; agent≜mac-158f; outcome≜proved}
-⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-sum-induction}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜python; model≜sympy}
 ⟦Γ:Goal⟧{goal≜sum-range-sq-mul-three-pow}
 ⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-17T00:20:57Z}
 ⟦Σ:Artifact⟧{sha≜a736840859007bd9fb8c827a7044170a989475594fdf80b94501fd38d9256cc3}

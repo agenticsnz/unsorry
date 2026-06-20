@@ -1,7 +1,7 @@
 𝔸5.1.run.sum-range-cube-mul-three-pow-closed.mac-158f.20260617t002029057512z-4d359f7d@2026-06-17
 γ≔unsorry.proof.run
 ⟦Ω:Run⟧{id≜20260617t002029057512z-4d359f7d; goal≜sum-range-cube-mul-three-pow-closed; agent≜mac-158f; outcome≜proved}
-⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-sum-induction}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜python; model≜sympy}
 ⟦Γ:Goal⟧{goal≜sum-range-cube-mul-three-pow-closed}
 ⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-17T00:20:29Z}
 ⟦Σ:Artifact⟧{sha≜5cd097848a0813ef59373a18dc9f714ca6d0534d7a760cb4a5001a50a1c14d33}

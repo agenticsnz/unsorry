@@ -4,5 +4,5 @@
 ⟦Σ:Source⟧{src≜goals/gfac-d3-c3.lean}
 ⟦Γ:Tags⟧{tags≜⟨⟩}
 ⟦Λ:Meta⟧{use≜0; aff≜0}
-⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜claude; model≜template-ring-cofactor; attempts≜1}
+⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜python; model≜sympy; attempts≜1}
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

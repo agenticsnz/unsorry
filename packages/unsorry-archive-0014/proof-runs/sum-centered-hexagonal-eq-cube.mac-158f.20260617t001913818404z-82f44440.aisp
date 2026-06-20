@@ -1,7 +1,7 @@
 𝔸5.1.run.sum-centered-hexagonal-eq-cube.mac-158f.20260617t001913818404z-82f44440@2026-06-17
 γ≔unsorry.proof.run
 ⟦Ω:Run⟧{id≜20260617t001913818404z-82f44440; goal≜sum-centered-hexagonal-eq-cube; agent≜mac-158f; outcome≜proved}
-⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-sum-induction}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜python; model≜sympy}
 ⟦Γ:Goal⟧{goal≜sum-centered-hexagonal-eq-cube}
 ⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-17T00:19:13Z}
 ⟦Σ:Artifact⟧{sha≜a3dc8ebfa63e5cf293fa631199a6417da658984033466977b8b4dbf88c853f79}

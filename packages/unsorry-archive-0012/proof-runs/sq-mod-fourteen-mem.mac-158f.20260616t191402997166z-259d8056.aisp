@@ -1,7 +1,7 @@
 𝔸5.1.run.sq-mod-fourteen-mem.mac-158f.20260616t191402997166z-259d8056@2026-06-16
 γ≔unsorry.proof.run
 ⟦Ω:Run⟧{id≜20260616t191402997166z-259d8056; goal≜sq-mod-fourteen-mem; agent≜mac-158f; outcome≜proved}
-⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-decide}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜python; model≜sympy}
 ⟦Γ:Goal⟧{goal≜sq-mod-fourteen-mem}
 ⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-16T19:14:02Z}
 ⟦Σ:Artifact⟧{sha≜b2dde2bb1ff5a23d1790c24e564dc09af2a94dec9188e3bb64c09cebf7fcfad8}

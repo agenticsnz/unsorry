@@ -1,7 +1,7 @@
 𝔸5.1.run.sum-k-sq-mul-succ-closed-form.mac-158f.20260616t232540601204z-abe95d83@2026-06-16
 γ≔unsorry.proof.run
 ⟦Ω:Run⟧{id≜20260616t232540601204z-abe95d83; goal≜sum-k-sq-mul-succ-closed-form; agent≜mac-158f; outcome≜proved}
-⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-sum-closedform}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜python; model≜sympy}
 ⟦Γ:Goal⟧{goal≜sum-k-sq-mul-succ-closed-form}
 ⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-16T23:25:40Z}
 ⟦Σ:Artifact⟧{sha≜1f9ac41bd7de2912a08f66aee56578926c040d03cd435b339499d11a30027ddb}

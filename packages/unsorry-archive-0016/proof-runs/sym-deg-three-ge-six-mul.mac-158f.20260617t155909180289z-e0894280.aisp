@@ -1,7 +1,7 @@
 𝔸5.1.run.sym-deg-three-ge-six-mul.mac-158f.20260617t155909180289z-e0894280@2026-06-17
 γ≔unsorry.proof.run
 ⟦Ω:Run⟧{id≜20260617t155909180289z-e0894280; goal≜sym-deg-three-ge-six-mul; agent≜mac-158f; outcome≜proved}
-⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-nlinarith}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜python; model≜sympy}
 ⟦Γ:Goal⟧{goal≜sym-deg-three-ge-six-mul}
 ⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-17T15:59:09Z}
 ⟦Σ:Artifact⟧{sha≜a68490dad7d038f24df394015be1f17ce980afcf86e5b074e8756d6f3c54e9cd}

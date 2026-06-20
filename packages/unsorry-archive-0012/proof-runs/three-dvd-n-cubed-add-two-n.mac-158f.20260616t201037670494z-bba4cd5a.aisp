@@ -1,7 +1,7 @@
 𝔸5.1.run.three-dvd-n-cubed-add-two-n.mac-158f.20260616t201037670494z-bba4cd5a@2026-06-16
 γ≔unsorry.proof.run
 ⟦Ω:Run⟧{id≜20260616t201037670494z-bba4cd5a; goal≜three-dvd-n-cubed-add-two-n; agent≜mac-158f; outcome≜proved}
-⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-zmod-decide}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜python; model≜sympy}
 ⟦Γ:Goal⟧{goal≜three-dvd-n-cubed-add-two-n}
 ⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-16T20:10:37Z}
 ⟦Σ:Artifact⟧{sha≜9790715e918a94944e1b4f44bd44170ff09a72bca46133e050deca98a6e3e70d}
