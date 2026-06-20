@@ -1,7 +1,7 @@
 𝔸5.1.run.gbinom-sp-0-1-8.mac-158f.20260619t173140992137z-d245d71e@2026-06-19
 γ≔unsorry.proof.run
 ⟦Ω:Run⟧{id≜20260619t173140992137z-d245d71e; goal≜gbinom-sp-0-1-8; agent≜mac-158f; outcome≜proved}
-⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-ring-cofactor}
+⟦Π:Provenance⟧{solver≜perttu; provider≜claude; model≜template-ring-cofactor}
 ⟦Γ:Goal⟧{goal≜gbinom-sp-0-1-8}
 ⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-19T17:31:40Z}
 ⟦Σ:Artifact⟧{sha≜744e5d36a7e37c756ada748c286973ec2134d81cedf4beeef4540b10a509f321}

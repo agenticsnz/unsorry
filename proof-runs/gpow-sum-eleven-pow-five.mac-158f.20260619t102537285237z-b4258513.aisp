@@ -1,7 +1,7 @@
 𝔸5.1.run.gpow-sum-eleven-pow-five.mac-158f.20260619t102537285237z-b4258513@2026-06-19
 γ≔unsorry.proof.run
 ⟦Ω:Run⟧{id≜20260619t102537285237z-b4258513; goal≜gpow-sum-eleven-pow-five; agent≜mac-158f; outcome≜proved}
-⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-ring-cofactor}
+⟦Π:Provenance⟧{solver≜cgbarlow; provider≜claude; model≜template-ring-cofactor}
 ⟦Γ:Goal⟧{goal≜gpow-sum-eleven-pow-five}
 ⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-19T10:25:37Z}
 ⟦Σ:Artifact⟧{sha≜4beed9ee342dfa5b1c49e7188d820af78f10e7cdc47692a86d9dd254251ea7a3}
