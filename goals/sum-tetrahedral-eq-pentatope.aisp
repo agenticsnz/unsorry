@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-tetrahedral-eq-pentatope
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-tetrahedral-eq-pentatope.md
+  src≜packages/unsorry-archive-0039/backlog/sum-tetrahedral-eq-pentatope.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-tetrahedral-eq-pentatope.lean
+  lean≜packages/unsorry-archive-0039/goals/sum-tetrahedral-eq-pentatope.lean
   sha≜4d95437b0fd8d267269398b350ffb4fb04ec601aab52a880c46cd39e9cc2b041
   aff≜-10
 }

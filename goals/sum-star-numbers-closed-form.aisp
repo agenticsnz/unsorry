@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-star-numbers-closed-form
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-star-numbers-closed-form.md
+  src≜packages/unsorry-archive-0039/backlog/sum-star-numbers-closed-form.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-star-numbers-closed-form.lean
+  lean≜packages/unsorry-archive-0039/goals/sum-star-numbers-closed-form.lean
   sha≜79bed37b8b75b8c397d99f028fa2dc3759e654c1b6c959143ed98ea70c639560
   aff≜-10
 }

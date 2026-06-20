@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-range-window-four-fib-eq-fib-diff-nat@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-range-window-four-fib-eq-fib-diff-nat
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-range-window-four-fib-eq-fib-diff-nat.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-range-window-four-fib-eq-fib-diff-nat.lean
+  sha≜420edcfe32f0a4465c0f0f57282bc98a71efcfd614fbbd93b29ddbe69896ddc7
+  aff≜-10
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-two-fourth-powers-zmod-sixteen-mem
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-two-fourth-powers-zmod-sixteen-mem.md
+  src≜packages/unsorry-archive-0039/backlog/sum-two-fourth-powers-zmod-sixteen-mem.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-two-fourth-powers-zmod-sixteen-mem.lean
+  lean≜packages/unsorry-archive-0039/goals/sum-two-fourth-powers-zmod-sixteen-mem.lean
   sha≜adaf434f4409cc3aed73c446bdcbdd893f05a4fa1ef04330d7a66568625ea663
   aff≜-10
 }
