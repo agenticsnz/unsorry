@@ -1,0 +1,9 @@
+𝔸5.1.run.sq-add-sq-eq-three-mul-sq-s4.1367ab40f0b1-e413.20260620t072449558545z-67367e56@2026-06-20
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260620t072449558545z-67367e56; goal≜sq-add-sq-eq-three-mul-sq-s4; agent≜1367ab40f0b1-e413; outcome≜failed}
+⟦Π:Provenance⟧{solver≜cgbarlow; provider≜claude; model≜opus; effort≜max}
+⟦Γ:Goal⟧{goal≜sq-add-sq-eq-three-mul-sq-s4}
+⟦Λ:Metrics⟧{attempts≜3; solve_s≜485; ended≜2026-06-20T07:24:49Z; lessons≜2}
+⟦Σ:Artifact⟧{sha≜∅}
+⟦Δ:Lesson⟧{sig≜- Unsorry.GpowSumNinePowSixteen - Unsorry.GpowSumFourPowEight - Unsorry.GbinomApK9Step2Dvd - Unsorry.GpowSumOnePowEight - Unsorry.GpowSumNinePowEight - Unsorry.GbinomConsecSixFactDvd - Unsorry.GpowSumFivePowTwelve - Unsorry.GpowSumFivePowThree - Unsorry.GpowDiffTwelvePowFive - Un}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
