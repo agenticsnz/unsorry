@@ -1,0 +1,9 @@
+𝔸5.1.run.sq-add-sq-eq-three-mul-sq-s4.thebeast-ace7.20260620t080458588206z-ec4d0bcf@2026-06-20
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260620t080458588206z-ec4d0bcf; goal≜sq-add-sq-eq-three-mul-sq-s4; agent≜thebeast-ace7; outcome≜decomposed}
+⟦Π:Provenance⟧{solver≜adam91holt; provider≜codex; effort≜xhigh}
+⟦Γ:Goal⟧{goal≜sq-add-sq-eq-three-mul-sq-s4}
+⟦Λ:Metrics⟧{attempts≜3; solve_s≜249; ended≜2026-06-20T08:04:58Z; lessons≜2}
+⟦Σ:Artifact⟧{sha≜∅}
+⟦Δ:Lesson⟧{sig≜(no file was written at library/Unsorry/SqAddSqEqThreeMulSqS4.lean)}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
