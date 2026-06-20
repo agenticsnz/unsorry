@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜prime-pow-eight-mod-480
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜4
 }
 ⟦Σ:Source⟧{
-  src≜backlog/prime-pow-eight-mod-480.md
+  src≜packages/unsorry-archive-0033/backlog/prime-pow-eight-mod-480.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/prime-pow-eight-mod-480.lean
+  lean≜packages/unsorry-archive-0033/goals/prime-pow-eight-mod-480.lean
   sha≜c4ab94c3a8cb64a0e552c9b7f853dd2796b634536350352f08b8fd77c63bf69b
   aff≜-20
 }

@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜prod-icc-k-sq-div-pred-mul-succ-telescope
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/prod-icc-k-sq-div-pred-mul-succ-telescope.md
+  src≜packages/unsorry-archive-0033/backlog/prod-icc-k-sq-div-pred-mul-succ-telescope.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/prod-icc-k-sq-div-pred-mul-succ-telescope.lean
+  lean≜packages/unsorry-archive-0033/goals/prod-icc-k-sq-div-pred-mul-succ-telescope.lean
   sha≜7d14c31a290484236f7e3d94a14404f6559381b829f14359426f21d04b33c8a4
   aff≜-20
 }

@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-one-div-succ-mul-add-four-telescope
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜4
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-one-div-succ-mul-add-four-telescope.md
+  src≜packages/unsorry-archive-0033/backlog/sum-one-div-succ-mul-add-four-telescope.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-one-div-succ-mul-add-four-telescope.lean
+  lean≜packages/unsorry-archive-0033/goals/sum-one-div-succ-mul-add-four-telescope.lean
   sha≜86398a116845d2c5721c1ebba0754fcf23c5c09b81f17eb1ba47b5eceaa52b65
   aff≜-10
 }
