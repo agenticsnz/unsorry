@@ -204,6 +204,43 @@ def test_git_add_author_is_historical_visibility_not_solver_credit(tmp_path):
     assert "1 inferred" in svg
 
 
+def test_dispatch_credit_for_landing_anothers_proof(tmp_path):
+    _git(tmp_path, "init")
+    _goal(tmp_path, "g1", 4)
+    _goal(tmp_path, "g2", 6)
+    _index(tmp_path, "a" * 64, "g1",
+           provenance="⟦Π:Provenance⟧{solver≜alice; agent≜x; provider≜manual}\n")
+    _index(tmp_path, "b" * 64, "g2",
+           provenance="⟦Π:Provenance⟧{solver≜bob; agent≜y; provider≜manual}\n")
+    _git(tmp_path, "add", "goals", "library/index")
+    # Bob is the git add-author of BOTH index files (he opened/landed both PRs):
+    # g1 is alice's proof (cross-dispatch -> credit) and g2 is his own (self -> none).
+    _git(tmp_path, "commit", "-m", "land proofs",
+         author="Bob Builder <bob@example.test>")
+    _alias(tmp_path, "Bob Builder <bob@example.test>", "bob", "Bob Builder")
+
+    rows = {r["github"]: r for r in base_stats(tmp_path)["credited_contributors"]}
+
+    # alice proved g1 and dispatched nothing
+    assert rows["alice"]["credited_proofs"] == 1
+    assert rows["alice"]["difficulty_points"] == 4
+    assert rows["alice"]["dispatch_proofs"] == 0
+    assert rows["alice"]["dispatch_difficulty"] == 0.0
+
+    # bob proved g2 (self-dispatch excluded) AND dispatched alice's g1 (diff 4 -> 2.0)
+    assert rows["bob"]["credited_proofs"] == 1
+    assert rows["bob"]["difficulty_points"] == 6
+    assert rows["bob"]["dispatch_proofs"] == 1
+    assert rows["bob"]["dispatch_difficulty"] == 2.0
+
+    # score now includes dispatch: bob = 6*100 + 1*25 + 2.0*100 = 825; alice = 425
+    contribs = {c["github"]: c for c in ui_payload(tmp_path)["contributors"]}
+    assert contribs["bob"]["score"] == 825
+    assert contribs["bob"]["dispatch_proofs"] == 1
+    assert contribs["bob"]["dispatch_difficulty"] == 2.0
+    assert contribs["alice"]["score"] == 425
+
+
 def test_archived_index_files_keep_original_active_attribution(tmp_path):
     _git(tmp_path, "init")
     _goal(tmp_path, "retired-goal", 2, "archived")
@@ -333,7 +370,7 @@ def test_base_stats_derive_failure_and_efficiency_metrics(tmp_path):
     out = render(tmp_path)
     assert "Run success rate | 50.0%" in out
     assert "Failed attempts | 4" in out
-    assert "[@perttu](https://github.com/perttu) | 1 | 1 | 0 | 2 | 50.0% | 4 | 425" in out
+    assert "[@perttu](https://github.com/perttu) | 1 | 1 | 0 | 2 | 50.0% | 4 | 0.0 | 425" in out
     assert "`codex / gpt-5.1-codex` | 1 | 2 | 50.0% | 4" in out
 
 
