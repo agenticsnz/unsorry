@@ -1,0 +1,9 @@
+𝔸5.1.run.nesbitt-inequality.1367ab40f0b1-e413.20260620t060616465783z-03ac5368@2026-06-20
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260620t060616465783z-03ac5368; goal≜nesbitt-inequality; agent≜1367ab40f0b1-e413; outcome≜failed}
+⟦Π:Provenance⟧{solver≜cgbarlow; provider≜claude; model≜opus; effort≜max}
+⟦Γ:Goal⟧{goal≜nesbitt-inequality}
+⟦Λ:Metrics⟧{attempts≜3; solve_s≜677; ended≜2026-06-20T06:06:16Z; lessons≜1}
+⟦Σ:Artifact⟧{sha≜∅}
+⟦Δ:Lesson⟧{sig≜- Unsorry.GpowSumFourPowNine - Unsorry.GpowSumFourPowTwo - Unsorry.GpowSumElevenPowNine - Unsorry.HexagonalEqTriangularOddIndex - Unsorry.GpowSumFivePowFifteen - Unsorry.GbinomConsecSevenFactDvd - Unsorry.GpowSumNinePowFifteen - Unsorry.GpowDiffTwelvePowTen - Unsorry.GbinomConsec}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
