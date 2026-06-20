@@ -1489,6 +1489,35 @@ ensure_agent_worktree() {
   fi
 }
 
+# Multi-runner safety (ADR-042): pick an agent identity not already held by a LIVE
+# co-located runner, so N runners spawned on one host get DISTINCT ids + worktrees
+# instead of silently sharing one worktree/claim and all working the same goal
+# (observed when a wrapper forks several runners). The lock is a mkdir'd directory
+# holding the owner PID; a directory whose PID is dead is stale and reclaimed
+# (self-healing across crashes — no flock, so it works on macOS too). The base id
+# is reused whenever free (claim continuity across restarts); only a *live*
+# collision forks a random-suffixed id. Sets AGENT_ID to the acquired identity.
+claim_agent_identity() {
+  local workdir="$1" base="$2" id="$2" lockdir owner attempt=0
+  while :; do
+    lockdir="$workdir/agent-main-$id.lock"
+    if mkdir "$lockdir" 2>/dev/null; then
+      printf '%s\n' "$$" > "$lockdir/pid"
+      AGENT_ID="$id"
+      return 0
+    fi
+    owner="$(cat "$lockdir/pid" 2>/dev/null)"
+    if [ "$owner" = "$$" ]; then AGENT_ID="$id"; return 0; fi
+    if [ -z "$owner" ] || ! kill -0 "$owner" 2>/dev/null; then
+      rm -rf "$lockdir" 2>/dev/null   # stale (dead owner) -> reclaim the base id
+      continue
+    fi
+    attempt=$((attempt + 1))
+    [ "$attempt" -gt 64 ] && die_config "no free agent identity under '$base' after 64 tries"
+    id="$base-$(od -An -N2 -tx1 /dev/urandom | tr -d ' \n')"
+  done
+}
+
 # ADR-042: relocate the running agent into its own worktree before any work, so
 # the operator's launch dir is never synced/built/claimed in (they can edit
 # proofs and the harness there freely) and two agents on one host don't share a
@@ -1506,10 +1535,17 @@ relocate_into_agent_worktree() {
 
   local workdir wt
   workdir="${UNSORRY_WORKDIR:-$HOME/.unsorry/work}"
+  mkdir -p "$workdir" || die_config "cannot create UNSORRY_WORKDIR '$workdir'"
   [ -n "${AGENT_ID:-}" ] || resolve_agent_id
+  # Multi-runner safety: claim a distinct identity if a live sibling already holds
+  # this one, then carry it forward so the re-exec (and all claims/worktrees) use
+  # the SAME acquired id. An explicit UNSORRY_AGENT_WORKTREE override opts out.
+  if [ -z "${UNSORRY_AGENT_WORKTREE:-}" ]; then
+    claim_agent_identity "$workdir" "$AGENT_ID"
+    export UNSORRY_AGENT_ID="$AGENT_ID"
+  fi
   wt="${UNSORRY_AGENT_WORKTREE:-$workdir/agent-main-$AGENT_ID}"
 
-  mkdir -p "$workdir" || die_config "cannot create UNSORRY_WORKDIR '$workdir'"
   ensure_agent_worktree "$wt"
 
   log "relocating into isolated agent worktree $wt (ADR-042); launch dir left untouched"
@@ -3294,6 +3330,29 @@ test_agent_id_generation() {
   [[ "$id" =~ ^[a-z0-9][a-z0-9-]*-[0-9a-f]{4}$ ]] \
     || { log "  '$id' is not <short-hostname>-<4 hex>"; return 1; }
   py_helper is-id "$id" || { log "  '$id' violates the contract Id grammar"; return 1; }
+}
+
+test_claim_agent_identity_multi_runner() {
+  local d; d="$(mktemp -d)" || return 1
+  # free identity -> base id is taken
+  AGENT_ID=""; claim_agent_identity "$d" "host-aa11"
+  [ "$AGENT_ID" = "host-aa11" ] || { log "  free id not taken: '$AGENT_ID'"; rm -rf "$d"; return 1; }
+  # a LIVE sibling holding the id -> caller must fork a distinct suffixed id
+  sleep 30 & local live=$!
+  mkdir -p "$d/agent-main-host-bb22.lock"; printf '%s\n' "$live" > "$d/agent-main-host-bb22.lock/pid"
+  AGENT_ID=""; claim_agent_identity "$d" "host-bb22"
+  kill "$live" 2>/dev/null
+  case "$AGENT_ID" in
+    host-bb22) log "  live collision was NOT forked"; rm -rf "$d"; return 1 ;;
+    host-bb22-*) : ;;
+    *) log "  forked id malformed: '$AGENT_ID'"; rm -rf "$d"; return 1 ;;
+  esac
+  # a STALE lock (dead owner) -> base id reclaimed
+  sleep 30 & local dead=$!; kill "$dead" 2>/dev/null; wait "$dead" 2>/dev/null
+  mkdir -p "$d/agent-main-host-cc33.lock"; printf '%s\n' "$dead" > "$d/agent-main-host-cc33.lock/pid"
+  AGENT_ID=""; claim_agent_identity "$d" "host-cc33"
+  [ "$AGENT_ID" = "host-cc33" ] || { log "  stale lock not reclaimed: '$AGENT_ID'"; rm -rf "$d"; return 1; }
+  rm -rf "$d"
 }
 
 test_agent_id_host_matches() {
@@ -5426,6 +5485,7 @@ run_self_tests() {
   local tests=(
     test_agent_id_generation
     test_agent_id_host_matches
+    test_claim_agent_identity_multi_runner
     test_agent_id_validation
     test_solver_resolution
     test_git_identity_resolution
