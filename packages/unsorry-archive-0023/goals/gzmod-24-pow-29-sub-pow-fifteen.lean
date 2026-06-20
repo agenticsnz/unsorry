@@ -1,0 +1,4 @@
+import Mathlib
+
+theorem gzmod_24_pow_29_sub_pow_fifteen (n : ℤ) : (24 : ℤ) ∣ n ^ 29 - n ^ 15 := by
+  sorry

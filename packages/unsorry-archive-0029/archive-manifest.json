@@ -1,0 +1,179 @@
+{
+  "block_id": "unsorry-archive-0029",
+  "target_size": 40,
+  "proof_count": 40,
+  "status": "frozen",
+  "source_commit": "c6e77fd53d324e477872cd640efda39049fb841f",
+  "validation_commit": null,
+  "pins": {
+    "lean_toolchain": "leanprover/lean4:v4.30.0",
+    "mathlib": "v4.30.0"
+  },
+  "notes": [
+    "ADR-041 proof archive block 0029.",
+    "Whole decomposition trees + standalone proved goals only (invariant A).",
+    "Active goal records remain as archived metadata pointing at this package."
+  ],
+  "goals": [
+    {
+      "goal": "gfac-d5-c1",
+      "module": "Unsorry.GfacD5C1"
+    },
+    {
+      "goal": "gfac-d5-c2",
+      "module": "Unsorry.GfacD5C2"
+    },
+    {
+      "goal": "gfac-d5-c3",
+      "module": "Unsorry.GfacD5C3"
+    },
+    {
+      "goal": "gfac-d5-c4",
+      "module": "Unsorry.GfacD5C4"
+    },
+    {
+      "goal": "gfac-d5-c5",
+      "module": "Unsorry.GfacD5C5"
+    },
+    {
+      "goal": "gfac-d5-c6",
+      "module": "Unsorry.GfacD5C6"
+    },
+    {
+      "goal": "gfac-d6-c0",
+      "module": "Unsorry.GfacD6C0"
+    },
+    {
+      "goal": "gfac-d6-c1",
+      "module": "Unsorry.GfacD6C1"
+    },
+    {
+      "goal": "gfac-d6-c2",
+      "module": "Unsorry.GfacD6C2"
+    },
+    {
+      "goal": "gfac-d6-c3",
+      "module": "Unsorry.GfacD6C3"
+    },
+    {
+      "goal": "gfac-d6-c4",
+      "module": "Unsorry.GfacD6C4"
+    },
+    {
+      "goal": "gfac-d6-c5",
+      "module": "Unsorry.GfacD6C5"
+    },
+    {
+      "goal": "gfac-d6-c6",
+      "module": "Unsorry.GfacD6C6"
+    },
+    {
+      "goal": "gzmod-240-pow-39-sub-pow-35",
+      "module": "Unsorry.Gzmod240Pow39SubPow35"
+    },
+    {
+      "goal": "gzmod-240-pow-40-sub-pow-36",
+      "module": "Unsorry.Gzmod240Pow40SubPow36"
+    },
+    {
+      "goal": "gzmod-24-pow-43-sub-pow-five",
+      "module": "Unsorry.Gzmod24Pow43SubPowFive"
+    },
+    {
+      "goal": "gzmod-24-pow-44-sub-pow-ten",
+      "module": "Unsorry.Gzmod24Pow44SubPowTen"
+    },
+    {
+      "goal": "gzmod-240-pow-44-sub-pow-40",
+      "module": "Unsorry.Gzmod240Pow44SubPow40"
+    },
+    {
+      "goal": "gzmod-24-pow-45-sub-pow-eleven",
+      "module": "Unsorry.Gzmod24Pow45SubPowEleven"
+    },
+    {
+      "goal": "gzmod-24-pow-48-sub-pow-ten",
+      "module": "Unsorry.Gzmod24Pow48SubPowTen"
+    },
+    {
+      "goal": "gzmod-66-pow-51-sub-pow-one",
+      "module": "Unsorry.Gzmod66Pow51SubPowOne"
+    },
+    {
+      "goal": "gzmod-24-pow-56-sub-pow-22",
+      "module": "Unsorry.Gzmod24Pow56SubPow22"
+    },
+    {
+      "goal": "gzmod-24-pow-58-sub-pow-44",
+      "module": "Unsorry.Gzmod24Pow58SubPow44"
+    },
+    {
+      "goal": "gzmod-24-pow-64-sub-pow-26",
+      "module": "Unsorry.Gzmod24Pow64SubPow26"
+    },
+    {
+      "goal": "gzmod-24-pow-64-sub-pow-38",
+      "module": "Unsorry.Gzmod24Pow64SubPow38"
+    },
+    {
+      "goal": "gpow-diff-five-pow-eleven",
+      "module": "Unsorry.GpowDiffFivePowEleven"
+    },
+    {
+      "goal": "gpow-diff-five-pow-fifteen",
+      "module": "Unsorry.GpowDiffFivePowFifteen"
+    },
+    {
+      "goal": "gpow-diff-five-pow-eighteen",
+      "module": "Unsorry.GpowDiffFivePowEighteen"
+    },
+    {
+      "goal": "gpow-diff-five-pow-nineteen",
+      "module": "Unsorry.GpowDiffFivePowNineteen"
+    },
+    {
+      "goal": "gpow-diff-eight-pow-ten",
+      "module": "Unsorry.GpowDiffEightPowTen"
+    },
+    {
+      "goal": "gpow-diff-eight-pow-eleven",
+      "module": "Unsorry.GpowDiffEightPowEleven"
+    },
+    {
+      "goal": "gpow-diff-eight-pow-twelve",
+      "module": "Unsorry.GpowDiffEightPowTwelve"
+    },
+    {
+      "goal": "gpow-diff-eight-pow-thirteen",
+      "module": "Unsorry.GpowDiffEightPowThirteen"
+    },
+    {
+      "goal": "gpow-diff-eight-pow-fourteen",
+      "module": "Unsorry.GpowDiffEightPowFourteen"
+    },
+    {
+      "goal": "gpow-diff-eight-pow-fifteen",
+      "module": "Unsorry.GpowDiffEightPowFifteen"
+    },
+    {
+      "goal": "gpow-diff-eight-pow-sixteen",
+      "module": "Unsorry.GpowDiffEightPowSixteen"
+    },
+    {
+      "goal": "gpow-diff-eight-pow-seventeen",
+      "module": "Unsorry.GpowDiffEightPowSeventeen"
+    },
+    {
+      "goal": "gpow-diff-eight-pow-eighteen",
+      "module": "Unsorry.GpowDiffEightPowEighteen"
+    },
+    {
+      "goal": "gpow-diff-eight-pow-nineteen",
+      "module": "Unsorry.GpowDiffEightPowNineteen"
+    },
+    {
+      "goal": "gpow-diff-eight-pow-twenty",
+      "module": "Unsorry.GpowDiffEightPowTwenty"
+    }
+  ]
+}

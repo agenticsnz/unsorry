@@ -1,0 +1,9 @@
+𝔸5.1.run.sq-add-sq-eq-three-mul-sq-s4-s3-s2.oma-2-c05e.20260620t115427238649z-32fac58b@2026-06-20
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260620t115427238649z-32fac58b; goal≜sq-add-sq-eq-three-mul-sq-s4-s3-s2; agent≜oma-2-c05e; outcome≜failed}
+⟦Π:Provenance⟧{solver≜perttu; provider≜codex; effort≜xhigh}
+⟦Γ:Goal⟧{goal≜sq-add-sq-eq-three-mul-sq-s4-s3-s2}
+⟦Λ:Metrics⟧{attempts≜3; solve_s≜289; ended≜2026-06-20T11:54:27Z; lessons≜0}
+⟦Σ:Artifact⟧{sha≜∅}
+⟦Δ:Lesson⟧{sig≜✖ [8542/8685] Building Unsorry.SqAddSqEqThreeMulSqS4S3S2 (210ms) trace: .> LEAN_PATH=/Users/perttu/.unsorry/work/prove-sq-add-sq-eq-three-mul-sq-s4-s3-s2-oma-2-c05e/.lake/packages/Cli/.lake/build/lib/lean:/Users/perttu/.unsorry/work/prove-sq-add-sq-eq-three-mul-sq-s4-s3-s2-oma-2-}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
