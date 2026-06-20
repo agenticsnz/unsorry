@@ -1,8 +1,8 @@
-# ADR-074: Roadmap GitHub Project, Synced from Repo State
+# ADR-077: Roadmap GitHub Project, Synced from Repo State
 
 | Field | Value |
 |-------|-------|
-| **Decision ID** | ADR-074 |
+| **Decision ID** | ADR-077 |
 | **Initiative** | unsorry — decision & work roadmap discoverability |
 | **Proposed By** | unsorry maintainers |
 | **Date** | 2026-06-20 |
@@ -86,7 +86,7 @@ duplicate ADR-073's generator warns about).
 
 | Reference ID | Title | Type | Location |
 |--------------|-------|------|----------|
-| REF-1 | project-sync tool + workflow spec | Specification | specs/SPEC-074-A-Project-Sync.md |
+| REF-1 | project-sync tool + workflow spec | Specification | specs/SPEC-077-A-Project-Sync.md |
 | REF-2 | The ADR index this syncs from (source of truth) | Decision | ADR-073-ADR-Index-Generated-README.md |
 | REF-3 | The post-merge generated-artifact pattern this mirrors | Decision | ADR-036-Targets-Board-Post-Merge-Refresh.md |
 | REF-4 | Generated-board precedents | Decision | ADR-023-Proof-Provenance-Leaderboard.md / ADR-066 (queue board) |

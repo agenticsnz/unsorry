@@ -1,4 +1,4 @@
-"""``python3 -m tools.project_sync`` entry point (ADR-074 / SPEC-074-A)."""
+"""``python3 -m tools.project_sync`` entry point (ADR-077 / SPEC-077-A)."""
 from __future__ import annotations
 
 import sys

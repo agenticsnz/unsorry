@@ -1,4 +1,4 @@
-"""project-sync tests (ADR-074 / SPEC-074-A).
+"""project-sync tests (ADR-077 / SPEC-077-A).
 
 Pure unit tests over the mapping/planning functions, plus an end-to-end reconcile
 against an in-memory fake board that records mutations — proving idempotency and the
@@ -70,12 +70,12 @@ def test_draft_title_and_body():
 
 
 def test_plan_adrs_creates_missing():
-    [act] = plan_adrs([_adr(74, "Board Sync", status="Proposed")], {})
-    assert act.kind == "create_adr" and act.label == "ADR-074"
+    [act] = plan_adrs([_adr(77, "Board Sync", status="Proposed")], {})
+    assert act.kind == "create_adr" and act.label == "ADR-077"
     assert act.sets[ADR_STATUS] == ("select", "Pending")
     assert act.sets[STAGE] == ("select", "Backlog")  # seeded on create
     assert act.sets[ITEM_TYPE] == ("select", "ADR")
-    assert act.sets[ADR_NUM] == ("number", 74)
+    assert act.sets[ADR_NUM] == ("number", 77)
 
 
 def test_plan_adrs_enforces_status_flip_but_not_stage():

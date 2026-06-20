@@ -1,6 +1,6 @@
-# SPEC-074-A: Roadmap Project Sync
+# SPEC-077-A: Roadmap Project Sync
 
-Implements: [ADR-074](../ADR-074-Roadmap-Project-Synced-From-Repo-State.md) · Status: Living · Updated: 2026-06-20
+Implements: [ADR-077](../ADR-077-Roadmap-Project-Synced-From-Repo-State.md) · Status: Living · Updated: 2026-06-20
 
 ## What this adds
 
@@ -82,7 +82,7 @@ exponential backoff.
 
 Triggers: `workflow_run` on `adr-index` `completed` (fires when `adrs.json` is fresh — a
 `push` trigger would be skipped by `adr-index`'s `[skip ci]` refresh commit), a
-`schedule` cron (`17 */6 * * *`, for issue lifecycle and as a safety net), and
+`schedule` cron (`17 * * * *`, hourly, for issue lifecycle and as a safety net), and
 `workflow_dispatch`. `concurrency: { group: project-sync, cancel-in-progress: false }`;
 `permissions: contents: read`; pinned action SHAs (ADR-019).
 

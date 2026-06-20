@@ -1,4 +1,4 @@
-"""Reconcile the *unsorry Roadmap* GitHub Project from repo state (ADR-074 / SPEC-074-A).
+"""Reconcile the *unsorry Roadmap* GitHub Project from repo state (ADR-077 / SPEC-077-A).
 
 GitHub Projects has no native notion of "files as items": a new ADR in
 ``docs/adrs/adrs.json`` — or a status flip ``Proposed`` → ``Accepted`` — never reaches
