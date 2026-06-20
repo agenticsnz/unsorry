@@ -1,0 +1,45 @@
+# Delete queued/prove/* branches whose goal is already proved+archived. The
+# dispatcher correctly skips these (opening them would be a duplicate PR — the
+# #3077 conflict), but they linger forever: thousands accumulate (~1k+ stale) and
+# every dispatcher pass lists and re-checks them all. This keeps the queue lean.
+#
+# Conservative: deletes only when goals/<id>.aisp positively marks the goal
+# proved/archived; an open or missing record is left alone. Uses the default
+# GITHUB_TOKEN (contents: write) to delete refs — no PR creation, so no
+# REFRESH_TOKEN needed.
+name: stale-branch-janitor
+
+on:
+  schedule:
+    - cron: "23 * * * *"
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: "Max stale branches to delete this run"
+        default: "500"
+      apply:
+        description: "Set false for a dry-run (report only)"
+        default: "true"
+
+concurrency:
+  group: stale-branch-janitor
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  janitor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          ref: main # need goals/*.aisp statuses to decide which branches are done
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.12"
+      - name: Delete stale queued-proof branches
+        run: |
+          python3 -m tools.repo.stale_branches \
+            --limit "${{ github.event.inputs.limit || '500' }}" \
+            ${{ (github.event.inputs.apply == 'false') && ' ' || '--apply' }}
