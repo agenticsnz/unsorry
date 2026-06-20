@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-k-mul-choose-mul-two-pow-eq-two-n-three-pow
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-k-mul-choose-mul-two-pow-eq-two-n-three-pow.md
+  src≜packages/unsorry-archive-0036/backlog/sum-range-k-mul-choose-mul-two-pow-eq-two-n-three-pow.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-k-mul-choose-mul-two-pow-eq-two-n-three-pow.lean
+  lean≜packages/unsorry-archive-0036/goals/sum-range-k-mul-choose-mul-two-pow-eq-two-n-three-pow.lean
   sha≜29c959d7b473739052dcc4098b39b2bf0443dac06186847c0beb4d2231d3fc71
   aff≜-10
 }
