@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜two-sum-cubes-ge-sym-quadratics
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/two-sum-cubes-ge-sym-quadratics.md
+  src≜packages/unsorry-archive-0013/backlog/two-sum-cubes-ge-sym-quadratics.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/two-sum-cubes-ge-sym-quadratics.lean
-  sha≜∅
-  aff≜-10
+  lean≜packages/unsorry-archive-0013/goals/two-sum-cubes-ge-sym-quadratics.lean
+  sha≜b59d7cfb63577dd4746c1a20d000aa0152744de4880ff65e4c9ba309090aceb2
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

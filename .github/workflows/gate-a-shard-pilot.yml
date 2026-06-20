@@ -1,0 +1,134 @@
+name: gate-a-shard-pilot
+
+# Shadow pilot for ADR-063 (sharded kernel replay). NON-REQUIRED, manual-only.
+#
+# It validates the plan / replay-shard tooling on REAL runners before the matrix
+# is promoted into the required `gate-a.yml` replay job (ADR-058 requires a
+# non-required pilot before moving required-check routing). Nothing here gates a
+# PR: it is a manually-dispatched, observe-only run.
+#
+# Each matrix leg builds the library (Namespace .lake cache warm) and
+# kernel-replays its DISJOINT shard of the module set; the cover job asserts
+# every shard ran green. Because `tools.gate_a.parallel_modules` partitions the
+# targets with `split_evenly` (disjoint + covering, unit-tested), all shards
+# green ⟺ every olean kernel-replayed exactly once — the same guarantee a single
+# serial replay gives, at ~1/N the wall-clock.
+on:
+  workflow_dispatch:
+    inputs:
+      shards:
+        description: "Number of parallel replay shards"
+        required: false
+        default: "8"
+      base:
+        description: "Optional base ref for an incremental shard plan (blank = full)"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+concurrency:
+  group: gate-a-shard-pilot
+  cancel-in-progress: false
+
+env:
+  # Small chunk so each shard's leanchecker peak fits the 4 GB routine runner
+  # (same as the full-replay backstop, SPEC-048-B).
+  UNSORRY_REPLAY_CHUNK: "6"
+
+jobs:
+  plan:
+    name: plan shards
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+      count: ${{ steps.plan.outputs.count }}
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          fetch-depth: 0 # a --base plan diffs against the base
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.12"
+      - name: Plan the shard partition
+        id: plan
+        env:
+          SHARDS: ${{ github.event.inputs.shards || '8' }}
+          BASE: ${{ github.event.inputs.base }}
+        run: |
+          set -euo pipefail
+          if [ -n "$BASE" ]; then
+            out=$(python3 -m tools.gate_a.parallel_modules plan --shards "$SHARDS" --base "$BASE")
+          else
+            out=$(python3 -m tools.gate_a.parallel_modules plan --shards "$SHARDS")
+          fi
+          echo "plan: $out"
+          echo "matrix=$(printf '%s' "$out" | python3 -c 'import sys,json;print(json.dumps(json.load(sys.stdin)["shards"]))')" >> "$GITHUB_OUTPUT"
+          echo "count=$(printf '%s' "$out" | python3 -c 'import sys,json;print(json.load(sys.stdin)["count"])')" >> "$GITHUB_OUTPUT"
+
+  replay:
+    name: replay shard
+    needs: plan
+    if: needs.plan.outputs.count != '0'
+    runs-on: namespace-profile-unsorry-1
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          fetch-depth: 0
+      - name: Namespace .lake cache volume
+        id: ns_lake_cache
+        continue-on-error: true
+        uses: namespacelabs/nscloud-cache-action@15799a6b54e5765f85b2aac25b3f0df43ed571c0 # v1.4.3
+        with:
+          path: ${{ github.workspace }}/.lake
+      - name: Build (lean-action, mathlib binary cache)
+        uses: leanprover/lean-action@38fbc41a8c28c4cbaec22d7f7de508ec2e7c0dd9 # v1.5.0
+        with:
+          use-github-cache: ${{ steps.ns_lake_cache.outputs.cache-hit != 'true' }}
+          build-args: "UnsorryGoals"
+      - name: Generate statement-binding obligations
+        run: python3 -m tools.gate_a.check_statement_binding generate .
+      - name: Library build — zero-warning bar (--wfail)
+        run: lake build UnsorryLibrary --wfail
+      - name: Kernel replay shard ${{ matrix.shard }}
+        env:
+          SHARDS: ${{ github.event.inputs.shards || '8' }}
+          BASE: ${{ github.event.inputs.base }}
+        run: |
+          set -euo pipefail
+          if [ -n "$BASE" ]; then
+            python3 -m tools.gate_a.parallel_modules replay-shard \
+              --shard-index ${{ matrix.shard }} --shard-total "$SHARDS" --base "$BASE"
+          else
+            python3 -m tools.gate_a.parallel_modules replay-shard \
+              --shard-index ${{ matrix.shard }} --shard-total "$SHARDS"
+          fi
+
+  cover:
+    name: coverage assert
+    needs: [plan, replay]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Assert every shard replayed green
+        run: |
+          set -euo pipefail
+          if [ "${{ needs.plan.outputs.count }}" = "0" ]; then
+            echo "empty plan — no library modules to replay; nothing to cover"
+            exit 0
+          fi
+          # With fail-fast:false the matrix job result is 'success' only when ALL
+          # legs are green. split_evenly guarantees the shards partition the full
+          # set, so all-green ⟺ every module replayed exactly once.
+          result="${{ needs.replay.result }}"
+          if [ "$result" != "success" ]; then
+            echo "::error::replay matrix result is '$result' — a shard failed or was skipped; coverage NOT proven"
+            exit 1
+          fi
+          echo "all ${{ needs.plan.outputs.count }} module(s) covered across the shards (every olean replayed exactly once)"

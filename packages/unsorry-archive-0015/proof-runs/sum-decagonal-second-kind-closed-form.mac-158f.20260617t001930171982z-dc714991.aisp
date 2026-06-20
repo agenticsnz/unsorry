@@ -1,0 +1,8 @@
+𝔸5.1.run.sum-decagonal-second-kind-closed-form.mac-158f.20260617t001930171982z-dc714991@2026-06-17
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260617t001930171982z-dc714991; goal≜sum-decagonal-second-kind-closed-form; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-sum-induction}
+⟦Γ:Goal⟧{goal≜sum-decagonal-second-kind-closed-form}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-17T00:19:30Z}
+⟦Σ:Artifact⟧{sha≜29bb8252de301bef73ef40b4a45d347498ab5d1c0bac93870832680607b1a3ac}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

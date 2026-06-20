@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜cyclic-cube-sum-ge-asym-quad-cubic
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/cyclic-cube-sum-ge-asym-quad-cubic.md
+  src≜packages/unsorry-archive-0006/backlog/cyclic-cube-sum-ge-asym-quad-cubic.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/cyclic-cube-sum-ge-asym-quad-cubic.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0006/goals/cyclic-cube-sum-ge-asym-quad-cubic.lean
+  sha≜a19fe2694b153eeb69f796d508dc758d8364c9857816288b836c42084d3af493
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

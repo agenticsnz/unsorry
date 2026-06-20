@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜dvd-1302-pow-thirtyone-sub-self
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/dvd-1302-pow-thirtyone-sub-self.md
+  src≜packages/unsorry-archive-0013/backlog/dvd-1302-pow-thirtyone-sub-self.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/dvd-1302-pow-thirtyone-sub-self.lean
-  sha≜∅
-  aff≜-20
+  lean≜packages/unsorry-archive-0013/goals/dvd-1302-pow-thirtyone-sub-self.lean
+  sha≜be30f7defe471066ba50aaebc70eff2546a9b26d52ad167eb5fe31f136781d3a
+  aff≜-19
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

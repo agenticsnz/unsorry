@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜coprime-twopow-sub-one-two
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/coprime-twopow-sub-one-two.md
+  src≜packages/unsorry-archive-0006/backlog/coprime-twopow-sub-one-two.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/coprime-twopow-sub-one-two.lean
+  lean≜packages/unsorry-archive-0006/goals/coprime-twopow-sub-one-two.lean
   sha≜ae637ab5824e9d44080e745f368d2703dfee862c7175d301711ad3d60a023918
   aff≜-20
 }

@@ -1,0 +1,8 @@
+𝔸5.1.run.sum-range-sq-mul-three-pow.mac-158f.20260617t165107954563z-fe17e0dd@2026-06-17
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260617t165107954563z-fe17e0dd; goal≜sum-range-sq-mul-three-pow; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-sum-induction}
+⟦Γ:Goal⟧{goal≜sum-range-sq-mul-three-pow}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-17T16:51:07Z}
+⟦Σ:Artifact⟧{sha≜a736840859007bd9fb8c827a7044170a989475594fdf80b94501fd38d9256cc3}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

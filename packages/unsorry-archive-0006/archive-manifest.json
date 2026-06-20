@@ -1,0 +1,179 @@
+{
+  "block_id": "unsorry-archive-0006",
+  "target_size": 40,
+  "proof_count": 40,
+  "status": "frozen",
+  "source_commit": "cf5cf4f1aa471acc06153595211bf8118cc5a960",
+  "validation_commit": null,
+  "pins": {
+    "lean_toolchain": "leanprover/lean4:v4.30.0",
+    "mathlib": "v4.30.0"
+  },
+  "notes": [
+    "ADR-041 proof archive block 0006.",
+    "Whole decomposition trees + standalone proved goals only (invariant A).",
+    "Active goal records remain as archived metadata pointing at this package."
+  ],
+  "goals": [
+    {
+      "goal": "bezout-eleven-thirteen-eq-one",
+      "module": "Unsorry.BezoutElevenThirteenEqOne"
+    },
+    {
+      "goal": "bezout-five-seven-eq-one",
+      "module": "Unsorry.BezoutFiveSevenEqOne"
+    },
+    {
+      "goal": "candido-sum-quartics-twice-square",
+      "module": "Unsorry.CandidoSumQuarticsTwiceSquare"
+    },
+    {
+      "goal": "cassini-nat-fib-int",
+      "module": "Unsorry.CassiniNatFibInt"
+    },
+    {
+      "goal": "catalan-r2-int-fib",
+      "module": "Unsorry.CatalanR2IntFib"
+    },
+    {
+      "goal": "catalan-r3-shift-nat-fib-int",
+      "module": "Unsorry.CatalanR3ShiftNatFibInt"
+    },
+    {
+      "goal": "cauchy-schwarz-three-var-product",
+      "module": "Unsorry.CauchySchwarzThreeVarProduct"
+    },
+    {
+      "goal": "cauchy-schwarz-two-term",
+      "module": "Unsorry.CauchySchwarzTwoTerm"
+    },
+    {
+      "goal": "consecutive-fib-product-diff-nat-int",
+      "module": "Unsorry.ConsecutiveFibProductDiffNatInt"
+    },
+    {
+      "goal": "constrained-sum-sq-ge-one-third",
+      "module": "Unsorry.ConstrainedSumSqGeOneThird"
+    },
+    {
+      "goal": "coprime-2n1-2n3",
+      "module": "Unsorry.Coprime2n12n3"
+    },
+    {
+      "goal": "coprime-3n1-4n1",
+      "module": "Unsorry.Coprime3n14n1"
+    },
+    {
+      "goal": "coprime-consec-tri",
+      "module": "Unsorry.CoprimeConsecTri"
+    },
+    {
+      "goal": "coprime-fib-sq-fib-succ",
+      "module": "Unsorry.CoprimeFibSqFibSucc"
+    },
+    {
+      "goal": "coprime-n-cube-add-one",
+      "module": "Unsorry.CoprimeNCubeAddOne"
+    },
+    {
+      "goal": "coprime-n1-nsq1",
+      "module": "Unsorry.CoprimeN1Nsq1"
+    },
+    {
+      "goal": "coprime-n2p1-n2p2",
+      "module": "Unsorry.CoprimeN2p1N2p2"
+    },
+    {
+      "goal": "coprime-ncube1-ncube2",
+      "module": "Unsorry.CoprimeNcube1Ncube2"
+    },
+    {
+      "goal": "coprime-nsq2-nsq3",
+      "module": "Unsorry.CoprimeNsq2Nsq3"
+    },
+    {
+      "goal": "coprime-twopow-sub-one-two",
+      "module": "Unsorry.CoprimeTwopowSubOneTwo"
+    },
+    {
+      "goal": "cube-mod-eighteen-mem",
+      "module": "Unsorry.CubeModEighteenMem"
+    },
+    {
+      "goal": "cube-mod-fourteen-mem",
+      "module": "Unsorry.CubeModFourteenMem"
+    },
+    {
+      "goal": "cube-mod-nineteen-mem",
+      "module": "Unsorry.CubeModNineteenMem"
+    },
+    {
+      "goal": "cube-mod-twentysix-mem",
+      "module": "Unsorry.CubeModTwentysixMem"
+    },
+    {
+      "goal": "cube-of-sum-minus-cubes-div-by-sum",
+      "module": "Unsorry.CubeOfSumMinusCubesDivBySum"
+    },
+    {
+      "goal": "cyclic-cube-sum-ge-asym-quad-cubic",
+      "module": "Unsorry.CyclicCubeSumGeAsymQuadCubic"
+    },
+    {
+      "goal": "cyclic-quad-ge-abc-times-sum",
+      "module": "Unsorry.CyclicQuadGeAbcTimesSum"
+    },
+    {
+      "goal": "cyclotomic-five-divides-pow-five-sub-one",
+      "module": "Unsorry.CyclotomicFiveDividesPowFiveSubOne"
+    },
+    {
+      "goal": "cyclotomic-three-divides-pow-six-sub-one",
+      "module": "Unsorry.CyclotomicThreeDividesPowSixSubOne"
+    },
+    {
+      "goal": "diff-tetrahedral-eq-triangular",
+      "module": "Unsorry.DiffTetrahedralEqTriangular"
+    },
+    {
+      "goal": "diff-twelfth-power-dvd-by-diff-cube",
+      "module": "Unsorry.DiffTwelfthPowerDvdByDiffCube"
+    },
+    {
+      "goal": "diff-two-cubes-zmod-seven-ne-three-four",
+      "module": "Unsorry.DiffTwoCubesZmodSevenNeThreeFour"
+    },
+    {
+      "goal": "diff-two-squares-zmod-four-ne-two",
+      "module": "Unsorry.DiffTwoSquaresZmodFourNeTwo"
+    },
+    {
+      "goal": "dvd-120-pow-seven-sub-pow-three",
+      "module": "Unsorry.Dvd120PowSevenSubPowThree"
+    },
+    {
+      "goal": "dvd-fortyeight-coprime-six-pow-four-sub-one",
+      "module": "Unsorry.DvdFortyeightCoprimeSixPowFourSubOne"
+    },
+    {
+      "goal": "dvd-sixteen-odd-pow-four-sub-one",
+      "module": "Unsorry.DvdSixteenOddPowFourSubOne"
+    },
+    {
+      "goal": "eighth-power-mod-fifteen-mem",
+      "module": "Unsorry.EighthPowerModFifteenMem"
+    },
+    {
+      "goal": "eighth-power-mod-seventeen-mem",
+      "module": "Unsorry.EighthPowerModSeventeenMem"
+    },
+    {
+      "goal": "eighth-power-mod-sixteen-mem",
+      "module": "Unsorry.EighthPowerModSixteenMem"
+    },
+    {
+      "goal": "eighth-power-mod-thirtytwo-mem",
+      "module": "Unsorry.EighthPowerModThirtytwoMem"
+    }
+  ]
+}

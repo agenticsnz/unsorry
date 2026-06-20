@@ -1,0 +1,20 @@
+𝔸5.1.goal.pow-four-add-pow-four-ge-cube-mul@2026-06-14
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜pow-four-add-pow-four-ge-cube-mul
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/pow-four-add-pow-four-ge-cube-mul.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/pow-four-add-pow-four-ge-cube-mul.lean
+  sha≜4125318acb6ee15b710c512c5181e96ef5c626e5f955d352c5b457a4e3e22173
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

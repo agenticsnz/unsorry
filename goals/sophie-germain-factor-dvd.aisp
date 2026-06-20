@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sophie-germain-factor-dvd
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sophie-germain-factor-dvd.md
+  src≜packages/unsorry-archive-0005/backlog/sophie-germain-factor-dvd.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sophie-germain-factor-dvd.lean
+  lean≜packages/unsorry-archive-0005/goals/sophie-germain-factor-dvd.lean
   sha≜c56a679b3c0b2d14d191da08e5cb73c29a2b796144a46cd042d52dd8e3f61182
   aff≜-10
 }

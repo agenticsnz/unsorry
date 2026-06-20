@@ -1,0 +1,8 @@
+𝔸5.1.run.sum-triple-product-eq.mac-158f.20260617t002113984289z-908bebf5@2026-06-17
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260617t002113984289z-908bebf5; goal≜sum-triple-product-eq; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-sum-induction}
+⟦Γ:Goal⟧{goal≜sum-triple-product-eq}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-17T00:21:13Z}
+⟦Σ:Artifact⟧{sha≜ff7997363447c30a9e9c008348e72300eef2f62f75abf07e7b1f010d31157fe4}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

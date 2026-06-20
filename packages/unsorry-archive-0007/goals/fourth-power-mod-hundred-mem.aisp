@@ -1,0 +1,20 @@
+𝔸5.1.goal.fourth-power-mod-hundred-mem@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜fourth-power-mod-hundred-mem
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/fourth-power-mod-hundred-mem.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/fourth-power-mod-hundred-mem.lean
+  sha≜623c5cd1e5323f147619ca3d5f6c75f5db61fb7bc7e97917c3afc39565214d56
+  aff≜-10
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -4,7 +4,7 @@ Implements: [ADR-046](../ADR-046-Gate-A-Namespace-Cache-Volume.md) · Status: Li
 
 ## Behaviour
 
-On Namespace runner profiles, Gate A's three Lean jobs mount a persistent cache volume at
+On Namespace runner profiles, Gate A's Lean verifier jobs mount a persistent cache volume at
 `${GITHUB_WORKSPACE}/.lake`, so mathlib oleans and the local `UnsorryLibrary`/`UnsorryGoals` build
 survive across jobs and runs. The Namespace mount is disabled completely on non-Namespace profiles.
 When the Namespace volume reports a cache hit, `lean-action`'s GitHub mathlib cache is disabled
@@ -16,18 +16,19 @@ Gate A also sets `MATHLIB_CACHE_DIR=${{ github.workspace }}/.lake/mathlib-cache`
 
 ## Implementation (`.github/workflows/gate-a.yml`)
 
-- **`detect.volume` flag.** The `profile` step computes the runner profile name, then sets
-  `volume=true` iff the name matches `namespace-*`, else `volume=false`; exposed as the
-  `detect.volume` job output.
+- **Per-job volume flags.** The `profiles` step emits role-specific runner labels, then sets
+  `<job>_volume=true` iff the label matches `namespace-*`, else `false`; exposed as
+  `detect` job outputs such as `prepare_volume`, `audit_volume`, `replay_volume`, and
+  `archive_volume`.
 - **Mathlib archive cache location.** The workflow-level environment sets
   `MATHLIB_CACHE_DIR: ${{ github.workspace }}/.lake/mathlib-cache`. This makes `lake exe cache get`
   reuse cached `.ltar` archives from the same mounted tree instead of downloading them into the
   runner home directory.
-- **Mount step** (in `gate-a-prepare`, `gate-a-audit`, `gate-a-replay`, after checkout, before the
-  build):
+- **Mount step** (in `gate-a-prepare`, `gate-a-audit`, `gate-a-replay`, and `gate-a-archive`, after
+  checkout, before the build):
   ```yaml
   - name: Namespace .lake cache volume
-    if: needs.detect.outputs.volume == 'true'
+    if: needs.detect.outputs.prepare_volume == 'true'
     id: ns_lake_cache
     continue-on-error: true
     uses: namespacelabs/nscloud-cache-action@15799a6b54e5765f85b2aac25b3f0df43ed571c0 # v1.4.3
@@ -41,7 +42,7 @@ Gate A also sets `MATHLIB_CACHE_DIR=${{ github.workspace }}/.lake/mathlib-cache`
 - **GitHub-cache fallback remains live.** The ADR-045 `.lake/build` `actions/cache` step still runs
   on all profiles because it is keyed to the exact commit sha and is the safe same-run handoff from
   prepare to audit/replay. The build `lean-action` step uses
-  `use-github-cache: ${{ needs.detect.outputs.volume != 'true' || steps.ns_lake_cache.outputs.cache-hit != 'true' }}`,
+  `use-github-cache: ${{ needs.detect.outputs.prepare_volume != 'true' || steps.ns_lake_cache.outputs.cache-hit != 'true' }}`,
   so GitHub mathlib cache is skipped only for a known Namespace volume hit.
 - **Build-skip interaction (ADR-045).** With the `.lake/build` cache step still active on Namespace,
   audit/replay can see `steps.lake_build_cache.outputs.cache-hit == 'true'` for the exact commit sha
@@ -65,13 +66,13 @@ gate (false negative), never a false PASS.
 
 ## Operator note
 
-Attach a cache volume (~20 GB is ample) to `namespace-profile-unsorry-1` and
-`namespace-profile-unsorry-2` so `${GITHUB_WORKSPACE}/.lake` persists. No code change is needed to
-adopt or to revert.
+Attach a cache volume (~20 GB is ample) to `namespace-profile-unsorry-prepare`, `namespace-profile-unsorry-audit`, and
+`namespace-profile-unsorry-replay` so `${GITHUB_WORKSPACE}/.lake` persists. No code change is needed to adopt or to
+revert.
 
 ## Acceptance criteria
 
-- `detect.volume` is `true` for `namespace-*` profiles and `false` otherwise.
+- Per-job volume flags are `true` for `namespace-*` profiles and `false` otherwise.
 - `MATHLIB_CACHE_DIR` points under `${{ github.workspace }}/.lake` so the mounted volume contains
   both unpacked oleans and downloaded mathlib `.ltar` archives.
 - On a Namespace profile, the mount step runs and `use-github-cache` resolves to `false` only when
@@ -81,4 +82,4 @@ adopt or to revert.
 - The `.lake/build` cache step runs on Namespace too, so audit/replay can restore prepare's
   commit-exact build and skip duplicate library builds.
 - A cold volume run completes within the 45-min prepare/audit and 120-min replay timeouts.
-- `gate-a.yml` parses; the three jobs each contain exactly one `nscloud-cache-action` step.
+- `gate-a.yml` parses; the four verifier jobs each contain exactly one `nscloud-cache-action` step.

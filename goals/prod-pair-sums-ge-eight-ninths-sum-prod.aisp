@@ -1,0 +1,20 @@
+𝔸5.1.goal.prod-pair-sums-ge-eight-ninths-sum-prod@2026-06-17
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜prod-pair-sums-ge-eight-ninths-sum-prod
+  phase≜prove
+  status≜archived
+  difficulty≜4
+}
+⟦Σ:Source⟧{
+  src≜packages/unsorry-archive-0014/backlog/prod-pair-sums-ge-eight-ninths-sum-prod.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜packages/unsorry-archive-0014/goals/prod-pair-sums-ge-eight-ninths-sum-prod.lean
+  sha≜1e94fa89cc4650ab33a99bf0bd79f57ae56b72325260073157b067cf23317dce
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

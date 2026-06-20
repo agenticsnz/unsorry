@@ -1,0 +1,8 @@
+𝔸5.1.lemma.ab7f9534e03b@2026-06-17
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜ab7f9534e03b6f11bdadba6551777e56f588a49e40d2bc482a5a9e965b0fad8b; goal≜sum-range-cube-diff-eq-cube; name≜sum_range_cube_diff_eq_cube}
+⟦Σ:Source⟧{src≜goals/sum-range-cube-diff-eq-cube.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜claude; model≜template-sum-induction; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

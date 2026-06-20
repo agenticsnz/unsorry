@@ -1,0 +1,8 @@
+𝔸5.1.run.sym-grouped-deg-three-ge-six-abc.mac-158f.20260617t155911629807z-878c084b@2026-06-17
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260617t155911629807z-878c084b; goal≜sym-grouped-deg-three-ge-six-abc; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-nlinarith}
+⟦Γ:Goal⟧{goal≜sym-grouped-deg-three-ge-six-abc}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-17T15:59:11Z}
+⟦Σ:Artifact⟧{sha≜e929eaf63d8ff654912d3e7bdcc81ff1a8a8e3d9034d86ce1dbce709c56e2af3}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

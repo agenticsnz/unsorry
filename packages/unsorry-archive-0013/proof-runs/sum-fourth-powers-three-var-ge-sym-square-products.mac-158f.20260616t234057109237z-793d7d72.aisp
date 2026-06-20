@@ -1,0 +1,8 @@
+𝔸5.1.run.sum-fourth-powers-three-var-ge-sym-square-products.mac-158f.20260616t234057109237z-793d7d72@2026-06-16
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260616t234057109237z-793d7d72; goal≜sum-fourth-powers-three-var-ge-sym-square-products; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-nlinarith}
+⟦Γ:Goal⟧{goal≜sum-fourth-powers-three-var-ge-sym-square-products}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-16T23:40:57Z}
+⟦Σ:Artifact⟧{sha≜39aab2d1d190b17200e1d10709859a4bb23c6ca593df8045559b48b4e5c95d80}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜alt-sum-range-two-k-add-one-eq-signed-n
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/alt-sum-range-two-k-add-one-eq-signed-n.md
+  src≜packages/unsorry-archive-0005/backlog/alt-sum-range-two-k-add-one-eq-signed-n.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/alt-sum-range-two-k-add-one-eq-signed-n.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0005/goals/alt-sum-range-two-k-add-one-eq-signed-n.lean
+  sha≜0776f91b085197873466154b8552303d025e66cba0bceee3ac3c343aa2faecab
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -1,0 +1,20 @@
+𝔸5.1.goal.gpow-sum-four-pow-twenty@2026-06-19
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gpow-sum-four-pow-twenty
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/gpow-sum-four-pow-twenty.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/gpow-sum-four-pow-twenty.lean
+  sha≜0667785c130de2f80431f7233434b53c8ac7785aca847e09af8469e250b1eb0a
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

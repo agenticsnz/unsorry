@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-sq-add-one-mul-two-pow-closed
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-sq-add-one-mul-two-pow-closed.md
+  src≜packages/unsorry-archive-0013/backlog/sum-range-sq-add-one-mul-two-pow-closed.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-sq-add-one-mul-two-pow-closed.lean
-  sha≜∅
-  aff≜-10
+  lean≜packages/unsorry-archive-0013/goals/sum-range-sq-add-one-mul-two-pow-closed.lean
+  sha≜8004635211c3628a0ebf34a75fa07a83331a6c25f2762c6be29753e6d5a2dc55
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
