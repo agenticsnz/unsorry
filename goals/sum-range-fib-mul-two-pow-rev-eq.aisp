@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-fib-mul-two-pow-rev-eq
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-fib-mul-two-pow-rev-eq.md
+  src≜packages/unsorry-archive-0035/backlog/sum-range-fib-mul-two-pow-rev-eq.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-fib-mul-two-pow-rev-eq.lean
+  lean≜packages/unsorry-archive-0035/goals/sum-range-fib-mul-two-pow-rev-eq.lean
   sha≜e46281c3c608de98958bc24956a4bda3eac93dab9254ca5248c44b3363d81355
   aff≜-10
 }

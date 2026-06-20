@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-fib-prod-shift-even-nat
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-fib-prod-shift-even-nat.md
+  src≜packages/unsorry-archive-0035/backlog/sum-range-fib-prod-shift-even-nat.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-fib-prod-shift-even-nat.lean
+  lean≜packages/unsorry-archive-0035/goals/sum-range-fib-prod-shift-even-nat.lean
   sha≜068dd2e79644a3483787ec810ba7f73e1c89b4bfd04ef7f9986142df0dd0f412
   aff≜-10
 }
