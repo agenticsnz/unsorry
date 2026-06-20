@@ -12,6 +12,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 `python3 -m tools.changelog --preview`; a release folds them in here with
 `python3 -m tools.changelog --release <version> <date>`. -->
 
+## [1.27.0] - 2026-06-20
+
+### Added
+
+- Added a per-contributor goals-in-flight fairness cap to the submission governor (`UNSORRY_MAX_GOALS_IN_FLIGHT`, default 25). The earlier per-author cap (#2679) limited *open PRs* but not *queued branches*, so one fleet could prove-and-queue the entire goal pool (observed: ~2800 queued `mac-158f` branches), making every other contributor's prover skip every goal as "already has a queued branch" — they could never find work or earn credit. The governor now also pauses claiming new goals once an agent already holds this many goals in flight (its own queued-but-unmerged prove branches), so a fleet drains its queue before grabbing more and the pool stays shared. Cooperative (enforced in the agent, like the rest of the governor) and fail-open (an unreadable count leaves it unenforced). New `count_agent_inflight` helper; the cap logic lives in the pure, unit-tested `submission_governor_reason`. Pairs with the per-author open-PR cap for owner-level coverage.
+- Added **dispatch credit** to the contributor leaderboard (`tools/leaderboard`): the contributor who opened/landed another contributor's proof PR now earns **half that proof's difficulty**, added to their Score and shown in a new "Dispatch (½-diff)" column. Self-dispatch (opening your own PR) earns nothing, so a high-volume prover cannot also farm dispatch points. This credits the real plumbing labor that was previously invisible — contributors who keep the swarm's PRs flowing without winning the goals themselves (e.g. on the live board, perttu's score ~doubles from dispatch they'd already done, while pure self-dispatchers are unchanged). Proof difficulty and dispatch credit are reported as separate columns; `score = difficulty*100 + credited_proofs*25 + dispatch_difficulty*100`. Rank still uses credited verified proofs.
+
+### Changed
+
+- Reworked leaderboard dispatch credit to reflect that dispatchers are load-bearing infrastructure (nothing merges without them): each proof PR you open/land **for another contributor** now earns a **flat 0.9 points** (≈ a full proof), replacing the earlier half-the-difficulty model; self-dispatch still earns nothing, so a high-volume prover cannot farm it. The field is renamed `dispatch_difficulty` → `dispatch_points` across the generator and UI JSON. Both surfaces now reflect it consistently: `docs/leaderboard.md` **ranks by Score** (difficulty + dispatch) instead of raw proof count — matching `docs/leaderboard.html`, which already sorts by score — and the browser page gains an explicit **"dispatch" badge** so the contribution is visible, not just folded into the score. `score = difficulty_points*100 + credited_proofs*25 + dispatch_points*100`.
+
+### Fixed
+
+- The queued-proof dispatcher now drains by a **per-solver round-robin** instead of pure lexical-by-goal order (ADR-075 / SPEC-075-A), so one high-volume contributor can no longer starve the rest. `dispatch_queue` previously walked `git for-each-ref` (refs sorted by goal name) under the governor, so a contributor whose ~1,885 machine-named `g…` goals sorted first monopolised every dispatch slot while a contributor whose goals sorted late (e.g. @ruvnet's 135 re-routed proofs, clustered in `s…`, parked at queue ranks ~1850–2002 of 2003) never drained. `fair_dispatch_order` now groups queued branches by solver — resolved from the authoritative queue board (`docs/queue.json`, ADR-066, which reads `solver≜` provenance rather than the operator-authored re-route commit) with agent-id-token and lexical fallbacks — and emits one branch per active solver per round (max-min fairness). Soundness is unchanged: dedup (ADR-064/071), the submission governor (ADR-058) and Gate A's from-scratch re-verification still decide what merges; the ordering is never trust-bearing. Revert to the old lexical order with `UNSORRY_FAIR_DISPATCH=0`.
+
 ## [1.26.0] - 2026-06-20
 
 ### Added
