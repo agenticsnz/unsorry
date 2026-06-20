@@ -1,0 +1,20 @@
+𝔸5.1.goal.gpow-diff-two-pow-three@2026-06-19
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gpow-diff-two-pow-three
+  phase≜prove
+  status≜archived
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜packages/unsorry-archive-0028/backlog/gpow-diff-two-pow-three.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜packages/unsorry-archive-0028/goals/gpow-diff-two-pow-three.lean
+  sha≜612faee53dbb0a69b34bd02e2461c481e43409e894a997a644240624ae7a1b96
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

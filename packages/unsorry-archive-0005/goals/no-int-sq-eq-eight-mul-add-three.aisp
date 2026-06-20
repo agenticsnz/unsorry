@@ -1,0 +1,20 @@
+𝔸5.1.goal.no-int-sq-eq-eight-mul-add-three@2026-06-14
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜no-int-sq-eq-eight-mul-add-three
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/no-int-sq-eq-eight-mul-add-three.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/no-int-sq-eq-eight-mul-add-three.lean
+  sha≜db78f492da91dae62422c70003bb0776b2f23a247c8ff27f6d85dd1ee224d8b9
+  aff≜-19
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

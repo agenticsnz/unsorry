@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜fourth-power-mod-fortyone-mem
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/fourth-power-mod-fortyone-mem.md
+  src≜packages/unsorry-archive-0020/backlog/fourth-power-mod-fortyone-mem.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/fourth-power-mod-fortyone-mem.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0020/goals/fourth-power-mod-fortyone-mem.lean
+  sha≜d484af6c1f91905ec2d50b941d4f53e96bc2690029eb372fc4dc76fc82fba752
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

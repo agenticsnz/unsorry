@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜realization-determines-counts
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜5
 }
 ⟦Σ:Source⟧{
-  src≜backlog/realization-determines-counts.md
+  src≜packages/unsorry-archive-0008/backlog/realization-determines-counts.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/realization-determines-counts.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0008/goals/realization-determines-counts.lean
+  sha≜7112a4467b89f048e6dcb0aab1ebdbd8e079fe2e4eb9b33552a6926af8bc012f
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sumsq-ge-ab-plus-bc
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sumsq-ge-ab-plus-bc.md
+  src≜packages/unsorry-archive-0016/backlog/sumsq-ge-ab-plus-bc.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sumsq-ge-ab-plus-bc.lean
-  sha≜∅
-  aff≜-10
+  lean≜packages/unsorry-archive-0016/goals/sumsq-ge-ab-plus-bc.lean
+  sha≜c86f56cfa3c6fae17a3b38fa57257a686f0b858b082d4f8a3d5cd32aa9a6f560
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

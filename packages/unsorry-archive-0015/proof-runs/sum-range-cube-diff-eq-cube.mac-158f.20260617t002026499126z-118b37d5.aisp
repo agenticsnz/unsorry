@@ -1,0 +1,8 @@
+𝔸5.1.run.sum-range-cube-diff-eq-cube.mac-158f.20260617t002026499126z-118b37d5@2026-06-17
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260617t002026499126z-118b37d5; goal≜sum-range-cube-diff-eq-cube; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-sum-induction}
+⟦Γ:Goal⟧{goal≜sum-range-cube-diff-eq-cube}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-17T00:20:26Z}
+⟦Σ:Artifact⟧{sha≜ab7f9534e03b6f11bdadba6551777e56f588a49e40d2bc482a5a9e965b0fad8b}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

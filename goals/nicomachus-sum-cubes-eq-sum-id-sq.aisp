@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜nicomachus-sum-cubes-eq-sum-id-sq
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/nicomachus-sum-cubes-eq-sum-id-sq.md
+  src≜packages/unsorry-archive-0033/backlog/nicomachus-sum-cubes-eq-sum-id-sq.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/nicomachus-sum-cubes-eq-sum-id-sq.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0033/goals/nicomachus-sum-cubes-eq-sum-id-sq.lean
+  sha≜98eb83c9adfdf3f9d0cc953c84dd2a2005e297dc52da0f5d73ca091140857cc4
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

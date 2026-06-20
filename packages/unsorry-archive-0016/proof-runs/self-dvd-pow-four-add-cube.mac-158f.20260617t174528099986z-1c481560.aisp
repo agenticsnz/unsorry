@@ -1,0 +1,8 @@
+𝔸5.1.run.self-dvd-pow-four-add-cube.mac-158f.20260617t174528099986z-1c481560@2026-06-17
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260617t174528099986z-1c481560; goal≜self-dvd-pow-four-add-cube; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-dvd-cofactor}
+⟦Γ:Goal⟧{goal≜self-dvd-pow-four-add-cube}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-17T17:45:28Z}
+⟦Σ:Artifact⟧{sha≜90e8d9ea6b452fe3fa964b901efe74eaba639d1dfd31b30e62cc7ddd278da31c}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

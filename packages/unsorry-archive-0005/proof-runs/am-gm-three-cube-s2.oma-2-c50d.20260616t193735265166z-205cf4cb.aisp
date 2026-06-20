@@ -1,0 +1,8 @@
+𝔸5.1.run.am-gm-three-cube-s2.oma-2-c50d.20260616t193735265166z-205cf4cb@2026-06-16
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260616t193735265166z-205cf4cb; goal≜am-gm-three-cube-s2; agent≜oma-2-c50d; outcome≜proved}
+⟦Π:Provenance⟧{solver≜perttu; provider≜claude; model≜opus; effort≜high}
+⟦Γ:Goal⟧{goal≜am-gm-three-cube-s2}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜1365; ended≜2026-06-16T19:37:35Z; lessons≜3}
+⟦Σ:Artifact⟧{sha≜c957f8003e38bdffac03df79f8c1fbc52f581987a097752ae5479149a327a534}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

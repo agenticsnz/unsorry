@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-k-add-one-mul-two-pow
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-k-add-one-mul-two-pow.md
+  src≜packages/unsorry-archive-0013/backlog/sum-k-add-one-mul-two-pow.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-k-add-one-mul-two-pow.lean
-  sha≜∅
-  aff≜-10
+  lean≜packages/unsorry-archive-0013/goals/sum-k-add-one-mul-two-pow.lean
+  sha≜1392c7bb2a4e24c7a4c4c22dacfbff2c2bc38b6d12d7633efdc24b0a139f9d0d
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

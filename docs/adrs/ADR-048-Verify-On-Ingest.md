@@ -95,13 +95,12 @@ defense-in-depth.
   (re-check only the pushed diff, base = `github.event.before`), with a **scheduled daily** full replay
   + audit + archive re-validation as the defense-in-depth backstop
   (`.github/workflows/gate-a-full-replay.yml`). Routine Gate A (proof PRs **and** push to `main`) routes
-  to the 4 GB `namespace-profile-unsorry-1`; only an olean-invalidating change
-  (`forces_full_replay`: toolchain/lakefile/manifest) forces a FULL replay on the 16 GB
-  `namespace-profile-unsorry-2`. `REPLAY_CHUNK_SIZE` is overridable via `UNSORRY_REPLAY_CHUNK` so a full
-  replay fits a constrained routine runner with a small chunk — the backstop uses `6`. The change is additive and zero-gap (the
-  backstop ships with the incremental-push change) and does not hard-require `unsorry-2`: if it is
-  retired, forced full-replays move to `unsorry-1` with the small-chunk path. This realises the
-  downscale + speed-up.
+  by job role: prepare/archive to `namespace-profile-unsorry-prepare`, axiom audit to `namespace-profile-unsorry-audit`, and kernel replay
+  to `namespace-profile-unsorry-replay`. An olean-invalidating change (`forces_full_replay`: toolchain/lakefile/manifest)
+  still forces a FULL replay, but it runs in the replay lane rather than selecting a separate workflow
+  profile. `REPLAY_CHUNK_SIZE` is overridable via `UNSORRY_REPLAY_CHUNK` so a full replay can be made
+  to fit a constrained runner with a small chunk — the backstop uses `6`. This realises the downscale +
+  speed-up while letting operators adjust each bottleneck independently.
 
 ## Soundness
 

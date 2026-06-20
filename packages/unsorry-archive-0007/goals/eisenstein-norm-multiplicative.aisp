@@ -1,0 +1,20 @@
+𝔸5.1.goal.eisenstein-norm-multiplicative@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜eisenstein-norm-multiplicative
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/eisenstein-norm-multiplicative.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/eisenstein-norm-multiplicative.lean
+  sha≜f53816796dd72c5a3b7dbe2179a9555b6c7dd78a4658ce7bf4dc9532341904b3
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

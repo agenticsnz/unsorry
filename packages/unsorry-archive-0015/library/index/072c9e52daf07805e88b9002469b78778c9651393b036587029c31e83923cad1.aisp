@@ -1,0 +1,8 @@
+𝔸5.1.lemma.072c9e52daf0@2026-06-17
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜072c9e52daf07805e88b9002469b78778c9651393b036587029c31e83923cad1; goal≜sum-quintic-gnomon-eq-fifth-power; name≜sum_quintic_gnomon_eq_fifth_power}
+⟦Σ:Source⟧{src≜goals/sum-quintic-gnomon-eq-fifth-power.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜claude; model≜template-sum-induction; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜dvd-330-pow-twentythree-sub-pow-three
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/dvd-330-pow-twentythree-sub-pow-three.md
+  src≜packages/unsorry-archive-0014/backlog/dvd-330-pow-twentythree-sub-pow-three.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/dvd-330-pow-twentythree-sub-pow-three.lean
-  sha≜∅
-  aff≜-20
+  lean≜packages/unsorry-archive-0014/goals/dvd-330-pow-twentythree-sub-pow-three.lean
+  sha≜439f759fd6452cb4876b7963ac5790e46e2e273f6c2d58c5917981c8bb98ab0e
+  aff≜-19
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
