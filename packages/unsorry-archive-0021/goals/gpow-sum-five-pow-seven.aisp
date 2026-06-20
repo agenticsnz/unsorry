@@ -1,0 +1,20 @@
+𝔸5.1.goal.gpow-sum-five-pow-seven@2026-06-19
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gpow-sum-five-pow-seven
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/gpow-sum-five-pow-seven.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/gpow-sum-five-pow-seven.lean
+  sha≜af1979814869391541e3c02f87c4e6a0ccca9dd95e3b06da75164fc20d6f68bd
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

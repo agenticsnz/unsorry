@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-choose-mul-k-mul-comp-eq
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜4
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-choose-mul-k-mul-comp-eq.md
+  src≜packages/unsorry-archive-0035/backlog/sum-range-choose-mul-k-mul-comp-eq.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-choose-mul-k-mul-comp-eq.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0035/goals/sum-range-choose-mul-k-mul-comp-eq.lean
+  sha≜817ef928e6491d782b43e225ae25efa228cc8fe64eda096b22eada432792ddc0
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

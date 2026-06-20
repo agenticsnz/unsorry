@@ -1,0 +1,8 @@
+𝔸5.1.run.gpow-sum-four-pow-five.mac-158f.20260619t031832917108z-1e204c97@2026-06-19
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260619t031832917108z-1e204c97; goal≜gpow-sum-four-pow-five; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜cgbarlow; provider≜claude; model≜template-ring-cofactor}
+⟦Γ:Goal⟧{goal≜gpow-sum-four-pow-five}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-19T03:18:32Z}
+⟦Σ:Artifact⟧{sha≜1f2cbcdeadee95bf3ff7ef168db1262bd06eeb4d70b7776fde7a9c3a33b4ec0f}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

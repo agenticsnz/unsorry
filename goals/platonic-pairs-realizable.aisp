@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜platonic-pairs-realizable
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/platonic-pairs-realizable.md
+  src≜packages/unsorry-archive-0033/backlog/platonic-pairs-realizable.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/platonic-pairs-realizable.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0033/goals/platonic-pairs-realizable.lean
+  sha≜00803792473b22ca1441a17aeec29fac234492f25918197c9cf747b933074cb0
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

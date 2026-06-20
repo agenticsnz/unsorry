@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-heptagonal-numbers-closed-form
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-heptagonal-numbers-closed-form.md
+  src≜packages/unsorry-archive-0034/backlog/sum-heptagonal-numbers-closed-form.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-heptagonal-numbers-closed-form.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0034/goals/sum-heptagonal-numbers-closed-form.lean
+  sha≜188196d8f01b6031ce557b134007e930630f2197a702e5e0c05e1028091dc231
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

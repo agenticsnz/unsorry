@@ -1,0 +1,20 @@
+𝔸5.1.goal.geud-30-pow-five-sub-self@2026-06-19
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜geud-30-pow-five-sub-self
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/geud-30-pow-five-sub-self.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/geud-30-pow-five-sub-self.lean
+  sha≜5fe9b0646ead543d5b8ad403959fbb708c612123f6c243d0f5e3337d22add630
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
