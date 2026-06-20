@@ -69,3 +69,31 @@ marker, SPEC-007-A), and that the refresh requires the Actions token to be allow
 |--------|----------|------|
 | Proposed | unsorry maintainers | 2026-06-14 |
 | Accepted | unsorry maintainers | 2026-06-14 |
+
+## Update — 2026-06-20: per-push → periodic cadence for heavier refreshers (#426)
+
+This ADR established the post-merge model with a **push-to-`main`** trigger. That
+trigger has a failure mode under the swarm's sustained merge cadence: GitHub keeps
+at most one in-progress + one pending run per concurrency group, so each new push
+cancels the older *pending* run. When refresh runs spend time queued waiting for a
+hosted runner, they are cancelled before they execute, and the artifact goes stale
+for long stretches. The lighter refreshers (targets board, proofs visualisation)
+usually win the race; the **leaderboard** — the heaviest, and heavier still after
+it began scanning the full `prove(…)` commit history for the merge-time timeline —
+was starved (#426).
+
+**Refinement (not a reversal).** A refresher that is being starved this way moves
+from the `push:` trigger to a fixed **`schedule:`** cadence (the leaderboard uses
+`*/10`), keeping `workflow_dispatch` for an on-demand/forced refresh. Everything
+downstream of the trigger is unchanged: `--check` → regenerate → retry-rebase
+`[skip ci]` push. This is sound because the artifacts are a **pure function** of
+`goals/` + `library/index` + `proof-runs` (and, for the leaderboard, the commit
+history already on `main`), so a clock tick reproduces exactly what a per-push run
+would have produced. The cost is bounded staleness (≈ one interval, more if GitHub
+cron lags — it is best-effort), which the original ADR already accepted as
+acceptable for these human-facing artifacts. Refreshers that comfortably win the
+race keep the `push:` trigger for lower latency.
+
+Applied so far to `.github/workflows/leaderboard.yml`. `targets-board.yml` and
+`proofs-visualisation.yml` retain the push trigger unless they exhibit the same
+starvation.

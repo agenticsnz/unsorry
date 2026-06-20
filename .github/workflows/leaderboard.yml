@@ -7,10 +7,14 @@
 # Regenerating it *in every PR* (the original #401 approach) reintroduced exactly
 # the churn #415 removed for the board: every merged proof refreshes the
 # leaderboard, so two concurrent goal PRs conflict on docs/leaderboard.*. So the
-# leaderboard moves to the post-merge model: on every push to `main` that could
-# change the underlying statistics it runs `--check`, and on drift it regenerates
-# and commits the artifacts straight back to `main` as a single docs-only
-# `[skip ci]` commit (the standard generated-artifact exception).
+# leaderboard moves to the post-merge model: on a fixed ~10-minute schedule it
+# runs `--check`, and on drift it regenerates and commits the artifacts straight
+# back to `main` as a single docs-only `[skip ci]` commit (the standard
+# generated-artifact exception). It originally triggered per-push, but under the
+# swarm's merge cadence those runs were starved in the runner queue (#426) and
+# almost never reached the push step, so it moved to a periodic cadence — the
+# refresh is a pure function of goals + library/index + proof-runs, so a clock
+# tick reproduces exactly what a per-push run would have produced.
 #
 # The hand-authored docs/leaderboard.html browser surface fetches these generated
 # JSON files at view time, so it is always consistent without being regenerated.
@@ -27,18 +31,22 @@
 name: leaderboard
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "goals/**"
-      - "library/index/**"
-      - "proof-runs/**"
-      - "docs/metrics/contributor-aliases.json"
-      - "tools/leaderboard/**"
-      - ".github/workflows/leaderboard.yml"
+  # Periodic refresh (#426 contention fix). The per-push trigger raced the swarm's
+  # proof-merge firehose: with one in-progress + one pending run per concurrency
+  # group, each newer push cancelled the older *pending* run, so refresh runs were
+  # cancelled while still queued for a runner and rarely executed — the board went
+  # stale for long stretches. A fixed cadence means one run per interval with
+  # nothing competing: it gets a runner and the retry-rebase push below lands it.
+  # Trade-off: up to ~10 min staleness (GitHub cron is best-effort and may lag),
+  # acceptable for a human-facing board; the page degrades gracefully meanwhile.
+  # workflow_dispatch stays for an on-demand / forced refresh.
+  schedule:
+    - cron: "*/10 * * * *"
   workflow_dispatch:
 
-# Coalesce bursts of merges into one refresh; never cancel a push mid-commit.
+# One refresh at a time; never cancel a run mid-commit. With a single scheduled
+# run per interval this rarely engages, but it still serialises a manual dispatch
+# that overlaps a scheduled tick.
 concurrency:
   group: leaderboard-refresh
   cancel-in-progress: false
