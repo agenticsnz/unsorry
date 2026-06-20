@@ -1,17 +1,20 @@
-# ADR-080: Problem Admission and the Skeleton Intake Pipeline
+# ADR-081: Problem Admission and the Skeleton Intake Pipeline
 
 | Field | Value |
 |-------|-------|
-| **Decision ID** | ADR-080 |
+| **Decision ID** | ADR-081 |
 | **Initiative** | unsorry — turning an admissible problem into pipeline-consumable work |
-| **Proposed By** | unsorry maintainers; operational companion to [ADR-079](ADR-079-Platform-Generalisation-And-Domain-Neutrality.md) and [ADR-078](ADR-078-Structural-Package-Graph-Non-Triviality-And-Scoring.md) |
+| **Proposed By** | unsorry maintainers; operational companion to [ADR-080](ADR-080-Platform-Generalisation-And-Domain-Neutrality.md) and [ADR-078](ADR-078-Sponsor-Registered-Targets-And-Obligation-Discharge-Credit.md) |
 | **Date** | 2026-06-20 |
 | **Status** | Draft |
 
-> **DRAFT for discussion.** ADR-079 says *which* problems are admissible (policy);
+> **DRAFT for discussion.** ADR-080 says *which* problems are admissible (policy);
 > this says *how* an admissible problem becomes work the swarm can consume
-> (mechanism). Together with ADR-078 (how contribution is scored) they are a set:
-> **078 = what counts · 079 = what's admissible · 080 = how it's consumed.**
+> (mechanism). It is part of a four-ADR set reconciled with Leo's (#3232/#3246):
+> **078 (Leo) = how contribution earns credit · 079 (Leo) = deterministic sympy
+> solver · 080 = what's admissible (gating invariant) · 081 = how it's consumed
+> (this).** `skeleton-validate` (SPEC-081-A) is the registration-time validator
+> ADR-078 asks for; the credit function stays ADR-078's.
 
 ## Context
 
@@ -30,13 +33,13 @@ The fixed end of the funnel (what the swarm already eats) is concrete. An open g
   the pinned context.
 - A **pinned verifier context** — `lean-toolchain` + `lake-manifest.json` (mathlib
   rev) — so Gate A re-verifies every contribution from scratch.
-- Dependency edges via `decompositions/<parent>.<agent>.aisp` feed ADR-078 scoring.
+- Dependency edges via `decompositions/<parent>.<agent>.aisp` feed ADR-078's credited-obligation accounting.
 
 Everything upstream of that is "scoping." This ADR specifies that upstream.
 
 ## WH(Y) Decision Statement
 
-**In the context of** a domain-neutral engine (ADR-079) that consumes only open Lean
+**In the context of** a domain-neutral engine (ADR-080) that consumes only open Lean
 goals, with no defined way to turn a real target into them,
 **facing** the choice between leaving intake ad-hoc and defining an explicit intake
 contract + validator,
@@ -47,19 +50,19 @@ dependency edges, (3) the emitted **goal records** for each open obligation, and
 a resolvable **pinned verifier context**; validated by a `skeleton-validate` check
 before any obligation enters the queue,
 **and neglected** ad-hoc intake (unrepeatable, lets ill-formed or unverifiable
-targets in, and undermines ADR-078 scoring because edges may be unsound),
+targets in, and undermines ADR-078's credit accounting because edges may be unsound),
 **to achieve** a repeatable on-ramp a mathematician or the Lion team can follow, that
 guarantees every queued obligation is individually checkable and every package is a
-real architected tree (so ADR-078 weight is meaningful and ADR-079's gating
+real architected tree (so ADR-078's credited-obligation accounting is meaningful and ADR-080's gating
 invariant is enforced at intake),
 **accepting that** steps 1–2 (formalise + architect) are human/curation work — the
 least automatable part — and that the supplier, not the swarm, authors the skeleton.
 
-## Admissibility test (ADR-079, made checkable)
+## Admissibility test (ADR-080, made checkable)
 
 A candidate problem is admissible **iff** all three hold:
 1. **Formally statable** with a **kernel-grade verifier** (Lean preferred). The
-   verifier *is* the gate (ADR-079 clause 1).
+   verifier *is* the gate (ADR-080 clause 1).
 2. **Decomposable** into independent, claimable obligations.
 3. Each obligation is **checkable in isolation** (so each merge re-verifies).
 
@@ -96,7 +99,7 @@ A submitted package is admitted only if it passes, deterministically:
 - **Verifier context resolves** — toolchain + library pins are valid and Gate A can
   build the package shell.
 - **Curated-target provenance present** — the package is attributed to a vetted
-  supplier (ADR-079 governance / ADR-054 tiers), not self-minted, so ADR-078 scoring
+  supplier (ADR-080 governance / ADR-054 tiers), not self-minted, so ADR-078's credit accounting
   is farm-proof.
 
 A package failing any check is rejected at intake — never partially queued.
@@ -104,8 +107,8 @@ A package failing any check is rejected at intake — never partially queued.
 ## Consequences
 - A repeatable, documented on-ramp (a checklist suppliers follow) replaces tribal
   knowledge; reuses the existing goal/decomposition/Gate-A machinery end-to-end.
-- Enforces ADR-079's gating invariant **at the door** (no verifier context / not
-  kernel-checkable ⇒ not admitted) and makes ADR-078 scoring trustworthy (edges
+- Enforces ADR-080's gating invariant **at the door** (no verifier context / not
+  kernel-checkable ⇒ not admitted) and makes ADR-078's credited-obligation accounting trustworthy (edges
   validated, provenance curated).
 - Pairs with the **Lion pilot**: Lion is the first package to run through
   `skeleton-validate`, which will surface what the contract is missing for *software*

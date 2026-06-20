@@ -1,10 +1,10 @@
-# ADR-079: Platform Generalisation and the Self-Verification Gating Invariant
+# ADR-080: Platform Generalisation and the Self-Verification Gating Invariant
 
 | Field | Value |
 |-------|-------|
-| **Decision ID** | ADR-079 |
+| **Decision ID** | ADR-080 |
 | **Initiative** | unsorry — from a Lean-maths swarm to a general verifiable-problem engine |
-| **Proposed By** | unsorry maintainers (prompted by Chris Barlow's alignment request); companion to [ADR-078](ADR-078-Structural-Package-Graph-Non-Triviality-And-Scoring.md) |
+| **Proposed By** | unsorry maintainers (prompted by Chris Barlow's alignment request); companion to [ADR-078](ADR-078-Sponsor-Registered-Targets-And-Obligation-Discharge-Credit.md) |
 | **Date** | 2026-06-20 |
 | **Status** | Draft |
 
@@ -103,8 +103,14 @@ maintainer responsibility.
   verifiers — but clause 1 means only kernel-grade (VERIFIED-tier) domains join the
   trustless commons.
 - Sets up the open question this ADR does **not** answer: *given an admissible
-  domain, how is a concrete problem scoped into pipeline-consumable units?* — to be
-  addressed in a follow-up intake ADR.
+  domain, how is a concrete problem scoped into pipeline-consumable units?* —
+  answered by ADR-081 (intake) + SPEC-081-A (`skeleton-validate`).
+- **Two-level gate (composition with Leo's ADR-078).** This ADR gates the
+  **domain** (does it carry a kernel-grade verifier? — the founding gating
+  invariant). Leo's ADR-078 gates the **target within an admitted domain** (is the
+  skeleton sponsor-registered, with credited obligations?). Coarse-then-fine: a
+  target is only registrable in a domain this ADR has admitted. The two do not
+  overlap — domain admissibility vs. per-target credit.
 
 ## Open questions
 1. Who ratifies a new domain as kernel-grade, and how is it recorded?
