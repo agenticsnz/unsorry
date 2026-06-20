@@ -1,0 +1,20 @@
+𝔸5.1.goal.sq-mod-seven@2026-06-14
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sq-mod-seven
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/sq-mod-seven.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sq-mod-seven.lean
+  sha≜ce00529af243a7d2d2a34f0bdba7655e7f0bc44e753603d09a3d9222310d02ff
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

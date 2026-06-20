@@ -1,0 +1,20 @@
+𝔸5.1.goal.fib-add-three-eq-two-mul-fib-succ-add-fib@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜fib-add-three-eq-two-mul-fib-succ-add-fib
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/fib-add-three-eq-two-mul-fib-succ-add-fib.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/fib-add-three-eq-two-mul-fib-succ-add-fib.lean
+  sha≜7a76bf3b84fe89d96d5e3a1be69892644e34b4c8512b7c5a7eefda771eade457
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

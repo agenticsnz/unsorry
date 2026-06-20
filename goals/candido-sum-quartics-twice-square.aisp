@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜candido-sum-quartics-twice-square
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/candido-sum-quartics-twice-square.md
+  src≜packages/unsorry-archive-0006/backlog/candido-sum-quartics-twice-square.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/candido-sum-quartics-twice-square.lean
+  lean≜packages/unsorry-archive-0006/goals/candido-sum-quartics-twice-square.lean
   sha≜4e4548b172a1a282f1ed538104d0e6fd95689969df69d133c667a3ab88e4bfa3
   aff≜-20
 }

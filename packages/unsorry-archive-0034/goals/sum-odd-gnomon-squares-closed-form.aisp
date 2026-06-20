@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-odd-gnomon-squares-closed-form@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-odd-gnomon-squares-closed-form
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-odd-gnomon-squares-closed-form.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-odd-gnomon-squares-closed-form.lean
+  sha≜7611df14c60b28ebe946b403470e0137412079447d5327873e61f2ebf2b1fcde
+  aff≜-10
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

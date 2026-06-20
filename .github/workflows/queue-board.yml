@@ -1,0 +1,108 @@
+# Keep the queued-proofs board (docs/queue.{html,json}) up to date (ADR-066).
+#
+# Unlike the leaderboard / proof-graph / targets generators, this page's data is
+# NOT a function of the `main` working tree: it is sourced from the live
+# `queued/prove/*` branches (ADR-058) and the set of open prove PRs, which fill
+# and drain continuously without any push to `main`. So a push-triggered refresh
+# would never reflect the queue — this runs on a **schedule** (the dispatcher /
+# reaper cadence) instead, regenerates the two `docs/` outputs, and commits them
+# straight back to `main` (the standard generated-artifact exception — a single
+# docs-only, `[skip ci]` commit).
+#
+# Pushing the refresh to `main` needs an admin identity (the default GITHUB_TOKEN
+# cannot push to a branch protected by required status checks): the push
+# authenticates with the `REFRESH_TOKEN` secret (admin PAT / App token,
+# contents:write), exactly as proofs-visualisation.yml does. When the secret is
+# unset the workflow degrades to a report-only notice instead of failing red
+# (issue #417).
+name: queue-board
+
+on:
+  schedule:
+    # Every 15 minutes — matches the queue-dispatcher / reaper cadence so the
+    # board tracks the live queue closely without busy-spinning.
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+# Coalesce overlapping runs; never cancel a push mid-commit.
+concurrency:
+  group: queue-board-refresh
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          fetch-depth: 0
+          # REFRESH_TOKEN (admin PAT/App, #417) authenticates the push to `main`;
+          # falls back to GITHUB_TOKEN (read-only for our purposes) when unset.
+          token: ${{ secrets.REFRESH_TOKEN || github.token }}
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.12"
+      - name: Detect refresh token (#417)
+        id: tok
+        env:
+          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+        run: |
+          if [ -n "${REFRESH_TOKEN}" ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Fetch the queued/prove branches (the queue lives on refs, not main)
+        run: |
+          git fetch --quiet origin \
+            '+refs/heads/queued/prove/*:refs/remotes/origin/queued/prove/*' || true
+      - name: Gather open prove-PR head refs (waiting vs in-flight, ADR-066 §6)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # A queued branch with an open prove PR is in-flight; the rest are
+          # waiting. A `gh` error degrades to an empty list (every submission
+          # then shows as waiting), never a crash.
+          gh pr list --state open --limit 1000 --json headRefName \
+            -q '.[].headRefName | select(startswith("queued/prove/"))' \
+            > open-prs.txt 2>/dev/null || true
+          echo "open prove PRs: $(wc -l < open-prs.txt)"
+      - name: Regenerate, commit, and push on change
+        if: steps.tok.outputs.present == 'true'
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Retry-rebase (#426): other artifact refreshes can push to main
+          # concurrently, so a plain push races (non-fast-forward). Each attempt
+          # resets to the latest main, re-fetches the queue, regenerates, and
+          # pushes; a lost race just retries onto the updated main. `[skip ci]` +
+          # the schedule-only trigger keep it from re-firing on its own commit.
+          paths="docs/queue.html docs/queue.json"
+          for attempt in 1 2 3 4 5; do
+            git fetch --quiet origin main
+            git fetch --quiet origin \
+              '+refs/heads/queued/prove/*:refs/remotes/origin/queued/prove/*' || true
+            git reset --hard --quiet origin/main
+            python3 -m tools.queue_board --write --open-prs open-prs.txt .
+            if git diff --quiet -- $paths; then
+              echo "queue board already in sync with latest main — nothing to push"
+              exit 0
+            fi
+            git add $paths
+            git commit -q -m "docs: refresh queued-proofs board [skip ci]"
+            if git push --quiet origin HEAD:main; then
+              echo "pushed queue-board refresh (attempt ${attempt})"
+              exit 0
+            fi
+            echo "push raced on attempt ${attempt} — retrying onto updated main"
+          done
+          echo "::warning::could not push the queue-board refresh after 5 attempts (persistent concurrent pushes, #426); the next scheduled run will refresh it"
+      - name: No REFRESH_TOKEN — report only (#417)
+        if: steps.tok.outputs.present != 'true'
+        run: |
+          echo "::warning::the queue board would refresh but the REFRESH_TOKEN secret is unset — skipping the push to main (issue #417). Add an admin PAT/App token as the REFRESH_TOKEN secret to enable the scheduled refresh."

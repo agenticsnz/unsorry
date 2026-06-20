@@ -1,0 +1,8 @@
+𝔸5.1.lemma.5cd97b00b27e@2026-06-17
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜5cd97b00b27e456b1805d46a62abee00914c573b83d2a68957bc8981dc31eb67; goal≜sum-five-consecutive-product-closed-form; name≜sum_five_consecutive_product_closed_form}
+⟦Σ:Source⟧{src≜goals/sum-five-consecutive-product-closed-form.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜claude; model≜template-sum-induction; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

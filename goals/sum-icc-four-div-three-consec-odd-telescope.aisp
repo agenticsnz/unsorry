@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-icc-four-div-three-consec-odd-telescope
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-icc-four-div-three-consec-odd-telescope.md
+  src≜packages/unsorry-archive-0010/backlog/sum-icc-four-div-three-consec-odd-telescope.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-icc-four-div-three-consec-odd-telescope.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0010/goals/sum-icc-four-div-three-consec-odd-telescope.lean
+  sha≜fd4b0028e3d134825d9240fe170a851cd021e287ccb49f89156ba8d68378ba6a
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

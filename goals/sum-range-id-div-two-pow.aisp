@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-id-div-two-pow
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-id-div-two-pow.md
+  src≜packages/unsorry-archive-0013/backlog/sum-range-id-div-two-pow.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-id-div-two-pow.lean
-  sha≜∅
-  aff≜-10
+  lean≜packages/unsorry-archive-0013/goals/sum-range-id-div-two-pow.lean
+  sha≜e6b64cd0f428ecd50e18db8b0d74ab598b7fa442ce153c76ba5bc8c394084600
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

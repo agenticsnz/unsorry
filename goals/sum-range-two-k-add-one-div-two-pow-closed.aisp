@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-two-k-add-one-div-two-pow-closed
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-two-k-add-one-div-two-pow-closed.md
+  src≜packages/unsorry-archive-0013/backlog/sum-range-two-k-add-one-div-two-pow-closed.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-two-k-add-one-div-two-pow-closed.lean
-  sha≜∅
-  aff≜-10
+  lean≜packages/unsorry-archive-0013/goals/sum-range-two-k-add-one-div-two-pow-closed.lean
+  sha≜439ddc36f16b420311708e6bda78b4d9821f8d73ad95b85f168ae57b926cc8f1
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

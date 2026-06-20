@@ -1,0 +1,21 @@
+𝔸5.1.goal.am-gm-three-cube-s2-s2@2026-06-14
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜am-gm-three-cube-s2-s2
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜decompositions/am-gm-three-cube-s2.oma-2-c50d.aisp
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/am-gm-three-cube-s2-s2.lean
+  sha≜dc8432bcd7d41f9a5a6d6349a6680b24ba292cee188c6f63741cb94bfbf9c097
+  aff≜-20
+  depth≜2
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

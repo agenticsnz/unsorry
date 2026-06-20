@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜coprime-nsq2-nsq3
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/coprime-nsq2-nsq3.md
+  src≜packages/unsorry-archive-0006/backlog/coprime-nsq2-nsq3.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/coprime-nsq2-nsq3.lean
+  lean≜packages/unsorry-archive-0006/goals/coprime-nsq2-nsq3.lean
   sha≜124e8926177ca034cc9aa0766a8e94092d4c7dbf2b437235358ce9af250dfe0a
   aff≜-19
 }

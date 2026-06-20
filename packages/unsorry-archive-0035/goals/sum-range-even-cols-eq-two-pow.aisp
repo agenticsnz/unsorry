@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-range-even-cols-eq-two-pow@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-range-even-cols-eq-two-pow
+  phase≜prove
+  status≜proved
+  difficulty≜4
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-range-even-cols-eq-two-pow.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-range-even-cols-eq-two-pow.lean
+  sha≜7436f6bf1a8f2ab8cfda833ab5e29adabd6cf0fc9d55b87a34b2fd9b94de6815
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

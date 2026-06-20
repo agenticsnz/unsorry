@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜dvd-255-pow-seventeen-sub-self
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/dvd-255-pow-seventeen-sub-self.md
+  src≜packages/unsorry-archive-0014/backlog/dvd-255-pow-seventeen-sub-self.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/dvd-255-pow-seventeen-sub-self.lean
-  sha≜∅
-  aff≜-20
+  lean≜packages/unsorry-archive-0014/goals/dvd-255-pow-seventeen-sub-self.lean
+  sha≜f39ff694817de789d2594015445da39d9c9fff821852c723367fbf769f62f1b5
+  aff≜-19
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

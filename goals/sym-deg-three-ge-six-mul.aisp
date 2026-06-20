@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sym-deg-three-ge-six-mul
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sym-deg-three-ge-six-mul.md
+  src≜packages/unsorry-archive-0016/backlog/sym-deg-three-ge-six-mul.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sym-deg-three-ge-six-mul.lean
-  sha≜∅
-  aff≜-10
+  lean≜packages/unsorry-archive-0016/goals/sym-deg-three-ge-six-mul.lean
+  sha≜a68490dad7d038f24df394015be1f17ce980afcf86e5b074e8756d6f3c54e9cd
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
