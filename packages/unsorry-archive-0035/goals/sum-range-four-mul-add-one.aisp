@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-range-four-mul-add-one@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-range-four-mul-add-one
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-range-four-mul-add-one.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-range-four-mul-add-one.lean
+  sha≜39e0251b248c648e5a0ca4d47911f0a66d26384e974d33a99ec5d43bd76ae538
+  aff≜-10
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

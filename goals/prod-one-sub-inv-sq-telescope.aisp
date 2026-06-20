@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜prod-one-sub-inv-sq-telescope
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜4
 }
 ⟦Σ:Source⟧{
-  src≜backlog/prod-one-sub-inv-sq-telescope.md
+  src≜packages/unsorry-archive-0033/backlog/prod-one-sub-inv-sq-telescope.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/prod-one-sub-inv-sq-telescope.lean
+  lean≜packages/unsorry-archive-0033/goals/prod-one-sub-inv-sq-telescope.lean
   sha≜8ad9f7bc039a8d755caf4ce1346dc0eb73276b9a77385d9492199a5313e893d7
   aff≜-20
 }

@@ -1,0 +1,20 @@
+𝔸5.1.goal.quartic-n4-plus-four-composite@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜quartic-n4-plus-four-composite
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/quartic-n4-plus-four-composite.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/quartic-n4-plus-four-composite.lean
+  sha≜ddd5a2a420e56eab0e050f7e4add127fe2efe464f662926870c33d0d1b6a3084
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

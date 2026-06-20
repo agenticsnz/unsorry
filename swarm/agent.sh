@@ -98,6 +98,10 @@ Environment:
   UNSORRY_FORK      Set to 1 to force fork-native mode (ADR-068); otherwise it is
                     auto-detected when origin is a fork of UNSORRY_UPSTREAM
   UNSORRY_UPSTREAM  Canonical repo a fork submits to (default: agenticsnz/unsorry)
+  UNSORRY_FORK_SHARDS
+                    Fork-mode goal-selection shards K (ADR-076; default 8). Each
+                    fork prefers goals in cksum(agent)%K so independent forks pick
+                    different goals (advisory; falls through when its slice is dry)
   UNSORRY_SOLVER    GitHub handle credited for verified proofs (default: gh api user)
   UNSORRY_SOLVER_NAME, UNSORRY_SOLVER_EMAIL
                     Override the git commit author/committer the harness uses
@@ -1374,6 +1378,52 @@ fork_pr_head_ref() {
   local branch="$1"
   if [ "$FORK_MODE" = 1 ]; then printf '%s:%s\n' "$FORK_OWNER" "$branch"
   else printf '%s\n' "$branch"; fi
+}
+
+# ADR-076 sharded fork goal selection (Phase-2 step 2c). cksum is CRC-32 and
+# portable (Linux + macOS), so every machine maps a given string to the SAME
+# shard — that cross-machine stability is what lets two uncoordinated forks
+# prefer disjoint slices. Bucket 0..K-1.
+fork_shard() {
+  local s="$1" k="$2" h
+  h="$(printf '%s' "$s" | cksum | cut -d' ' -f1)"
+  printf '%s\n' "$(( h % k ))"
+}
+
+# The shard count K (UNSORRY_FORK_SHARDS, default 8); a non-positive-integer
+# value degrades to the default rather than erroring (selection must not die on
+# a misconfigured advisory knob).
+fork_shard_count() {
+  local k="${UNSORRY_FORK_SHARDS:-8}"
+  case "$k" in ''|*[!0-9]*) k=8 ;; esac
+  [ "$k" -ge 1 ] || k=8
+  printf '%s\n' "$k"
+}
+
+# ADR-076: reorder a ranked candidate list (stdin) so goals in THIS agent's shard
+# come first, the rest after — each group in input (rank) order, so the ADR-010
+# affinity/gap priority is preserved within the shard and across the fall-through
+# tail. Pure (stdin + args), hermetically testable.
+shard_reorder() {
+  local agent="$1" k="$2" mine cand
+  mine="$(fork_shard "$agent" "$k")"
+  local -a in=() out=()
+  while IFS= read -r cand; do
+    [ -n "$cand" ] || continue
+    if [ "$(fork_shard "$cand" "$k")" = "$mine" ]; then in+=("$cand"); else out+=("$cand"); fi
+  done
+  printf '%s\n' ${in[@]+"${in[@]}"} ${out[@]+"${out[@]}"}
+}
+
+# ADR-076: in fork mode, shard-reorder the candidate stream so independent
+# cross-fork provers prefer different goals (advisory; no coordination). A
+# pass-through on the canonical path — selection there is byte-for-byte unchanged.
+fork_maybe_shard() {
+  if [ "$FORK_MODE" = 1 ]; then
+    shard_reorder "$AGENT_ID" "$(fork_shard_count)"
+  else
+    cat
+  fi
 }
 
 require_main_checkout() {
@@ -5433,6 +5483,52 @@ test_fork_pr_head_ref() {
   return 0
 }
 
+test_fork_shard() {
+  # ADR-076: deterministic, in range, default-on bad K.
+  local a b
+  a="$(fork_shard hello 8)"; b="$(fork_shard hello 8)"
+  [ "$a" = "$b" ] || { log "  fork_shard not deterministic ($a/$b)"; return 1; }
+  if [ "$a" -lt 0 ] || [ "$a" -ge 8 ]; then log "  fork_shard out of range: $a"; return 1; fi
+  ( UNSORRY_FORK_SHARDS=garbage; [ "$(fork_shard_count)" = 8 ] ) \
+    || { log "  bad K did not default to 8"; return 1; }
+  ( UNSORRY_FORK_SHARDS=0; [ "$(fork_shard_count)" = 8 ] ) \
+    || { log "  K=0 did not default to 8"; return 1; }
+  ( UNSORRY_FORK_SHARDS=4; [ "$(fork_shard_count)" = 4 ] ) \
+    || { log "  valid K not honoured"; return 1; }
+  return 0
+}
+
+test_shard_reorder() {
+  # In-shard goals come first (rank order preserved within each group), the rest
+  # after; with K=1 every goal is in-shard so order is unchanged; empty is safe.
+  local agent=agent-x k=8 mine out
+  mine="$(fork_shard "$agent" "$k")"
+  # Build a list with a known in-shard and out-of-shard goal so we can assert the
+  # partition without hardcoding cksum values.
+  local g list="" in_goal="" out_goal=""
+  for g in g1 g2 g3 g4 g5 g6 g7 g8 g9 g10; do
+    if [ "$(fork_shard "$g" "$k")" = "$mine" ]; then [ -z "$in_goal" ] && in_goal="$g"; \
+    else [ -z "$out_goal" ] && out_goal="$g"; fi
+    list="$list$g"$'\n'
+  done
+  if [ -z "$in_goal" ] || [ -z "$out_goal" ]; then
+    log "  fixture lacked both in- and out-of-shard goals"; return 1
+  fi
+  out="$(printf '%s' "$list" | shard_reorder "$agent" "$k")"
+  # Every in-shard goal must appear before every out-of-shard goal.
+  local in_pos out_pos
+  in_pos="$(printf '%s\n' "$out" | grep -nxF "$in_goal" | cut -d: -f1)"
+  out_pos="$(printf '%s\n' "$out" | grep -nxF "$out_goal" | cut -d: -f1)"
+  [ "$in_pos" -lt "$out_pos" ] || { log "  in-shard $in_goal ($in_pos) not before out $out_goal ($out_pos)"; return 1; }
+  # K=1 ⇒ no reorder (every goal in-shard, rank order intact).
+  out="$(printf 'a\nb\nc\n' | shard_reorder agent-x 1)"
+  [ "$out" = "$(printf 'a\nb\nc')" ] || { log "  K=1 changed order: '$out'"; return 1; }
+  # Empty input is safe.
+  out="$(printf '' | shard_reorder agent-x 8)"
+  [ -z "$out" ] || { log "  empty input produced output: '$out'"; return 1; }
+  return 0
+}
+
 test_detect_fork_mode() {
   # --fork override enters fork mode, derives the owner, and forces PR submit mode.
   local FORK_MODE=0 FORK_REQUEST=1 FORK_OWNER="" UNSORRY_FORK="" \
@@ -5809,6 +5905,8 @@ run_self_tests() {
     test_open_pr_claim_guard
     test_parse_github_nwo
     test_fork_pr_head_ref
+    test_fork_shard
+    test_shard_reorder
     test_detect_fork_mode
     test_fork_claimless
     test_fork_open_pr_dedup_targets_upstream
@@ -5966,13 +6064,14 @@ select_prove_candidates() {
   # An explicit --goal is an override of auto-selection: pass it as --force so a
   # named-but-sub-viable goal is still surfaced (ids are space-free, validated
   # by is-id, so the unquoted expansion splits into exactly two args).
+  # ADR-076: fork mode shard-reorders the ranked list (advisory; cat otherwise).
   while IFS= read -r cand; do
     [ -n "$cand" ] || continue
     goal_in_scope "$cand" || continue
     [ -n "${HANDLED[$cand]:-}" ] && continue
     printf '%s\n' "$cand"
   done < <(py_helper prove-candidates goals "$CLAIMS_WT/claims" library "$AGENT_ID" "" \
-             ${GOAL_FILTER:+--force "$GOAL_FILTER"})
+             ${GOAL_FILTER:+--force "$GOAL_FILTER"}) | fork_maybe_shard
 }
 
 # Local smoke has no claims or coordination. Reuse the production prove ranking
@@ -6021,7 +6120,7 @@ select_recovery_candidates() {
     goal_in_scope "$cand" || continue
     [ -n "${HANDLED[$cand]:-}" ] && continue
     printf '%s\n' "$cand"
-  done < <(py_helper recovery-candidates goals "$CLAIMS_WT/claims" library "$AGENT_ID")
+  done < <(py_helper recovery-candidates goals "$CLAIMS_WT/claims" library "$AGENT_ID") | fork_maybe_shard
 }
 
 # Walk a newline-separated candidate list (highest priority first), skipping

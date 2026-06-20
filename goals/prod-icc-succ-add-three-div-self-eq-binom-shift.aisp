@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜prod-icc-succ-add-three-div-self-eq-binom-shift
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/prod-icc-succ-add-three-div-self-eq-binom-shift.md
+  src≜packages/unsorry-archive-0033/backlog/prod-icc-succ-add-three-div-self-eq-binom-shift.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/prod-icc-succ-add-three-div-self-eq-binom-shift.lean
+  lean≜packages/unsorry-archive-0033/goals/prod-icc-succ-add-three-div-self-eq-binom-shift.lean
   sha≜660d3f336cb96b7c9c2ca7bd3b4f70f8d7ecd4a0f896c4a6bb589657989cb351
   aff≜-20
 }
