@@ -178,6 +178,11 @@ Environment:
                     Pause coordinated --prove when queued + in-progress Gate A
                     workflow runs reach this count (default: 8; set -1 to
                     disable this limit)
+  UNSORRY_MAX_GOALS_IN_FLIGHT
+                    Per-contributor fairness cap: pause claiming new goals when
+                    this agent already holds this many goals in flight (its own
+                    queued-but-unmerged prove branches), so one fleet cannot
+                    queue the whole pool and starve others (default: 25)
   UNSORRY_GOVERNOR_SCAN_LIMIT
                     Max PR/runs rows fetched per governor query (default: 200)
 EOF
@@ -1815,7 +1820,8 @@ validate_integer_knob() {
 # pause reason when the agent must not start new claim/PR-producing work; prints
 # nothing when admission is allowed.
 submission_governor_reason() {
-  local freeze="$1" open_prove="$2" gate_a_in_flight="$3" max_open="$4" max_gate="$5"
+  local freeze="$1" open_prove="$2" gate_a_in_flight="$3" max_open="$4" max_gate="$5" \
+        inflight="${6:-}" max_inflight="${7:-}"
   if env_truthy "$freeze"; then
     echo "submission freeze is active"
     return 0
@@ -1826,6 +1832,15 @@ submission_governor_reason() {
   fi
   if [ "$max_gate" -ge 0 ] && [ "$gate_a_in_flight" -ge "$max_gate" ]; then
     echo "Gate A queued+in-progress runs $gate_a_in_flight >= limit $max_gate"
+    return 0
+  fi
+  # Per-contributor fairness cap: an agent already holding this many goals in
+  # flight (its own queued-but-unmerged prove branches) must let them
+  # dispatch/merge before claiming more, so one fleet cannot queue the entire
+  # goal pool and starve other contributors. Empty/negative max disables it.
+  if [[ "$max_inflight" =~ ^[0-9]+$ ]] && [[ "$inflight" =~ ^[0-9]+$ ]] \
+     && [ "$inflight" -ge "$max_inflight" ]; then
+    echo "this agent holds $inflight goals in flight >= cap $max_inflight"
     return 0
   fi
   return 1
@@ -1848,12 +1863,23 @@ count_gate_a_runs() {
 # Fail closed on GitHub API errors: if the operator cannot see queue pressure,
 # the safe response during a flood is to avoid opening more proof PRs. This only
 # applies to coordinated --prove; --prove-local remains fully local.
+# Goals this agent is holding in flight = its own queued-but-unmerged prove
+# branches (a merged branch is deleted, so a present one is unmerged). Used by the
+# per-contributor fairness cap. Prints the count, or nothing if it cannot be read
+# (the governor then leaves the cap unenforced — fail-open).
+count_agent_inflight() {
+  fetch_queued_prove_branches >/dev/null 2>&1 || return 1
+  local n
+  n="$(queued_branch_refs 2>/dev/null | grep -cE "/${AGENT_ID}-[0-9a-f]+$")" || true
+  printf '%s\n' "${n:-0}"
+}
+
 submission_governor_allows() {
   [ "$PROVE" -eq 1 ] || return 0
   [ "$DRY_RUN" -eq 1 ] && return 0
   [ "${UNSORRY_SUBMISSION_GOVERNOR:-1}" = 0 ] && return 0
 
-  local open_prove queued in_progress gate_a_total reason
+  local open_prove queued in_progress gate_a_total reason inflight
   if ! open_prove="$(count_open_prove_prs 2>/dev/null)"; then
     log "submission governor paused: could not read open proof PR count"
     return 1
@@ -1871,11 +1897,16 @@ submission_governor_allows() {
   [[ "$in_progress" =~ ^[0-9]+$ ]] || { log "submission governor paused: invalid in-progress Gate A count '$in_progress'"; return 1; }
   gate_a_total=$((queued + in_progress))
 
-  if reason="$(submission_governor_reason "$UNSORRY_SUBMISSION_FREEZE" "$open_prove" "$gate_a_total" "$UNSORRY_MAX_OPEN_PROVE_PRS" "$UNSORRY_MAX_GATE_A_IN_FLIGHT")"; then
-    log "submission governor paused: $reason (open_prove_prs=$open_prove gate_a_queued=$queued gate_a_in_progress=$in_progress)"
+  # Per-contributor fairness cap (UNSORRY_MAX_GOALS_IN_FLIGHT, default 25). Unknown
+  # count (fetch failed) leaves it unenforced rather than blocking a live agent.
+  inflight="$(count_agent_inflight 2>/dev/null)"
+  [[ "$inflight" =~ ^[0-9]+$ ]] || inflight=""
+
+  if reason="$(submission_governor_reason "$UNSORRY_SUBMISSION_FREEZE" "$open_prove" "$gate_a_total" "$UNSORRY_MAX_OPEN_PROVE_PRS" "$UNSORRY_MAX_GATE_A_IN_FLIGHT" "$inflight" "${UNSORRY_MAX_GOALS_IN_FLIGHT:-25}")"; then
+    log "submission governor paused: $reason (open_prove_prs=$open_prove gate_a_queued=$queued gate_a_in_progress=$in_progress agent_in_flight=${inflight:-?})"
     return 1
   fi
-  log "submission governor open: open_prove_prs=$open_prove gate_a_queued=$queued gate_a_in_progress=$in_progress"
+  log "submission governor open: open_prove_prs=$open_prove gate_a_queued=$queued gate_a_in_progress=$in_progress agent_in_flight=${inflight:-?}"
   return 0
 }
 
@@ -5104,6 +5135,20 @@ test_submission_governor_reason() {
     log "  disabled thresholds still paused"
     return 1
   fi
+  # per-contributor in-flight cap (args 6,7)
+  got="$(submission_governor_reason 0 0 0 40 20 25 25)"
+  [ "$got" = "this agent holds 25 goals in flight >= cap 25" ] \
+    || { log "  in-flight cap mismatch: '$got'"; return 1; }
+  if submission_governor_reason 0 0 0 40 20 10 25 >/dev/null; then
+    log "  under in-flight cap still paused"; return 1
+  fi
+  # cap omitted (5-arg form) or unreadable count must not pause
+  if submission_governor_reason 0 0 0 40 20 >/dev/null; then
+    log "  omitted in-flight args paused"; return 1
+  fi
+  if submission_governor_reason 0 0 0 40 20 "" 25 >/dev/null; then
+    log "  unreadable in-flight count paused"; return 1
+  fi
 }
 
 test_submission_governor_allows_with_stubbed_gh() {
@@ -5114,6 +5159,10 @@ test_submission_governor_allows_with_stubbed_gh() {
   local UNSORRY_MAX_OPEN_PROVE_PRS=40
   local UNSORRY_MAX_GATE_A_IN_FLIGHT=20
   local UNSORRY_GOVERNOR_SCAN_LIMIT=200
+  # keep this test focused on the open-PR / Gate A thresholds: stub the
+  # per-contributor in-flight count to a benign value (its own logic is covered
+  # by test_submission_governor_reason).
+  count_agent_inflight() { echo 0; }
 
   gh() {
     case "$1 $2 $3" in
@@ -5145,7 +5194,8 @@ test_submission_governor_allows_with_stubbed_gh() {
 
   UNSORRY_SUBMISSION_GOVERNOR=0
   submission_governor_allows \
-    || { log "  disabled governor did not allow"; return 1; }
+    || { unset -f count_agent_inflight; log "  disabled governor did not allow"; return 1; }
+  unset -f count_agent_inflight
 }
 
 test_queued_branch_claim_guard() {
