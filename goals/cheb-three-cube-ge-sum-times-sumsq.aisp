@@ -1,0 +1,20 @@
+𝔸5.1.goal.cheb-three-cube-ge-sum-times-sumsq@2026-06-17
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜cheb-three-cube-ge-sum-times-sumsq
+  phase≜prove
+  status≜archived
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜packages/unsorry-archive-0014/backlog/cheb-three-cube-ge-sum-times-sumsq.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜packages/unsorry-archive-0014/goals/cheb-three-cube-ge-sum-times-sumsq.lean
+  sha≜94fa76a601dd509c345bb349f71d39c0b62fc44992cd381a10757def4b73daed
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

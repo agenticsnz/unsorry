@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜hexagonal-eq-triangular-odd-index
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/hexagonal-eq-triangular-odd-index.md
+  src≜packages/unsorry-archive-0033/backlog/hexagonal-eq-triangular-odd-index.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/hexagonal-eq-triangular-odd-index.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0033/goals/hexagonal-eq-triangular-odd-index.lean
+  sha≜5a99f84fc7f403d8443464bc2323935e773304337d7bc187f5415a97318b130d
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

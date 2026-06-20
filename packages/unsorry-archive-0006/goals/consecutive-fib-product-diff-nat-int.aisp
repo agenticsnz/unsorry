@@ -1,0 +1,20 @@
+𝔸5.1.goal.consecutive-fib-product-diff-nat-int@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜consecutive-fib-product-diff-nat-int
+  phase≜prove
+  status≜proved
+  difficulty≜4
+}
+⟦Σ:Source⟧{
+  src≜backlog/consecutive-fib-product-diff-nat-int.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/consecutive-fib-product-diff-nat-int.lean
+  sha≜2e31bc828b829c1e7f613fc7167ba31786898e9411a9ba28250a658ec24d6952
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

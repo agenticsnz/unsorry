@@ -28,7 +28,8 @@ Lake's downloaded mathlib `.ltar` archive cache is outside `.lake` by default
 `${{ github.workspace }}/.lake/mathlib-cache`; otherwise the volume preserves unpacked oleans but
 `lake exe cache get` still downloads archives.
 
-Namespace runners (the gate's `namespace-profile-unsorry-1/2`) support exactly this via
+Namespace runners (the gate's `namespace-profile-unsorry-prepare`, `namespace-profile-unsorry-audit`, and `namespace-profile-unsorry-replay` profiles)
+support exactly this via
 [`nscloud-cache-action`](https://github.com/namespacelabs/nscloud-cache-action): a keyless,
 volume-backed bind-mount of a path, attached to the runner profile. It is **Namespace-specific**
 — it does nothing useful on a GitHub-hosted runner — so it must be wired so the gate still works
@@ -45,16 +46,17 @@ keep `.lake` warm on it across runs without paying a restore — while the Names
 can attach a **persistent cache volume**,
 
 **we decided for** mounting a Namespace cache volume at **`${{ github.workspace }}/.lake`** with
-`namespacelabs/nscloud-cache-action` (pinned v1.4.3) in `gate-a-prepare`, `gate-a-audit`, and
-`gate-a-replay`, **and turning `lean-action`'s `use-github-cache` off only when the Namespace
+`namespacelabs/nscloud-cache-action` (pinned v1.4.3) in `gate-a-prepare`, `gate-a-audit`,
+`gate-a-replay`, and archive/full-replay verifier jobs, **and turning `lean-action`'s
+`use-github-cache` off only when the Namespace
 volume reports a cache hit** so mathlib is read from the warm volume instead of re-restored; the
 workflow also sets `MATHLIB_CACHE_DIR=${{ github.workspace }}/.lake/mathlib-cache` so the mathlib
 `.ltar` archive cache lives on the same mounted path; the
-volume is gated on a **`detect.volume` flag derived from the profile name** (`namespace-*` →
-`true`, anything else → `false`) and the step is **`continue-on-error`**, so a non-Namespace runner,
-a profile with no volume attached, or a cold/missed volume falls back to the GitHub mathlib cache
-(`use-github-cache`). The ADR-045 `.lake/build` cache stays live on all profiles because it is
-commit-exact and lets audit/replay safely restore the build produced by prepare,
+volume is gated on per-job flags derived from the runner label (`namespace-*` →
+`true`, anything else → `false`) and the step is **`continue-on-error`**, so a non-Namespace
+runner, a profile with no volume attached, or a cold/missed volume falls back to the GitHub mathlib
+cache (`use-github-cache`). The ADR-045 `.lake/build` cache stays live on all profiles because it
+is commit-exact and lets audit/replay safely restore the build produced by prepare,
 
 **and neglected** a Namespace `nsc artifact` upload/download (heavier, key-managed, and we want a
 *persistent* mount not a per-run artifact), caching only mathlib outside `.lake` (more bespoke than
@@ -67,7 +69,7 @@ last constant cost,
 
 **accepting that** the **first** run against a cold (empty) volume pays a one-time mathlib
 provisioning from the reservoir (covered by the 45-min prepare/audit and 120-min replay timeouts),
-that the volume must be **attached to both runner profiles** at the Namespace control plane (an
+that the volume must be **attached to each Gate A Namespace profile** at the Namespace control plane (an
 operator step, below), and that the volume is advisory state — never trust-bearing (see Soundness).
 
 ## Soundness
@@ -82,9 +84,9 @@ design: that is safe precisely because correctness comes from the kernel replay,
 
 ## Failsafe (explicit)
 
-1. **Profile-derived flag.** `detect` emits `volume=true` only when the chosen profile is
-   `namespace-*`. Change the runner to a non-Namespace one and `volume=false` automatically — no
-   reference to `nscloud-cache-action` executes.
+1. **Profile-derived flags.** `detect` emits per-job volume flags only when the runner label is
+   `namespace-*`. Change a runner to a non-Namespace one and that job's volume flag is
+   `false` automatically — no reference to `nscloud-cache-action` executes for that job.
 2. **Soft-fail.** The mount step is `continue-on-error: true`: if the profile is Namespace but no
    volume is attached (or the action errors), the job continues.
 3. **Live fallbacks.** When `volume != 'true'` or the Namespace cache step does not report a hit,
@@ -94,8 +96,8 @@ design: that is safe precisely because correctness comes from the kernel replay,
 
 ## Operator note
 
-Attach a cache volume to **both** runner profiles (`namespace-profile-unsorry-1` and
-`namespace-profile-unsorry-2`) at cloud.namespace.so so `${GITHUB_WORKSPACE}/.lake` persists.
+Attach a cache volume to the Gate A Namespace profiles (`namespace-profile-unsorry-prepare`, `namespace-profile-unsorry-audit`, and
+`namespace-profile-unsorry-replay`) at cloud.namespace.so so `${GITHUB_WORKSPACE}/.lake` persists.
 mathlib (~2–3 GB) plus the local oleans fit comfortably in a ~20 GB volume. Until a volume is
 attached the gate runs on the GitHub-cache fallback (slower, but correct) — adopting the volume
 needs no further code change.

@@ -35,6 +35,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 
 from tools.gate_b.records import parse_record
+from tools.site_nav import render_nav
 from tools.leaderboard.generate import goals as _goals
 from tools.leaderboard.generate import proofs as _proofs
 from tools.leaderboard.generate import runs as _runs
@@ -489,12 +490,8 @@ _HTML_TEMPLATE = """<!doctype html>
 <body class="font-sans text-brand-text p-4 md:p-8 flex justify-center items-start min-h-screen">
 <main class="w-full max-w-6xl bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 overflow-hidden">
 
-  <!-- Top navigation — shared across home / leaderboard / proof graph (issue #738). -->
-  <nav class="flex items-center gap-1 px-6 md:px-10 py-3 text-sm font-medium border-b border-slate-100" aria-label="Primary">
-    <a href="index.html" class="px-3 py-1.5 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors">Home</a>
-    <a href="leaderboard.html" class="px-3 py-1.5 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors">Leaderboard</a>
-    <a href="proofs-contributors-visualisation.html" aria-current="page" class="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-800">Proof graph</a>
-  </nav>
+  <!-- Top navigation — shared across all site pages via tools.site_nav (#738, ADR-066). -->
+__NAV__
 
   <!-- Header — shared design language (ADR-038): wordmark, status chip, cross-link, stat chips. -->
   <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 px-6 md:px-10 py-6 md:py-8 border-b border-slate-100">
@@ -744,7 +741,10 @@ def render_html(graph: Graph) -> str:
         )
 
     return (
-        _HTML_TEMPLATE.replace("__COUNT__", str(len(graph.nodes)))
+        _HTML_TEMPLATE.replace(
+            "__NAV__", render_nav("proofs-contributors-visualisation.html")
+        )
+        .replace("__COUNT__", str(len(graph.nodes)))
         .replace("__STATCHIPS__", "\n".join(chips))
         .replace("__MERMAID__", mermaid_def)
         .replace("__ROWS__", "\n".join(rows))

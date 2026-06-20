@@ -1,0 +1,8 @@
+𝔸5.1.run.sum-range-odd-mul-three-pow.mac-158f.20260617t002047977900z-159db187@2026-06-17
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260617t002047977900z-159db187; goal≜sum-range-odd-mul-three-pow; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-sum-induction}
+⟦Γ:Goal⟧{goal≜sum-range-odd-mul-three-pow}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-17T00:20:47Z}
+⟦Σ:Artifact⟧{sha≜e9e1e8b602d29a427ba40f52060020fd0169165e11809b2ed1702ebbbf3d0eda}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

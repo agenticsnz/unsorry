@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜gcd-consec-odd-eq-one
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/gcd-consec-odd-eq-one.md
+  src≜packages/unsorry-archive-0005/backlog/gcd-consec-odd-eq-one.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/gcd-consec-odd-eq-one.lean
+  lean≜packages/unsorry-archive-0005/goals/gcd-consec-odd-eq-one.lean
   sha≜9e735c9a3af7905d299e8ed2e5411de80c33130ad7d30b378f33a9b5f237d9fc
   aff≜-20
 }

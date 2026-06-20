@@ -1,0 +1,20 @@
+𝔸5.1.goal.gzmod-112-pow-nineteen-sub-pow-seven@2026-06-18
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gzmod-112-pow-nineteen-sub-pow-seven
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/gzmod-112-pow-nineteen-sub-pow-seven.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/gzmod-112-pow-nineteen-sub-pow-seven.lean
+  sha≜d6d69356593f620987b3c629d043d66dde8c0ec6cfc8f2c0eae743f0e60a32d2
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

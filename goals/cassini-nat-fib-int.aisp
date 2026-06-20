@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜cassini-nat-fib-int
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜4
 }
 ⟦Σ:Source⟧{
-  src≜backlog/cassini-nat-fib-int.md
+  src≜packages/unsorry-archive-0006/backlog/cassini-nat-fib-int.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/cassini-nat-fib-int.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0006/goals/cassini-nat-fib-int.lean
+  sha≜1b2491f67d64628e0b1822bae874ecbbc0d2bc06116d7b1cef28210aaec578ee
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

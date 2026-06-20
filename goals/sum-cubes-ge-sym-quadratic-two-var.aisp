@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-cubes-ge-sym-quadratic-two-var
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-cubes-ge-sym-quadratic-two-var.md
+  src≜packages/unsorry-archive-0005/backlog/sum-cubes-ge-sym-quadratic-two-var.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-cubes-ge-sym-quadratic-two-var.lean
+  lean≜packages/unsorry-archive-0005/goals/sum-cubes-ge-sym-quadratic-two-var.lean
   sha≜8dd143f5fccac00dae20e5d18deb76686f9cab171d07725aba0c2cd7494e51cd
   aff≜-10
 }

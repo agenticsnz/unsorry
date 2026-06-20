@@ -1,0 +1,20 @@
+𝔸5.1.goal.abc-nine-le-sum-times-pairsum@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜abc-nine-le-sum-times-pairsum
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/abc-nine-le-sum-times-pairsum.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/abc-nine-le-sum-times-pairsum.lean
+  sha≜ebe10df9249751d740f75493080ed602bd777409f73b4c7858a42f1e95b71fb8
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜cyclotomic-five-divides-pow-five-sub-one
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/cyclotomic-five-divides-pow-five-sub-one.md
+  src≜packages/unsorry-archive-0006/backlog/cyclotomic-five-divides-pow-five-sub-one.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/cyclotomic-five-divides-pow-five-sub-one.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0006/goals/cyclotomic-five-divides-pow-five-sub-one.lean
+  sha≜943c291c669314bbb73863b3eec9dfbb18b699fd01e1ae61907939b2f5fd6a2e
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

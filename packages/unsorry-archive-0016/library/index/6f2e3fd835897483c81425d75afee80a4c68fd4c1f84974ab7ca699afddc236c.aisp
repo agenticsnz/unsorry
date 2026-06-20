@@ -1,0 +1,8 @@
+𝔸5.1.lemma.6f2e3fd83589@2026-06-17
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜6f2e3fd835897483c81425d75afee80a4c68fd4c1f84974ab7ca699afddc236c; goal≜sum-hexagonal-eq; name≜sum_hexagonal_eq}
+⟦Σ:Source⟧{src≜goals/sum-hexagonal-eq.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜claude; model≜template-sum-induction; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

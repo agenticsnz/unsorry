@@ -1,0 +1,8 @@
+𝔸5.1.run.six-dvd-pow-three-add-five-mul.mac-158f.20260617t162903677347z-66aacd45@2026-06-17
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260617t162903677347z-66aacd45; goal≜six-dvd-pow-three-add-five-mul; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-zmod-decide}
+⟦Γ:Goal⟧{goal≜six-dvd-pow-three-add-five-mul}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-17T16:29:03Z}
+⟦Σ:Artifact⟧{sha≜42575844f4616955fbc1368e1d51d0106e2738640912a5977fd4a857be4349a8}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

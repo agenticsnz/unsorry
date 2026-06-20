@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-sixth-ge-cyclic-quartic-sq@2026-06-17
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-sixth-ge-cyclic-quartic-sq
+  phase≜prove
+  status≜archived
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜packages/unsorry-archive-0014/backlog/sum-sixth-ge-cyclic-quartic-sq.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜packages/unsorry-archive-0014/goals/sum-sixth-ge-cyclic-quartic-sq.lean
+  sha≜70650f109688a48e8d09653d63a8127391fd441d70c070f2431f333300892785
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
