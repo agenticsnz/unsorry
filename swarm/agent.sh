@@ -3333,26 +3333,29 @@ test_agent_id_generation() {
 }
 
 test_claim_agent_identity_multi_runner() {
-  local d; d="$(mktemp -d)" || return 1
+  # Nest under the suite sandbox (auto-removed by the run_self_test EXIT trap) and
+  # never `rm -rf` a path ourselves — a bare `mktemp -d` + manual cleanup here was
+  # the #3140 agent-lint regression on Linux CI.
+  local d live dead
+  d="$(mktemp -d "$SESSION_TMP/multirun.XXXXXX")" || return 1
   # free identity -> base id is taken
   AGENT_ID=""; claim_agent_identity "$d" "host-aa11"
-  [ "$AGENT_ID" = "host-aa11" ] || { log "  free id not taken: '$AGENT_ID'"; rm -rf "$d"; return 1; }
+  [ "$AGENT_ID" = "host-aa11" ] || { log "  free id not taken: '$AGENT_ID'"; return 1; }
   # a LIVE sibling holding the id -> caller must fork a distinct suffixed id
-  sleep 30 & local live=$!
+  sleep 30 & live=$!
   mkdir -p "$d/agent-main-host-bb22.lock"; printf '%s\n' "$live" > "$d/agent-main-host-bb22.lock/pid"
   AGENT_ID=""; claim_agent_identity "$d" "host-bb22"
-  kill "$live" 2>/dev/null
+  kill "$live" 2>/dev/null; wait "$live" 2>/dev/null
   case "$AGENT_ID" in
-    host-bb22) log "  live collision was NOT forked"; rm -rf "$d"; return 1 ;;
+    host-bb22) log "  live collision was NOT forked"; return 1 ;;
     host-bb22-*) : ;;
-    *) log "  forked id malformed: '$AGENT_ID'"; rm -rf "$d"; return 1 ;;
+    *) log "  forked id malformed: '$AGENT_ID'"; return 1 ;;
   esac
   # a STALE lock (dead owner) -> base id reclaimed
-  sleep 30 & local dead=$!; kill "$dead" 2>/dev/null; wait "$dead" 2>/dev/null
+  sleep 30 & dead=$!; kill "$dead" 2>/dev/null; wait "$dead" 2>/dev/null
   mkdir -p "$d/agent-main-host-cc33.lock"; printf '%s\n' "$dead" > "$d/agent-main-host-cc33.lock/pid"
   AGENT_ID=""; claim_agent_identity "$d" "host-cc33"
-  [ "$AGENT_ID" = "host-cc33" ] || { log "  stale lock not reclaimed: '$AGENT_ID'"; rm -rf "$d"; return 1; }
-  rm -rf "$d"
+  [ "$AGENT_ID" = "host-cc33" ] || { log "  stale lock not reclaimed: '$AGENT_ID'"; return 1; }
 }
 
 test_agent_id_host_matches() {
