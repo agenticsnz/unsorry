@@ -169,7 +169,7 @@ Team: [Agentics NZ](https://github.com/agenticsnz/)
 
 Creator / Engineer: [cgbarlow](https://github.com/cgbarlow)
 
-Lead Engineer: [perrtu](https://github.com/perttu)
+Lead Engineer: [perttu](https://github.com/perttu)
 
 Contributors: [chat-bit-01](https://github.com/chat-bit-01) · [SimonMcCallum](https://github.com/SimonMcCallum) · [adam91holt](https://github.com/adam91holt) · [ohdearquant](https://github.com/ohdearquant) · [ruvnet](https://github.com/ruvnet) · [kaurifund](https://github.com/kaurifund) · [binto-labs](https://github.com/binto-labs) · [yarcles](https://github.com/yarcles) · [ro0TuX777](https://github.com/ro0TuX777) · [jasonagnewnz](https://github.com/jasonagnewnz)
 

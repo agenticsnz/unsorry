@@ -413,6 +413,14 @@
             listContainer.innerHTML = '';
             timelineContainer.innerHTML = '';
 
+            // Top-strip avatars are placed by score%. A dominant leader (e.g. one
+            // contributor at 100%) compresses everyone else toward the left, piling
+            // the avatars on top of each other. Avatars are added high-to-low score,
+            // so keep each at least MIN_AVATAR_GAP% to the left of the previous
+            // (higher) one — spreads the cluster instead of overlapping it.
+            const MIN_AVATAR_GAP = 4;
+            let lastAvatarLeft = Infinity;
+
             leaderboardData.forEach((user, index) => {
                 const rank = index + 1;
                 const widthPercent = Math.max(2, (user.score / maxScore) * 100);
@@ -420,7 +428,9 @@
                     const avatarNode = document.createElement('a');
                     avatarNode.href = user.profileUrl;
                     avatarNode.className = 'absolute transform -translate-x-1/2 -top-1 w-8 h-8 rounded-full border-2 border-white shadow-sm overflow-hidden z-10 transition-transform hover:scale-110';
-                    avatarNode.style.left = `${Math.min(widthPercent, 100)}%`;
+                    const avatarLeft = Math.max(0, Math.min(Math.min(widthPercent, 100), lastAvatarLeft - MIN_AVATAR_GAP));
+                    lastAvatarLeft = avatarLeft;
+                    avatarNode.style.left = `${avatarLeft}%`;
                     avatarNode.innerHTML = `<img src="${escapeHTML(user.avatar)}" alt="${escapeHTML(user.name)}" class="w-full h-full object-cover">`;
                     timelineContainer.appendChild(avatarNode);
                 }
