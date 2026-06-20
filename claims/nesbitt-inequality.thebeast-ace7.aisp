@@ -1,7 +1,0 @@
-𝔸5.1.claim.nesbitt-inequality.thebeast-ace7@2026-06-20
-γ≔unsorry.claim
-⟦Ω:Claim⟧{goal≜nesbitt-inequality; agent≜thebeast-ace7}
-⟦Σ:Times⟧{ts≜2026-06-20T06:33:41Z; ttl≜7200}
-⟦Γ:Expiry⟧{now>ts+ttl⇒expired}
-⟦Λ:Release⟧{release≜λ_.rm(self)}
-⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
