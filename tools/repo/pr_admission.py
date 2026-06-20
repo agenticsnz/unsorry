@@ -16,7 +16,12 @@ import sys
 
 
 DEFAULT_CUTOVER = "2026-06-16T22:24:44Z"
-DIRECT_BRANCH_PREFIXES = ("feature/goal-", "prove/")
+# A direct proof submission is identified by its `prove(` TITLE or the dedicated
+# `prove/` branch — NOT by the `feature/goal-` branch prefix. ADR-009 coordination
+# PRs (unblock(...)/decompose(...)) legitimately live on `feature/goal-*` branches
+# too, so matching that prefix auto-closed them and left parents permanently
+# blocked (issue #3128). The `prove(` title is the reliable, unambiguous signal.
+DIRECT_BRANCH_PREFIXES = ("prove/",)
 QUEUE_BRANCH_PREFIX = "queued/prove/"
 DIRECT_TITLE_PREFIXES = ("prove(",)
 
