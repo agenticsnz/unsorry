@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜gpow-diff-ten-pow-twenty
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/gpow-diff-ten-pow-twenty.md
+  src≜packages/unsorry-archive-0032/backlog/gpow-diff-ten-pow-twenty.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/gpow-diff-ten-pow-twenty.lean
+  lean≜packages/unsorry-archive-0032/goals/gpow-diff-ten-pow-twenty.lean
   sha≜2a08fecd94c8d922997e31567516c63f3fed15c30ecb0d90f710f3b417a5e2e1
   aff≜0
 }
