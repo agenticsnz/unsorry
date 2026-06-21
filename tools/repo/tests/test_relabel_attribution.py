@@ -52,11 +52,22 @@ def test_end_to_end_apply(tmp_path: Path, capsys):
     (runs / "g.mac-158f.x.aisp").write_text("⟦Ω:Run⟧{}\n" + _prov(model="template-ring-cofactor"),
                                             encoding="utf-8")  # match
 
-    assert main(["--root", str(tmp_path), "--apply"]) == 0
+    assert main([str(tmp_path), "--apply"]) == 0
     assert "relabelled 2 record(s)" in capsys.readouterr().out
     assert "model≜sympy" in (idx / "a.aisp").read_text(encoding="utf-8")
     assert "model≜sonnet" in (idx / "b.aisp").read_text(encoding="utf-8")   # untouched
     assert "model≜sympy" in (runs / "g.mac-158f.x.aisp").read_text(encoding="utf-8")
     # second run is a no-op (idempotent)
-    assert main(["--root", str(tmp_path), "--apply"]) == 0
+    assert main([str(tmp_path), "--apply"]) == 0
     assert "relabelled 0 record(s)" in capsys.readouterr().out
+
+
+def test_cli_accepts_workflow_argv(tmp_path: Path, monkeypatch, capsys):
+    # Regression: attribution-relabel.yml invokes us with a *positional* root
+    # (`--apply .`). The argv the workflow actually runs must parse, or every
+    # sweep dies with `error: unrecognized arguments: .` (exit 2) before doing
+    # any work — which is exactly how the sweep shipped born-broken.
+    monkeypatch.chdir(tmp_path)
+    assert main(["--apply", "."]) == 0           # the workflow's exact argv
+    assert main(["."]) == 0                       # positional dry-run
+    assert main(["--apply"]) == 0                 # bare flag still defaults root to .

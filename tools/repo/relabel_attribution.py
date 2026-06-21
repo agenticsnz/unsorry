@@ -18,8 +18,8 @@ untouched (a) genuine LLM proofs by the same agent (e.g. `model≜sonnet`),
 Solver/credit (`solver≜…`) is never changed — ranking is unaffected.
 
 Usage:
-  python3 -m tools.repo.relabel_attribution            # dry-run: count what changes
-  python3 -m tools.repo.relabel_attribution --apply    # rewrite the files in place
+  python3 -m tools.repo.relabel_attribution            # dry-run under . : count what changes
+  python3 -m tools.repo.relabel_attribution --apply .  # rewrite the files under the given root
 """
 from __future__ import annotations
 
@@ -62,7 +62,12 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(
         prog="python3 -m tools.repo.relabel_attribution",
         description="Relabel mac-158f template proofs from claude to python/sympy.")
-    ap.add_argument("--root", default=".")
+    # Positional root, matching the repo's other path-scanning tools
+    # (`tools.gate_b validate .`, `tools.leaderboard --check .`): the
+    # attribution-relabel workflow invokes us as `… --apply .`, so the root
+    # must be accepted positionally, not only via a flag.
+    ap.add_argument("root", nargs="?", default=".",
+                    help="repository root to scan (default: .)")
     ap.add_argument("--apply", action="store_true", help="rewrite files (default: dry-run)")
     args = ap.parse_args(argv)
 
