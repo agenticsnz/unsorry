@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-four-consecutive-eq-hyper-tetrahedral
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-four-consecutive-eq-hyper-tetrahedral.md
+  src≜packages/unsorry-archive-0015/backlog/sum-four-consecutive-eq-hyper-tetrahedral.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-four-consecutive-eq-hyper-tetrahedral.lean
-  sha≜∅
-  aff≜-10
+  lean≜packages/unsorry-archive-0015/goals/sum-four-consecutive-eq-hyper-tetrahedral.lean
+  sha≜e79a12726ce9fe27121c0821bf33bc43d668d3a41639a2d5ad52ccd1f0870e4b
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

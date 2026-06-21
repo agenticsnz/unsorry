@@ -1,0 +1,21 @@
+𝔸5.1.goal.sq-add-sq-eq-three-mul-sq-s4-s4@2026-06-20
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sq-add-sq-eq-three-mul-sq-s4-s4
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜decompositions/sq-add-sq-eq-three-mul-sq-s4.beast-4444.aisp
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sq-add-sq-eq-three-mul-sq-s4-s4.lean
+  sha≜68dca1930a6ea90cc1ae1eb27afdb44f9e0b34a1e82502f9f911ed4dd30358ff
+  aff≜1
+  depth≜2
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

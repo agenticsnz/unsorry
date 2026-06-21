@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sumsq-products-ge-abc-times-sum
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sumsq-products-ge-abc-times-sum.md
+  src≜packages/unsorry-archive-0013/backlog/sumsq-products-ge-abc-times-sum.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sumsq-products-ge-abc-times-sum.lean
-  sha≜∅
-  aff≜-10
+  lean≜packages/unsorry-archive-0013/goals/sumsq-products-ge-abc-times-sum.lean
+  sha≜41721ae5c45ee187074d7b8ac090f240a5c97313c4ab83488063a9cd05a34810
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

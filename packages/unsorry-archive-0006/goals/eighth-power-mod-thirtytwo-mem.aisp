@@ -1,0 +1,20 @@
+𝔸5.1.goal.eighth-power-mod-thirtytwo-mem@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜eighth-power-mod-thirtytwo-mem
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/eighth-power-mod-thirtytwo-mem.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/eighth-power-mod-thirtytwo-mem.lean
+  sha≜1668392d16b9af5c2266ffd395f08ffcd6ade830e96dea0c05f94e44efef70e5
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

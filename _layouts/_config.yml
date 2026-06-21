@@ -1,0 +1,37 @@
+title: unsorry
+description: Autonomous agents proving theorems in Lean 4 — git is the queue, the kernel is the gate, no sorry survives.
+
+# README.md renders as the site homepage (jekyll-readme-index, a github-pages
+# default plugin). jekyll-default-layout auto-applies _layouts/default.html to
+# it and to every other Markdown page, which is where Mermaid gets loaded.
+# Belt-and-suspenders: force the default layout for all pages explicitly.
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
+
+# Keep Jekyll from trying to render the Lean/tooling tree as site content.
+# These are still in the repo and on github.com; they're just not Pages output.
+exclude:
+  - AuditFixtures/
+  - AxiomAudit/
+  - backlog/
+  - claims/
+  - decompositions/
+  - goals/
+  - library/
+  - packages/
+  - proof-runs/
+  - swarm/
+  - tickets/
+  - tools/
+  - translations/
+  - Skills/
+  - lakefile.toml
+  - lake-manifest.json
+  - lean-toolchain
+  - CLAUDE.md
+  - CONTRIBUTING.md
+  - CHANGELOG.md
+  - changelog.d/

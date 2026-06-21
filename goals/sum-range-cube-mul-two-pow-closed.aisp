@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-cube-mul-two-pow-closed
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-cube-mul-two-pow-closed.md
+  src≜packages/unsorry-archive-0013/backlog/sum-range-cube-mul-two-pow-closed.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-cube-mul-two-pow-closed.lean
-  sha≜∅
-  aff≜-10
+  lean≜packages/unsorry-archive-0013/goals/sum-range-cube-mul-two-pow-closed.lean
+  sha≜7fbd33d69cc4e1e6e32ede00984e2f9052f86e405910c891214f95de58d162f3
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -1,0 +1,20 @@
+𝔸5.1.goal.schur-inequality-deg-one@2026-06-17
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜schur-inequality-deg-one
+  phase≜prove
+  status≜archived
+  difficulty≜4
+}
+⟦Σ:Source⟧{
+  src≜packages/unsorry-archive-0014/backlog/schur-inequality-deg-one.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜packages/unsorry-archive-0014/goals/schur-inequality-deg-one.lean
+  sha≜f451c1454a323c201ec57e4a746906564e583bc938c8426fb1ed4ab4ad0249de
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

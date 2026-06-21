@@ -1,0 +1,20 @@
+𝔸5.1.goal.gcd-2n3-3n5-eq-one@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gcd-2n3-3n5-eq-one
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/gcd-2n3-3n5-eq-one.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/gcd-2n3-3n5-eq-one.lean
+  sha≜ec6a5af9783ef024d4943b7240b033708bb01b372cb1415887b6558a5fb5160a
+  aff≜-10
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -1,0 +1,8 @@
+𝔸5.1.run.sum-range-sq-mul-two-pow.mac-158f.20260617t165110397561z-9a5ea98f@2026-06-17
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260617t165110397561z-9a5ea98f; goal≜sum-range-sq-mul-two-pow; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-sum-induction}
+⟦Γ:Goal⟧{goal≜sum-range-sq-mul-two-pow}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-17T16:51:10Z}
+⟦Σ:Artifact⟧{sha≜3c70ab926345e9172b7dd1ef957a015e4fc4e93b703b8d9b19d8472d00ac44e7}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

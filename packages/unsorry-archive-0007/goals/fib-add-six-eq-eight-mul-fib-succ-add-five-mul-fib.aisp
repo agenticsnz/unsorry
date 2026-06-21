@@ -1,0 +1,20 @@
+𝔸5.1.goal.fib-add-six-eq-eight-mul-fib-succ-add-five-mul-fib@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜fib-add-six-eq-eight-mul-fib-succ-add-five-mul-fib
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/fib-add-six-eq-eight-mul-fib-succ-add-five-mul-fib.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/fib-add-six-eq-eight-mul-fib-succ-add-five-mul-fib.lean
+  sha≜30f49c4d3e98e6400d885e877d010e9e8c18a1d6057fe5cde5836f366ee5613b
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

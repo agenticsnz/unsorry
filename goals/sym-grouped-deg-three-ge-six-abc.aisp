@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sym-grouped-deg-three-ge-six-abc
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sym-grouped-deg-three-ge-six-abc.md
+  src≜packages/unsorry-archive-0016/backlog/sym-grouped-deg-three-ge-six-abc.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sym-grouped-deg-three-ge-six-abc.lean
-  sha≜∅
-  aff≜-10
+  lean≜packages/unsorry-archive-0016/goals/sym-grouped-deg-three-ge-six-abc.lean
+  sha≜e929eaf63d8ff654912d3e7bdcc81ff1a8a8e3d9034d86ce1dbce709c56e2af3
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

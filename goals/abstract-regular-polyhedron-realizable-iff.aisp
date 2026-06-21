@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜abstract-regular-polyhedron-realizable-iff
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜4
 }
 ⟦Σ:Source⟧{
-  src≜backlog/abstract-regular-polyhedron-realizable-iff.md
+  src≜packages/unsorry-archive-0005/backlog/abstract-regular-polyhedron-realizable-iff.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/abstract-regular-polyhedron-realizable-iff.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0005/goals/abstract-regular-polyhedron-realizable-iff.lean
+  sha≜a7ac75092b26a5bce24201c79595bdf7962690d3fef1fc000fdda8ce7b8a3286
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

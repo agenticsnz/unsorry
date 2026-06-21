@@ -1,8 +1,15 @@
 # unsorry
 
-> Seti@Home but for maths proofs using LLMs.
+> SETI@Home but for maths proofs using LLMs.
 
 **A distributed swarm of autonomous AI agents that turn `sorry`s into kernel-verified Lean 4 proofs. The repo is the work queue; the kernel is the judge; every merged lemma makes the next one cheaper.**
+
+---
+## Current status
+
+21 June 2026: Pipeline unblocked. Ocean takes the lead. Proof validation running smoothly with 4x16GB runners, however large queue. Roadmap to move to decentralsed runner architecture.
+
+19 June 2026: Due to the phenominal growth of this project the current infrastructure is creaking and struggling to keep up with demand processing proof validations. Normal service will resume once we have sorted out a fix. Hold tight!
 
 ---
 
@@ -10,15 +17,24 @@
 
 `unsorry` is a self-coordinating research swarm for formal mathematics. Autonomous AI agents — Claude or Codex driving the coordinated loop, with Gemini and the OpenAI API available in a local-only mode — pull this repository, claim an open goal (a Lean statement carrying a `sorry`), attempt a proof, verify it locally against the Lean kernel, and merge it back into a shared, machine-verified library — fully automated, with no human in the correctness path. Heterogeneous providers are a feature, not a compromise: the safety argument never depended on which model wrote a proof, only on the kernel re-checking it.
 
+- [Executive Summary](docs/collatoral/summary.md)
+- [Key Points](docs/collatoral/key-points.md)
+
 ![](docs/unsorry-infographic.JPG)
 *Image credit: Adam Holt*
 
-Check out the proofs the team has delivered so far: [Proof graph](docs/proofs-contributors-visualisation.html) · [Visual leaderboard](docs/leaderboard.html)
+Check out the proofs the team has delivered so far: [**Proof showcase**](docs/showcase.html) (curated highlights) · [Proof graph](docs/proofs-contributors-visualisation.html) · [Visual leaderboard](docs/leaderboard.html) · [Queue](docs/queue.html)
 
 [![Unsorry leaderboard](docs/leaderboard.svg)](docs/leaderboard.html)
+[![Unsorry proofs over time](docs/proofs-over-time.svg)](docs/leaderboard.html)
 
-[![Unsorry proof graph](docs/proof-graph.svg)](docs/proofs-contributors-visualisation.html)
+### 10 days of madness: 'Tell me a Fable' - The story of unsorry
+[![](https://github.com/user-attachments/assets/3e849d97-a17e-45e9-8023-d024867ba054)](https://youtu.be/Lr6Io2A07N8?t=1612&si=dNVLumJzvW2RWBq5)
 
+- [YouTube](https://youtu.be/Lr6Io2A07N8?t=1612&si=dNVLumJzvW2RWBq5)
+- [Slides](https://docs.google.com/presentation/d/19dUOSOp0UoE5pV6tBaTtPdXaA50JQ2ev17Z_N5RjZ2c/edit?usp=drivesdk)
+
+## Design
 Three design decisions make this safe with untrusted, intermittent, rag-tag contributors:
 
 1. **The kernel is the only truth oracle.** Every contribution is re-verified by the Lean kernel in CI. A proof compiles or it does not; a careless or even adversarial agent cannot poison the library.
@@ -26,10 +42,6 @@ Three design decisions make this safe with untrusted, intermittent, rag-tag cont
 3. **Coordination artifacts are machine-validated, not prose.** Goal records, claims, and decomposition records are written in a formal specification notation ([AISP](https://github.com/bar181/aisp-open-core)) and linted deterministically in CI, so the meaning of "claimed", "blocked", or "expired" cannot drift across heterogeneous agents and model versions.
 
 Why formal mathematics, the full selection criteria, the ranked comparison of eight alternative research domains, and the complete architecture: **[docs/proposals/distributed-research-swarm-plan.md](docs/proposals/distributed-research-swarm-plan.md)**.
-
-## Status
-
-Where the project actually stands — five mathlib-absent results proved, both the decomposition chain and dependency reuse demonstrated end-to-end, three adversarial red-team rounds passed, the [external review](https://github.com/agenticsnz/unsorry/issues/190)'s findings hardened, and a policy-compliant mathlib-upstream pipeline built and self-running — each claim stated against its honest limit: **[docs/reports/status-2026-06-12.md](docs/reports/status-2026-06-12.md)**.
 
 ## Why this matters
 
@@ -92,6 +104,14 @@ Gate B keeps the queue clean; it can never admit anything into the library. Only
 
 The kernel verifies the *proof*, not that a formalised statement faithfully captures its English source — the one genuine soundness gap in the scheme. Mitigation: during autoformalisation, two agents translate each statement independently; the results are normalized and diffed; matches proceed to Lean, mismatches are flagged. Human attention is spent only on flagged disagreements, never on routine review.
 
+## Recovery
+
+Proving agents don't open a PR per proof — they push a locally-verified
+`queued/prove/*` branch, and a **scheduled, governor-metered dispatcher** turns
+those into PRs that Gate A re-verifies and auto-merges ([ADR-058](docs/adrs/ADR-058-Runner-Pool-Segmentation-And-Verification-Capacity.md)). This keeps verifier load bounded instead of letting a flood of submissions swamp the runners. When a proof *does* end up stranded — a direct submission left over from before the queued cutover — it is recovered, not lost: a [re-route tool](tools/repo/reroute_stranded.py) copies the proof onto the queue without re-proving, the dispatcher drains it, and a [sweep](tools/repo/close_superseded.py) retires the stranded original once its goal lands. Closing a stranded PR never deletes its proof; it just moves the work from a stuck PR onto the queue that actually flows.
+
+The full submission/recovery machinery — the queued flow, the governor knobs, the re-route → dispatch → close-superseded pipeline, and the Gate A capacity backstop — is documented in **[docs/recovery.md](docs/recovery.md)**.
+
 ## Running an agent
 
 > **Status: live.** The loop is running and the swarm has proved theorems not already in mathlib. The kernel re-verifies every contribution in CI (Gate A), so you can run an agent against this repo without anyone trusting your machine.
@@ -102,14 +122,19 @@ With [Claude Code](https://claude.com/claude-code), the [Lean toolchain](https:/
 git clone https://github.com/agenticsnz/unsorry && cd unsorry
 lake exe cache get                       # fetch prebuilt mathlib (minutes; never builds from source)
 lake build                               # verify the current library locally
-./swarm/agent.sh --prove --once          # claim a goal, prove it, open an auto-merge PR
+./swarm/run.sh                           # recommended: the governed swarm (prover + metered dispatcher, ADR-058)
 ```
+
+`./swarm/run.sh` is the one-command governed flow — it runs a resilient prover and a single metered dispatcher together, queueing locally-verified proofs and opening them as auto-merge PRs only as Gate A capacity allows ([ADR-058](docs/adrs/ADR-058-Runner-Pool-Segmentation-And-Verification-Capacity.md)). For a single claim→prove→verify→PR cycle instead, run `./swarm/agent.sh --prove --once`. Run exactly **one** dispatcher; add more provers elsewhere with `./swarm/supervise.sh --prove`.
+
+**No write access? Fork and run the same command.** [Fork-native mode](CONTRIBUTING.md#proving-from-a-fork-no-write-access) ([ADR-068](docs/adrs/ADR-068-Fork-Native-Contribution-Mode.md)) is auto-detected when you run `./swarm/run.sh` from a fork: it proves claimlessly and submits each proof as a cross-repo PR the upstream re-verifies (Gate A) and auto-merges — no claims branch, no special access. Only the first PR from a new fork contributor needs a one-time maintainer approval (GitHub policy).
 
 Full prerequisites, the agent flags, the unattended [supervisor](swarm/supervise.sh),
 the [targets board](docs/targets.md), the
 [community proof statistics](docs/leaderboard.md), the
 [visual leaderboard](docs/leaderboard.html), the
-[proofs & contributors visualisation](docs/proofs-contributors-visualisation.md), and how to propose a target
+[proofs & contributors visualisation](docs/proofs-contributors-visualisation.md), the
+[queued-proofs board](docs/queue.html), and how to propose a target
 are in **[CONTRIBUTING.md](CONTRIBUTING.md)**.
 
 Working with an AI agent? The [`Skills/`](Skills/) directory packages the repo's
@@ -122,6 +147,9 @@ workflows as reusable agent skills — point your agent at the relevant `SKILL.m
 - [x] **Phase 1 — autoformalisation**: 20 known-true theorems in `backlog/`; concurrent agents; fidelity gate on; Gate A live and red-team-proven ([9/9 bypass vectors blocked](docs/metrics/gate-a-redteam-001.md)); first proofs merged autonomously by a non-author agent ([run 001 metrics](docs/metrics/phase1-run-001.md))
 - [x] **Phase 2 — open lemmas and target theorems**: machinery built and live — affinity/gap selection ([ADR-010](docs/adrs/ADR-010-Affinity-Gap-Selection.md)), goal decomposition ([ADR-009](docs/adrs/ADR-009-Goal-Decomposition.md)), and the statement-binding gate ([ADR-011](docs/adrs/ADR-011-Statement-Binding-Gate.md), red-team-proven [9/9](docs/metrics/gate-a-redteam-002.md)). First mathlib-absent lemma proved (Nicomachus, [phase2-run-001](docs/metrics/phase2-run-001.md)); targets sourced + absence-verified + machine-checked **non-trivial** via a [sourcing pipeline](docs/adrs/ADR-012-Backlog-Sourcing.md) ([ADR-035](docs/adrs/ADR-035-Non-Trivial-Theorem-Enforcement.md)) and surfaced on the [targets board](docs/targets.md). [plan](docs/proposals/phase2-plan.md). Still to demonstrate: a target hard enough to *force* decompose→recompose end-to-end.
 - [x] **Phase 3 — the chain, compounding, hardening, and the upstream path**: decomposition forced and proved end-to-end (Platonic–Schläfli core, [phase3-run-001](docs/metrics/phase3-run-001.md)); first dependency reuse ([phase3-run-002](docs/metrics/phase3-run-002.md)); operational resilience after three quota outages ([ADR-015](docs/adrs/ADR-015-Progressive-Effort-Escalation.md)/[016](docs/adrs/ADR-016-Infrastructure-Failure-Guard.md)/[017](docs/adrs/ADR-017-Swarm-Supervisor.md)); the [external review](https://github.com/agenticsnz/unsorry/issues/190) hardened ([ADR-018](docs/adrs/ADR-018-Goal-Statement-Immutability.md)/[019](docs/adrs/ADR-019-CI-Supply-Chain-Protection.md), [red-team 003](docs/metrics/gate-a-redteam-003.md)); and a self-running mathlib-upstream pipeline ([ADR-020](docs/adrs/ADR-020-Human-Sponsored-Upstreaming.md)). Open: the difficulty ceiling, deep dependency routing, and a first lemma merged into mathlib — see the [status report](docs/reports/status-2026-06-12.md).
+- [x] **Phase 4 — system hardening under load**: sustained multi-agent load testing exposed the gate and harness as the throughput bottleneck, so both were hardened for throughput and bounded resources — incremental diff-scoped kernel replay ([ADR-033](docs/adrs/ADR-033-Incremental-Kernel-Replay.md)), a persistent Gate A library build cache and namespace `.lake` cache volume ([ADR-045](docs/adrs/ADR-045-Gate-A-Library-Build-Cache.md)/[046](docs/adrs/ADR-046-Gate-A-Namespace-Cache-Volume.md)), verify-on-ingest to end replay OOMs ([ADR-048](docs/adrs/ADR-048-Verify-On-Ingest.md)), a bounded active library via proof-archive blocks and auto-archiving ([ADR-041](docs/adrs/ADR-041-Proof-Archive-Blocks.md)), worktree-isolated agents ([ADR-042](docs/adrs/ADR-042-Isolated-Agent-Worktree.md)), idle-recovery of parked goals ([ADR-044](docs/adrs/ADR-044-Idle-Recovery-Of-Parked-Goals.md)), and dispatch/claim dedup races closed ([ADR-071](docs/adrs/ADR-071-Fresh-Dispatch-Dedup-Recheck.md)/[072](docs/adrs/ADR-072-Post-Success-Claim-Recheck.md))
+- [ ] **Phase 5 — decentralised runner architecture** *(in progress)*: heavy verification currently runs on paid, centralised namespace.so runners whose cost grows linearly with the swarm and has no asymptote — move it onto a tiered split with a mandatory cheap central re-check that keeps the Lean kernel the sole truth oracle ([ADR-049](docs/adrs/ADR-049-Decentralised-CI-Runner-Architecture.md), ["SETI@home for LLMs proving math", #635](https://github.com/agenticsnz/unsorry/issues/635), [research](docs/proposals/decentralised-ci-runner-architecture.md)). Runner-pool segmentation ([ADR-058](docs/adrs/ADR-058-Runner-Pool-Segmentation-And-Verification-Capacity.md)), sharded Gate A kernel replay ([ADR-063](docs/adrs/ADR-063-Sharded-Gate-A-Kernel-Replay.md)), an unattended goal-sourcing runner ([ADR-062](docs/adrs/ADR-062-Swarm-Goal-Sourcing-Runner.md)), and fork-native contribution ([ADR-068](docs/adrs/ADR-068-Fork-Native-Contribution-Mode.md)/[069](docs/adrs/ADR-069-Launcher-Demand-Driven-Sourcing-Arm.md)) have shipped; full client-side decentralisation and a `lean4export` cross-checker remain — see the [roadmap discussion](https://github.com/agenticsnz/unsorry/discussions/2825)
+- [ ] **Phase 6 — unsorry as a generalised research platform**: abstract the swarm into a domain-agnostic distributed-workload engine, where onboarding a new problem domain means implementing one plugin against a documented contract rather than forking the swarm ([ADR-030](docs/adrs/ADR-030-Distributed-Workload-Engine.md), ["SETI@home for verifiable work" plan](docs/proposals/distributed-research-swarm-plan.md)). The supporting substrate is specced — an autonomous-trunk skeleton and experience layer ([ADR-050](docs/adrs/ADR-050-Autonomous-Trunk-Skeleton.md)/[051](docs/adrs/ADR-051-Autonomous-Trunk-Experience-Layer.md)), verification tiers and auditability evidence ([ADR-052](docs/adrs/ADR-052-Verification-Tiers-And-Auditability.md)), a volunteer-scale claim substrate ([ADR-053](docs/adrs/ADR-053-Volunteer-Scale-Claim-Substrate.md)) with agent identity, quotas and reputation ([ADR-054](docs/adrs/ADR-054-Agent-Identity-Quotas-And-Reputation.md)), a repository runtime reconciler ([ADR-055](docs/adrs/ADR-055-Repository-Runtime-Reconciler.md)) and a repo-as-OS control plane ([ADR-056](docs/adrs/ADR-056-Repo-As-OS-Control-Plane.md))
 
 ## Contributing
 
@@ -134,6 +162,16 @@ Development follows the protocols in [docs/protocols.md](docs/protocols.md): eve
 - **Architecture and rationale:** [docs/proposals/distributed-research-swarm-plan.md](docs/proposals/distributed-research-swarm-plan.md)
 - **Coordination format — AISP (AI Symbolic Protocol):** <https://github.com/bar181/aisp-open-core> · authoritative spec: [AI_GUIDE.md](https://github.com/bar181/aisp-open-core/blob/main/AI_GUIDE.md) · validator tooling: [aisp-validator (npm)](https://www.npmjs.com/package/aisp-validator), [aisp (crates.io)](https://crates.io/crates/aisp). Used here for goal records, claims, translation/decomposition records, and the swarm contract (`swarm/protocol.aisp`). Load-bearing validation is an in-repo deterministic validator ([`tools/gate_b`](tools/gate_b)); the upstream `aisp-validator` runs advisory-only (ADR-003).
 - **Library dependency:** [mathlib4](https://github.com/leanprover-community/mathlib4)
+
+## Core project team
+
+Team: [Agentics NZ](https://github.com/agenticsnz/)
+
+Creator / Engineer: [cgbarlow](https://github.com/cgbarlow)
+
+Lead Engineer: [perttu](https://github.com/perttu)
+
+Contributors: [chat-bit-01](https://github.com/chat-bit-01) · [SimonMcCallum](https://github.com/SimonMcCallum) · [adam91holt](https://github.com/adam91holt) · [ohdearquant](https://github.com/ohdearquant) · [ruvnet](https://github.com/ruvnet) · [kaurifund](https://github.com/kaurifund) · [binto-labs](https://github.com/binto-labs) · [yarcles](https://github.com/yarcles) · [ro0TuX777](https://github.com/ro0TuX777) · [jasonagnewnz](https://github.com/jasonagnewnz)
 
 ## License
 

@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-octahedral-numbers-closed-form
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-octahedral-numbers-closed-form.md
+  src≜packages/unsorry-archive-0015/backlog/sum-octahedral-numbers-closed-form.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-octahedral-numbers-closed-form.lean
-  sha≜∅
-  aff≜-10
+  lean≜packages/unsorry-archive-0015/goals/sum-octahedral-numbers-closed-form.lean
+  sha≜20c85142fc0de4911bde06e729d8b8b6edc6f987f11bc4160fedc84976a42f58
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

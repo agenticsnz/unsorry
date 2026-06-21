@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜gcd-2pow-3pow-eq-one
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/gcd-2pow-3pow-eq-one.md
+  src≜packages/unsorry-archive-0007/backlog/gcd-2pow-3pow-eq-one.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/gcd-2pow-3pow-eq-one.lean
+  lean≜packages/unsorry-archive-0007/goals/gcd-2pow-3pow-eq-one.lean
   sha≜1392e70e35456541931a1b321fd5252226f7d573fbda03e189fe8d4806424089
   aff≜-10
 }

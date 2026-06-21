@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜alt-sum-range-sq-eq-signed-pronic
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/alt-sum-range-sq-eq-signed-pronic.md
+  src≜packages/unsorry-archive-0013/backlog/alt-sum-range-sq-eq-signed-pronic.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/alt-sum-range-sq-eq-signed-pronic.lean
-  sha≜∅
-  aff≜-20
+  lean≜packages/unsorry-archive-0013/goals/alt-sum-range-sq-eq-signed-pronic.lean
+  sha≜41acb1a7e58181472b791366255b32d91e8d31e94fd618a9cc13fb91850bc47e
+  aff≜-19
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

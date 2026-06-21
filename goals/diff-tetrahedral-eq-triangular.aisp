@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜diff-tetrahedral-eq-triangular
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/diff-tetrahedral-eq-triangular.md
+  src≜packages/unsorry-archive-0006/backlog/diff-tetrahedral-eq-triangular.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/diff-tetrahedral-eq-triangular.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0006/goals/diff-tetrahedral-eq-triangular.lean
+  sha≜9969ef2f91122f7b41b5b9a86462656d1418ec140b4d19ee27251677f3425175
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

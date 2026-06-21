@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-centered-octahedral-closed-form
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-centered-octahedral-closed-form.md
+  src≜packages/unsorry-archive-0014/backlog/sum-centered-octahedral-closed-form.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-centered-octahedral-closed-form.lean
-  sha≜∅
-  aff≜-10
+  lean≜packages/unsorry-archive-0014/goals/sum-centered-octahedral-closed-form.lean
+  sha≜d9688ebf122f31e579a526ffc8e4c6cd8919c75977ea3e46ef24c8de72892081
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -1,0 +1,20 @@
+𝔸5.1.goal.gzmod-504-pow-ten-sub-pow-four@2026-06-19
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gzmod-504-pow-ten-sub-pow-four
+  phase≜prove
+  status≜archived
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜packages/unsorry-archive-0028/backlog/gzmod-504-pow-ten-sub-pow-four.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜packages/unsorry-archive-0028/goals/gzmod-504-pow-ten-sub-pow-four.lean
+  sha≜3fd613e3fbefb23a8077cd14f0e5b84eb77c33df39a3a3e3f9ea0d5bc24fc32a
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜six-dvd-pow-three-sub-self
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/six-dvd-pow-three-sub-self.md
+  src≜packages/unsorry-archive-0005/backlog/six-dvd-pow-three-sub-self.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/six-dvd-pow-three-sub-self.lean
+  lean≜packages/unsorry-archive-0005/goals/six-dvd-pow-three-sub-self.lean
   sha≜8c1c08b00acf997b6c5d876d486c96c889c620a088458e28e12a4933c65e005b
   aff≜-9
 }

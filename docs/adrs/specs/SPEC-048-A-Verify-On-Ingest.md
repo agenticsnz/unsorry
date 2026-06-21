@@ -38,7 +38,7 @@ Provenance (this spec) covers the proof modules; ADR-018 covers the goal stateme
 ### Workflow — `.github/workflows/gate-a.yml`
 
 `gate-a-archive` runs `archive_packages validate-changed --base <PR base>`. With no kernel replay it
-no longer needs swap or a 16 GB pin; it runs on `detect.profile`.
+no longer needs swap or a large replay runner; it runs on the `namespace-profile-unsorry-prepare` lane.
 
 ## Safety
 

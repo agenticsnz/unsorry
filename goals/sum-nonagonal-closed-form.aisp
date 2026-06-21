@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-nonagonal-closed-form
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-nonagonal-closed-form.md
+  src≜packages/unsorry-archive-0010/backlog/sum-nonagonal-closed-form.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-nonagonal-closed-form.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0010/goals/sum-nonagonal-closed-form.lean
+  sha≜fb7c8318cd42ce44586fe8c4dfebfd4c8b220d78f4156fe763fc6e9bf1177834
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

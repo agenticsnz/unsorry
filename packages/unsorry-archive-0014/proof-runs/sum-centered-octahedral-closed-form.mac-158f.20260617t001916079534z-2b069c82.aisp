@@ -1,0 +1,8 @@
+𝔸5.1.run.sum-centered-octahedral-closed-form.mac-158f.20260617t001916079534z-2b069c82@2026-06-17
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260617t001916079534z-2b069c82; goal≜sum-centered-octahedral-closed-form; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-sum-induction}
+⟦Γ:Goal⟧{goal≜sum-centered-octahedral-closed-form}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-17T00:19:16Z}
+⟦Σ:Artifact⟧{sha≜d9688ebf122f31e579a526ffc8e4c6cd8919c75977ea3e46ef24c8de72892081}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

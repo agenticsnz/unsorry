@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-pentagonal-eq
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-pentagonal-eq.md
+  src≜packages/unsorry-archive-0013/backlog/sum-pentagonal-eq.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-pentagonal-eq.lean
-  sha≜∅
-  aff≜-10
+  lean≜packages/unsorry-archive-0013/goals/sum-pentagonal-eq.lean
+  sha≜4b8f388fd41b449a3251416ea51b2beccdcf63dee50b68726051929b68604e95
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

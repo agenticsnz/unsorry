@@ -1,0 +1,8 @@
+𝔸5.1.run.dvd-252-pow-eight-sub-sq.mac-158f.20260616t235429839750z-0ab50327@2026-06-16
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260616t235429839750z-0ab50327; goal≜dvd-252-pow-eight-sub-sq; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-zmod-crt}
+⟦Γ:Goal⟧{goal≜dvd-252-pow-eight-sub-sq}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-16T23:54:29Z}
+⟦Σ:Artifact⟧{sha≜4e77a591e07f8204d59cd3170edb3a95277558600f10ff81a8eec4b99720d37e}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

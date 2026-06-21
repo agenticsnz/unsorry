@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-id-mul-three-pow
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-id-mul-three-pow.md
+  src≜packages/unsorry-archive-0016/backlog/sum-range-id-mul-three-pow.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-id-mul-three-pow.lean
-  sha≜∅
-  aff≜-10
+  lean≜packages/unsorry-archive-0016/goals/sum-range-id-mul-three-pow.lean
+  sha≜806f6cef0620c0f3e9fa145c9e579ffbb251d69524dbd4593709714afc7802be
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

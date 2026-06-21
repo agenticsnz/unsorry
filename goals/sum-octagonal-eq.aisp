@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-octagonal-eq
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-octagonal-eq.md
+  src≜packages/unsorry-archive-0015/backlog/sum-octagonal-eq.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-octagonal-eq.lean
-  sha≜∅
-  aff≜-10
+  lean≜packages/unsorry-archive-0015/goals/sum-octagonal-eq.lean
+  sha≜7118acd1ca25a9a3c12056cb625a253c94c4785970bb4641de4c5322afc4b7e9
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

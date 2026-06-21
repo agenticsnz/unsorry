@@ -1,0 +1,21 @@
+𝔸5.1.goal.cube-sum-ge-three-prod-s3@2026-06-14
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜cube-sum-ge-three-prod-s3
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜decompositions/cube-sum-ge-three-prod.oma-2-c50d.aisp
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/cube-sum-ge-three-prod-s3.lean
+  sha≜567a289ceaf0c41a210287e4edf0117e7d720ce7a2b756122edd1821dad1c2ca
+  aff≜1
+  depth≜1
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

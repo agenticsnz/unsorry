@@ -1,0 +1,20 @@
+𝔸5.1.goal.six-dvd-pow-three-sub-self@2026-06-14
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜six-dvd-pow-three-sub-self
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/six-dvd-pow-three-sub-self.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/six-dvd-pow-three-sub-self.lean
+  sha≜8c1c08b00acf997b6c5d876d486c96c889c620a088458e28e12a4933c65e005b
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -1,0 +1,8 @@
+𝔸5.1.run.sum-range-id-mul-three-pow-closed.mac-158f.20260617t002038534230z-0add4243@2026-06-17
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260617t002038534230z-0add4243; goal≜sum-range-id-mul-three-pow-closed; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-sum-induction}
+⟦Γ:Goal⟧{goal≜sum-range-id-mul-three-pow-closed}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-17T00:20:38Z}
+⟦Σ:Artifact⟧{sha≜be87dbaf79763e3139d3af5ace1fc32ccded3b4cd6b8d3e4da563ae7f7bc17ee}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

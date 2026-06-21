@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜gcd-4n3-5n4-eq-one
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/gcd-4n3-5n4-eq-one.md
+  src≜packages/unsorry-archive-0007/backlog/gcd-4n3-5n4-eq-one.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/gcd-4n3-5n4-eq-one.lean
+  lean≜packages/unsorry-archive-0007/goals/gcd-4n3-5n4-eq-one.lean
   sha≜288ca7ecbf471e0d7771368f352152707f25dc5a6b2d493500be232e9837720e
   aff≜-10
 }

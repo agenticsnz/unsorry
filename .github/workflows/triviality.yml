@@ -55,12 +55,22 @@ jobs:
       # Each probe holds ~all of mathlib resident (like gate-a replay); give it
       # swap headroom so a changed-goal sweep can't OOM the runner.
       - name: Add swap headroom (full-Mathlib elaboration)
+        # Idempotent + best-effort: a reused runner can already have /mnt/swapfile
+        # active, so fallocate/dd fail "Text file busy" and reddened the whole
+        # (advisory) triviality check. Swap is only OOM headroom — skip if it's
+        # already there, and never fail the job over it.
         run: |
-          sudo fallocate -l 12G /mnt/swapfile \
-            || sudo dd if=/dev/zero of=/mnt/swapfile bs=1M count=12288
-          sudo chmod 600 /mnt/swapfile
-          sudo mkswap /mnt/swapfile
-          sudo swapon /mnt/swapfile
+          if swapon --show=NAME --noheadings 2>/dev/null | grep -qx /mnt/swapfile; then
+            echo "swap headroom already active — skipping"
+          else
+            sudo fallocate -l 12G /mnt/swapfile 2>/dev/null \
+              || sudo dd if=/dev/zero of=/mnt/swapfile bs=1M count=12288 2>/dev/null \
+              || true
+            sudo chmod 600 /mnt/swapfile 2>/dev/null || true
+            sudo mkswap /mnt/swapfile 2>/dev/null || true
+            sudo swapon /mnt/swapfile 2>/dev/null \
+              || echo "::notice::swap headroom unavailable — proceeding without it"
+          fi
 
       - name: Build (mathlib binary cache)
         uses: leanprover/lean-action@38fbc41a8c28c4cbaec22d7f7de508ec2e7c0dd9 # v1.5.0

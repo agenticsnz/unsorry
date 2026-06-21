@@ -1,0 +1,20 @@
+𝔸5.1.goal.eighth-power-mod-seventeen-mem@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜eighth-power-mod-seventeen-mem
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/eighth-power-mod-seventeen-mem.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/eighth-power-mod-seventeen-mem.lean
+  sha≜9fad50faabde69449fe2969455660222ae7f13b709c95d03bb349c25bda2efbb
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

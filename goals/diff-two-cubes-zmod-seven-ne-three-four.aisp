@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜diff-two-cubes-zmod-seven-ne-three-four
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/diff-two-cubes-zmod-seven-ne-three-four.md
+  src≜packages/unsorry-archive-0006/backlog/diff-two-cubes-zmod-seven-ne-three-four.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/diff-two-cubes-zmod-seven-ne-three-four.lean
+  lean≜packages/unsorry-archive-0006/goals/diff-two-cubes-zmod-seven-ne-three-four.lean
   sha≜251bb03d9ff25f8f605a44a6339cd99dbab74dd310de9e5d0c99dc219bbbe805
   aff≜-20
 }

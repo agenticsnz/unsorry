@@ -1,0 +1,20 @@
+𝔸5.1.goal.realization-edge-in-set@2026-06-14
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜realization-edge-in-set
+  phase≜prove
+  status≜proved
+  difficulty≜4
+}
+⟦Σ:Source⟧{
+  src≜backlog/realization-edge-in-set.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/realization-edge-in-set.lean
+  sha≜3d821fc9d5d6ab0229aa56c032238cd11ec79137e0dfb9042bb7daa01255d835
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

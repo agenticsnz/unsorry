@@ -1,0 +1,20 @@
+𝔸5.1.goal.cube-of-sum-le-nine-sum-cubes@2026-06-17
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜cube-of-sum-le-nine-sum-cubes
+  phase≜prove
+  status≜archived
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜packages/unsorry-archive-0014/backlog/cube-of-sum-le-nine-sum-cubes.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜packages/unsorry-archive-0014/goals/cube-of-sum-le-nine-sum-cubes.lean
+  sha≜633bf88af264f764f7f0c5db21cd42c7c71255ee60101f6c82daf2f8dadf7ff2
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

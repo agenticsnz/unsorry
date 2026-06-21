@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜dvd-266-pow-nineteen-sub-self
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/dvd-266-pow-nineteen-sub-self.md
+  src≜packages/unsorry-archive-0014/backlog/dvd-266-pow-nineteen-sub-self.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/dvd-266-pow-nineteen-sub-self.lean
-  sha≜∅
-  aff≜-20
+  lean≜packages/unsorry-archive-0014/goals/dvd-266-pow-nineteen-sub-self.lean
+  sha≜d532bc742b3daa6c405c0044708c32c12e136ffb219b4c08ddf7b143fbab08a2
+  aff≜-19
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

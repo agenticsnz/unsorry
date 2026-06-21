@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-k-mul-k-add-two-closed-form
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-k-mul-k-add-two-closed-form.md
+  src≜packages/unsorry-archive-0015/backlog/sum-k-mul-k-add-two-closed-form.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-k-mul-k-add-two-closed-form.lean
-  sha≜∅
-  aff≜-10
+  lean≜packages/unsorry-archive-0015/goals/sum-k-mul-k-add-two-closed-form.lean
+  sha≜7b420e56013aaca2b079052cb230a34d920cc48a1c92a007bf23d33f61f4650a
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

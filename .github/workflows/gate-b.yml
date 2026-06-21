@@ -110,26 +110,49 @@ jobs:
     continue-on-error: true
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          fetch-depth: 0  # need the base commit to diff changed records
       - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version: "24"
       - name: Validate swarm contract
         run: npx --yes aisp-validator@0.3.0 validate swarm/protocol.aisp
-      - name: Validate coordination records (advisory; never reddens the check)
+      - name: Validate coordination records (advisory; changed-only; never reddens)
+        env:
+          BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || (github.event_name == 'push' && github.event.before || '') }}
         run: |
-          found=0 flagged=0
-          while IFS= read -r -d '' record; do
-            found=1
+          set -uo pipefail
+          # Scope to records CHANGED in this PR/push. Re-validating every immutable
+          # proof-runs/*.aisp (thousands) on each run is what made this ~8 min; a PR
+          # touches only a handful. Zero-SHA / missing base / shallow history falls
+          # back to validating all (rare — first push).
+          dirs=(goals translations decompositions library/index proof-runs)
+          records=()
+          if [ -n "$BASE_SHA" ] \
+             && [ "$BASE_SHA" != "0000000000000000000000000000000000000000" ] \
+             && git rev-parse -q --verify "${BASE_SHA}^{commit}" >/dev/null 2>&1; then
+            while IFS= read -r -d '' f; do
+              case "$f" in *.aisp) records+=("$f") ;; esac
+            done < <(git diff -z --name-only --diff-filter=ACM "$BASE_SHA" HEAD -- "${dirs[@]}" 2>/dev/null)
+          else
+            echo "advisory: no usable base diff — validating all records"
+            while IFS= read -r -d '' f; do records+=("$f"); done \
+              < <(find "${dirs[@]}" -name '*.aisp' -type f -print0 2>/dev/null)
+          fi
+          if [ "${#records[@]}" -eq 0 ]; then
+            echo "no changed coordination records — nothing to validate"
+            exit 0
+          fi
+          npx --yes aisp-validator@0.3.0 --version >/dev/null 2>&1 || true  # warm npm cache once
+          flagged=0
+          for record in "${records[@]}"; do
             echo "::group::${record}"
             npx --yes aisp-validator@0.3.0 validate "${record}" || {
               flagged=$((flagged + 1))
               echo "  advisory: upstream validator flagged this record (ADR-003 / issue #318)"
             }
             echo "::endgroup::"
-          done < <(find goals translations decompositions library/index proof-runs \
-                     -name '*.aisp' -type f -print0 2>/dev/null)
-          if [ "${found}" -eq 0 ]; then
-            echo "no coordination records on this tree — nothing to validate"
-          elif [ "${flagged}" -gt 0 ]; then
-            echo "advisory: ${flagged} record(s) flagged by upstream aisp-validator@0.3.0 — non-blocking (ADR-003); see issue #318"
+          done
+          if [ "${flagged}" -gt 0 ]; then
+            echo "advisory: ${flagged} of ${#records[@]} changed record(s) flagged by upstream aisp-validator@0.3.0 — non-blocking (ADR-003); see issue #318"
           fi

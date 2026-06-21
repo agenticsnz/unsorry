@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜dvd-273-pow-fourteen-sub-sq
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/dvd-273-pow-fourteen-sub-sq.md
+  src≜packages/unsorry-archive-0014/backlog/dvd-273-pow-fourteen-sub-sq.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/dvd-273-pow-fourteen-sub-sq.lean
-  sha≜∅
-  aff≜-20
+  lean≜packages/unsorry-archive-0014/goals/dvd-273-pow-fourteen-sub-sq.lean
+  sha≜2b4578df206a5015e877ea67b8774a1f52dd05c9206e4bc28eb2b79862694bd3
+  aff≜-19
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

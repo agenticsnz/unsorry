@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-cubes-sq-le-three-sum-sixth@2026-06-17
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-cubes-sq-le-three-sum-sixth
+  phase≜prove
+  status≜archived
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜packages/unsorry-archive-0014/backlog/sum-cubes-sq-le-three-sum-sixth.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜packages/unsorry-archive-0014/goals/sum-cubes-sq-le-three-sum-sixth.lean
+  sha≜de56eb0dac771d8607508c5e7bc7f14dd22ac2e62ec3d6296375dcc4b7a1bd28
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

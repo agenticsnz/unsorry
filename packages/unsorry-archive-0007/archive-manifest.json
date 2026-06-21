@@ -1,0 +1,179 @@
+{
+  "block_id": "unsorry-archive-0007",
+  "target_size": 40,
+  "proof_count": 40,
+  "status": "frozen",
+  "source_commit": "cf5cf4f1aa471acc06153595211bf8118cc5a960",
+  "validation_commit": null,
+  "pins": {
+    "lean_toolchain": "leanprover/lean4:v4.30.0",
+    "mathlib": "v4.30.0"
+  },
+  "notes": [
+    "ADR-041 proof archive block 0007.",
+    "Whole decomposition trees + standalone proved goals only (invariant A).",
+    "Active goal records remain as archived metadata pointing at this package."
+  ],
+  "goals": [
+    {
+      "goal": "eisenstein-norm-multiplicative",
+      "module": "Unsorry.EisensteinNormMultiplicative"
+    },
+    {
+      "goal": "eleventh-power-mod-twentythree-mem",
+      "module": "Unsorry.EleventhPowerModTwentythreeMem"
+    },
+    {
+      "goal": "fib-add-five-eq-five-mul-fib-succ-add-three-mul-fib",
+      "module": "Unsorry.FibAddFiveEqFiveMulFibSuccAddThreeMulFib"
+    },
+    {
+      "goal": "fib-add-four-eq-three-mul-fib-add-two-sub-fib",
+      "module": "Unsorry.FibAddFourEqThreeMulFibAddTwoSubFib"
+    },
+    {
+      "goal": "fib-add-four-recurrence-nat",
+      "module": "Unsorry.FibAddFourRecurrenceNat"
+    },
+    {
+      "goal": "fib-add-six-eq-eight-mul-fib-succ-add-five-mul-fib",
+      "module": "Unsorry.FibAddSixEqEightMulFibSuccAddFiveMulFib"
+    },
+    {
+      "goal": "fib-add-three-eq-two-mul-fib-succ-add-fib",
+      "module": "Unsorry.FibAddThreeEqTwoMulFibSuccAddFib"
+    },
+    {
+      "goal": "fib-add-two-sq-sub-fib-sq-eq-fib-two-mul-add-two",
+      "module": "Unsorry.FibAddTwoSqSubFibSqEqFibTwoMulAddTwo"
+    },
+    {
+      "goal": "fib-consecutive-vieta-form-value",
+      "module": "Unsorry.FibConsecutiveVietaFormValue"
+    },
+    {
+      "goal": "fib-two-mul-eq-fib-mul-two-mul-fib-succ-sub-fib",
+      "module": "Unsorry.FibTwoMulEqFibMulTwoMulFibSuccSubFib"
+    },
+    {
+      "goal": "fifth-power-mod-sixteen-odd-mem",
+      "module": "Unsorry.FifthPowerModSixteenOddMem"
+    },
+    {
+      "goal": "fifth-power-mod-twentytwo-mem",
+      "module": "Unsorry.FifthPowerModTwentytwoMem"
+    },
+    {
+      "goal": "four-var-qm-am-s3",
+      "module": "Unsorry.FourVarQmAmS3"
+    },
+    {
+      "goal": "four-var-qm-am-s2",
+      "module": "Unsorry.FourVarQmAmS2"
+    },
+    {
+      "goal": "four-var-qm-am",
+      "module": "Unsorry.FourVarQmAm"
+    },
+    {
+      "goal": "four-var-qm-am-s1",
+      "module": "Unsorry.FourVarQmAmS1"
+    },
+    {
+      "goal": "fourth-power-mod-eighty-mem",
+      "module": "Unsorry.FourthPowerModEightyMem"
+    },
+    {
+      "goal": "fourth-power-mod-five-mem",
+      "module": "Unsorry.FourthPowerModFiveMem"
+    },
+    {
+      "goal": "fourth-power-mod-fortyeight-mem",
+      "module": "Unsorry.FourthPowerModFortyeightMem"
+    },
+    {
+      "goal": "fourth-power-mod-hundred-mem",
+      "module": "Unsorry.FourthPowerModHundredMem"
+    },
+    {
+      "goal": "fourth-power-mod-nine-mem",
+      "module": "Unsorry.FourthPowerModNineMem"
+    },
+    {
+      "goal": "fourth-power-mod-ten-mem",
+      "module": "Unsorry.FourthPowerModTenMem"
+    },
+    {
+      "goal": "fourth-power-mod-thirtytwo-mem",
+      "module": "Unsorry.FourthPowerModThirtytwoMem"
+    },
+    {
+      "goal": "fourth-power-mod-twentyfive-mem",
+      "module": "Unsorry.FourthPowerModTwentyfiveMem"
+    },
+    {
+      "goal": "gcd-2n1-2n5-dvd-four",
+      "module": "Unsorry.Gcd2n12n5DvdFour"
+    },
+    {
+      "goal": "gcd-2n1-2n7-dvd-six",
+      "module": "Unsorry.Gcd2n12n7DvdSix"
+    },
+    {
+      "goal": "gcd-2n1-3n4-dvd-five",
+      "module": "Unsorry.Gcd2n13n4DvdFive"
+    },
+    {
+      "goal": "gcd-2n3-3n5-eq-one",
+      "module": "Unsorry.Gcd2n33n5EqOne"
+    },
+    {
+      "goal": "gcd-2n3-4n5-dvd-two",
+      "module": "Unsorry.Gcd2n34n5DvdTwo"
+    },
+    {
+      "goal": "gcd-2n5-3n7-eq-one",
+      "module": "Unsorry.Gcd2n53n7EqOne"
+    },
+    {
+      "goal": "gcd-2pow-3pow-eq-one",
+      "module": "Unsorry.Gcd2pow3powEqOne"
+    },
+    {
+      "goal": "gcd-3n1-5n2-eq-one",
+      "module": "Unsorry.Gcd3n15n2EqOne"
+    },
+    {
+      "goal": "gcd-3n1-9n4-eq-one",
+      "module": "Unsorry.Gcd3n19n4EqOne"
+    },
+    {
+      "goal": "gcd-3n2-4n3-eq-one",
+      "module": "Unsorry.Gcd3n24n3EqOne"
+    },
+    {
+      "goal": "gcd-3n2-5n4-dvd-two",
+      "module": "Unsorry.Gcd3n25n4DvdTwo"
+    },
+    {
+      "goal": "gcd-3n4-5n7-eq-one",
+      "module": "Unsorry.Gcd3n45n7EqOne"
+    },
+    {
+      "goal": "gcd-4n1-6n1-dvd-two",
+      "module": "Unsorry.Gcd4n16n1DvdTwo"
+    },
+    {
+      "goal": "gcd-4n3-5n4-eq-one",
+      "module": "Unsorry.Gcd4n35n4EqOne"
+    },
+    {
+      "goal": "gcd-4n3-6n5-eq-one",
+      "module": "Unsorry.Gcd4n36n5EqOne"
+    },
+    {
+      "goal": "gcd-5n2-7n3-eq-one",
+      "module": "Unsorry.Gcd5n27n3EqOne"
+    }
+  ]
+}

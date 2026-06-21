@@ -1,0 +1,20 @@
+𝔸5.1.goal.ggeom-pred-pow-twelve-sub-one@2026-06-17
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜ggeom-pred-pow-twelve-sub-one
+  phase≜prove
+  status≜archived
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜packages/unsorry-archive-0017/backlog/ggeom-pred-pow-twelve-sub-one.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜packages/unsorry-archive-0017/goals/ggeom-pred-pow-twelve-sub-one.lean
+  sha≜60cadd0461a38bad97bd37618935964accc0478545fbad0ddc3fc79078dbdb93
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

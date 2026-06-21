@@ -1,0 +1,8 @@
+𝔸5.1.run.sum-oblong-eq.mac-158f.20260617t002002858497z-6c4db8c4@2026-06-17
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260617t002002858497z-6c4db8c4; goal≜sum-oblong-eq; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-sum-induction}
+⟦Γ:Goal⟧{goal≜sum-oblong-eq}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-17T00:20:02Z}
+⟦Σ:Artifact⟧{sha≜9704ec30efec1708e8db3d94c5b5182c1110e5f9cfdda1db042e1de95699c8ae}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

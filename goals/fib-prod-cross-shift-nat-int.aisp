@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜fib-prod-cross-shift-nat-int
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/fib-prod-cross-shift-nat-int.md
+  src≜packages/unsorry-archive-0008/backlog/fib-prod-cross-shift-nat-int.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/fib-prod-cross-shift-nat-int.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0008/goals/fib-prod-cross-shift-nat-int.lean
+  sha≜17511fc8c6ecdc8a7238a8cf04805eeda0707141aa5480216055ac26d68ab2a9
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

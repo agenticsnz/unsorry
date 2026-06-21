@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜coprime-succ-sq-add
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/coprime-succ-sq-add.md
+  src≜packages/unsorry-archive-0005/backlog/coprime-succ-sq-add.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/coprime-succ-sq-add.lean
+  lean≜packages/unsorry-archive-0005/goals/coprime-succ-sq-add.lean
   sha≜9d6b0fe87dd172a4ea8b9ada4cb2324614c07915299c50067cdaaa144362840f
   aff≜-19
 }

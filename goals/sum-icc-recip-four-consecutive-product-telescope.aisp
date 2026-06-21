@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-icc-recip-four-consecutive-product-telescope
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-icc-recip-four-consecutive-product-telescope.md
+  src≜packages/unsorry-archive-0010/backlog/sum-icc-recip-four-consecutive-product-telescope.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-icc-recip-four-consecutive-product-telescope.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0010/goals/sum-icc-recip-four-consecutive-product-telescope.lean
+  sha≜029dd758acddb314fbc3904ff58e333af1f737c5130087e02a8c2a7b561c0f74
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

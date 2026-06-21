@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜cyclic-quad-ge-abc-times-sum
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/cyclic-quad-ge-abc-times-sum.md
+  src≜packages/unsorry-archive-0006/backlog/cyclic-quad-ge-abc-times-sum.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/cyclic-quad-ge-abc-times-sum.lean
+  lean≜packages/unsorry-archive-0006/goals/cyclic-quad-ge-abc-times-sum.lean
   sha≜dd207d366a5b75f0b0ca089b60c63e10cd1d37acebd4ac79e0fd81081f49f16a
   aff≜-20
 }

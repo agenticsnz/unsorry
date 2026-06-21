@@ -14,6 +14,7 @@
 # Usage:
 #   ./swarm/sourcing.sh [--once] [--theme <name>] [--max-goals <N>] [--dry-run]
 #   ./swarm/sourcing.sh --cycles <N> [--theme <name>] [--max-goals <N>]
+#   ./swarm/sourcing.sh --if-pool-empty [--cycles <N>] [...]
 #   ./swarm/sourcing.sh --self-test
 #
 # Unlike agent.sh, the default is a BOUNDED run. Sourcing has no empty-pool
@@ -21,6 +22,15 @@
 # would open PRs forever. The script runs UNSORRY_SOURCING_CYCLES cycles
 # (default 1) and stops; --cycles N overrides, --once forces 1. Each cycle is
 # one theme and one PR (the skill's "one theme per session" discipline).
+#
+# Demand-driven sourcing (--if-pool-empty, ADR-067): the prove arm (agent.sh)
+# stops when there are no problems left to solve. --if-pool-empty makes sourcing
+# the complement — it sources ONLY when the prove pool is empty (no goals/<slug>
+# carries status≜open on the freshly-synced main), and otherwise no-ops with exit
+# 0 (no Claude call, no PR), so a supervisor/cron can keep one command running
+# that replenishes the backlog exactly when, and only when, provers run dry. The
+# pool is re-checked at the top of every cycle, so a multi-cycle run also stops
+# the moment the backlog refills (e.g. a prior cycle's PR merged).
 #
 # Must be run from the repository root with main checked out and synchronized to
 # origin/main: the cycle deduplicates new slugs against the live origin/main
@@ -58,6 +68,7 @@ Bash(gh pr *),Bash(gh api *),Bash(gh auth status*)"
 ONCE=0
 DRY_RUN=0
 SELF_TEST=0
+IF_POOL_EMPTY=0
 THEME=""
 MAX_GOALS=""
 CYCLES=""
@@ -85,6 +96,7 @@ usage() {
 Usage:
   ./swarm/sourcing.sh [--once] [--theme <name>] [--max-goals <N>] [--dry-run]
   ./swarm/sourcing.sh --cycles <N> [--theme <name>] [--max-goals <N>]
+  ./swarm/sourcing.sh --if-pool-empty [--cycles <N>] [...]
   ./swarm/sourcing.sh --self-test
 
 Fires up Claude to run the unsorry-goal-sourcing skill (ADR-060) for one or more
@@ -97,6 +109,10 @@ Flags:
   --cycles <N>     Run N cycles (one theme/PR each), sleeping between them
   --theme <name>   Force the theme for every cycle (default: Claude chooses one)
   --max-goals <N>  Hard cap on new goals per cycle/PR (1..50, default 50)
+  --if-pool-empty  Demand-driven (ADR-067): source only when there are no
+                   problems left to solve (no goals/<slug> with status≜open on
+                   the synced main); otherwise no-op with exit 0 (no PR). The
+                   pool is re-checked before every cycle
   --dry-run        Print the assembled prompt and exit; no Claude call, no PR
   --provider <p>   Sourcing CLI; only 'claude' is supported (default: claude)
   --self-test      Run the built-in hermetic tests and exit (0 green / 1 red)
@@ -129,6 +145,7 @@ parse_args() {
       --max-goals) [ $# -ge 2 ] || die_config "--max-goals needs an argument"; MAX_GOALS="$2"; shift ;;
       --cycles) [ $# -ge 2 ] || die_config "--cycles needs an argument"; CYCLES="$2"; shift ;;
       --provider) [ $# -ge 2 ] || die_config "--provider needs an argument"; UNSORRY_PROVIDER="$2"; shift ;;
+      --if-pool-empty) IF_POOL_EMPTY=1 ;;
       --dry-run) DRY_RUN=1 ;;
       --self-test) SELF_TEST=1 ;;
       -h|--help) usage; exit 0 ;;
@@ -228,6 +245,22 @@ goal_slugs() {
     [ -e "$f" ] || continue
     basename "$f" .aisp
   done | sort -u
+}
+
+# The number of goals still to solve ("problems"): goals/<slug>.aisp records
+# carrying a status≜open field. This reads the status≜ line directly — the same
+# authoritative marker swarm/supervise.sh:scope_closed greps (a merged proof
+# rewrites status≜open → status≜proved, so an open goal is exactly an unsolved
+# one). Pure in its dir argument; a missing dir counts as zero. The --if-pool-
+# empty gate (ADR-067) sources only when this is 0.
+open_goal_count() {
+  local dir="${1:-goals}" n=0 f
+  [ -d "$dir" ] || { printf '0\n'; return 0; }
+  for f in "$dir"/*.aisp; do
+    [ -e "$f" ] || continue
+    grep -q 'status≜open' "$f" && n=$((n + 1))
+  done
+  printf '%s\n' "$n"
 }
 
 # Assemble the Claude prompt: the sourcing playbook (source.md) plus a runtime
@@ -399,8 +432,19 @@ main() {
   fi
   solver="$(resolve_solver)"
 
-  local i rc overall=0
+  local i rc overall=0 open_n
   for (( i = 1; i <= cycles; i++ )); do
+    if [ "$IF_POOL_EMPTY" -eq 1 ]; then
+      # Demand-driven (ADR-067): re-check the synced main each cycle, so we both
+      # gate the first cycle and stop the moment a prior cycle's PR (or a prover)
+      # refills the backlog. No open goals ⇒ kick off a sourcing run instead.
+      open_n="$(open_goal_count goals)"
+      if [ "$open_n" -gt 0 ]; then
+        log "--if-pool-empty: $open_n open goal(s) still to solve — skipping sourcing (no PR)"
+        break
+      fi
+      log "--if-pool-empty: prove pool empty — sourcing to replenish the backlog"
+    fi
     [ "$cycles" -gt 1 ] && log "=== sourcing cycle $i/$cycles ==="
     rc=0
     run_cycle "$THEME" "$max_goals" "$solver" || rc=$?
@@ -458,6 +502,23 @@ test_goal_slugs() {
   _assert_eq "alpha-goal"$'\n'"zeta-goal" "$out" "slugs sorted, non-.aisp ignored" || return 1
 }
 
+test_open_goal_count() {
+  local d rc=0
+  d="$(mktemp -d)" || return 1
+  printf 'status≜open\n'    > "$d/a.aisp"   # a problem to solve
+  printf 'status≜open\n'    > "$d/b.aisp"   # another
+  printf 'status≜proved\n'  > "$d/c.aisp"   # solved — not counted
+  printf 'status≜blocked\n' > "$d/d.aisp"   # parked — not counted
+  : > "$d/note.txt"                          # non-.aisp ignored
+  _assert_eq 2 "$(open_goal_count "$d")" "two open goals counted" || rc=1
+  printf 'status≜proved\n' > "$d/a.aisp"
+  printf 'status≜proved\n' > "$d/b.aisp"
+  _assert_eq 0 "$(open_goal_count "$d")" "all solved ⇒ 0 (pool empty)" || rc=1
+  rm -rf "$d"
+  _assert_eq 0 "$(open_goal_count "$d")" "missing dir ⇒ 0" || rc=1
+  return "$rc"
+}
+
 test_build_prompt() {
   local out
   out="$(build_prompt "euler-substrate" 7 "alice" "foo-goal"$'\n'"bar-goal")"
@@ -491,16 +552,18 @@ test_parse_args() {
   # parse_args writes the script globals; drive it in-process and reset after
   # (run_self_tests exits when done, so the reset is just test hygiene).
   local rc=0
-  THEME=""; MAX_GOALS=""; CYCLES=""; DRY_RUN=0; ONCE=0
-  parse_args --theme foo --max-goals 9 --cycles 2 --dry-run
-  _assert_eq foo "$THEME"     "theme parsed"     || rc=1
-  _assert_eq 9   "$MAX_GOALS" "max-goals parsed" || rc=1
-  _assert_eq 2   "$CYCLES"    "cycles parsed"    || rc=1
-  _assert_eq 1   "$DRY_RUN"   "dry-run parsed"   || rc=1
-  THEME=""; MAX_GOALS=""; CYCLES=""; DRY_RUN=0; ONCE=0
+  THEME=""; MAX_GOALS=""; CYCLES=""; DRY_RUN=0; ONCE=0; IF_POOL_EMPTY=0
+  parse_args --theme foo --max-goals 9 --cycles 2 --if-pool-empty --dry-run
+  _assert_eq foo "$THEME"         "theme parsed"          || rc=1
+  _assert_eq 9   "$MAX_GOALS"     "max-goals parsed"      || rc=1
+  _assert_eq 2   "$CYCLES"        "cycles parsed"         || rc=1
+  _assert_eq 1   "$IF_POOL_EMPTY" "if-pool-empty parsed"  || rc=1
+  _assert_eq 1   "$DRY_RUN"       "dry-run parsed"        || rc=1
+  THEME=""; MAX_GOALS=""; CYCLES=""; DRY_RUN=0; ONCE=0; IF_POOL_EMPTY=0
   parse_args --once
   _assert_eq 1 "$ONCE" "once parsed" || rc=1
-  THEME=""; MAX_GOALS=""; CYCLES=""; DRY_RUN=0; ONCE=0
+  _assert_eq 0 "$IF_POOL_EMPTY" "if-pool-empty defaults off" || rc=1
+  THEME=""; MAX_GOALS=""; CYCLES=""; DRY_RUN=0; ONCE=0; IF_POOL_EMPTY=0
   return "$rc"
 }
 
@@ -508,6 +571,7 @@ test_usage_smoke() {
   local out; out="$(usage)"
   case "$out" in *sourcing.sh*)  ;; *) return 1 ;; esac
   case "$out" in *"--max-goals"*) ;; *) return 1 ;; esac
+  case "$out" in *"--if-pool-empty"*) ;; *) return 1 ;; esac
 }
 
 run_self_tests() {
@@ -516,6 +580,7 @@ run_self_tests() {
     test_resolve_model
     test_resolve_cycles
     test_goal_slugs
+    test_open_goal_count
     test_build_prompt
     test_build_prompt_model_choice
     test_fetch_retry_delay

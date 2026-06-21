@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜dvd-fortyeight-coprime-six-pow-four-sub-one
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜4
 }
 ⟦Σ:Source⟧{
-  src≜backlog/dvd-fortyeight-coprime-six-pow-four-sub-one.md
+  src≜packages/unsorry-archive-0006/backlog/dvd-fortyeight-coprime-six-pow-four-sub-one.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/dvd-fortyeight-coprime-six-pow-four-sub-one.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0006/goals/dvd-fortyeight-coprime-six-pow-four-sub-one.lean
+  sha≜abf0e1277118aaf1bfcf298011dcb86ffde90e30929843989862924e095777dd
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

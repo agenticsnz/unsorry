@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜three-quartic-sum-ge-sumsq-sq
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/three-quartic-sum-ge-sumsq-sq.md
+  src≜packages/unsorry-archive-0016/backlog/three-quartic-sum-ge-sumsq-sq.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/three-quartic-sum-ge-sumsq-sq.lean
-  sha≜∅
-  aff≜-10
+  lean≜packages/unsorry-archive-0016/goals/three-quartic-sum-ge-sumsq-sq.lean
+  sha≜45a87f62df11600cd47657d8a7158aec48f2bcee2c5b22ebbc3da27a2d018626
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

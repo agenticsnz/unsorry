@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% if page.title %}{{ page.title }} · {% endif %}{{ site.title | default: "unsorry" }}</title>
+  {% seo %}
+  <style>
+    :root { --fg:#1f2328; --muted:#59636e; --link:#0969da; --border:#d1d9e0; --bg:#ffffff; --code-bg:#f6f8fa;
+      --btn-bg:#1f2328; --btn-fg:#ffffff; --btn-sub:#9198a1; --btn-border:rgba(27,31,36,.15); }
+    @media (prefers-color-scheme: dark) {
+      :root { --fg:#e6edf3; --muted:#9198a1; --link:#4493f8; --border:#3d444d; --bg:#0d1117; --code-bg:#151b23;
+        --btn-bg:#21262d; --btn-fg:#e6edf3; --btn-sub:#9198a1; --btn-border:#3d444d; }
+    }
+    body {
+      color: var(--fg); background: var(--bg);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+      line-height: 1.6; max-width: 860px; margin: 0 auto; padding: 2.5rem 1.25rem 5rem;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--link); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    h1, h2, h3, h4 { line-height: 1.25; margin-top: 1.6em; }
+    h1 { font-size: 2rem; border-bottom: 1px solid var(--border); padding-bottom: .3em; }
+    h2 { font-size: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: .3em; }
+    code { background: var(--code-bg); padding: .2em .4em; border-radius: 6px; font-size: 85%;
+      font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace; }
+    pre { background: var(--code-bg); padding: 1rem; border-radius: 8px; overflow: auto; }
+    pre code { background: none; padding: 0; font-size: 100%; }
+    pre.mermaid { background: none; text-align: center; }
+    table { border-collapse: collapse; display: block; overflow: auto; }
+    th, td { border: 1px solid var(--border); padding: .4em .8em; }
+    blockquote { color: var(--muted); border-left: .25em solid var(--border); padding: 0 1em; margin-left: 0; }
+    img { max-width: 100%; }
+    /* Site banner: Agentics logo (top left) + "View project on GitHub" button
+       (top right), echoing the GitHub Pages "architect" theme header. */
+    .site-header {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem 1.5rem; margin-bottom: 2.5rem;
+    }
+    .site-header__logo img { height: 60px; width: auto; display: block; }
+    .site-header__gh {
+      display: inline-block; text-align: center; line-height: 1.25; white-space: nowrap;
+      color: var(--btn-fg); background: var(--btn-bg);
+      border: 1px solid var(--btn-border); border-radius: 8px;
+      padding: 9px 18px; font-weight: 700; font-size: 1rem;
+    }
+    .site-header__gh:hover { text-decoration: none; filter: brightness(1.12); }
+    .site-header__gh small { display: block; font-weight: 400; font-size: 11px; color: var(--btn-sub); }
+    @media (max-width: 480px) { .site-header__logo img { height: 48px; } }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a class="site-header__logo" href="https://agentics.org.nz" aria-label="Agentics">
+      <img src="https://cdn.disco.co/media/agentics-logo-enhanced-removebg-preview_2949fb89-758d-4d9d-ae30-a51cea979427.png"
+           alt="Agentics" width="400" height="400">
+    </a>
+    <a class="site-header__gh" href="https://github.com/agenticsnz/unsorry">
+      <small>View project on</small> GitHub
+    </a>
+  </header>
+
+  {{ content }}
+
+  <script type="module">
+    import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+
+    // kramdown emits ```mermaid fences as <pre><code class="language-mermaid">.
+    // Mermaid's auto-run wants <pre class="mermaid">, so rewrite first.
+    document.querySelectorAll("pre > code.language-mermaid").forEach((code) => {
+      const pre = document.createElement("pre");
+      pre.className = "mermaid";
+      pre.textContent = code.textContent;
+      code.parentElement.replaceWith(pre);
+    });
+
+    const dark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    mermaid.initialize({ startOnLoad: false, theme: dark ? "dark" : "default", securityLevel: "loose" });
+    await mermaid.run({ querySelector: "pre.mermaid" });
+  </script>
+</body>
+</html>

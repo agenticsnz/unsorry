@@ -1,0 +1,8 @@
+𝔸5.1.lemma.d16b54df10f2@2026-06-19
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜d16b54df10f25379bd5839f21ae5e270bbf9876da70859aff696aead35d97bd9; goal≜gpow-diff-twelve-pow-nineteen; name≜gpow_diff_twelve_pow_nineteen}
+⟦Σ:Source⟧{src≜goals/gpow-diff-twelve-pow-nineteen.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜perttu; agent≜mac-158f; provider≜python; model≜sympy; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

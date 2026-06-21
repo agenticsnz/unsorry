@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-even-index-triangular-closed-form
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-even-index-triangular-closed-form.md
+  src≜packages/unsorry-archive-0015/backlog/sum-even-index-triangular-closed-form.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-even-index-triangular-closed-form.lean
-  sha≜∅
-  aff≜-10
+  lean≜packages/unsorry-archive-0015/goals/sum-even-index-triangular-closed-form.lean
+  sha≜3c3fdc1f3b293076259c750a2a60fc883742678a04f328098a118c10790b9329
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

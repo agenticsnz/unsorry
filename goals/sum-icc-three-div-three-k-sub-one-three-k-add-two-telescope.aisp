@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-icc-three-div-three-k-sub-one-three-k-add-two-telescope
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-icc-three-div-three-k-sub-one-three-k-add-two-telescope.md
+  src≜packages/unsorry-archive-0010/backlog/sum-icc-three-div-three-k-sub-one-three-k-add-two-telescope.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-icc-three-div-three-k-sub-one-three-k-add-two-telescope.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0010/goals/sum-icc-three-div-three-k-sub-one-three-k-add-two-telescope.lean
+  sha≜8b5e44002bae6b8c767ef0e8f5776977bc6da74bb770dc7700c462247b7deb69
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

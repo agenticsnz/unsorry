@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜cauchy-schwarz-two-term
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/cauchy-schwarz-two-term.md
+  src≜packages/unsorry-archive-0006/backlog/cauchy-schwarz-two-term.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/cauchy-schwarz-two-term.lean
+  lean≜packages/unsorry-archive-0006/goals/cauchy-schwarz-two-term.lean
   sha≜44f0e37ea1b40cfa49e90f48bce170faf8c06bc9f59df08c23e774605b17b4e3
   aff≜-20
 }

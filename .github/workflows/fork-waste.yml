@@ -1,0 +1,92 @@
+# Keep the duplicate-verifier-waste metric (docs/metrics/fork-waste.json) fresh
+# (ADR-070 / SPEC-070-A, Phase-2 step 2a).
+#
+# The metric is a function of the prove-PR history (open + closed + merged), which
+# changes continuously without any push to `main`, so — like the queue board — a
+# push-triggered refresh would never reflect it. This runs on a **schedule**,
+# regenerates the JSON from `gh pr list`, and commits it back to `main` (the
+# standard generated-artifact exception — a single docs-only, `[skip ci]` commit).
+#
+# Pushing to `main` needs an admin identity (the default GITHUB_TOKEN cannot push
+# to a protected branch): the push authenticates with the `REFRESH_TOKEN` secret
+# (admin PAT / App token, contents:write), exactly as queue-board.yml does. When
+# the secret is unset the workflow degrades to a report-only notice (issue #417).
+name: fork-waste
+
+on:
+  schedule:
+    # Hourly — the metric gates a human build/no-build decision, not a live loop,
+    # so it need not track as tightly as the queue board.
+    - cron: "17 * * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: fork-waste-refresh
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.REFRESH_TOKEN || github.token }}
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.12"
+      - name: Detect refresh token (#417)
+        id: tok
+        env:
+          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+        run: |
+          if [ -n "${REFRESH_TOKEN}" ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Gather the prove-PR history
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # All prove PRs (open/closed/merged); a gh error degrades to an empty
+          # array (a zero-valued summary), never a crash.
+          gh pr list --state all --limit 1000 \
+            --json number,title,state,isCrossRepository,mergedAt \
+            > prs.json 2>/dev/null || echo '[]' > prs.json
+          echo "prove PRs fetched: $(python3 -c 'import json;print(len(json.load(open("prs.json"))))' 2>/dev/null || echo 0)"
+      - name: Regenerate, commit, and push on change
+        if: steps.tok.outputs.present == 'true'
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          path="docs/metrics/fork-waste.json"
+          for attempt in 1 2 3 4 5; do
+            git fetch --quiet origin main
+            git reset --hard --quiet origin/main
+            python3 -m tools.repo.fork_waste summarize --write "$path" < prs.json
+            if git diff --quiet -- "$path"; then
+              echo "fork-waste metric already in sync with latest main — nothing to push"
+              exit 0
+            fi
+            git add "$path"
+            git commit -q -m "docs: refresh fork-waste metric [skip ci]"
+            if git push --quiet origin HEAD:main; then
+              echo "pushed fork-waste refresh (attempt ${attempt})"
+              exit 0
+            fi
+            echo "push raced on attempt ${attempt} — retrying onto updated main"
+          done
+          echo "::warning::could not push the fork-waste refresh after 5 attempts (persistent concurrent pushes, #426); the next scheduled run will refresh it"
+      - name: No REFRESH_TOKEN — report only (#417)
+        if: steps.tok.outputs.present != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 -m tools.repo.fork_waste summarize < prs.json
+          echo "::warning::the fork-waste metric would refresh but the REFRESH_TOKEN secret is unset — skipping the push to main (issue #417)."

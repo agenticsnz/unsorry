@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜am-gm-three-cube-s2-s1
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜decompositions/am-gm-three-cube-s2.oma-2-c50d.aisp
+  src≜packages/unsorry-archive-0005/decompositions/am-gm-three-cube-s2.oma-2-c50d.aisp
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/am-gm-three-cube-s2-s1.lean
+  lean≜packages/unsorry-archive-0005/goals/am-gm-three-cube-s2-s1.lean
   sha≜2b51707606223ad44f43c6294ba1f67cafd8b5f3b1ad780e3f8cb46c4a9c33b8
   aff≜1
   depth≜2
