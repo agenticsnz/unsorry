@@ -1963,16 +1963,30 @@ for ref in refs:
 # the i-th branch of every bucket that still has one. Each active solver therefore
 # gets exactly one branch per round until its backlog is exhausted.
 order = sorted(buckets)
-i = 0
-while True:
-    progressed = False
-    for k in order:
-        lst = buckets[k]
-        if i < len(lst):
-            print(lst[i]); progressed = True
-    if not progressed:
-        break
-    i += 1
+try:
+    i = 0
+    while True:
+        progressed = False
+        for k in order:
+            lst = buckets[k]
+            if i < len(lst):
+                print(lst[i]); progressed = True
+        if not progressed:
+            break
+        i += 1
+    # Force any buffered output out now so an EPIPE surfaces here, inside the
+    # guard, rather than during interpreter shutdown where it cannot be caught.
+    sys.stdout.flush()
+except BrokenPipeError:
+    # The consumer (dispatch_queue's read loop) stops reading as soon as it hits
+    # its dispatch limit or the submission governor pauses, then closes the pipe;
+    # the still-unread refs are exactly the ones it chose not to act on, so a short
+    # read is normal, not an error. Redirect stdout to devnull so the interpreter's
+    # shutdown flush cannot re-raise, and exit cleanly. (Python docs, "Note on
+    # SIGPIPE".)
+    import os
+    os.dup2(os.open(os.devnull, os.O_WRONLY), sys.stdout.fileno())
+    sys.exit(0)
 PY
 )
 }
@@ -5832,6 +5846,32 @@ test_dispatch_solver_fairness() {
     || { log "  toggle off should fall back to lexical (no 'small' within limit), got '$sent_lex'"; return 1; }
 }
 
+test_fair_dispatch_order_survives_early_reader_close() {
+  # dispatch_queue stops reading fair_dispatch_order's output the moment it hits
+  # its dispatch limit or the submission governor pauses (agent.sh dispatch_queue),
+  # closing the pipe under the reordering python. The python must exit cleanly on
+  # the resulting EPIPE, NOT dump a BrokenPipeError traceback to stderr — that
+  # traceback reads as a crash in run.sh's logs even though dispatch succeeded.
+  # Feed far more refs than a pipe buffer can hold so the writer is still emitting
+  # when the reader closes, take exactly one line, and assert no traceback leaked.
+  # Command substitution waits for the whole pipeline, so the python has fully
+  # exited (and flushed its stderr) before we inspect errfile — no race.
+  local errfile first
+  errfile="$(mktemp)"
+  first="$(yes 'origin/queued/prove/gpipe/agent-x-0' | head -n 20000 \
+            | fair_dispatch_order 2>"$errfile" | head -n 1)" || true
+  if [ "$first" != 'origin/queued/prove/gpipe/agent-x-0' ]; then
+    log "  fair_dispatch_order did not emit the expected first ref, got '$first'"
+    rm -f "$errfile"; return 1
+  fi
+  if grep -qE 'BrokenPipeError|Traceback' "$errfile"; then
+    log "  fair_dispatch_order leaked a broken-pipe traceback on early reader close:"
+    log "    $(tr '\n' ' ' < "$errfile")"
+    rm -f "$errfile"; return 1
+  fi
+  rm -f "$errfile"
+}
+
 run_self_tests() {
   local tests=(
     test_agent_id_generation
@@ -5916,6 +5956,7 @@ run_self_tests() {
     test_dispatch_goal_dedup
     test_dispatch_skips_taken_midpass
     test_dispatch_solver_fairness
+    test_fair_dispatch_order_survives_early_reader_close
     test_demote_open_prove_records_telemetry_only
     test_floored_recompose_noop_records_telemetry_only
     test_render_decomp_gateb
