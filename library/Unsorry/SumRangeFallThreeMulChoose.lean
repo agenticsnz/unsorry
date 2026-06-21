@@ -15,7 +15,8 @@ theorem sum_range_fall_three_mul_choose (n : ℕ) : 8 * ∑ k ∈ Finset.range (
       intro x hx
       have h3 : (3:ℕ) ≤ 3 + x := by omega
       rw [Nat.choose_mul (n := m+3) (k := 3+x) (s := 3) h3]
-      congr 2 <;> omega
+      congr 2
+      all_goals omega
     rw [Finset.sum_congr rfl key, ← Finset.mul_sum, Nat.sum_range_choose m, Nat.add_sub_cancel]
   -- rewrite each summand: k*(k-1)*(k-2)*C(n,k) = 6 * (C(n,k)*C(k,3))
   have term : ∀ k ∈ range (n+1), k * (k-1) * (k-2) * n.choose k = 6 * (n.choose k * k.choose 3) := by
