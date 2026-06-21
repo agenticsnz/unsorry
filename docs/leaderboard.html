@@ -494,9 +494,11 @@
                 row.className = 'flex items-center w-full gap-3';
                 row.innerHTML = `
                     <div class="w-36 md:w-52 flex-shrink-0 text-sm font-medium text-slate-700 truncate" title="${escapeHTML(model.label)}">${escapeHTML(model.label)}</div>
-                    <div class="flex-grow flex items-center min-w-0">
-                        <div class="h-7 md:h-8 bg-brand-blue rounded-r-2xl progress-bar-fill shadow-sm flex-shrink-0" style="width: 0%;" data-target-width="${widthPercent}%"></div>
-                        <span class="ml-3 text-sm font-semibold text-slate-600 whitespace-nowrap">${formatNumber(model.proofs)} <span class="font-normal text-slate-400">proofs · ${percentFormatter.format(share)}%</span></span>
+                    <div class="flex-grow flex items-center min-w-0 gap-3">
+                        <div class="flex-grow min-w-0">
+                            <div class="h-7 md:h-8 bg-brand-blue rounded-r-2xl progress-bar-fill shadow-sm" style="width: 0%;" data-target-width="${widthPercent}%"></div>
+                        </div>
+                        <span class="text-sm font-semibold text-slate-600 whitespace-nowrap flex-shrink-0">${formatNumber(model.proofs)} <span class="font-normal text-slate-400">proofs · ${percentFormatter.format(share)}%</span></span>
                     </div>
                 `;
                 list.appendChild(row);
