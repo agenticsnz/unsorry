@@ -205,6 +205,29 @@ def test_git_add_author_is_historical_visibility_not_solver_credit(tmp_path):
     assert "1 inferred" in svg
 
 
+def test_generated_at_tracks_latest_source_commit(tmp_path, monkeypatch):
+    # A relabel (or proof merge) commits to library/index but records no new run.
+    # generated_at must still bump to that commit's time — the staleness the live
+    # board showed after the attribution relabel. (With no git repo it falls back to
+    # the latest run time, which the other ui_payload tests exercise.)
+    monkeypatch.setenv("GIT_AUTHOR_DATE", "2026-06-21T03:12:00+00:00")
+    monkeypatch.setenv("GIT_COMMITTER_DATE", "2026-06-21T03:12:00+00:00")
+    _git(tmp_path, "init")
+    _goal(tmp_path, "goal-easy", 1, "proved")
+    _index(
+        tmp_path, "b" * 64, "goal-easy",
+        "⟦Π:Provenance⟧{solver≜perttu; agent≜mac-158f; "
+        "provider≜python; model≜sympy; attempts≜1}\n",
+    )
+    _run(tmp_path, "goal-easy", "20260613t120000000000z-11111111", "proved",
+         attempts=1, solve_s=10, solver="perttu")
+    _git(tmp_path, "add", "-A")
+    _git(tmp_path, "commit", "-m", "relabel", author="Bot <bot@example.test>")
+
+    # latest source-commit time, NOT the run's recorded ended (2026-06-13T12:00:00Z)
+    assert ui_payload(tmp_path)["generated_at"] == "2026-06-21T03:12:00Z"
+
+
 def test_dispatch_credit_for_landing_anothers_proof(tmp_path):
     _git(tmp_path, "init")
     _goal(tmp_path, "g1", 4)

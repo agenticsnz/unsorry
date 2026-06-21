@@ -1125,6 +1125,41 @@ def proof_timelines(proof_list: list[Proof], merges: dict[str, str]) -> dict:
     }
 
 
+# Data paths whose commits change what the board reports — proof merges, archive
+# rolls, attribution relabels, and sourcing all land here. Generated docs under
+# docs/ are deliberately excluded, so the refresh's own [skip ci] docs commit never
+# moves the timestamp (keeping --check free of timestamp-only drift; ADR-036).
+_BOARD_SOURCE_PATHS = (
+    "goals",
+    "library/index",
+    "packages",
+    "proof-runs",
+    "docs/metrics/contributor-aliases.json",
+)
+
+
+def _latest_source_commit_z(root: Path) -> str | None:
+    """ISO-8601 UTC (``…Z``) committer time of the most recent commit under ``root``
+    that touched the board's source data, or ``None`` when git is unavailable (no
+    repo, shallow clone, or a non-repo fixture root). Deterministic for a given
+    commit — so it bumps on every proof/relabel merge yet never on the refresh's own
+    docs-only commit, leaving ``--check`` free of spurious timestamp-only drift."""
+    try:
+        result = subprocess.run(
+            ["git", "-C", str(root), "log", "-1", "--format=%ct", "--",
+             *_BOARD_SOURCE_PATHS],
+            check=False, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True,
+        )
+    except OSError:
+        return None
+    out = result.stdout.strip()
+    if result.returncode != 0 or not out:
+        return None
+    return datetime.datetime.fromtimestamp(
+        int(out), tz=datetime.timezone.utc
+    ).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
 def ui_payload(root: Path) -> dict:
     stats = base_stats(root)
     coverage = stats["coverage"]
@@ -1182,10 +1217,15 @@ def ui_payload(root: Path) -> dict:
     return {
         "schema_version": 1,
         "generated_from": "docs/metrics/community-stats.json",
-        # Deterministic by design: this is the latest recorded terminal-run
-        # timestamp, not wall-clock generation time.
+        # Current as of the latest commit that changed the board's source data
+        # (proof merges and attribution relabels both land there) — so it bumps on
+        # every refresh that follows a real change while staying deterministic: the
+        # refresh's own docs-only [skip ci] commit doesn't touch those paths, so
+        # --check sees no timestamp-only drift (no churn). Falls back to the latest
+        # recorded run time when git is unavailable (e.g. a non-repo fixture root).
         "generated_at": (
-            stats["recent_runs"][0]["ended"] if stats["recent_runs"] else None
+            _latest_source_commit_z(root)
+            or (stats["recent_runs"][0]["ended"] if stats["recent_runs"] else None)
         ),
         "score_policy": SCORE_POLICY,
         "summary": {
