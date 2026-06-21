@@ -1,0 +1,20 @@
+𝔸5.1.goal.two-sum-cubes-ge-sym-quadratics@2026-06-14
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜two-sum-cubes-ge-sym-quadratics
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/two-sum-cubes-ge-sym-quadratics.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/two-sum-cubes-ge-sym-quadratics.lean
+  sha≜b59d7cfb63577dd4746c1a20d000aa0152744de4880ff65e4c9ba309090aceb2
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

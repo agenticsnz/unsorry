@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-icc-three-k-sub-one-mul-two-pow-pred-closed@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-icc-three-k-sub-one-mul-two-pow-pred-closed
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-icc-three-k-sub-one-mul-two-pow-pred-closed.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-icc-three-k-sub-one-mul-two-pow-pred-closed.lean
+  sha≜12dd469b3cfef7a0c29ecc3b79010d7d8644f193ff16c6f81f7ba87d264a53a4
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

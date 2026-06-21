@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-cube-add-id-closed-form
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-cube-add-id-closed-form.md
+  src≜packages/unsorry-archive-0015/backlog/sum-cube-add-id-closed-form.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-cube-add-id-closed-form.lean
+  lean≜packages/unsorry-archive-0015/goals/sum-cube-add-id-closed-form.lean
   sha≜5535a34e15285f4076dc537c20705612b492500cad99f16de04cf8131f964c24
   aff≜-9
 }
