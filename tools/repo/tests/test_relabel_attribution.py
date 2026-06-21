@@ -71,3 +71,45 @@ def test_cli_accepts_workflow_argv(tmp_path: Path, monkeypatch, capsys):
     assert main(["--apply", "."]) == 0           # the workflow's exact argv
     assert main(["."]) == 0                       # positional dry-run
     assert main(["--apply"]) == 0                 # bare flag still defaults root to .
+
+
+def test_claude_web_zmod_decide_relabelled_to_lean():
+    # chat-bit-01's claude-web `template-zmod-decide` proofs are a deterministic Lean
+    # kernel `decide` over a finite ZMod, not an LLM solve — honest record is lean/decide.
+    text = _prov(solver="chat-bit-01", agent="claude-web", model="template-zmod-decide")
+    new, changed = relabel_record(text)
+    assert changed is True
+    assert "provider≜lean" in new and "model≜decide" in new
+    assert "provider≜claude" not in new and "template-zmod-decide" not in new
+    assert "solver≜chat-bit-01" in new   # credit untouched
+
+
+def test_claude_web_lean_decide_idempotent():
+    once, _ = relabel_record(
+        _prov(solver="chat-bit-01", agent="claude-web", model="template-zmod-decide"))
+    twice, changed = relabel_record(once)
+    assert changed is False and twice == once
+
+
+def test_claude_web_genuine_llm_untouched():
+    # A real claude-web LLM proof (model≜opus, not the decide template) stays claude.
+    text = _prov(agent="claude-web", model="opus")
+    assert relabel_record(text) == (text, False)
+
+
+def test_both_rules_apply_in_one_sweep(tmp_path: Path, capsys):
+    idx = tmp_path / "library" / "index"
+    idx.mkdir(parents=True)
+    (idx / "mac.aisp").write_text("⟦Ω:Lemma⟧{}\n" + _prov(), encoding="utf-8")  # → python/sympy
+    (idx / "web.aisp").write_text(
+        "⟦Ω:Lemma⟧{}\n" + _prov(solver="chat-bit-01", agent="claude-web",
+                                 model="template-zmod-decide"),
+        encoding="utf-8")  # → lean/decide
+
+    assert main([str(tmp_path), "--apply"]) == 0
+    assert "relabelled 2 record(s)" in capsys.readouterr().out
+    mac = (idx / "mac.aisp").read_text(encoding="utf-8")
+    web = (idx / "web.aisp").read_text(encoding="utf-8")
+    assert "provider≜python" in mac and "model≜sympy" in mac
+    assert "provider≜lean" in web and "model≜decide" in web
+    assert "template-" not in mac and "template-" not in web
