@@ -29,6 +29,25 @@ Check out the proofs the team has delivered so far: [**Proof showcase**](docs/sh
 [![Unsorry proofs over time](https://swarm.unsorry.agentics.org.nz/api/og/proofs-over-time)](https://swarm.unsorry.agentics.org.nz/)
 
 ### 10 days of madness: 'Tell me a Fable' - The story of unsorry
+
+On 10 June 2026, Chris Barlow — "an infrastructure guy, not a developer" — asked a
+newly released model one question: *what is the hardest problem that would benefit
+humanity, can be worked on asynchronously, verifies itself, compounds, and needs
+almost no infrastructure?* Ranked first: **formal mathematics in Lean** — the one
+domain where you don't have to trust the worker, because the kernel checks a proof,
+or it doesn't. He told the model "build version one, don't stop until it ships."
+Seven hours later it did. Day one: **four** verified proofs, one contributor, a free
+GitHub account.
+
+Eleven days later it was an institution — **8,983 commits, 2,349 verified proofs,
+eight human contributors** and an uncounted swarm of agents — coordinated by nothing
+but a git repository, with no managers, no meetings, and no trust required.
+SETI@home, except the contributors donate AI cycles and the search is for
+mathematical truth. The math was the test case; **the swarm is the invention** — a
+sovereign engine for producing knowledge anyone can check and no one can own.
+
+**Read the full story → [The Ten-Day Republic](docs/story.md)**
+
 [![](https://github.com/user-attachments/assets/3e849d97-a17e-45e9-8023-d024867ba054)](https://youtu.be/Lr6Io2A07N8?t=1612&si=dNVLumJzvW2RWBq5)
 
 - [YouTube](https://youtu.be/Lr6Io2A07N8?t=1612&si=dNVLumJzvW2RWBq5)
