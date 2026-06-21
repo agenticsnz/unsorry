@@ -26,7 +26,7 @@
 Check out the proofs the team has delivered so far: [**Proof showcase**](docs/showcase.html) (curated highlights) · [Proof graph](docs/proofs-contributors-visualisation.html) · [Visual leaderboard](docs/leaderboard.html) · [Queue](docs/queue.html)
 
 [![Unsorry leaderboard](docs/leaderboard.svg)](docs/leaderboard.html)
-[![Unsorry proof graph](docs/proof-graph.svg)](docs/proofs-contributors-visualisation.html)
+[![Unsorry proofs over time](docs/proofs-over-time.svg)](docs/leaderboard.html)
 
 ### 10 days of madness: 'Tell me a Fable' - The story of unsorry
 [![](https://github.com/user-attachments/assets/3e849d97-a17e-45e9-8023-d024867ba054)](https://youtu.be/Lr6Io2A07N8?t=1612&si=dNVLumJzvW2RWBq5)

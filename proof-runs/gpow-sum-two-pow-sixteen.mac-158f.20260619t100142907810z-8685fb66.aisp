@@ -1,0 +1,8 @@
+𝔸5.1.run.gpow-sum-two-pow-sixteen.mac-158f.20260619t100142907810z-8685fb66@2026-06-19
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260619t100142907810z-8685fb66; goal≜gpow-sum-two-pow-sixteen; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-ring-cofactor}
+⟦Γ:Goal⟧{goal≜gpow-sum-two-pow-sixteen}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-19T10:01:42Z}
+⟦Σ:Artifact⟧{sha≜ef8d99f0cc26327749775cc2f0dab40cad4ff0f71252f29e06070a9cb6185871}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

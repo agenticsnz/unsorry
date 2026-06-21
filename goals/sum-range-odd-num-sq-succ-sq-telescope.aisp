@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-odd-num-sq-succ-sq-telescope
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-odd-num-sq-succ-sq-telescope.md
+  src≜packages/unsorry-archive-0038/backlog/sum-range-odd-num-sq-succ-sq-telescope.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-odd-num-sq-succ-sq-telescope.lean
+  lean≜packages/unsorry-archive-0038/goals/sum-range-odd-num-sq-succ-sq-telescope.lean
   sha≜685feb90ecf9f6c01a6ca162eac61ac45a7e1ddb23b47f430eac66adf1a46621
   aff≜-10
 }

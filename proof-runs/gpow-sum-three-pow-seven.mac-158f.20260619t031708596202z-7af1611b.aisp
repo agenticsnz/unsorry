@@ -1,0 +1,8 @@
+𝔸5.1.run.gpow-sum-three-pow-seven.mac-158f.20260619t031708596202z-7af1611b@2026-06-19
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260619t031708596202z-7af1611b; goal≜gpow-sum-three-pow-seven; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-ring-cofactor}
+⟦Γ:Goal⟧{goal≜gpow-sum-three-pow-seven}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-19T03:17:08Z}
+⟦Σ:Artifact⟧{sha≜ab7fdccdf258698ced0852248a2c67946616909c9cb10ab50328d6f7c35573fa}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

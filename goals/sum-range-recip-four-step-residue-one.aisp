@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-recip-four-step-residue-one
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-recip-four-step-residue-one.md
+  src≜packages/unsorry-archive-0038/backlog/sum-range-recip-four-step-residue-one.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-recip-four-step-residue-one.lean
+  lean≜packages/unsorry-archive-0038/goals/sum-range-recip-four-step-residue-one.lean
   sha≜820abb7d5b1573e9da371af18a0df9b2b6bd804c83d62b26cbddd0a52283160c
   aff≜-10
 }

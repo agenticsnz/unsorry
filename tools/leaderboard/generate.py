@@ -8,6 +8,7 @@ Usage:
 """
 from __future__ import annotations
 
+import datetime
 import json
 import math
 import os
@@ -1227,6 +1228,112 @@ def render_ui_json(root: Path) -> str:
     return json.dumps(ui_payload(root), ensure_ascii=False, indent=2, sort_keys=True) + "\n"
 
 
+def _bucket_dt(t: str) -> datetime.datetime:
+    """Parse a timeline bucket (``2026-06-20T17:00:00Z`` or ``2026-06-13``).
+
+    Used only for x-axis positioning, so naïve date-only buckets and aware hour
+    buckets never mix within a single series — differences stay deterministic.
+    """
+    return datetime.datetime.fromisoformat(t.replace("Z", "+00:00"))
+
+
+def render_timeline_svg(root: Path) -> str:
+    """README preview card: cumulative kernel-verified proofs over time.
+
+    Plots the **merge** series (hourly — when each proof landed on ``main``; the
+    leaderboard's default proofs-over-time view, issue #738), falling back to the
+    daily **solve** series outside a git checkout. A self-contained SVG mirroring
+    ``docs/leaderboard.svg``'s visual language, and a pure function of the series
+    so it is deterministic for the ``--check`` gate.
+    """
+    series = proof_timelines(proofs(root), merge_times(root))
+    points = series.get("merge") or series.get("solve") or []
+    by_merge = bool(series.get("merge"))
+    width, height = 900, 320
+    pad_l, pad_r, pad_t, pad_b = 52, 28, 90, 48
+    font = "Inter, system-ui, sans-serif"
+    total = points[-1]["cumulative_proofs"] if points else 0
+    out = [
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" '
+        f'viewBox="0 0 {width} {height}" role="img" aria-labelledby="title desc">',
+        '<title id="title">Unsorry proofs over time</title>',
+        '<desc id="desc">Cumulative kernel-verified proofs over time, '
+        "by the hour each proof was merged.</desc>",
+        f'<rect width="{width}" height="100%" rx="18" fill="#ffffff"/>',
+        f'<rect x="0.5" y="0.5" width="{width - 1}" height="{height - 1}" rx="18" '
+        'fill="none" stroke="#e2e8f0"/>',
+        f'<text x="32" y="44" font-family="{font}" font-size="28" font-weight="700" '
+        'fill="#334155">Unsorry — Proofs Over Time</text>',
+        f'<text x="32" y="72" font-family="{font}" font-size="13" fill="#64748b">'
+        f"{total} cumulative kernel-verified proofs · "
+        f"{'merged, hourly' if by_merge else 'solved, daily'}</text>",
+    ]
+    if not points:
+        out.append(
+            f'<text x="32" y="{pad_t + 40}" font-family="{font}" font-size="16" '
+            'fill="#64748b">No dated proofs yet.</text>'
+        )
+        out.append("</svg>")
+        return "\n".join(out) + "\n"
+
+    plot_w = width - pad_l - pad_r
+    plot_h = height - pad_t - pad_b
+    dts = [_bucket_dt(p["t"]) for p in points]
+    span = max(1.0, (dts[-1] - dts[0]).total_seconds())
+    max_y = max(total, 1)
+    n = len(points)
+
+    def px(i: int) -> float:
+        if n == 1:
+            return pad_l + plot_w / 2
+        return pad_l + (dts[i] - dts[0]).total_seconds() / span * plot_w
+
+    def py(v: float) -> float:
+        return pad_t + plot_h - v / max_y * plot_h
+
+    for frac in (0, 0.25, 0.5, 0.75, 1):
+        v = round(max_y * frac)
+        yy = py(v)
+        out.append(
+            f'<line x1="{pad_l}" y1="{yy:.1f}" x2="{width - pad_r}" y2="{yy:.1f}" '
+            'stroke="#f1f5f9"/>'
+        )
+        out.append(
+            f'<text x="{pad_l - 8}" y="{yy + 4:.1f}" text-anchor="end" '
+            f'font-family="{font}" font-size="11" fill="#94a3b8">{v}</text>'
+        )
+
+    coords = " ".join(
+        f"{px(i):.1f},{py(p['cumulative_proofs']):.1f}" for i, p in enumerate(points)
+    )
+    base = pad_t + plot_h
+    out.append(
+        f'<polygon points="{px(0):.1f},{base:.1f} {coords} {px(n - 1):.1f},{base:.1f}" '
+        'fill="#e0f2fe" opacity="0.55"/>'
+    )
+    out.append(
+        f'<polyline points="{coords}" fill="none" stroke="#38bdf8" stroke-width="2.5" '
+        'stroke-linejoin="round" stroke-linecap="round"/>'
+    )
+    lx, ly = px(n - 1), py(max_y)
+    out.append(f'<circle cx="{lx:.1f}" cy="{ly:.1f}" r="4" fill="#0ea5e9"/>')
+    out.append(
+        f'<text x="{lx - 6:.1f}" y="{ly - 10:.1f}" text-anchor="end" font-family="{font}" '
+        f'font-size="13" font-weight="700" fill="#334155">{max_y}</text>'
+    )
+
+    def label(dt: datetime.datetime) -> str:
+        return f"{dt:%b %d}" + (f" {dt:%H}:00" if by_merge else "")
+
+    for i in sorted({0, n // 2, n - 1}):
+        out.append(
+            f'<text x="{px(i):.1f}" y="{height - pad_b + 22}" text-anchor="middle" '
+            f'font-family="{font}" font-size="11" fill="#94a3b8">{label(dts[i])}</text>'
+        )
+    out.append("</svg>")
+    return "\n".join(out) + "\n"
+
+
 def render_svg(root: Path) -> str:
     payload = ui_payload(root)
     contributors = payload["contributors"][:5]
@@ -1459,6 +1566,7 @@ def main(argv: list[str] | None = None) -> int:
     payload = render_json(root)
     ui_payload_json = render_ui_json(root)
     svg = render_svg(root)
+    timeline_svg = render_timeline_svg(root)
     gaps_payload = render_attribution_gaps_json(root)
     sourcing_payload_json = render_sourcing_json(root)
     markdown_path = root / "docs" / "leaderboard.md"
@@ -1467,6 +1575,7 @@ def main(argv: list[str] | None = None) -> int:
     gaps_json_path = root / "docs" / "metrics" / "attribution-gaps.json"
     sourcing_json_path = root / "docs" / "metrics" / "sourcing-leaderboard.json"
     svg_path = root / "docs" / "leaderboard.svg"
+    timeline_svg_path = root / "docs" / "proofs-over-time.svg"
     if mode == "--check":
         stale = []
         if not markdown_path.is_file() or markdown_path.read_text(encoding="utf-8") != markdown:
@@ -1481,6 +1590,8 @@ def main(argv: list[str] | None = None) -> int:
             stale.append(sourcing_json_path.relative_to(root).as_posix())
         if not svg_path.is_file() or svg_path.read_text(encoding="utf-8") != svg:
             stale.append(svg_path.relative_to(root).as_posix())
+        if not timeline_svg_path.is_file() or timeline_svg_path.read_text(encoding="utf-8") != timeline_svg:
+            stale.append(timeline_svg_path.relative_to(root).as_posix())
         if stale:
             print(
                 f"{', '.join(stale)} stale — regenerate with "
@@ -1498,6 +1609,7 @@ def main(argv: list[str] | None = None) -> int:
         gaps_json_path.write_text(gaps_payload, encoding="utf-8")
         sourcing_json_path.write_text(sourcing_payload_json, encoding="utf-8")
         svg_path.write_text(svg, encoding="utf-8")
+        timeline_svg_path.write_text(timeline_svg, encoding="utf-8")
         return 0
     sys.stdout.write(payload if mode == "--json" else markdown)
     return 0

@@ -14,6 +14,7 @@ from tools.leaderboard.generate import (
     render_json,
     render_sourcing,
     render_svg,
+    render_timeline_svg,
     render_ui_json,
     sourcing_contributors,
     sourcing_payload,
@@ -608,6 +609,36 @@ def test_merge_timeline_buckets_by_prove_commit_hour(tmp_path):
     assert series["solve"] == [
         {"t": "2026-06-13", "proofs": 1, "cumulative_proofs": 1}
     ]
+
+
+def test_render_timeline_svg(tmp_path):
+    # README preview card for the proofs-over-time line graph (issue #738).
+    _goal(tmp_path, "g1", 1)
+    _goal(tmp_path, "g2", 2)
+    _index(tmp_path, "a" * 64, "g1")
+    _index(tmp_path, "b" * 64, "g2")
+    svg = render_timeline_svg(tmp_path)
+    assert svg.startswith("<svg") and svg.rstrip().endswith("</svg>")
+    assert "Unsorry — Proofs Over Time" in svg
+    assert "Inter, system-ui, sans-serif" in svg  # shared design language
+    assert "<polyline" in svg  # the cumulative line
+    assert "2 cumulative kernel-verified proofs" in svg
+    # No git in the fixture → merge series empty, falls back to the daily solve view.
+    assert "solved, daily" in svg
+
+
+def test_render_timeline_svg_empty(tmp_path):
+    svg = render_timeline_svg(tmp_path)
+    assert svg.startswith("<svg") and "No dated proofs yet." in svg
+
+
+def test_main_write_includes_timeline_svg(tmp_path):
+    _goal(tmp_path, "g1", 1)
+    _index(tmp_path, "a" * 64, "g1")
+    assert main(["--write", str(tmp_path)]) == 0
+    assert (tmp_path / "docs" / "proofs-over-time.svg").is_file()
+    # Freshly written → the drift check is clean (the new SVG is checked too).
+    assert main(["--check", str(tmp_path)]) == 0
 
 
 # --- Phantom-solver guard (ADR-037) ------------------------------------------
