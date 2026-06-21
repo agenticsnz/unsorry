@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜gfac-d1-c2
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/gfac-d1-c2.md
+  src≜packages/unsorry-archive-0020/backlog/gfac-d1-c2.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/gfac-d1-c2.lean
+  lean≜packages/unsorry-archive-0020/goals/gfac-d1-c2.lean
   sha≜57dc85dee445e39dd460751d1d53c2bf51197162b857ecce362a398a5d7161d8
   aff≜0
 }

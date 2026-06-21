@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜five-var-qm-am
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/five-var-qm-am.md
+  src≜packages/unsorry-archive-0020/backlog/five-var-qm-am.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/five-var-qm-am.lean
+  lean≜packages/unsorry-archive-0020/goals/five-var-qm-am.lean
   sha≜24c98f24b4b3627471ed9586e47127d2cac54ac4f7c489e51e1aa5c88766d1ed
   aff≜-20
 }
