@@ -170,10 +170,14 @@ def test_render_html_shares_nav_and_design():
         pr_status_known=True,
     ))
     assert html.startswith("<!doctype html>")
-    # Shared top-nav with Queue current and the other three pages present.
+    # Shared top-nav with Queue current and the other four pages present
+    # (Showcase must appear on every page, not just the hand-authored shells).
     assert 'href="queue.html" aria-current="page"' in html
     assert 'href="index.html"' in html and 'href="leaderboard.html"' in html
     assert 'href="proofs-contributors-visualisation.html"' in html
+    assert 'href="showcase.html"' in html
+    # Nav wraps instead of spilling on narrow viewports (mobile UX).
+    assert "flex-wrap" in html
     # Shared design language (ADR-038).
     assert "cdn.tailwindcss.com" in html and "Inter" in html and ">Unsorry<" in html
     assert 'name="viewport"' in html

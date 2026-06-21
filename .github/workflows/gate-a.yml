@@ -352,6 +352,11 @@ jobs:
 
       - name: Sticky footprint comment
         if: github.event_name == 'pull_request'
+        # Informational only — posts the axiom report to the PR. A fork PR's token
+        # is read-only on the base repo, so the `gh api` comment POST 403s; that
+        # must NOT fail the soundness gate (the authoritative audit already ran and
+        # passed in the step above). Soft-fail so fork contributors aren't blocked.
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
           PR: ${{ github.event.pull_request.number }}

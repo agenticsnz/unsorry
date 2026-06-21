@@ -1,6 +1,6 @@
 {
   "generated_by": "python3 -m tools.adr_index --write",
-  "count": 76,
+  "count": 80,
   "adrs": [
     {
       "id": "ADR-001",
@@ -609,6 +609,38 @@
       "status": "Proposed",
       "date": "2026-06-20",
       "file": "ADR-077-Roadmap-Project-Synced-From-Repo-State.md"
+    },
+    {
+      "id": "ADR-078",
+      "number": 78,
+      "title": "Sponsor-Registered Targets and Obligation-Discharge Credit",
+      "status": "Proposed",
+      "date": "2026-06-20",
+      "file": "ADR-078-Sponsor-Registered-Targets-And-Obligation-Discharge-Credit.md"
+    },
+    {
+      "id": "ADR-079",
+      "number": 79,
+      "title": "Deterministic Solver Provider — Zero-LLM Template/sympy Discharge, Honestly Attributed",
+      "status": "Proposed",
+      "date": "2026-06-20",
+      "file": "ADR-079-Deterministic-Solver-Provider.md"
+    },
+    {
+      "id": "ADR-080",
+      "number": 80,
+      "title": "Platform Generalisation and the Self-Verification Gating Invariant",
+      "status": "Draft",
+      "date": "2026-06-20",
+      "file": "ADR-080-Platform-Generalisation-And-Domain-Neutrality.md"
+    },
+    {
+      "id": "ADR-081",
+      "number": 81,
+      "title": "Problem Admission and the Skeleton Intake Pipeline",
+      "status": "Draft",
+      "date": "2026-06-20",
+      "file": "ADR-081-Problem-Admission-And-Intake-Pipeline.md"
     }
   ]
 }

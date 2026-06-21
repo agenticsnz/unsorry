@@ -8,8 +8,10 @@ Usage:
 """
 from __future__ import annotations
 
+import datetime
 import json
 import math
+import os
 import re
 import statistics
 import subprocess
@@ -1032,27 +1034,130 @@ def _success_rate_percent(value: float | None) -> float | None:
     return None if value is None else round(value * 100, 2)
 
 
-def _proof_timeline(proof_list: list[Proof]) -> list[dict]:
-    """Cumulative count of library proofs by calendar date (issue #738).
+#: ``prove(<goal>)`` / ``recompose(<goal>)`` squash-merge subject (ADR-026) —
+#: the authoritative record of a proof landing on the branch. Only the goal id is
+#: needed here (the merge *timestamp* comes from the commit, not the subject).
+_PROVE_GOAL_RE = re.compile(r"^(?:prove|recompose)\((?P<goal>[a-z0-9][a-z0-9-]*)\):")
 
-    A deterministic series for the leaderboard's "proofs over time" view: one
-    entry per date on which at least one proof index landed, carrying that day's
-    count and the running cumulative total. Proofs without a parseable date are
-    ignored so the series stays monotonic in time.
+
+def parse_merge_log(text: str) -> dict[str, str]:
+    """Map goal → UTC merge-hour timestamp from ``<iso-hour>\\0<subject>`` lines.
+
+    ``git log`` is newest-first, so the *last* assignment per goal wins — the
+    oldest ``prove(<goal>)`` commit, i.e. the merge that first landed the proof.
+    Pure and testable; no git access here.
     """
-    by_date: dict[str, int] = defaultdict(int)
-    for proof in proof_list:
-        day = (proof.date or "")[:10]
-        if day:
-            by_date[day] += 1
+    result: dict[str, str] = {}
+    for line in text.splitlines():
+        timestamp, _, subject = line.partition("\x00")
+        match = _PROVE_GOAL_RE.match(subject)
+        if match and timestamp:
+            result[match.group("goal")] = timestamp
+    return result
+
+
+def merge_times(root: Path) -> dict[str, str]:
+    """Resolve goal → UTC merge-hour timestamp from the ``prove(...)`` commits.
+
+    The commit timestamp is normalised to UTC and truncated to the hour (via git's
+    ``format-local`` under ``TZ=UTC``) so the merge timeline can bucket hourly —
+    the AISP solve ``@date`` carries no time, so it can only bucket daily, whereas
+    the merge time records to the second. Degrades to ``{}`` outside a git checkout
+    so the AISP-only path (and the fixture tests) stay green.
+    """
+    try:
+        proc = subprocess.run(
+            [
+                "git", "-C", str(root), "log", "--no-merges",
+                "--date=format-local:%Y-%m-%dT%H:00:00Z", "--format=%cd%x00%s",
+            ],
+            capture_output=True,
+            text=True,
+            check=False,
+            env={**os.environ, "TZ": "UTC"},
+        )
+    except (OSError, ValueError):
+        return {}
+    if proc.returncode != 0:
+        return {}
+    return parse_merge_log(proc.stdout)
+
+
+def _cumulative_series(buckets: list[str]) -> list[dict]:
+    """Cumulative proof count per non-empty time bucket, in ascending order.
+
+    Shared by both proofs-over-time series. Empty bucket keys — a proof with no
+    recorded solve date, or no ``prove(...)`` commit on the merge series — are
+    dropped so the series stays monotonic in time.
+    """
+    by_bucket: dict[str, int] = defaultdict(int)
+    for bucket in buckets:
+        if bucket:
+            by_bucket[bucket] += 1
     cumulative = 0
     series: list[dict] = []
-    for day in sorted(by_date):
-        cumulative += by_date[day]
+    for bucket in sorted(by_bucket):
+        cumulative += by_bucket[bucket]
         series.append(
-            {"date": day, "proofs": by_date[day], "cumulative_proofs": cumulative}
+            {"t": bucket, "proofs": by_bucket[bucket], "cumulative_proofs": cumulative}
         )
     return series
+
+
+def proof_timelines(proof_list: list[Proof], merges: dict[str, str]) -> dict:
+    """The two proofs-over-time series for the leaderboard toggle (issue #738).
+
+    ``merge`` (the default): bucketed hourly by the git merge timestamp — when
+    each proof landed on the branch — so a merge wave clearing a solve backlog
+    reads as recent slope rather than a flat tail. ``solve``: bucketed daily by
+    the recorded AISP ``@date`` (a date-only source — daily is the finest honest
+    bucket). The ``merge`` series is empty outside a git checkout; ``default``
+    names the series the page should show first.
+    """
+    return {
+        "default": "merge",
+        "merge": _cumulative_series(
+            [merges.get(proof.goal, "") for proof in proof_list]
+        ),
+        "solve": _cumulative_series(
+            [(proof.date or "")[:10] for proof in proof_list]
+        ),
+    }
+
+
+# Data paths whose commits change what the board reports — proof merges, archive
+# rolls, attribution relabels, and sourcing all land here. Generated docs under
+# docs/ are deliberately excluded, so the refresh's own [skip ci] docs commit never
+# moves the timestamp (keeping --check free of timestamp-only drift; ADR-036).
+_BOARD_SOURCE_PATHS = (
+    "goals",
+    "library/index",
+    "packages",
+    "proof-runs",
+    "docs/metrics/contributor-aliases.json",
+)
+
+
+def _latest_source_commit_z(root: Path) -> str | None:
+    """ISO-8601 UTC (``…Z``) committer time of the most recent commit under ``root``
+    that touched the board's source data, or ``None`` when git is unavailable (no
+    repo, shallow clone, or a non-repo fixture root). Deterministic for a given
+    commit — so it bumps on every proof/relabel merge yet never on the refresh's own
+    docs-only commit, leaving ``--check`` free of spurious timestamp-only drift."""
+    try:
+        result = subprocess.run(
+            ["git", "-C", str(root), "log", "-1", "--format=%ct", "--",
+             *_BOARD_SOURCE_PATHS],
+            check=False, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True,
+        )
+    except OSError:
+        return None
+    out = result.stdout.strip()
+    if result.returncode != 0 or not out:
+        return None
+    return datetime.datetime.fromtimestamp(
+        int(out), tz=datetime.timezone.utc
+    ).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def ui_payload(root: Path) -> dict:
@@ -1112,10 +1217,15 @@ def ui_payload(root: Path) -> dict:
     return {
         "schema_version": 1,
         "generated_from": "docs/metrics/community-stats.json",
-        # Deterministic by design: this is the latest recorded terminal-run
-        # timestamp, not wall-clock generation time.
+        # Current as of the latest commit that changed the board's source data
+        # (proof merges and attribution relabels both land there) — so it bumps on
+        # every refresh that follows a real change while staying deterministic: the
+        # refresh's own docs-only [skip ci] commit doesn't touch those paths, so
+        # --check sees no timestamp-only drift (no churn). Falls back to the latest
+        # recorded run time when git is unavailable (e.g. a non-repo fixture root).
         "generated_at": (
-            stats["recent_runs"][0]["ended"] if stats["recent_runs"] else None
+            _latest_source_commit_z(root)
+            or (stats["recent_runs"][0]["ended"] if stats["recent_runs"] else None)
         ),
         "score_policy": SCORE_POLICY,
         "summary": {
@@ -1146,14 +1256,122 @@ def ui_payload(root: Path) -> dict:
             }
             for model in stats["models"]
         ],
-        # Cumulative library proofs by date — the "proofs over time" line graph
-        # toggled on the leaderboard page (issue #738).
-        "timeline": _proof_timeline(proofs(root)),
+        # Cumulative library proofs over time — the "proofs over time" line graph
+        # on the leaderboard page (issue #738), with a solve/merge toggle: merge
+        # (hourly, default) keys on when each proof landed; solve (daily) keys on
+        # the recorded AISP solve date.
+        "timelines": proof_timelines(proofs(root), merge_times(root)),
     }
 
 
 def render_ui_json(root: Path) -> str:
     return json.dumps(ui_payload(root), ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+
+
+def _bucket_dt(t: str) -> datetime.datetime:
+    """Parse a timeline bucket (``2026-06-20T17:00:00Z`` or ``2026-06-13``).
+
+    Used only for x-axis positioning, so naïve date-only buckets and aware hour
+    buckets never mix within a single series — differences stay deterministic.
+    """
+    return datetime.datetime.fromisoformat(t.replace("Z", "+00:00"))
+
+
+def render_timeline_svg(root: Path) -> str:
+    """README preview card: cumulative kernel-verified proofs over time.
+
+    Plots the **merge** series (hourly — when each proof landed on ``main``; the
+    leaderboard's default proofs-over-time view, issue #738), falling back to the
+    daily **solve** series outside a git checkout. A self-contained SVG mirroring
+    ``docs/leaderboard.svg``'s visual language, and a pure function of the series
+    so it is deterministic for the ``--check`` gate.
+    """
+    series = proof_timelines(proofs(root), merge_times(root))
+    points = series.get("merge") or series.get("solve") or []
+    by_merge = bool(series.get("merge"))
+    width, height = 900, 320
+    pad_l, pad_r, pad_t, pad_b = 52, 28, 90, 48
+    font = "Inter, system-ui, sans-serif"
+    total = points[-1]["cumulative_proofs"] if points else 0
+    out = [
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" '
+        f'viewBox="0 0 {width} {height}" role="img" aria-labelledby="title desc">',
+        '<title id="title">Unsorry proofs over time</title>',
+        '<desc id="desc">Cumulative kernel-verified proofs over time, '
+        "by the hour each proof was merged.</desc>",
+        f'<rect width="{width}" height="100%" rx="18" fill="#ffffff"/>',
+        f'<rect x="0.5" y="0.5" width="{width - 1}" height="{height - 1}" rx="18" '
+        'fill="none" stroke="#e2e8f0"/>',
+        f'<text x="32" y="44" font-family="{font}" font-size="28" font-weight="700" '
+        'fill="#334155">Unsorry — Proofs Over Time</text>',
+        f'<text x="32" y="72" font-family="{font}" font-size="13" fill="#64748b">'
+        f"{total} cumulative kernel-verified proofs · "
+        f"{'merged, hourly' if by_merge else 'solved, daily'}</text>",
+    ]
+    if not points:
+        out.append(
+            f'<text x="32" y="{pad_t + 40}" font-family="{font}" font-size="16" '
+            'fill="#64748b">No dated proofs yet.</text>'
+        )
+        out.append("</svg>")
+        return "\n".join(out) + "\n"
+
+    plot_w = width - pad_l - pad_r
+    plot_h = height - pad_t - pad_b
+    dts = [_bucket_dt(p["t"]) for p in points]
+    span = max(1.0, (dts[-1] - dts[0]).total_seconds())
+    max_y = max(total, 1)
+    n = len(points)
+
+    def px(i: int) -> float:
+        if n == 1:
+            return pad_l + plot_w / 2
+        return pad_l + (dts[i] - dts[0]).total_seconds() / span * plot_w
+
+    def py(v: float) -> float:
+        return pad_t + plot_h - v / max_y * plot_h
+
+    for frac in (0, 0.25, 0.5, 0.75, 1):
+        v = round(max_y * frac)
+        yy = py(v)
+        out.append(
+            f'<line x1="{pad_l}" y1="{yy:.1f}" x2="{width - pad_r}" y2="{yy:.1f}" '
+            'stroke="#f1f5f9"/>'
+        )
+        out.append(
+            f'<text x="{pad_l - 8}" y="{yy + 4:.1f}" text-anchor="end" '
+            f'font-family="{font}" font-size="11" fill="#94a3b8">{v}</text>'
+        )
+
+    coords = " ".join(
+        f"{px(i):.1f},{py(p['cumulative_proofs']):.1f}" for i, p in enumerate(points)
+    )
+    base = pad_t + plot_h
+    out.append(
+        f'<polygon points="{px(0):.1f},{base:.1f} {coords} {px(n - 1):.1f},{base:.1f}" '
+        'fill="#e0f2fe" opacity="0.55"/>'
+    )
+    out.append(
+        f'<polyline points="{coords}" fill="none" stroke="#38bdf8" stroke-width="2.5" '
+        'stroke-linejoin="round" stroke-linecap="round"/>'
+    )
+    lx, ly = px(n - 1), py(max_y)
+    out.append(f'<circle cx="{lx:.1f}" cy="{ly:.1f}" r="4" fill="#0ea5e9"/>')
+    out.append(
+        f'<text x="{lx - 6:.1f}" y="{ly - 10:.1f}" text-anchor="end" font-family="{font}" '
+        f'font-size="13" font-weight="700" fill="#334155">{max_y}</text>'
+    )
+
+    def label(dt: datetime.datetime) -> str:
+        return f"{dt:%b %d}" + (f" {dt:%H}:00" if by_merge else "")
+
+    for i in sorted({0, n // 2, n - 1}):
+        out.append(
+            f'<text x="{px(i):.1f}" y="{height - pad_b + 22}" text-anchor="middle" '
+            f'font-family="{font}" font-size="11" fill="#94a3b8">{label(dts[i])}</text>'
+        )
+    out.append("</svg>")
+    return "\n".join(out) + "\n"
 
 
 def render_svg(root: Path) -> str:
@@ -1388,6 +1606,7 @@ def main(argv: list[str] | None = None) -> int:
     payload = render_json(root)
     ui_payload_json = render_ui_json(root)
     svg = render_svg(root)
+    timeline_svg = render_timeline_svg(root)
     gaps_payload = render_attribution_gaps_json(root)
     sourcing_payload_json = render_sourcing_json(root)
     markdown_path = root / "docs" / "leaderboard.md"
@@ -1396,6 +1615,7 @@ def main(argv: list[str] | None = None) -> int:
     gaps_json_path = root / "docs" / "metrics" / "attribution-gaps.json"
     sourcing_json_path = root / "docs" / "metrics" / "sourcing-leaderboard.json"
     svg_path = root / "docs" / "leaderboard.svg"
+    timeline_svg_path = root / "docs" / "proofs-over-time.svg"
     if mode == "--check":
         stale = []
         if not markdown_path.is_file() or markdown_path.read_text(encoding="utf-8") != markdown:
@@ -1410,6 +1630,8 @@ def main(argv: list[str] | None = None) -> int:
             stale.append(sourcing_json_path.relative_to(root).as_posix())
         if not svg_path.is_file() or svg_path.read_text(encoding="utf-8") != svg:
             stale.append(svg_path.relative_to(root).as_posix())
+        if not timeline_svg_path.is_file() or timeline_svg_path.read_text(encoding="utf-8") != timeline_svg:
+            stale.append(timeline_svg_path.relative_to(root).as_posix())
         if stale:
             print(
                 f"{', '.join(stale)} stale — regenerate with "
@@ -1427,6 +1649,7 @@ def main(argv: list[str] | None = None) -> int:
         gaps_json_path.write_text(gaps_payload, encoding="utf-8")
         sourcing_json_path.write_text(sourcing_payload_json, encoding="utf-8")
         svg_path.write_text(svg, encoding="utf-8")
+        timeline_svg_path.write_text(timeline_svg, encoding="utf-8")
         return 0
     sys.stdout.write(payload if mode == "--json" else markdown)
     return 0

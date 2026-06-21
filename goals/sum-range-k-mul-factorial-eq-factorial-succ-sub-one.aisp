@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-k-mul-factorial-eq-factorial-succ-sub-one
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-k-mul-factorial-eq-factorial-succ-sub-one.md
+  src≜packages/unsorry-archive-0036/backlog/sum-range-k-mul-factorial-eq-factorial-succ-sub-one.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-k-mul-factorial-eq-factorial-succ-sub-one.lean
+  lean≜packages/unsorry-archive-0036/goals/sum-range-k-mul-factorial-eq-factorial-succ-sub-one.lean
   sha≜245e6db057da24e72ee4239127d4c8747857e777c0eadbf218feff05bc439061
   aff≜-10
 }
