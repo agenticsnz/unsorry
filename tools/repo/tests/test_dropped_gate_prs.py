@@ -107,7 +107,14 @@ def test_no_nudge_when_draft():
 
 def test_no_nudge_when_not_blocked():
     assert _reason({}, merge_state="CLEAN") is None
-    assert _reason({}, merge_state="UNKNOWN") is None
+    assert _reason({}, merge_state="DIRTY") is None
+
+
+def test_nudge_when_unknown_state_with_dropped_gate():
+    # A stuck PR often sits UNKNOWN (mergeability never computed because no gate
+    # reported) — the dropped-gate signal still applies. #3987 regression.
+    r = _reason({}, merge_state="UNKNOWN")
+    assert r is not None and "gate-a" in r
 
 
 def test_default_required_is_gate_a_and_b():

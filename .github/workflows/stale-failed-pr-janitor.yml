@@ -24,9 +24,15 @@
 name: stale-failed-pr-janitor
 
 on:
+  # Primary: fire whenever a gate-a run completes — when a stale prove-PR's gate-a
+  # fails (or any other PR's does), rescan and rebase the stale failed ones. The
+  # scheduled cron alone was unreliable: GitHub dropped it (this janitor logged
+  # only ONE run in its first 9 hours), so the auto-drain never happened.
+  workflow_run:
+    workflows: ["gate-a"]
+    types: [completed]
   schedule:
-    # Hourly backstop, off the top-of-hour congestion and clear of the
-    # dropped-gate janitor (minute 23). Stale PRs are not time-critical.
+    # Hourly backstop only — workflow_run above is the real driver.
     - cron: "41 * * * *"
   workflow_dispatch:
     inputs:
@@ -35,8 +41,10 @@ on:
         default: "true"
 
 concurrency:
+  # cancel-in-progress: false so frequent workflow_run triggers coalesce (one
+  # running + one pending) rather than repeatedly cancelling the in-flight sweep.
   group: stale-failed-pr-janitor
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 permissions:
   contents: read

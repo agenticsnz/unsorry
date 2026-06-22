@@ -11,8 +11,13 @@
 # for the conservative guards (draft / pending / failed / too-fresh / not-behind
 # are all left alone).
 #
-# Trigger is schedule + manual ONLY — NOT workflow_run on gate-a, because the
-# affected PRs have no gate-a run to complete, so that event would never name them.
+# Triggers: workflow_run on gate-a (primary) + schedule (backstop) + manual. The
+# scheduled cron alone proved unreliable — GitHub silently drops cron runs under
+# load (exactly when stuck PRs pile up), so this once sat for hours un-swept. The
+# affected PR has no gate-a run of its OWN, but that doesn't matter: this job
+# rescans EVERY open PR on each run, so any other PR's gate-a completing (dozens
+# an hour in the swarm) is a perfectly good wakeup that catches the dropped one.
+# Event-driven beats a dropped cron.
 #
 # The branch update MUST use a non-default token: events triggered by the default
 # GITHUB_TOKEN do not start new workflow runs, so an update-branch with it would
@@ -22,9 +27,12 @@
 name: dropped-gate-janitor
 
 on:
+  workflow_run:
+    workflows: ["gate-a"]
+    types: [completed]
   schedule:
-    # Hourly backstop, off the top-of-hour congestion (GitHub throttles cron, and
-    # these blocks are not time-critical — catching them within ~1 h beats 7 h).
+    # Hourly backstop only — the workflow_run trigger above is the real driver
+    # (cron runs get dropped under load).
     - cron: "23 * * * *"
   workflow_dispatch:
     inputs:
@@ -33,8 +41,11 @@ on:
         default: "true"
 
 concurrency:
+  # cancel-in-progress: false so the frequent workflow_run triggers COALESCE
+  # (GitHub keeps one running + one pending, dropping older pending) instead of a
+  # newer run repeatedly cancelling the in-flight sweep before it can finish.
   group: dropped-gate-janitor
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 permissions:
   contents: read

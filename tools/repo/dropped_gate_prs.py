@@ -9,8 +9,9 @@ on #3394, stuck ~7 h, 927 commits behind.)
 This finds that exact pathology and re-triggers it by updating the PR branch with
 its base, which fires a fresh `pull_request` synchronize and dispatches the gates.
 
-  detect: PR open + not draft + mergeStateStatus BLOCKED + a required context has
-          ZERO check-runs on the head SHA (not pending, not failed — absent).
+  detect: PR open + not draft + mergeStateStatus BLOCKED or UNKNOWN + a required
+          context has ZERO check-runs on the head SHA (not pending, not failed —
+          absent).
 
 Conservative — it acts only on a POSITIVE dropped-dispatch signal and leaves
 everything else alone:
@@ -92,7 +93,13 @@ def dropped_gate_reason(required, present_states, merge_state, is_draft,
     """
     if is_draft:
         return None
-    if merge_state != "BLOCKED":
+    # BLOCKED is the normal dropped-gate state, but a stuck PR often sits in
+    # UNKNOWN — GitHub never (re)computed its mergeability because no required
+    # check ever reported. #3987 sat UNKNOWN for 6 h and the BLOCKED-only filter
+    # skipped it every run. The gate-absence signal below is what actually proves
+    # a dropped dispatch, so accept either state. (CLEAN/UNSTABLE/DIRTY/BEHIND
+    # are real merge states with their gates present, so they fall through.)
+    if merge_state not in ("BLOCKED", "UNKNOWN"):
         return None
     missing = sorted(c for c in required if c not in present_states)
     if not missing:
@@ -191,7 +198,7 @@ def main(argv: list[str] | None = None) -> int:
     nudged_candidates: list[tuple[int, str, str]] = []  # (number, title, reason)
     blocked_not_behind: list[int] = []
     for pr in _open_prs(repo):
-        if pr.get("isDraft") or pr.get("mergeStateStatus") != "BLOCKED":
+        if pr.get("isDraft") or pr.get("mergeStateStatus") not in ("BLOCKED", "UNKNOWN"):
             continue
         sha = pr.get("headRefOid")
         if not sha:
