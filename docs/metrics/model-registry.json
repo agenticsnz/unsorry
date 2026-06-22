@@ -59,6 +59,35 @@
         ],
         "assigned_at": "2026-06-22T09:21:02Z"
       }
+    },
+    {
+      "provider_model": "openrouter / unknown",
+      "slug": "openrouter-unknown",
+      "pokemon": {
+        "name": "Unown",
+        "dex_id": 201,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/201.png",
+        "description": "Their shapes look like hieroglyphs on ancient tablets. It is said that the two are somehow related."
+      },
+      "research": {
+        "classification": "closed",
+        "publisher": "OpenRouter, Inc.",
+        "country": "United States",
+        "parameter_size": "undisclosed",
+        "license": "Proprietary (commercial routing service)",
+        "canonical_url": "https://openrouter.ai/openrouter/auto"
+      },
+      "profile": "Unown's name literally reads as \"unknown,\" matching an OpenRouter request whose underlying model is unidentified. Like Unown's 28 interchangeable forms, it can resolve to any of many models behind one hidden identity.",
+      "provenance": {
+        "assigned_by": "housekeeping",
+        "assigned_with": "claude / opus",
+        "contributor": "ab0t-core",
+        "sources": [
+          "https://openrouter.ai/openrouter/auto",
+          "https://openrouter.ai/docs/guides/routing/routers/auto-router"
+        ],
+        "assigned_at": "2026-06-22T09:52:19Z"
+      }
     }
   ]
 }
