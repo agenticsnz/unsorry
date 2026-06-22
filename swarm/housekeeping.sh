@@ -196,10 +196,13 @@ research_and_write() {
 # Branch, commit, push and open one labelled PR for the staged registry change.
 open_pr() {
   local pm="$1" poke="$2" branch="$3"
-  git checkout -b "$branch" >/dev/null
+  git checkout -B "$branch" >/dev/null   # -B: reuse the name if a stale local branch exists
   git add "$REGISTRY"
   git commit -m "$(commit_subject "$pm" "$poke")" \
     -m "Assign the Pokémon identity for \`$pm\` (ADR-083). One Pokémon per PR." >/dev/null
+  # Clear any stale remote branch of the same name (e.g. an abandoned earlier
+  # run) so the push is never a non-fast-forward; then push the fresh branch.
+  git push origin --delete "$branch" >/dev/null 2>&1 || true
   git push -u origin "$branch" >/dev/null
   gh pr create --base "$BASE_BRANCH" --head "$branch" \
     --label model-registry --label chore \
@@ -246,6 +249,15 @@ name_one() {
   return 0
 }
 
+# Put the checkout on an up-to-date, clean BASE_BRANCH before naming, so each
+# per-model branch is cut from origin/<base> even if run.sh left us on a stale
+# branch (e.g. a previous feature branch). Refuses to clobber tracked changes.
+sync_base() {
+  git fetch -q origin "$BASE_BRANCH" 2>/dev/null || return 1
+  git diff --quiet && git diff --cached --quiet || return 1
+  git checkout -q -B "$BASE_BRANCH" "origin/$BASE_BRANCH"
+}
+
 main() {
   case "${1:-}" in
     -h|--help) usage; exit 0 ;;
@@ -256,6 +268,10 @@ main() {
   [ -f tools/model_registry/__main__.py ] || { log "run from the repository root"; exit 2; }
   if [ ! -f "$DISTRIBUTION" ]; then
     log "no $DISTRIBUTION yet — leaderboard not generated; nothing to do"; exit 0
+  fi
+  if ! sync_base; then
+    log "could not sync to a clean $BASE_BRANCH (uncommitted tracked changes, or no network) — aborting before naming"
+    exit 2
   fi
 
   CONTRIBUTOR="$(resolve_contributor)"
