@@ -1,0 +1,20 @@
+𝔸5.1.goal.fourth-power-mod-thirteen-mem@2026-06-14
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜fourth-power-mod-thirteen-mem
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/fourth-power-mod-thirteen-mem.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/fourth-power-mod-thirteen-mem.lean
+  sha≜1bc3dadfe05a2508701b10862c907d2d0cc1275ed8c60997d705cf50226bea49
+  aff≜-8
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

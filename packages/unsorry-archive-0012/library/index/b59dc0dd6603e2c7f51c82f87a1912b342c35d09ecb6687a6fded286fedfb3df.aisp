@@ -1,0 +1,8 @@
+𝔸5.1.lemma.b59dc0dd6603@2026-06-16
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜b59dc0dd6603e2c7f51c82f87a1912b342c35d09ecb6687a6fded286fedfb3df; goal≜dvd-twentyfour-pow-seven-sub-pow-five; name≜dvd_twentyfour_pow_seven_sub_pow_five}
+⟦Σ:Source⟧{src≜goals/dvd-twentyfour-pow-seven-sub-pow-five.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜python; model≜sympy; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

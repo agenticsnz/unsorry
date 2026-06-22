@@ -1,0 +1,20 @@
+𝔸5.1.goal.sq-mod-forty-mem@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sq-mod-forty-mem
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/sq-mod-forty-mem.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sq-mod-forty-mem.lean
+  sha≜a0e9647f4c25977b178ed8f75e22c53cd362a1dd1e5ef56a42e445b4451c950d
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

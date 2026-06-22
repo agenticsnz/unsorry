@@ -1,0 +1,179 @@
+{
+  "block_id": "unsorry-archive-0014",
+  "target_size": 40,
+  "proof_count": 40,
+  "status": "frozen",
+  "source_commit": "bd6e826771a24226e999855dd45238988eb6eda5",
+  "validation_commit": null,
+  "pins": {
+    "lean_toolchain": "leanprover/lean4:v4.30.0",
+    "mathlib": "v4.30.0"
+  },
+  "notes": [
+    "ADR-041 proof archive block 0014.",
+    "Whole decomposition trees + standalone proved goals only (invariant A).",
+    "Active goal records remain as archived metadata pointing at this package."
+  ],
+  "goals": [
+    {
+      "goal": "dvd-252-pow-eight-sub-sq",
+      "module": "Unsorry.Dvd252PowEightSubSq"
+    },
+    {
+      "goal": "dvd-255-pow-seventeen-sub-self",
+      "module": "Unsorry.Dvd255PowSeventeenSubSelf"
+    },
+    {
+      "goal": "dvd-266-pow-nineteen-sub-self",
+      "module": "Unsorry.Dvd266PowNineteenSubSelf"
+    },
+    {
+      "goal": "dvd-273-pow-fourteen-sub-sq",
+      "module": "Unsorry.Dvd273PowFourteenSubSq"
+    },
+    {
+      "goal": "dvd-2730-pow-thirteen-sub-self",
+      "module": "Unsorry.Dvd2730PowThirteenSubSelf"
+    },
+    {
+      "goal": "dvd-330-pow-twentythree-sub-pow-three",
+      "module": "Unsorry.Dvd330PowTwentythreeSubPowThree"
+    },
+    {
+      "goal": "dvd-360-pow-fifteen-sub-pow-three",
+      "module": "Unsorry.Dvd360PowFifteenSubPowThree"
+    },
+    {
+      "goal": "dvd-455-pow-fifteen-sub-pow-three",
+      "module": "Unsorry.Dvd455PowFifteenSubPowThree"
+    },
+    {
+      "goal": "dvd-504-pow-nine-sub-pow-three",
+      "module": "Unsorry.Dvd504PowNineSubPowThree"
+    },
+    {
+      "goal": "dvd-5040-seven-consecutive-product",
+      "module": "Unsorry.Dvd5040SevenConsecutiveProduct"
+    },
+    {
+      "goal": "dvd-510-pow-fortynine-sub-pow-seventeen",
+      "module": "Unsorry.Dvd510PowFortynineSubPowSeventeen"
+    },
+    {
+      "goal": "dvd-510-pow-nineteen-sub-pow-three",
+      "module": "Unsorry.Dvd510PowNineteenSubPowThree"
+    },
+    {
+      "goal": "dvd-510-pow-thirtythree-sub-pow-seventeen",
+      "module": "Unsorry.Dvd510PowThirtythreeSubPowSeventeen"
+    },
+    {
+      "goal": "dvd-510-pow-twentyone-sub-pow-five",
+      "module": "Unsorry.Dvd510PowTwentyoneSubPowFive"
+    },
+    {
+      "goal": "dvd-546-pow-fourteen-sub-sq",
+      "module": "Unsorry.Dvd546PowFourteenSubSq"
+    },
+    {
+      "goal": "dvd-630-pow-fourteen-sub-sq",
+      "module": "Unsorry.Dvd630PowFourteenSubSq"
+    },
+    {
+      "goal": "dvd-66-pow-thirtyone-sub-pow-eleven",
+      "module": "Unsorry.Dvd66PowThirtyoneSubPowEleven"
+    },
+    {
+      "goal": "dvd-6765-pow-fortyone-sub-self",
+      "module": "Unsorry.Dvd6765PowFortyoneSubSelf"
+    },
+    {
+      "goal": "dvd-840-pow-fifteen-sub-pow-three",
+      "module": "Unsorry.Dvd840PowFifteenSubPowThree"
+    },
+    {
+      "goal": "dvd-870-pow-twentynine-sub-self",
+      "module": "Unsorry.Dvd870PowTwentynineSubSelf"
+    },
+    {
+      "goal": "dvd-903-pow-fortythree-sub-self",
+      "module": "Unsorry.Dvd903PowFortythreeSubSelf"
+    },
+    {
+      "goal": "dvd-910-pow-thirteen-sub-self",
+      "module": "Unsorry.Dvd910PowThirteenSubSelf"
+    },
+    {
+      "goal": "dvd-910-pow-twentyfive-sub-pow-thirteen",
+      "module": "Unsorry.Dvd910PowTwentyfiveSubPowThirteen"
+    },
+    {
+      "goal": "one-hundred-twenty-dvd-five-consecutive",
+      "module": "Unsorry.OneHundredTwentyDvdFiveConsecutive"
+    },
+    {
+      "goal": "cheb-three-cube-ge-sum-times-sumsq",
+      "module": "Unsorry.ChebThreeCubeGeSumTimesSumsq"
+    },
+    {
+      "goal": "cube-of-sum-le-nine-sum-cubes",
+      "module": "Unsorry.CubeOfSumLeNineSumCubes"
+    },
+    {
+      "goal": "pairsum-sq-le-three-sum-sq-products",
+      "module": "Unsorry.PairsumSqLeThreeSumSqProducts"
+    },
+    {
+      "goal": "prod-pair-sums-ge-eight-ninths-sum-prod",
+      "module": "Unsorry.ProdPairSumsGeEightNinthsSumProd"
+    },
+    {
+      "goal": "ravi-product-le-abc",
+      "module": "Unsorry.RaviProductLeAbc"
+    },
+    {
+      "goal": "schur-inequality-deg-one",
+      "module": "Unsorry.SchurInequalityDegOne"
+    },
+    {
+      "goal": "sum-cubes-sq-le-three-sum-sixth",
+      "module": "Unsorry.SumCubesSqLeThreeSumSixth"
+    },
+    {
+      "goal": "sum-sixth-ge-cyclic-quartic-sq",
+      "module": "Unsorry.SumSixthGeCyclicQuarticSq"
+    },
+    {
+      "goal": "sum-sq-times-pairsum-ge-three-abc-sum",
+      "module": "Unsorry.SumSqTimesPairsumGeThreeAbcSum"
+    },
+    {
+      "goal": "sumsq-times-recip-sq-ge-nine",
+      "module": "Unsorry.SumsqTimesRecipSqGeNine"
+    },
+    {
+      "goal": "three-cubes-zmod-nine-ne-four-five",
+      "module": "Unsorry.ThreeCubesZmodNineNeFourFive"
+    },
+    {
+      "goal": "sum-centered-cube-eq-biquadratic",
+      "module": "Unsorry.SumCenteredCubeEqBiquadratic"
+    },
+    {
+      "goal": "sum-centered-hexagonal-eq-cube",
+      "module": "Unsorry.SumCenteredHexagonalEqCube"
+    },
+    {
+      "goal": "sum-centered-octahedral-closed-form",
+      "module": "Unsorry.SumCenteredOctahedralClosedForm"
+    },
+    {
+      "goal": "sum-centered-square-numbers-closed-form",
+      "module": "Unsorry.SumCenteredSquareNumbersClosedForm"
+    },
+    {
+      "goal": "sum-centered-tetrahedral-closed-form",
+      "module": "Unsorry.SumCenteredTetrahedralClosedForm"
+    }
+  ]
+}

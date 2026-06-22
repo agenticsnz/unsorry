@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜dvd-910-pow-fifteen-sub-pow-three
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/dvd-910-pow-fifteen-sub-pow-three.md
+  src≜packages/unsorry-archive-0013/backlog/dvd-910-pow-fifteen-sub-pow-three.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/dvd-910-pow-fifteen-sub-pow-three.lean
+  lean≜packages/unsorry-archive-0013/goals/dvd-910-pow-fifteen-sub-pow-three.lean
   sha≜ec713e57695f578f84c5f924630bd61959e7e5f2e995fa525734cb39d9a7f9cd
   aff≜-19
 }

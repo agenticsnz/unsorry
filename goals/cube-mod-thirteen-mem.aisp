@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜cube-mod-thirteen-mem
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/cube-mod-thirteen-mem.md
+  src≜packages/unsorry-archive-0010/backlog/cube-mod-thirteen-mem.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/cube-mod-thirteen-mem.lean
+  lean≜packages/unsorry-archive-0010/goals/cube-mod-thirteen-mem.lean
   sha≜e18ba5b1b31a6df3d85efc2d7de12a1630fb8cbbf04fe4b90bc62677c5169a5e
   aff≜-9
 }
