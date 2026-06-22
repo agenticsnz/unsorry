@@ -323,6 +323,36 @@
         ],
         "assigned_at": "2026-06-22T10:09:05Z"
       }
+    },
+    {
+      "provider_model": "codex / gpt-5.3-codex-spark",
+      "slug": "codex-gpt-5-3-codex-spark",
+      "pokemon": {
+        "name": "Jolteon",
+        "dex_id": 135,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+        "description": "It accumulates negative ions in the atmosphere to blast out 10000- volt lightning bolts."
+      },
+      "research": {
+        "classification": "closed",
+        "publisher": "OpenAI",
+        "country": "United States",
+        "parameter_size": "undisclosed",
+        "license": "Proprietary",
+        "canonical_url": "https://openai.com/index/introducing-gpt-5-3-codex-spark/"
+      },
+      "profile": "Jolteon is the speed-built, electric Eeveelution—small and near-instant—mirroring Codex-Spark's 1000+ tokens/sec real-time coding on Cerebras. Like Spark, its blistering quickness trades raw bulk for instant, iterative bursts.",
+      "provenance": {
+        "assigned_by": "housekeeping",
+        "assigned_with": "claude / opus",
+        "contributor": "cgbarlow",
+        "sources": [
+          "https://openai.com/index/introducing-gpt-5-3-codex-spark/",
+          "https://www.cerebras.ai/blog/openai-codexspark",
+          "https://simonwillison.net/2026/Feb/12/codex-spark/"
+        ],
+        "assigned_at": "2026-06-22T10:10:24Z"
+      }
     }
   ]
 }
