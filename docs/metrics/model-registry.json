@@ -235,6 +235,35 @@
         ],
         "assigned_at": "2026-06-22T10:03:06Z"
       }
+    },
+    {
+      "provider_model": "claude / sonnet",
+      "slug": "claude-sonnet",
+      "pokemon": {
+        "name": "Gardevoir",
+        "dex_id": 282,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/282.png",
+        "description": "GARDEVOIR has the ability to read the future. If it senses impending danger to its TRAINER, this POKéMON is said to unleash its psychokinetic energy at full power."
+      },
+      "research": {
+        "classification": "closed",
+        "publisher": "Anthropic",
+        "country": "United States",
+        "parameter_size": "undisclosed",
+        "license": "Proprietary (commercial API/ToS)",
+        "canonical_url": "https://www.anthropic.com/claude/sonnet"
+      },
+      "profile": "Claude Sonnet is Anthropic's elegant, versatile mid-tier workhorse — balanced, dependable, and graceful, much like the Psychic/Fairy Gardevoir. Its poetic name and refined, devoted character mirror Gardevoir's elegance and reliable all-round capability.",
+      "provenance": {
+        "assigned_by": "housekeeping",
+        "assigned_with": "claude / opus",
+        "contributor": "ab0t-core",
+        "sources": [
+          "https://www.anthropic.com/claude/sonnet",
+          "https://www.anthropic.com/news/claude-sonnet-4-5"
+        ],
+        "assigned_at": "2026-06-22T10:05:05Z"
+      }
     }
   ]
 }
