@@ -16,6 +16,16 @@
 name: queue-dispatcher
 
 on:
+  # Event-driven is the primary trigger: GitHub throttles `schedule` under load
+  # (observed cron runs 1–5 h apart exactly when the backlog is deepest), so the
+  # queue sat empty between runs despite ready branches. A Gate A completion frees
+  # an in-flight slot, so that is precisely when the governor-capped dispatcher can
+  # admit more — fire then. Completions are frequent while the swarm is active and
+  # are NOT cron-throttled. The cron stays as a low-activity backstop, and the
+  # concurrency group below serialises passes so bursts never double-count.
+  workflow_run:
+    workflows: ["gate-a"]
+    types: [completed]
   schedule:
     - cron: "*/15 * * * *"
   workflow_dispatch:

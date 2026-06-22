@@ -1,0 +1,20 @@
+𝔸5.1.goal.ravi-product-le-abc@2026-06-17
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜ravi-product-le-abc
+  phase≜prove
+  status≜proved
+  difficulty≜4
+}
+⟦Σ:Source⟧{
+  src≜backlog/ravi-product-le-abc.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/ravi-product-le-abc.lean
+  sha≜bbdfd44cc32276202eb621b8474054c24506e58bc9c6f756dcc5706574593940
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

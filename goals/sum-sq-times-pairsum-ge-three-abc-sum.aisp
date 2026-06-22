@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-sq-times-pairsum-ge-three-abc-sum
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜4
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-sq-times-pairsum-ge-three-abc-sum.md
+  src≜packages/unsorry-archive-0014/backlog/sum-sq-times-pairsum-ge-three-abc-sum.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-sq-times-pairsum-ge-three-abc-sum.lean
+  lean≜packages/unsorry-archive-0014/goals/sum-sq-times-pairsum-ge-three-abc-sum.lean
   sha≜6cb86f422a0652d51ad888ba869a35e84430b6a67f372619ade6a9432d471060
   aff≜-20
 }

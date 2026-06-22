@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜pell-d2-stormer-seven-ladder-preserves
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/pell-d2-stormer-seven-ladder-preserves.md
+  src≜packages/unsorry-archive-0009/backlog/pell-d2-stormer-seven-ladder-preserves.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/pell-d2-stormer-seven-ladder-preserves.lean
+  lean≜packages/unsorry-archive-0009/goals/pell-d2-stormer-seven-ladder-preserves.lean
   sha≜28430dc534bd3d28d5e9cce499c96b18d08ad4251a63a9ad60acb10db46782f6
   aff≜-10
 }

@@ -22,21 +22,25 @@
 #       resilient via ADR-017.
 # All three inherit this shell's UNSORRY_* env and are torn down together on exit.
 #
-# Run exactly ONE dispatcher and ONE sourcer. For a multi-node swarm, run this
-# once and start additional `./swarm/supervise.sh --prove` provers elsewhere — do
-# not start more dispatchers or sourcers.
+# Concurrent dispatchers and sourcers are SOUND, not a conflict: dispatch dedup
+# (ADR-064 + ADR-071) plus first-merge-wins (ADR-004) keep "one PR per goal"
+# across passes AND across processes, so the worst case of overlap is a rare
+# wasted Gate A slot, never a wrong merge. Prefer ONE dispatcher and ONE sourcer
+# per swarm anyway — extra ones are redundant, not harmful. For a multi-node
+# swarm, run this once and start additional `./swarm/supervise.sh --prove`
+# provers elsewhere.
 #
-# NOTE: if the repository's scheduled `queue-dispatcher` workflow (.github/
-# workflows/queue-dispatcher.yml) is enabled, IT is already that one dispatcher.
-# Launching run.sh then adds a SECOND dispatcher. ADR-064 goal-level dedup makes
-# this mostly safe — both read the same open-PR set and skip a goal already
-# proved or already PR'd — but two passes can still both open a PR for the same
-# goal inside the window before one is visible to the other (first-merge-wins
-# then closes the loser as a conflict, wasting a Gate A slot). So on a repo with
-# the scheduled dispatcher, run a prover only — `./swarm/supervise.sh --prove` —
-# rather than run.sh. Use run.sh for a standalone/forked deployment that has no
-# scheduled dispatcher (and so no scheduled sourcing either — its demand-driven
-# sourcer arm is then the backlog's only automatic top-up).
+# NOTE: the repository's scheduled `queue-dispatcher` workflow (.github/
+# workflows/queue-dispatcher.yml) is an always-on BACKSTOP, not a rival owner —
+# it drains the queue even when no swarm node is running locally (#1909), is
+# governor-capped, and no-ops when full. Running run.sh's dispatcher alongside it
+# is therefore REDUNDANT, not conflicting (the dedup above keeps it sound; at
+# worst a duplicate pass wastes a Gate A slot). So on a repo that already runs
+# that backstop (e.g. agenticsnz/unsorry), prefer a prover only —
+# `./swarm/supervise.sh --prove` — to avoid spending verifier capacity twice.
+# Use run.sh's full trio for a standalone/forked deployment that has no scheduled
+# dispatcher (and so no scheduled sourcing either — its demand-driven sourcer arm
+# is then the backlog's only automatic top-up).
 #
 # Usage:
 #   ./swarm/run.sh [--goal <id>] [--provider <name>] [-pi [<model>]] [...]
@@ -93,6 +97,103 @@ source_arm_enabled() {
   esac
 }
 
+# A long-lived run.sh keeps the launcher it was started with: a newer run.sh
+# (e.g. one that first gained the credit guard below) can be on origin/main yet
+# never in this process, so the guard a stale launcher lacks never runs and the
+# whole swarm comes up on old code. agent.sh self-re-execs its harness (#428);
+# the launcher must do the same. This pure decision (no I/O, so --self-test
+# covers it) reports whether our own blob changed; the caller fetches, fast-
+# forwards a clean checkout to origin/main and re-execs when it did.
+run_harness_stale() {  # <before-sha> <after-sha> → 0 (stale) iff both known and differ
+  [ "$1" != unknown ] && [ "$2" != unknown ] && [ "$1" != "$2" ]
+}
+
+# Pull latest and re-exec the launcher before any work is in flight. Best-effort:
+# offline (fetch fails) or a dirty/diverged tree (e.g. a fork, or .lake churn) is
+# left untouched — the prover/dispatcher/sourcer loops self-sync downstream — so
+# the swarm is never blocked from starting. Opt out with UNSORRY_RUN_NO_SELF_UPDATE=1.
+self_update_to_latest() {
+  [ "${_RUN_REEXECED:-0}" = 1 ] && return 0
+  [ "${UNSORRY_RUN_NO_SELF_UPDATE:-0}" = 1 ] && return 0
+  command -v git >/dev/null 2>&1 || return 0
+  git rev-parse --is-inside-work-tree >/dev/null 2>&1 || return 0
+  local before after
+  before="$(git hash-object swarm/run.sh 2>/dev/null || echo unknown)"
+  if ! git fetch -q origin main 2>/dev/null; then
+    log "self-update: git fetch failed (offline?) — running on the current tree"
+    return 0
+  fi
+  # Only advance a clean checkout sitting on a fast-forwardable main; anything
+  # dirty or diverged is left for the downstream loops to reconcile.
+  if [ -z "$(git status --porcelain 2>/dev/null)" ]; then
+    git merge -q --ff-only origin/main 2>/dev/null || true
+  fi
+  after="$(git hash-object swarm/run.sh 2>/dev/null || echo unknown)"
+  if run_harness_stale "$before" "$after"; then
+    log "launcher updated on origin/main ($before → $after) — re-exec'ing to run the latest code (#428)"
+    _RUN_REEXECED=1 exec "$0" "$@"
+  fi
+}
+
+# Credit-integrity guard (proof attribution). `agent.sh:resolve_solver` trusts
+# UNSORRY_SOLVER verbatim, so a config that hard-codes someone else's handle
+# credits THEM for every proof this machine produces — observed in practice as
+# multiple contributors funnelling credit to one handle via a shared config, with
+# no signal until they checked the leaderboard. This pure decision compares the
+# effective solver handle to the operator's GitHub login; the launcher acts on it
+# (block/warn) before starting any loop. Pure in its args (no I/O) so --self-test
+# exercises every branch hermetically. Echoes one of: ok | ack | block | unknown.
+#   solver: $UNSORRY_SOLVER (empty -> defaults to the login downstream, always ok)
+#   login : gh-resolved login (empty -> unknown; cannot compare, e.g. offline)
+#   ack   : $UNSORRY_SOLVER_OK (truthy -> a mismatch is a deliberate, ack'd override)
+solver_credit_decision() {
+  local solver="$1" login="$2" ack="$3"
+  [ -z "$solver" ] && { echo ok; return; }
+  [ -z "$login" ] && { echo unknown; return; }
+  if [ "$(printf '%s' "$solver" | tr '[:upper:]' '[:lower:]')" \
+     = "$(printf '%s' "$login" | tr '[:upper:]' '[:lower:]')" ]; then
+    echo ok; return
+  fi
+  case "$ack" in
+    1|true|TRUE|yes|YES|on|ON) echo ack ;;
+    *) echo block ;;
+  esac
+}
+
+# Resolve the GitHub login and act on solver_credit_decision before launching.
+# A `block` exits non-zero so a mis-credited swarm never silently starts.
+guard_solver_credit() {
+  local login decision
+  login="$(gh api user --jq .login 2>/dev/null || true)"
+  decision="$(solver_credit_decision "${UNSORRY_SOLVER:-}" "$login" "${UNSORRY_SOLVER_OK:-}")"
+  case "$decision" in
+    ok) : ;;
+    unknown)
+      log "WARNING: could not resolve your GitHub login (offline / gh not authenticated) — cannot verify proof credit. Set UNSORRY_SOLVER to your handle to be certain." ;;
+    ack)
+      log "WARNING: proofs will be credited to '${UNSORRY_SOLVER}', NOT your GitHub account '${login}' (UNSORRY_SOLVER_OK=1 — proceeding as a deliberate override)." ;;
+    block)
+      cat >&2 <<EOF
+
+  ┌─ STOP: proof credit would go to the wrong account ──────────────────┐
+   UNSORRY_SOLVER is '${UNSORRY_SOLVER}', but your GitHub account is
+   '${login}'. Every proof this machine produces would be credited to
+   '${UNSORRY_SOLVER}' on the leaderboard — not to you.
+
+   Fix, then re-run:
+       export UNSORRY_SOLVER=${login}     # credit yourself
+       # or:  unset UNSORRY_SOLVER        # default to your gh login
+       export UNSORRY_AGENT_ID=${login}-1 # your own agent id (avoid sharing)
+
+   Deliberately proving under another handle (e.g. an org)? Acknowledge:
+       export UNSORRY_SOLVER_OK=1
+  └─────────────────────────────────────────────────────────────────────┘
+
+EOF
+      exit 2 ;;
+  esac
+}
+
 # Hermetic self-test (no network, no claude, no subprocess) of the pure arm gate
 # — the SPEC-007-A quality bar for this launcher (agent-lint.yml).
 run_self_test() {
@@ -109,6 +210,37 @@ run_self_test() {
     [ "$got" = off ] || { printf "  FAIL: '%s' should disable the arm, got %s\n" "$v" "$got" >&2; fails=$((fails + 1)); }
   done
   unset UNSORRY_SOURCE_ON_EMPTY || true
+
+  # credit guard decision (pure)
+  local d
+  while IFS='|' read -r solver login ack want; do
+    [ -z "$want" ] && continue
+    d="$(solver_credit_decision "$solver" "$login" "$ack")"
+    [ "$d" = "$want" ] || { printf "  FAIL: credit(solver='%s' login='%s' ack='%s') want %s got %s\n" "$solver" "$login" "$ack" "$want" "$d" >&2; fails=$((fails + 1)); }
+  done <<'CASES'
+|alice||ok
+alice|alice||ok
+Alice|alice||ok
+alice|Alice||ok
+bob|alice||block
+bob|alice|1|ack
+bob|alice|yes|ack
+bob|||unknown
+CASES
+
+  # launcher staleness (pure): stale iff the blob changed and both shas are known
+  local s before after want
+  while IFS='|' read -r before after want; do
+    [ -z "$want" ] && continue
+    if run_harness_stale "$before" "$after"; then s=stale; else s=fresh; fi
+    [ "$s" = "$want" ] || { printf "  FAIL: stale(before='%s' after='%s') want %s got %s\n" "$before" "$after" "$want" "$s" >&2; fails=$((fails + 1)); }
+  done <<'STALECASES'
+aaa|bbb|stale
+aaa|aaa|fresh
+aaa|unknown|fresh
+unknown|bbb|fresh
+STALECASES
+
   if [ "$fails" -eq 0 ]; then
     echo "run.sh self-test: OK"
     return 0
@@ -176,6 +308,14 @@ if [ ! -f swarm/agent.sh ] || [ ! -f swarm/supervise.sh ] || [ ! -f swarm/sourci
   exit 2
 fi
 
+# Run the LATEST launcher before guarding credit or starting any loop: a process
+# launched before the guard existed would never enforce it on stale code.
+self_update_to_latest "$@"
+
+# Credit-integrity guard: refuse to silently run proofs that would be credited to
+# someone else (covers fork mode too — it runs before the fork branch below).
+guard_solver_credit
+
 # ADR-068: in fork mode, run the prover only (cross-repo PRs); a fork cannot run
 # the dispatcher or sourcer against the upstream. --fork reaches agent.sh through
 # supervise.sh (added if not already present).
@@ -185,6 +325,21 @@ if is_fork_run "$@"; then
     *" --fork "*) exec ./swarm/supervise.sh --prove "$@" ;;
     *)           exec ./swarm/supervise.sh --prove --fork "$@" ;;
   esac
+fi
+
+# First work package (ADR-083): a swarm *operational task*. Before the proving
+# arms start, resolve a Pokémon identity for EVERY model in the distribution that
+# lacks one (docs/metrics/model-registry.json), one Pokémon per PR. This BLOCKS:
+# if it cannot name every model, run.sh refuses to start the proving arms, so no
+# proving/dispatch/sourcing work happens while a model is still unnamed. Disable
+# the whole step with UNSORRY_HOUSEKEEPING=0.
+if [ "${UNSORRY_HOUSEKEEPING:-1}" = "1" ]; then
+  log "first work package: resolving Pokémon for all unnamed models (ADR-083)"
+  if ! ./swarm/housekeeping.sh; then
+    log "housekeeping could not name every model — NOT starting the proving arms" \
+        "(set UNSORRY_HOUSEKEEPING=0 to bypass)"
+    exit 1
+  fi
 fi
 
 dispatcher &

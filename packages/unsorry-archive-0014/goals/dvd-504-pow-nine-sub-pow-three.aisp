@@ -1,0 +1,20 @@
+𝔸5.1.goal.dvd-504-pow-nine-sub-pow-three@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜dvd-504-pow-nine-sub-pow-three
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/dvd-504-pow-nine-sub-pow-three.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/dvd-504-pow-nine-sub-pow-three.lean
+  sha≜ea1536b66cb8f8bba0ec0d8123de771434bc7be0b70c5e7a9a408bc801c47852
+  aff≜-19
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

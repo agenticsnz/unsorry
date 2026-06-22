@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜pell-d2-positive-multiple-of-form
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/pell-d2-positive-multiple-of-form.md
+  src≜packages/unsorry-archive-0009/backlog/pell-d2-positive-multiple-of-form.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/pell-d2-positive-multiple-of-form.lean
+  lean≜packages/unsorry-archive-0009/goals/pell-d2-positive-multiple-of-form.lean
   sha≜993ad50fa4406a14667039ecef9b4f73d7f93a8adcad7b95bfb494a6cb12b201
   aff≜-10
 }

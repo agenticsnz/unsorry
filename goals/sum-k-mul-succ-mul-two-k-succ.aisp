@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-k-mul-succ-mul-two-k-succ
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-k-mul-succ-mul-two-k-succ.md
+  src≜packages/unsorry-archive-0015/backlog/sum-k-mul-succ-mul-two-k-succ.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-k-mul-succ-mul-two-k-succ.lean
+  lean≜packages/unsorry-archive-0015/goals/sum-k-mul-succ-mul-two-k-succ.lean
   sha≜bb6f3c03406443b6d0f71c696d1c5153630648e718499dfadf45a26e560cedc9
   aff≜-9
 }
