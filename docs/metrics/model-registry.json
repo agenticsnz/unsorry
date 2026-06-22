@@ -176,6 +176,36 @@
         ],
         "assigned_at": "2026-06-22T09:59:36Z"
       }
+    },
+    {
+      "provider_model": "gemini / gemini-3.1-pro-preview",
+      "slug": "gemini-gemini-3-1-pro-preview",
+      "pokemon": {
+        "name": "Gothitelle",
+        "dex_id": 576,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/576.png",
+        "description": "Starry skies thousands of light-years away are visible in the space distorted by their intense psychic power."
+      },
+      "research": {
+        "classification": "closed",
+        "publisher": "Google DeepMind",
+        "country": "USA",
+        "parameter_size": "undisclosed",
+        "license": "Proprietary",
+        "canonical_url": "https://deepmind.google/models/gemini/pro/"
+      },
+      "profile": "Gothitelle, the Astral Body Pokémon, reads the movements of the stars to foresee outcomes — echoing Gemini's constellation namesake and its frontier multimodal reasoning. Its refined psychic mastery mirrors a model tuned for the most complex problems.",
+      "provenance": {
+        "assigned_by": "housekeeping",
+        "assigned_with": "claude / opus",
+        "contributor": "cgbarlow",
+        "sources": [
+          "https://deepmind.google/models/model-cards/gemini-3-1-pro/",
+          "https://ai.google.dev/gemini-api/docs/models/gemini-3.1-pro-preview",
+          "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-1-pro/"
+        ],
+        "assigned_at": "2026-06-22T10:02:01Z"
+      }
     }
   ]
 }
