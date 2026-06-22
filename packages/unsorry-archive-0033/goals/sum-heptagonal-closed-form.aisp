@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-heptagonal-closed-form@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-heptagonal-closed-form
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-heptagonal-closed-form.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-heptagonal-closed-form.lean
+  sha≜840443113cfd56820526b74a6154c09e40c335bdfa487e021f5d94e7c466e169
+  aff≜-10
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

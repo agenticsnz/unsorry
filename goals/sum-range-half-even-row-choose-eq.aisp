@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-half-even-row-choose-eq
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-half-even-row-choose-eq.md
+  src≜packages/unsorry-archive-0035/backlog/sum-range-half-even-row-choose-eq.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-half-even-row-choose-eq.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0035/goals/sum-range-half-even-row-choose-eq.lean
+  sha≜f65b3443a9b8b2b64571e1268c264e1087ff84836924ce8a706c7d146a3a8a69
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

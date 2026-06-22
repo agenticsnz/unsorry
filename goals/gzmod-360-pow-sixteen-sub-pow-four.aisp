@@ -1,0 +1,20 @@
+𝔸5.1.goal.gzmod-360-pow-sixteen-sub-pow-four@2026-06-18
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gzmod-360-pow-sixteen-sub-pow-four
+  phase≜prove
+  status≜archived
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜packages/unsorry-archive-0045/backlog/gzmod-360-pow-sixteen-sub-pow-four.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜packages/unsorry-archive-0045/goals/gzmod-360-pow-sixteen-sub-pow-four.lean
+  sha≜dea2a11bb8c848cd7205444027ac0181107c02ac1a5e38fa8778e62968e3a897
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

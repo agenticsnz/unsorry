@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-k-mul-succ-sq-closed-form
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-k-mul-succ-sq-closed-form.md
+  src≜packages/unsorry-archive-0015/backlog/sum-k-mul-succ-sq-closed-form.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-k-mul-succ-sq-closed-form.lean
+  lean≜packages/unsorry-archive-0015/goals/sum-k-mul-succ-sq-closed-form.lean
   sha≜4eb6b4e8771bac121c9381f9c262f436adc8ca4bc6552bf972b8e268ebdd87e0
   aff≜-9
 }
