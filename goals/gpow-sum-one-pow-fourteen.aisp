@@ -1,0 +1,20 @@
+𝔸5.1.goal.gpow-sum-one-pow-fourteen@2026-06-19
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gpow-sum-one-pow-fourteen
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/gpow-sum-one-pow-fourteen.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/gpow-sum-one-pow-fourteen.lean
+  sha≜ebb2a71936fa017d9044c45053f5fd952a5eb1f6551928ea1cd18250a7321d04
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
