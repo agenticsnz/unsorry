@@ -146,6 +146,36 @@
         ],
         "assigned_at": "2026-06-22T09:57:43Z"
       }
+    },
+    {
+      "provider_model": "openai / leanstral-2603",
+      "slug": "openai-leanstral-2603",
+      "pokemon": {
+        "name": "Reuniclus",
+        "dex_id": 579,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/579.png",
+        "description": "When Reuniclus shake hands, a network forms between their brains, increasing their psychic power."
+      },
+      "research": {
+        "classification": "open",
+        "publisher": "Mistral AI",
+        "country": "France",
+        "parameter_size": "119B total / 6.5B active (MoE)",
+        "license": "Apache 2.0",
+        "canonical_url": "https://huggingface.co/mistralai/Leanstral-2603"
+      },
+      "profile": "Reuniclus's gel-bound multiplying cells mirror Leanstral's sparse mixture-of-experts, and its supercomputer-grade intellect matches a Lean 4 agent built for rigorous formal proof. A calm, calculating mind that verifies rather than guesses.",
+      "provenance": {
+        "assigned_by": "housekeeping",
+        "assigned_with": "claude / opus",
+        "contributor": "ab0t-core",
+        "sources": [
+          "https://mistral.ai/news/leanstral/",
+          "https://huggingface.co/mistralai/Leanstral-2603",
+          "https://docs.mistral.ai/models/model-cards/leanstral-26-03"
+        ],
+        "assigned_at": "2026-06-22T09:59:36Z"
+      }
     }
   ]
 }
