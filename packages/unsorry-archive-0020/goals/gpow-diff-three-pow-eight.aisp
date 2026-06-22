@@ -1,0 +1,20 @@
+𝔸5.1.goal.gpow-diff-three-pow-eight@2026-06-19
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gpow-diff-three-pow-eight
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/gpow-diff-three-pow-eight.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/gpow-diff-three-pow-eight.lean
+  sha≜7d458bc85482b39bb4fc0b5b1d8e3a79e1ea00867ae441e0d1a29a54868d9d15
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

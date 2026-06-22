@@ -1,0 +1,20 @@
+𝔸5.1.goal.dvd-910-pow-thirteen-sub-self@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜dvd-910-pow-thirteen-sub-self
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/dvd-910-pow-thirteen-sub-self.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/dvd-910-pow-thirteen-sub-self.lean
+  sha≜f3ef7b1a9402fce7867f2af6d688db2f8ff72b41618182b3eeb87e99228824dd
+  aff≜-19
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

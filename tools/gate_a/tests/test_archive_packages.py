@@ -8,9 +8,36 @@ from tools.gate_a.archive_packages import (
     changed_archive_roots,
     default_targets,
     forbidden_tokens,
+    only_index_metadata_changed,
     validate_archive_package,
     validate_changed,
 )
+
+
+def test_metadata_only_change_detected():
+    pkg = "packages/unsorry-archive-0007"
+    assert only_index_metadata_changed(pkg, [
+        f"{pkg}/library/index/aaa.aisp",
+        f"{pkg}/library/index/bbb.aisp",
+    ]) is True
+
+
+def test_proof_or_packaging_change_blocks_fast_path():
+    pkg = "packages/unsorry-archive-0007"
+    assert only_index_metadata_changed(pkg, [
+        f"{pkg}/library/index/aaa.aisp",
+        f"{pkg}/library/Unsorry/Foo.lean",
+    ]) is False
+    assert only_index_metadata_changed(pkg, [f"{pkg}/lakefile.toml"]) is False
+    assert only_index_metadata_changed(pkg, [f"{pkg}/library/index/aaa.json"]) is False
+
+
+def test_no_changes_in_package_is_not_fast_path():
+    pkg = "packages/unsorry-archive-0007"
+    assert only_index_metadata_changed(pkg, [
+        "packages/unsorry-archive-0008/library/index/aaa.aisp",
+    ]) is False
+    assert only_index_metadata_changed(pkg, []) is False
 
 
 def _git(repo: Path, *args: str) -> str:

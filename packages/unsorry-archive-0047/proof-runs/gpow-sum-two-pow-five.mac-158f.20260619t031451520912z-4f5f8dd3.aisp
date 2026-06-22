@@ -1,0 +1,8 @@
+𝔸5.1.run.gpow-sum-two-pow-five.mac-158f.20260619t031451520912z-4f5f8dd3@2026-06-19
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260619t031451520912z-4f5f8dd3; goal≜gpow-sum-two-pow-five; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜python; model≜sympy}
+⟦Γ:Goal⟧{goal≜gpow-sum-two-pow-five}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-19T03:14:51Z}
+⟦Σ:Artifact⟧{sha≜4c9953189c5d2538d0b771e166141eb92386a7239c0da6809766e9b4e23b87fc}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

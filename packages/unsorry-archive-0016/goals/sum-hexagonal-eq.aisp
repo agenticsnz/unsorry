@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-hexagonal-eq@2026-06-14
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-hexagonal-eq
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-hexagonal-eq.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-hexagonal-eq.lean
+  sha≜6f2e3fd835897483c81425d75afee80a4c68fd4c1f84974ab7ca699afddc236c
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

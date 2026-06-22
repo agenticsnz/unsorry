@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-k-div-succ-factorial-eq
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-k-div-succ-factorial-eq.md
+  src≜packages/unsorry-archive-0037/backlog/sum-range-k-div-succ-factorial-eq.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-k-div-succ-factorial-eq.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0037/goals/sum-range-k-div-succ-factorial-eq.lean
+  sha≜5d19345e1b939162a43d55667b9d58f4b35a2335ca1baa9abdf9a34d5d2bbb90
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

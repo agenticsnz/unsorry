@@ -2,7 +2,7 @@
 
 # Architecture Decision Records
 
-Index of the 72 ADRs in this directory, generated from the `ADR-*.md` headers and kept in sync by the `adr-index` workflow. See [ADR-001](ADR-001-Adopt-Development-Protocols.md) and [the development protocols](../protocols.md) for the WH(Y) format and process.
+Index of the 84 ADRs in this directory, generated from the `ADR-*.md` headers and kept in sync by the `adr-index` workflow. See [ADR-001](ADR-001-Adopt-Development-Protocols.md) and [the development protocols](../protocols.md) for the WH(Y) format and process.
 
 | ADR | Title | Status | Date |
 |-----|-------|--------|------|
@@ -62,19 +62,31 @@ Index of the 72 ADRs in this directory, generated from the `ADR-*.md` headers an
 | [ADR-055](ADR-055-Repository-Runtime-Reconciler.md) | Repository Runtime Reconciler | Proposed | 2026-06-15 |
 | [ADR-056](ADR-056-Repo-As-OS-Control-Plane.md) | Repo-as-OS Control Plane and Operator Interface | Proposed | 2026-06-15 |
 | [ADR-057](ADR-057-Structured-Reasoning-And-Decision-Communication.md) | Structured Reasoning and Decision Communication Protocol | Proposed | 2026-06-16 |
-| [ADR-058](ADR-058-Runner-Pool-Segmentation-And-Verification-Capacity.md) | Runner Pool Segmentation and Verification Capacity Governance | Proposed | 2026-06-16 |
+| [ADR-058](ADR-058-Runner-Pool-Segmentation-And-Verification-Capacity.md) | Runner Pool Segmentation and Verification Capacity Governance | Accepted | 2026-06-16 |
 | [ADR-059](ADR-059-Fetch-Resilience-On-Shared-Object-Store.md) | Fetch Resilience on the Shared Object Store | Accepted | 2026-06-16 |
-| [ADR-060](ADR-060-Contributor-Goal-Sourcing-Skill.md) | Contributor-Facing Goal-Sourcing Skill | Proposed | 2026-06-16 |
+| [ADR-060](ADR-060-Contributor-Goal-Sourcing-Skill.md) | Contributor-Facing Goal-Sourcing Skill | Accepted | 2026-06-16 |
 | [ADR-061](ADR-061-Unique-ADR-Numbering-Gate.md) | Unique ADR/SPEC Numbering Gate | Accepted | 2026-06-17 |
-| [ADR-062](ADR-062-Swarm-Goal-Sourcing-Runner.md) | Swarm Goal-Sourcing Runner | Proposed | 2026-06-17 |
-| [ADR-063](ADR-063-Sharded-Gate-A-Kernel-Replay.md) | Sharded Gate A Kernel Replay | Proposed | 2026-06-17 |
+| [ADR-062](ADR-062-Swarm-Goal-Sourcing-Runner.md) | Swarm Goal-Sourcing Runner | Accepted | 2026-06-17 |
+| [ADR-063](ADR-063-Sharded-Gate-A-Kernel-Replay.md) | Sharded Gate A Kernel Replay | Accepted | 2026-06-17 |
 | [ADR-064](ADR-064-Goal-Level-Dispatch-Deduplication.md) | Goal-Level Dispatch Deduplication | Accepted | 2026-06-17 |
 | [ADR-065](ADR-065-Operator-Preflight-Doctor.md) | Operator Preflight Doctor | Accepted | 2026-06-17 |
 | [ADR-066](ADR-066-Queued-Proofs-Board.md) | Queued-Proofs Board | Accepted | 2026-06-17 |
-| [ADR-067](ADR-067-Demand-Driven-Sourcing.md) | Demand-Driven Sourcing | Proposed | 2026-06-17 |
-| [ADR-068](ADR-068-Fork-Native-Contribution-Mode.md) | Fork-Native Contribution Mode | Proposed | 2026-06-17 |
-| [ADR-069](ADR-069-Launcher-Demand-Driven-Sourcing-Arm.md) | Launcher Demand-Driven Sourcing Arm | Proposed | 2026-06-17 |
-| [ADR-070](ADR-070-Duplicate-Verifier-Waste-Metric.md) | Duplicate-Verifier-Waste Metric | Proposed | 2026-06-18 |
+| [ADR-067](ADR-067-Demand-Driven-Sourcing.md) | Demand-Driven Sourcing | Accepted | 2026-06-17 |
+| [ADR-068](ADR-068-Fork-Native-Contribution-Mode.md) | Fork-Native Contribution Mode | Accepted | 2026-06-17 |
+| [ADR-069](ADR-069-Launcher-Demand-Driven-Sourcing-Arm.md) | Launcher Demand-Driven Sourcing Arm | Accepted | 2026-06-17 |
+| [ADR-070](ADR-070-Duplicate-Verifier-Waste-Metric.md) | Duplicate-Verifier-Waste Metric | Accepted | 2026-06-18 |
 | [ADR-071](ADR-071-Fresh-Dispatch-Dedup-Recheck.md) | Fresh Pre-Create Dedup Re-check at Dispatch | Accepted | 2026-06-18 |
 | [ADR-072](ADR-072-Post-Success-Claim-Recheck.md) | Post-Success Claim Recheck (Prove-Time Race Fix) | Accepted | 2026-06-18 |
 | [ADR-073](ADR-073-ADR-Index-Generated-README.md) | Generated ADR Index (README + JSON), Refreshed Post-Merge | Accepted | 2026-06-18 |
+| [ADR-074](ADR-074-Proof-Import-Narrowing.md) | Deterministic Proof Import Narrowing (Best-Effort, Verify-Fallback) | Accepted | 2026-06-19 |
+| [ADR-075](ADR-075-Solver-Fair-Queue-Dispatch-Order.md) | Solver-Fair Queue Dispatch Order | Accepted | 2026-06-20 |
+| [ADR-076](ADR-076-Sharded-Fork-Goal-Selection.md) | Sharded Fork Goal Selection | Proposed | 2026-06-20 |
+| [ADR-077](ADR-077-Roadmap-Project-Synced-From-Repo-State.md) | Roadmap GitHub Project, Synced from Repo State | Proposed | 2026-06-20 |
+| [ADR-078](ADR-078-Sponsor-Registered-Targets-And-Obligation-Discharge-Credit.md) | Sponsor-Registered Targets and Obligation-Discharge Credit | Proposed | 2026-06-20 |
+| [ADR-079](ADR-079-Deterministic-Solver-Provider.md) | Deterministic Solver Provider — Zero-LLM Template/sympy Discharge, Honestly Attributed | Proposed | 2026-06-20 |
+| [ADR-080](ADR-080-Platform-Generalisation-And-Domain-Neutrality.md) | Platform Generalisation and the Self-Verification Gating Invariant | Draft | 2026-06-20 |
+| [ADR-081](ADR-081-Problem-Admission-And-Intake-Pipeline.md) | Problem Admission and the Skeleton Intake Pipeline | Draft | 2026-06-20 |
+| [ADR-082](ADR-082-Single-Pass-Leaderboard-Refresh.md) | Single-Pass Leaderboard Refresh (`--write-if-stale`) | Accepted | 2026-06-22 |
+| [ADR-083](ADR-083-Model-Pokemon-Registry-And-Operational-Tasks.md) | The Model → Pokémon Registry and Swarm Operational Tasks | Accepted | 2026-06-22 |
+| [ADR-084](ADR-084-Demand-Driven-Sourcing-Dedup.md) | Demand-Driven Sourcing Dedup — Skip When a Sourcing PR Is In Flight | Accepted | 2026-06-22 |
+| [ADR-085](ADR-085-Sourcer-Worktree-Isolation.md) | Isolate the Sourcer in a Per-Sourcer Worktree (ADR-042 parity) | Proposed | 2026-06-22 |

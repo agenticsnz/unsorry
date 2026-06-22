@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-decagonal-numbers-closed-form
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-decagonal-numbers-closed-form.md
+  src≜packages/unsorry-archive-0015/backlog/sum-decagonal-numbers-closed-form.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-decagonal-numbers-closed-form.lean
+  lean≜packages/unsorry-archive-0015/goals/sum-decagonal-numbers-closed-form.lean
   sha≜6ce3930757338d53a54f96f6f8882a6576408a5464ea10159488dd7c7b67d4c1
   aff≜-9
 }
