@@ -1,0 +1,20 @@
+𝔸5.1.goal.gzmod-228-pow-twentyone-sub-pow-three@2026-06-18
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gzmod-228-pow-twentyone-sub-pow-three
+  phase≜prove
+  status≜archived
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜packages/unsorry-archive-0042/backlog/gzmod-228-pow-twentyone-sub-pow-three.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜packages/unsorry-archive-0042/goals/gzmod-228-pow-twentyone-sub-pow-three.lean
+  sha≜6f8e67e934c38d09c3c2def15cbde9cd66eee98df610f06a923ce0a0095e8dd6
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

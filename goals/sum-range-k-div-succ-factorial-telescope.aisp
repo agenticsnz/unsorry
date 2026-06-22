@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-k-div-succ-factorial-telescope
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-k-div-succ-factorial-telescope.md
+  src≜packages/unsorry-archive-0037/backlog/sum-range-k-div-succ-factorial-telescope.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-k-div-succ-factorial-telescope.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0037/goals/sum-range-k-div-succ-factorial-telescope.lean
+  sha≜4368d97cd90f966fce5de9707897292456a7f6f2ac8f494b9f8854905191ee84
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

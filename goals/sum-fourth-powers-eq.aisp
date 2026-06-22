@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-fourth-powers-eq
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜4
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-fourth-powers-eq.md
+  src≜packages/unsorry-archive-0015/backlog/sum-fourth-powers-eq.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-fourth-powers-eq.lean
+  lean≜packages/unsorry-archive-0015/goals/sum-fourth-powers-eq.lean
   sha≜0459ec6b25b9f78135b7ca6520062bfcb5549e9089b5f09587495b5229076bd5
   aff≜-9
 }

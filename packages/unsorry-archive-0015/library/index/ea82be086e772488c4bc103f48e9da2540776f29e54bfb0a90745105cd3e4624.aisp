@@ -1,0 +1,8 @@
+𝔸5.1.lemma.ea82be086e77@2026-06-17
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜ea82be086e772488c4bc103f48e9da2540776f29e54bfb0a90745105cd3e4624; goal≜sum-even-cubes-eq-twice-square; name≜sum_even_cubes_eq_twice_square}
+⟦Σ:Source⟧{src≜goals/sum-even-cubes-eq-twice-square.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜python; model≜sympy; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

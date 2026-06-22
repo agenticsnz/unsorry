@@ -1,0 +1,179 @@
+{
+  "block_id": "unsorry-archive-0013",
+  "target_size": 40,
+  "proof_count": 40,
+  "status": "frozen",
+  "source_commit": "bd6e826771a24226e999855dd45238988eb6eda5",
+  "validation_commit": null,
+  "pins": {
+    "lean_toolchain": "leanprover/lean4:v4.30.0",
+    "mathlib": "v4.30.0"
+  },
+  "notes": [
+    "ADR-041 proof archive block 0013.",
+    "Whole decomposition trees + standalone proved goals only (invariant A).",
+    "Active goal records remain as archived metadata pointing at this package."
+  ],
+  "goals": [
+    {
+      "goal": "dvd-399-pow-nineteen-sub-self",
+      "module": "Unsorry.Dvd399PowNineteenSubSelf"
+    },
+    {
+      "goal": "dvd-480-pow-thirteen-sub-pow-five",
+      "module": "Unsorry.Dvd480PowThirteenSubPowFive"
+    },
+    {
+      "goal": "dvd-798-pow-thirtyseven-sub-pow-nineteen",
+      "module": "Unsorry.Dvd798PowThirtysevenSubPowNineteen"
+    },
+    {
+      "goal": "dvd-910-pow-fifteen-sub-pow-three",
+      "module": "Unsorry.Dvd910PowFifteenSubPowThree"
+    },
+    {
+      "goal": "square-triangular-pell-link",
+      "module": "Unsorry.SquareTriangularPellLink"
+    },
+    {
+      "goal": "alt-sum-range-sq-eq-signed-pronic",
+      "module": "Unsorry.AltSumRangeSqEqSignedPronic"
+    },
+    {
+      "goal": "sum-k-add-one-mul-two-pow",
+      "module": "Unsorry.SumKAddOneMulTwoPow"
+    },
+    {
+      "goal": "sum-k-sq-mul-succ-closed-form",
+      "module": "Unsorry.SumKSqMulSuccClosedForm"
+    },
+    {
+      "goal": "sum-k-sq-mul-two-pow",
+      "module": "Unsorry.SumKSqMulTwoPow"
+    },
+    {
+      "goal": "sum-range-cube-mul-two-pow-closed",
+      "module": "Unsorry.SumRangeCubeMulTwoPowClosed"
+    },
+    {
+      "goal": "sum-range-id-div-two-pow-eq-two-sub",
+      "module": "Unsorry.SumRangeIdDivTwoPowEqTwoSub"
+    },
+    {
+      "goal": "sum-range-id-div-two-pow",
+      "module": "Unsorry.SumRangeIdDivTwoPow"
+    },
+    {
+      "goal": "sum-range-id-mul-succ-mul-two-pow-closed",
+      "module": "Unsorry.SumRangeIdMulSuccMulTwoPowClosed"
+    },
+    {
+      "goal": "sum-range-k-mul-two-pow-eq",
+      "module": "Unsorry.SumRangeKMulTwoPowEq"
+    },
+    {
+      "goal": "sum-range-sq-add-one-mul-two-pow-closed",
+      "module": "Unsorry.SumRangeSqAddOneMulTwoPowClosed"
+    },
+    {
+      "goal": "sum-range-succ-div-two-pow-eq-four-sub",
+      "module": "Unsorry.SumRangeSuccDivTwoPowEqFourSub"
+    },
+    {
+      "goal": "sum-range-succ-sq-mul-two-pow-closed",
+      "module": "Unsorry.SumRangeSuccSqMulTwoPowClosed"
+    },
+    {
+      "goal": "sum-range-three-k-add-two-mul-two-pow-closed",
+      "module": "Unsorry.SumRangeThreeKAddTwoMulTwoPowClosed"
+    },
+    {
+      "goal": "sum-range-two-k-add-one-div-two-pow-closed",
+      "module": "Unsorry.SumRangeTwoKAddOneDivTwoPowClosed"
+    },
+    {
+      "goal": "sum-range-two-k-add-one-mul-two-pow-closed",
+      "module": "Unsorry.SumRangeTwoKAddOneMulTwoPowClosed"
+    },
+    {
+      "goal": "sum-range-two-k-sub-one-mul-three-pow-closed",
+      "module": "Unsorry.SumRangeTwoKSubOneMulThreePowClosed"
+    },
+    {
+      "goal": "sum-two-k-add-one-mul-two-pow",
+      "module": "Unsorry.SumTwoKAddOneMulTwoPow"
+    },
+    {
+      "goal": "sum-pentagonal-eq",
+      "module": "Unsorry.SumPentagonalEq"
+    },
+    {
+      "goal": "sum-two-k-sub-one-mul-two-pow",
+      "module": "Unsorry.SumTwoKSubOneMulTwoPow"
+    },
+    {
+      "goal": "quartic-sum-ge-abc-times-sum",
+      "module": "Unsorry.QuarticSumGeAbcTimesSum"
+    },
+    {
+      "goal": "sos-weighted-three-one-two",
+      "module": "Unsorry.SosWeightedThreeOneTwo"
+    },
+    {
+      "goal": "sum-fourth-powers-three-var-ge-sym-square-products",
+      "module": "Unsorry.SumFourthPowersThreeVarGeSymSquareProducts"
+    },
+    {
+      "goal": "sum-sixth-ge-mixed-fourth-second",
+      "module": "Unsorry.SumSixthGeMixedFourthSecond"
+    },
+    {
+      "goal": "sumsq-products-ge-abc-times-sum",
+      "module": "Unsorry.SumsqProductsGeAbcTimesSum"
+    },
+    {
+      "goal": "two-sum-cubes-ge-sym-quadratics",
+      "module": "Unsorry.TwoSumCubesGeSymQuadratics"
+    },
+    {
+      "goal": "sum-range-fib-sq-eq-fib-mul-fib-succ",
+      "module": "Unsorry.SumRangeFibSqEqFibMulFibSucc"
+    },
+    {
+      "goal": "sum-icc-cube-diff-recip-telescope",
+      "module": "Unsorry.SumIccCubeDiffRecipTelescope"
+    },
+    {
+      "goal": "dvd-120-pow-eleven-sub-pow-three",
+      "module": "Unsorry.Dvd120PowElevenSubPowThree"
+    },
+    {
+      "goal": "dvd-1302-pow-thirtyone-sub-self",
+      "module": "Unsorry.Dvd1302PowThirtyoneSubSelf"
+    },
+    {
+      "goal": "dvd-133-pow-nineteen-sub-self",
+      "module": "Unsorry.Dvd133PowNineteenSubSelf"
+    },
+    {
+      "goal": "dvd-1365-pow-fifteen-sub-pow-three",
+      "module": "Unsorry.Dvd1365PowFifteenSubPowThree"
+    },
+    {
+      "goal": "dvd-138-pow-twentythree-sub-self",
+      "module": "Unsorry.Dvd138PowTwentythreeSubSelf"
+    },
+    {
+      "goal": "dvd-170-pow-seventeen-sub-self",
+      "module": "Unsorry.Dvd170PowSeventeenSubSelf"
+    },
+    {
+      "goal": "dvd-1806-pow-fortythree-sub-self",
+      "module": "Unsorry.Dvd1806PowFortythreeSubSelf"
+    },
+    {
+      "goal": "dvd-240-pow-nine-sub-pow-five",
+      "module": "Unsorry.Dvd240PowNineSubPowFive"
+    }
+  ]
+}
