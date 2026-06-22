@@ -59,16 +59,21 @@ the agent's research and is not machine-checkable (only validity, uniqueness and
 ## Decision detail
 
 - **Operational task category.** `swarm/housekeeping.sh` is the first such task: invoked by `run.sh`
-  before `dispatcher`/`sourcer`/`prover`, best-effort (a registry hiccup never blocks proving),
-  governed-swarm only (it opens upstream PRs, which a fork cannot). Disabled with
-  `UNSORRY_HOUSEKEEPING=0`.
-- **Work-packet rule.** One model → one Pokémon → one PR. The default `UNSORRY_REGISTRY_MAX=1` names
-  the next single unassigned model per invocation, keeping the single-file registry free of
-  concurrent edits.
+  before `dispatcher`/`sourcer`/`prover`, governed-swarm only (it opens upstream PRs, which a fork
+  cannot). Disabled with `UNSORRY_HOUSEKEEPING=0`.
+- **Resolve-before-proving guarantee.** Housekeeping **drains every unnamed model** and run.sh
+  **blocks** on it — it does not start any proving/dispatch/sourcing arm unless every distribution
+  model has a Pokémon. So naming is never starved by proof work.
+- **Work-packet rule.** One model → one Pokémon → one PR. The drain is serialised (`UNSORRY_REGISTRY_MAX`
+  default 0 = all): each model is named, opened as one PR, and settled onto main before the next, so
+  the single-file registry never sees concurrent edits and uniqueness always holds.
 - **Selection criteria** (SPEC-083-A): *valid* (real Pokémon in the vendored Pokédex manifest),
   *unique* (name + dex id + slug not already taken), *appropriate* (justified by research; captured
   in `profile`), *complete* (all research fields present; `canonical_url` is the Hugging Face page
   for open models, the official site for closed ones).
+- **Provenance.** Each entry records who named it: `assigned_with` (the naming model in
+  `provider_model` form, joining to *its* Pokémon) and `contributor` (the owning swarm contributor's
+  GitHub handle).
 - **Validator + gate.** `python3 -m tools.model_registry` (stdlib + pytest only, mirroring Gate B,
   ADR-003) enforces the mechanical criteria; `.github/workflows/model-registry-gate.yml` runs it on
   registry PRs and enforces the one-new-entry diff. Assignment PRs enable auto-merge.

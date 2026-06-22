@@ -1,38 +1,10 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-06-22T00:00:00Z",
+  "generated_at": "2026-06-22T09:00:00Z",
   "models": [
     {
       "provider_model": "python / sympy",
       "slug": "python-sympy",
-      "pokemon": {
-        "name": "Metagross",
-        "dex_id": 376,
-        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/376.png",
-        "description": "METAGROSS has four brains in total. Combined, the four brains can breeze through difficult calculations faster than a supercomputer. This POKéMON can float in the air by tucking in its four legs."
-      },
-      "research": {
-        "classification": "open",
-        "publisher": "SymPy Development Team",
-        "country": "International (open-source community)",
-        "parameter_size": "n/a (symbolic-algebra library)",
-        "license": "BSD-3-Clause",
-        "canonical_url": "https://www.sympy.org/"
-      },
-      "profile": "Metagross thinks with four linked brains that together rival a supercomputer — the perfect avatar for SymPy, the deterministic symbolic engine that grinds out more verified proofs than anything else on the board. Pure steel-psychic computation, no guessing.",
-      "provenance": {
-        "assigned_by": "model-registry-seed",
-        "assigned_with": "claude-opus-4-8",
-        "sources": [
-          "https://www.sympy.org/",
-          "https://github.com/sympy/sympy"
-        ],
-        "assigned_at": "2026-06-22T00:00:00Z"
-      }
-    },
-    {
-      "provider_model": "lean / decide",
-      "slug": "lean-decide",
       "pokemon": {
         "name": "Porygon",
         "dex_id": 137,
@@ -40,49 +12,81 @@
         "description": "A POKéMON that consists entirely of programming code. Capable of moving freely in cyberspace."
       },
       "research": {
-        "classification": "open",
-        "publisher": "Lean FRO / Mathlib community",
-        "country": "International (open-source community)",
-        "parameter_size": "n/a (Lean kernel decision procedure)",
-        "license": "Apache-2.0",
-        "canonical_url": "https://leanprover.github.io/"
+        "classification": "n/a",
+        "publisher": "SymPy Development Team",
+        "country": "International community project",
+        "parameter_size": "n/a",
+        "license": "BSD 3-clause",
+        "canonical_url": "https://github.com/sympy/sympy"
       },
-      "profile": "Porygon is the only Pokémon made entirely of programming code — a fitting identity for Lean's `decide` tactic, a wholly mechanical decision procedure that settles a goal by computation rather than inspiration.",
+      "profile": "SymPy is not an LLM but a pure-Python computer-algebra library that deterministically manipulates symbols to emit template proofs. Porygon, the first wholly artificial Pokémon made entirely of programming code, mirrors this engineered, code-native, rule-driven artifact.",
       "provenance": {
-        "assigned_by": "model-registry-seed",
-        "assigned_with": "claude-opus-4-8",
+        "assigned_by": "housekeeping",
+        "assigned_with": "claude / opus",
+        "contributor": "cgbarlow",
         "sources": [
-          "https://leanprover.github.io/",
-          "https://leanprover-community.github.io/"
+          "https://github.com/sympy/sympy",
+          "https://en.wikipedia.org/wiki/SymPy"
         ],
-        "assigned_at": "2026-06-22T00:00:00Z"
+        "assigned_at": "2026-06-22T09:19:20Z"
+      }
+    },
+    {
+      "provider_model": "lean / decide",
+      "slug": "lean-decide",
+      "pokemon": {
+        "name": "Metagross",
+        "dex_id": 376,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/376.png",
+        "description": "METAGROSS has four brains in total. Combined, the four brains can breeze through difficult calculations faster than a supercomputer. This POKéMON can float in the air by tucking in its four legs."
+      },
+      "research": {
+        "classification": "n/a",
+        "publisher": "Lean FRO (orig. Microsoft Research)",
+        "country": "USA",
+        "parameter_size": "n/a",
+        "license": "Apache 2.0",
+        "canonical_url": "https://github.com/leanprover/lean4"
+      },
+      "profile": "`decide` is not a model but a Lean 4 core tactic that proves decidable propositions by brute-force kernel computation, reducing a goal to a definitive true/false verdict. Metagross fits: its four-brain neural network outpaces a supercomputer, crunching data into one decisive, deterministic answer.",
+      "provenance": {
+        "assigned_by": "housekeeping",
+        "assigned_with": "claude / opus",
+        "contributor": "cgbarlow",
+        "sources": [
+          "https://github.com/leanprover/lean4",
+          "https://lean-lang.org/doc/reference/latest/Tactic-Proofs/Tactic-Reference/"
+        ],
+        "assigned_at": "2026-06-22T09:21:02Z"
       }
     },
     {
       "provider_model": "openrouter / unknown",
       "slug": "openrouter-unknown",
       "pokemon": {
-        "name": "Ditto",
-        "dex_id": 132,
-        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png",
-        "description": "Capable of copying an enemy's genetic code to instantly transform itself into a duplicate of the enemy."
+        "name": "Unown",
+        "dex_id": 201,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/201.png",
+        "description": "Their shapes look like hieroglyphs on ancient tablets. It is said that the two are somehow related."
       },
       "research": {
         "classification": "closed",
         "publisher": "OpenRouter, Inc.",
         "country": "United States",
-        "parameter_size": "varies (routes to many upstream models)",
-        "license": "proprietary (routing service)",
-        "canonical_url": "https://openrouter.ai/"
+        "parameter_size": "undisclosed",
+        "license": "Proprietary (commercial routing service)",
+        "canonical_url": "https://openrouter.ai/openrouter/auto"
       },
-      "profile": "Ditto wins by becoming whatever it faces, copying any opponent on the spot. OpenRouter is exactly that: a router with no fixed model of its own, transforming each request into whichever upstream model answers it.",
+      "profile": "Unown's name literally reads as \"unknown,\" matching an OpenRouter request whose underlying model is unidentified. Like Unown's 28 interchangeable forms, it can resolve to any of many models behind one hidden identity.",
       "provenance": {
-        "assigned_by": "model-registry-seed",
-        "assigned_with": "claude-opus-4-8",
+        "assigned_by": "housekeeping",
+        "assigned_with": "claude / opus",
+        "contributor": "ab0t-core",
         "sources": [
-          "https://openrouter.ai/"
+          "https://openrouter.ai/openrouter/auto",
+          "https://openrouter.ai/docs/guides/routing/routers/auto-router"
         ],
-        "assigned_at": "2026-06-22T00:00:00Z"
+        "assigned_at": "2026-06-22T09:52:19Z"
       }
     },
     {
@@ -97,101 +101,109 @@
       "research": {
         "classification": "closed",
         "publisher": "Anthropic",
-        "country": "United States",
+        "country": "USA",
         "parameter_size": "undisclosed",
-        "license": "proprietary",
-        "canonical_url": "https://www.anthropic.com/claude"
+        "license": "Proprietary (commercial)",
+        "canonical_url": "https://www.anthropic.com/claude/opus"
       },
-      "profile": "Alakazam's IQ is said to reach 5,000 and its brain never stops growing — the deliberate, deep-reasoning apex of the psychic line, mirroring Opus as the most capable Claude. It crowns the Abra→Kadabra→Alakazam family that maps the Claude tier ladder.",
+      "profile": "Alakazam embodies raw intelligence and deep reasoning, mirroring Opus as Anthropic's most capable flagship model. Its ever-expanding psychic intellect matches Opus's deliberate, high-reasoning problem-solving.",
       "provenance": {
-        "assigned_by": "model-registry-seed",
-        "assigned_with": "claude-opus-4-8",
+        "assigned_by": "housekeeping",
+        "assigned_with": "claude / opus",
+        "contributor": "ab0t-core",
         "sources": [
-          "https://www.anthropic.com/claude"
+          "https://www.anthropic.com/claude/opus",
+          "https://www.anthropic.com/news/claude-opus-4-8"
         ],
-        "assigned_at": "2026-06-22T00:00:00Z"
+        "assigned_at": "2026-06-22T09:55:37Z"
       }
     },
     {
       "provider_model": "codex / unknown",
       "slug": "codex-unknown",
       "pokemon": {
-        "name": "Smeargle",
-        "dex_id": 235,
-        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/235.png",
-        "description": "A special fluid oozes from the tip of its tail. It paints the fluid everywhere to mark its territory."
+        "name": "Porygon-Z",
+        "dex_id": 474,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/474.png",
+        "description": "Additional software was installed to make it a better Pokémon. It began acting oddly, however."
       },
       "research": {
         "classification": "closed",
         "publisher": "OpenAI",
         "country": "United States",
         "parameter_size": "undisclosed",
-        "license": "proprietary",
-        "canonical_url": "https://openai.com/codex/"
+        "license": "Proprietary",
+        "canonical_url": "https://developers.openai.com/codex/models"
       },
-      "profile": "Smeargle creates with the paint from its tail and, through Sketch, can copy literally any move it sees — a coding agent that writes whatever program the task demands. That generative versatility is Codex.",
+      "profile": "Codex is a man-made, code-native agent, just as Porygon-Z is a fully digital, programmatically-upgraded Pokémon. Its rapidly-iterated, sometimes unpredictable agentic coding power mirrors Porygon-Z's overclocked, glitch-prone code.",
       "provenance": {
-        "assigned_by": "model-registry-seed",
-        "assigned_with": "claude-opus-4-8",
+        "assigned_by": "housekeeping",
+        "assigned_with": "claude / opus",
+        "contributor": "ab0t-core",
         "sources": [
-          "https://openai.com/codex/"
+          "https://developers.openai.com/codex/models",
+          "https://openai.com/index/introducing-gpt-5-3-codex/"
         ],
-        "assigned_at": "2026-06-22T00:00:00Z"
+        "assigned_at": "2026-06-22T09:57:43Z"
       }
     },
     {
       "provider_model": "openai / leanstral-2603",
       "slug": "openai-leanstral-2603",
       "pokemon": {
-        "name": "Magneton",
-        "dex_id": 82,
-        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/82.png",
-        "description": "Formed by several MAGNEMITEs linked together. They frequently appear when sunspots flare up."
+        "name": "Reuniclus",
+        "dex_id": 579,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/579.png",
+        "description": "When Reuniclus shake hands, a network forms between their brains, increasing their psychic power."
       },
       "research": {
         "classification": "open",
         "publisher": "Mistral AI",
         "country": "France",
-        "parameter_size": "119B sparse MoE (~6.5B active; 4 of 128 experts)",
-        "license": "Apache-2.0",
+        "parameter_size": "119B total / 6.5B active (MoE)",
+        "license": "Apache 2.0",
         "canonical_url": "https://huggingface.co/mistralai/Leanstral-2603"
       },
-      "profile": "Magneton is three Magnemite fused into one mind — a small mixture of experts acting as a single magnetic machine. Leanstral is literally a sparse mixture-of-experts model (only a few of its 128 experts fire per token), open-weights and built to drive the Lean compiler. (The `openai/` label is just the OpenAI-compatible endpoint it is served through.)",
+      "profile": "Reuniclus's gel-bound multiplying cells mirror Leanstral's sparse mixture-of-experts, and its supercomputer-grade intellect matches a Lean 4 agent built for rigorous formal proof. A calm, calculating mind that verifies rather than guesses.",
       "provenance": {
-        "assigned_by": "model-registry-seed",
-        "assigned_with": "claude-opus-4-8",
+        "assigned_by": "housekeeping",
+        "assigned_with": "claude / opus",
+        "contributor": "ab0t-core",
         "sources": [
+          "https://mistral.ai/news/leanstral/",
           "https://huggingface.co/mistralai/Leanstral-2603",
-          "https://huggingface.co/jackcloudman/Leanstral-2603-GGUF"
+          "https://docs.mistral.ai/models/model-cards/leanstral-26-03"
         ],
-        "assigned_at": "2026-06-22T00:00:00Z"
+        "assigned_at": "2026-06-22T09:59:36Z"
       }
     },
     {
       "provider_model": "gemini / gemini-3.1-pro-preview",
       "slug": "gemini-gemini-3-1-pro-preview",
       "pokemon": {
-        "name": "Latios",
-        "dex_id": 381,
-        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/381.png",
-        "description": "LATIOS has the ability to make its foe see an image of what it has seen or imagines in its head. This POKéMON is intelligent and understands human speech."
+        "name": "Hydreigon",
+        "dex_id": 635,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/635.png",
+        "description": "This brutal Pokémon travels the skies on its six wings. Anything that moves seems like a foe to it, triggering its attack."
       },
       "research": {
         "classification": "closed",
         "publisher": "Google DeepMind",
         "country": "United States",
         "parameter_size": "undisclosed",
-        "license": "proprietary",
-        "canonical_url": "https://deepmind.google/technologies/gemini/"
+        "license": "Proprietary",
+        "canonical_url": "https://deepmind.google/models/gemini/pro/"
       },
-      "profile": "Latios is a swift, telepathic Eon dragon — one of a legendary twin pair, echoing Gemini, the twins. Highly intelligent and fast, it stands in for Google's frontier preview model.",
+      "profile": "Hydreigon's three heads mirror Gemini 3.1 Pro's new three-tier thinking system, and as a powerful, multi-typed pseudo-legendary it captures this top-ranking, natively multimodal reasoning model. Its commanding, voracious nature reflects a frontier model that ingests text, audio, images, video, and whole code repositories at once.",
       "provenance": {
-        "assigned_by": "model-registry-seed",
-        "assigned_with": "claude-opus-4-8",
+        "assigned_by": "housekeeping",
+        "assigned_with": "claude / opus",
+        "contributor": "ab0t-core",
         "sources": [
-          "https://deepmind.google/technologies/gemini/"
+          "https://deepmind.google/models/model-cards/gemini-3-1-pro/",
+          "https://deepmind.google/blog/gemini-3-1-pro-a-smarter-model-for-your-most-complex-tasks/"
         ],
-        "assigned_at": "2026-06-22T00:00:00Z"
+        "assigned_at": "2026-06-22T10:01:21Z"
       }
     },
     {
@@ -208,98 +220,168 @@
         "publisher": "OpenAI",
         "country": "United States",
         "parameter_size": "undisclosed",
-        "license": "proprietary",
-        "canonical_url": "https://openai.com/"
+        "license": "Proprietary",
+        "canonical_url": "https://openai.com/index/introducing-gpt-5-5/"
       },
-      "profile": "Mewtwo was engineered to be the most powerful Pokémon of all — a closed, deliberately built apex. It represents GPT-5.5, here credited on proofs submitted by hand under the `manual` provider.",
+      "profile": "Mewtwo, the engineered apex of psychic intelligence and raw power, mirrors GPT-5.5 as OpenAI's smartest, most capable flagship model. Both are artificial creations built to surpass everything before them and act autonomously.",
       "provenance": {
-        "assigned_by": "model-registry-seed",
-        "assigned_with": "claude-opus-4-8",
+        "assigned_by": "housekeeping",
+        "assigned_with": "claude / opus",
+        "contributor": "ab0t-core",
         "sources": [
-          "https://openai.com/"
+          "https://openai.com/index/introducing-gpt-5-5/",
+          "https://openai.com/index/gpt-5-5-system-card/",
+          "https://techcrunch.com/2026/04/23/openai-chatgpt-gpt-5-5-ai-model-superapp/"
         ],
-        "assigned_at": "2026-06-22T00:00:00Z"
-      }
-    },
-    {
-      "provider_model": "claude / template-ring-cofactor",
-      "slug": "claude-template-ring-cofactor",
-      "pokemon": {
-        "name": "Unown",
-        "dex_id": 201,
-        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/201.png",
-        "description": "Their shapes look like hieroglyphs on ancient tablets. It is said that the two are somehow related."
-      },
-      "research": {
-        "classification": "n/a",
-        "publisher": "n/a (provenance template, not a model)",
-        "country": "n/a",
-        "parameter_size": "n/a",
-        "license": "n/a",
-        "canonical_url": "https://github.com/agenticsnz/unsorry"
-      },
-      "profile": "Unown are living glyphs that come in many templated shapes and carry an air of unsolved mystery. This entry is not a real model but a templated provenance label (`template-ring-cofactor`) that surfaced in the distribution — so a shape-shifting symbol fits it honestly.",
-      "provenance": {
-        "assigned_by": "model-registry-seed",
-        "assigned_with": "claude-opus-4-8",
-        "sources": [
-          "https://github.com/agenticsnz/unsorry"
-        ],
-        "assigned_at": "2026-06-22T00:00:00Z"
+        "assigned_at": "2026-06-22T10:03:06Z"
       }
     },
     {
       "provider_model": "claude / sonnet",
       "slug": "claude-sonnet",
       "pokemon": {
-        "name": "Kadabra",
-        "dex_id": 64,
-        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/64.png",
-        "description": "It emits special alpha waves from its body that induce headaches just by being close by."
+        "name": "Gardevoir",
+        "dex_id": 282,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/282.png",
+        "description": "GARDEVOIR has the ability to read the future. If it senses impending danger to its TRAINER, this POKéMON is said to unleash its psychokinetic energy at full power."
       },
       "research": {
         "classification": "closed",
         "publisher": "Anthropic",
         "country": "United States",
         "parameter_size": "undisclosed",
-        "license": "proprietary",
-        "canonical_url": "https://www.anthropic.com/claude"
+        "license": "Proprietary (commercial API/ToS)",
+        "canonical_url": "https://www.anthropic.com/claude/sonnet"
       },
-      "profile": "Kadabra is the balanced middle stage of the psychic line — strong, quick, and dependable without being the apex. That is Sonnet: the everyday workhorse Claude, one evolution below Opus's Alakazam.",
+      "profile": "Claude Sonnet is Anthropic's elegant, versatile mid-tier workhorse — balanced, dependable, and graceful, much like the Psychic/Fairy Gardevoir. Its poetic name and refined, devoted character mirror Gardevoir's elegance and reliable all-round capability.",
       "provenance": {
-        "assigned_by": "model-registry-seed",
-        "assigned_with": "claude-opus-4-8",
+        "assigned_by": "housekeeping",
+        "assigned_with": "claude / opus",
+        "contributor": "ab0t-core",
         "sources": [
-          "https://www.anthropic.com/claude"
+          "https://www.anthropic.com/claude/sonnet",
+          "https://www.anthropic.com/news/claude-sonnet-4-5"
         ],
-        "assigned_at": "2026-06-22T00:00:00Z"
+        "assigned_at": "2026-06-22T10:05:05Z"
       }
     },
     {
       "provider_model": "claude / unknown",
       "slug": "claude-unknown",
       "pokemon": {
-        "name": "Abra",
-        "dex_id": 63,
-        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png",
-        "description": "Using its ability to read minds, it will identify impending danger and TELEPORT to safety."
+        "name": "Mew",
+        "dex_id": 151,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png",
+        "description": "So rare that it is still said to be a mirage by many experts. Only a few people have seen it worldwide."
       },
       "research": {
         "classification": "closed",
         "publisher": "Anthropic",
-        "country": "United States",
+        "country": "USA",
         "parameter_size": "undisclosed",
-        "license": "proprietary",
+        "license": "Proprietary (commercial API/ToS)",
         "canonical_url": "https://www.anthropic.com/claude"
       },
-      "profile": "Abra is the unevolved base of the psychic line — full of latent potential, teleporting away before you can pin it down. It stands for an unspecified Claude model: clearly Claude, exact form unknown.",
+      "profile": "Mew is the mysterious mythical said to hold the genetic blueprint of all Pokemon, mirroring an unidentified Claude model — a versatile generalist of undisclosed origin. Its enigmatic, rarely-seen nature fits a 'claude / unknown' entry, and it sits naturally beside its lab-made descendant Mewtwo.",
       "provenance": {
-        "assigned_by": "model-registry-seed",
-        "assigned_with": "claude-opus-4-8",
+        "assigned_by": "housekeeping",
+        "assigned_with": "claude / opus",
+        "contributor": "ab0t-core",
         "sources": [
-          "https://www.anthropic.com/claude"
+          "https://www.anthropic.com/claude",
+          "https://en.wikipedia.org/wiki/Claude_(language_model)"
         ],
-        "assigned_at": "2026-06-22T00:00:00Z"
+        "assigned_at": "2026-06-22T10:07:08Z"
+      }
+    },
+    {
+      "provider_model": "openai / jackcloudman/Leanstral-2603-GGUF",
+      "slug": "openai-jackcloudman-leanstral-2603-gguf",
+      "pokemon": {
+        "name": "Sigilyph",
+        "dex_id": 561,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/561.png",
+        "description": "They never vary the route they fly, because their memories of guarding an ancient city remain steadfast."
+      },
+      "research": {
+        "classification": "open",
+        "publisher": "jackcloudman (GGUF quant of Mistral AI)",
+        "country": "France (Mistral base model)",
+        "parameter_size": "119B MoE (~6B active)",
+        "license": "Apache 2.0",
+        "canonical_url": "https://huggingface.co/jackcloudman/Leanstral-2603-GGUF"
+      },
+      "profile": "Leanstral is a Lean 4 proof agent that follows strict, predetermined inference paths, much as Sigilyph, the Psychic/Flying guardian, flies fixed geometric routes and never strays. Its airborne nature nods to Mistral's namesake wind, while its psychic intellect mirrors the model's formal-reasoning rigor.",
+      "provenance": {
+        "assigned_by": "housekeeping",
+        "assigned_with": "claude / opus",
+        "contributor": "cgbarlow",
+        "sources": [
+          "https://huggingface.co/jackcloudman/Leanstral-2603-GGUF",
+          "https://huggingface.co/mistralai/Leanstral-2603",
+          "https://mistral.ai/news/leanstral/"
+        ],
+        "assigned_at": "2026-06-22T10:09:05Z"
+      }
+    },
+    {
+      "provider_model": "codex / gpt-5.3-codex-spark",
+      "slug": "codex-gpt-5-3-codex-spark",
+      "pokemon": {
+        "name": "Jolteon",
+        "dex_id": 135,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+        "description": "It accumulates negative ions in the atmosphere to blast out 10000- volt lightning bolts."
+      },
+      "research": {
+        "classification": "closed",
+        "publisher": "OpenAI",
+        "country": "United States",
+        "parameter_size": "undisclosed",
+        "license": "Proprietary",
+        "canonical_url": "https://openai.com/index/introducing-gpt-5-3-codex-spark/"
+      },
+      "profile": "Jolteon, the Lightning Pokémon, is a small, nimble Eeveelution famed for near-instant speed and electric reflexes — mirroring this compact, Cerebras-accelerated Codex variant built for real-time coding at 1000+ tokens/sec. Its spark-charged agility captures the model's 'Spark' identity and 15x latency edge.",
+      "provenance": {
+        "assigned_by": "housekeeping",
+        "assigned_with": "claude / opus",
+        "contributor": "ab0t-core",
+        "sources": [
+          "https://openai.com/index/introducing-gpt-5-3-codex-spark/",
+          "https://simonwillison.net/2026/Feb/12/codex-spark/",
+          "https://www.cerebras.ai/blog/openai-codexspark"
+        ],
+        "assigned_at": "2026-06-22T10:10:42Z"
+      }
+    },
+    {
+      "provider_model": "openai / leanstral-2603-sovereign",
+      "slug": "openai-leanstral-2603-sovereign",
+      "pokemon": {
+        "name": "Klinklang",
+        "dex_id": 601,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/601.png",
+        "description": "The gear with the red core is rotated at high speed for a rapid energy charge."
+      },
+      "research": {
+        "classification": "open",
+        "publisher": "Mistral AI",
+        "country": "France",
+        "parameter_size": "119B total / 6.5B active (MoE)",
+        "license": "Apache 2.0",
+        "canonical_url": "https://huggingface.co/mistralai/Leanstral-2603"
+      },
+      "profile": "Klinklang's tightly interlocking gears mirror Leanstral's formal Lean 4 proofs, where every logical step must mesh exactly to stay kernel-verified, and its meshed components echo the model's mixture-of-experts design. The steel-type rigor and efficient, compact power capture a lean agent that beats far larger models at trustworthy proof engineering.",
+      "provenance": {
+        "assigned_by": "housekeeping",
+        "assigned_with": "claude / opus",
+        "contributor": "ab0t-core",
+        "sources": [
+          "https://huggingface.co/mistralai/Leanstral-2603",
+          "https://mistral.ai/news/leanstral/",
+          "https://docs.mistral.ai/models/model-cards/leanstral-26-03"
+        ],
+        "assigned_at": "2026-06-22T10:12:36Z"
       }
     }
   ]

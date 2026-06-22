@@ -54,7 +54,13 @@ def _build_parser() -> argparse.ArgumentParser:
     assign.add_argument("--provider-model", required=True, help="the model being named")
     assign.add_argument("--candidate", required=True, help="JSON: pokemon/research/profile")
     assign.add_argument("--assigned-by", required=True, help="agent id")
-    assign.add_argument("--assigned-with", required=True, help="model the agent ran as")
+    assign.add_argument(
+        "--assigned-with", required=True,
+        help="naming model in provider_model form, e.g. 'claude / opus'",
+    )
+    assign.add_argument(
+        "--contributor", required=True, help="owning swarm contributor (GitHub handle)"
+    )
     assign.add_argument("--assigned-at", required=True, help="ISO-8601 UTC timestamp")
 
     return parser
@@ -96,6 +102,7 @@ def main(argv: list[str] | None = None) -> int:
                     candidate,
                     assigned_by=args.assigned_by,
                     assigned_with=args.assigned_with,
+                    contributor=args.contributor,
                     assigned_at=args.assigned_at,
                 )
             else:
