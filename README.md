@@ -21,7 +21,7 @@ Check out the proofs the team has delivered so far: [**Proof showcase**](docs/sh
 [![Unsorry leaderboard](https://swarm.unsorry.agentics.org.nz/api/og/leaderboard)](https://swarm.unsorry.agentics.org.nz/math/leaderboard)
 [![Unsorry proofs over time](https://swarm.unsorry.agentics.org.nz/api/og/proofs-over-time)](https://swarm.unsorry.agentics.org.nz/)
 
-## 10 days of madness: 'Tell me a Fable' - The story of unsorry
+## 10 days of madness: 'Tell me a Fable' — The story of unsorry
 
 On 10 June 2026, Chris Barlow — "an infrastructure guy, not a developer" — asked a newly released model one question: *what is the hardest problem that would benefit humanity, can be worked on asynchronously, verifies itself, compounds, and needs almost no infrastructure?* Ranked first: **formal mathematics in Lean** — the one domain where you don't have to trust the worker, because the kernel checks a proof, or it doesn't. He told the model "build version one, don't stop until it ships." Seven hours later it did. Day one: **four** verified proofs, one contributor, a free GitHub account.
 
