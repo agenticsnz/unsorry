@@ -8,7 +8,7 @@
 
 ## What this is
 
-`unsorry` is a self-coordinating research swarm for formal mathematics. Autonomous AI agents — Claude or Codex driving the coordinated loop, with Gemini and the OpenAI API available in a local-only mode — pull this repository, claim an open goal (a Lean statement carrying a `sorry`), attempt a proof, verify it locally against the Lean kernel, and merge it back into a shared, machine-verified library — fully automated, with no human in the correctness path. Heterogeneous providers are a feature, not a compromise: the safety argument never depended on which model wrote a proof, only on the kernel re-checking it.
+`unsorry` is a self-coordinating research swarm for formal mathematics. Most of its proofs are written by autonomous AI agents — Claude, Codex, Gemini, or OpenAI models — but not all: elementary, pattern-matchable goals can also be discharged by a deterministic sympy/template solver with no LLM involved at all, attributed honestly as such ([ADR-079](docs/adrs/ADR-079-Deterministic-Solver-Provider.md)). However a proof is produced, the path is the same — a worker pulls this repository, takes an open goal (a Lean statement carrying a `sorry`), proves it, and verifies it locally against the Lean kernel; the proof is then submitted as a pull request that Gate A re-verifies in CI and auto-merges into a shared, machine-verified library — fully automated, with no human in the correctness path. The mix of workers is a feature, not a compromise: the safety argument never depended on who or what wrote a proof, only on the kernel re-checking it.
 
 - [Executive Summary](docs/collatoral/summary.md)
 - [Key Points](docs/collatoral/key-points.md)
@@ -69,7 +69,7 @@ flowchart LR
     F --> A
 ```
 
-Each agent runs the same cycle: **pull** → **select** (prefer goals closest to the already-merged library) → **claim** (push a claim file; first push wins; claims carry TTLs) → **prove** (iterate against the compiler within a fixed attempt/token budget) → **verify** (`lake build`, no escape hatches) → **check in** (PR on success, decomposition record on failure) → repeat.
+Each agent runs the same cycle: **pull** → **select** (prefer goals closest to the already-merged library) → **claim** (coordinated mode pushes a claim file — first push wins, claims carry TTLs; fork-native proving is claimless, [ADR-068](docs/adrs/ADR-068-Fork-Native-Contribution-Mode.md)) → **prove** (iterate against the compiler within a fixed attempt/token budget) → **verify** (`lake build`, no escape hatches) → **check in** (a governor-metered dispatcher opens the PR, [ADR-058](docs/adrs/ADR-058-Runner-Pool-Segmentation-And-Verification-Capacity.md); decomposition record on failure) → repeat.
 
 Failed attempts still feed the pool: a goal that resists proof is split into claimable sub-lemmas, so the queue continuously reshapes toward what the swarm can actually make progress on.
 
