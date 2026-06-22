@@ -1,36 +1,44 @@
 #!/usr/bin/env bash
 # swarm/housekeeping.sh — the swarm's first work package (ADR-083).
 #
-# A *swarm operational task*: assign each model in the leaderboard's model
+# A *swarm operational task*: assign every model in the leaderboard's model
 # distribution a unique Pokémon identity (sprite + description + research +
 # rationale), published to docs/metrics/model-registry.json for the guild
-# frontend. The unit of work is ONE Pokémon for ONE model = exactly ONE PR; by
-# default this names the next single unassigned model and opens one PR, so the
-# single-file registry never races. run.sh calls it once before the prover arms
-# start; over successive launches the registry fills in.
+# frontend. The unit of work is ONE Pokémon for ONE model = exactly ONE PR.
 #
-# Exit codes: 0 success / nothing to do · 1 cycle failure · 2 config error.
+# GUARANTEE (ADR-083): run.sh runs this FIRST and blocks on it, so *every*
+# unnamed model is resolved before any proving/dispatch/sourcing work begins.
+# This drains the whole unnamed list, serialised: each model is named, opened as
+# one labelled PR, and SETTLED onto main before the next is started — so the
+# single-file registry never sees concurrent edits and uniqueness always holds.
+#
+# Exit codes: 0 all models named / nothing to do · 1 could not name some model
+# (run.sh then refuses to start the proving arms) · 2 config error.
 set -euo pipefail
 
 REGISTRY="docs/metrics/model-registry.json"
 DISTRIBUTION="docs/metrics/leaderboard-ui.json"
-# How many models to name per invocation. Default 1 keeps each run to a single
-# PR against the single-file registry (no concurrent edits). Operators may raise
-# it; each iteration re-syncs main so a prior PR has landed first.
-MAX="${UNSORRY_REGISTRY_MAX:-1}"
-RETRIES="${UNSORRY_REGISTRY_RETRIES:-3}"
+# Models to name per invocation. Default 0 = drain ALL unnamed models (the
+# run.sh guarantee). A positive value caps the run (testing/manual use).
+MAX="${UNSORRY_REGISTRY_MAX:-0}"
+RETRIES="${UNSORRY_REGISTRY_RETRIES:-3}"      # research attempts per model
+SETTLE_TRIES="${UNSORRY_REGISTRY_SETTLE_TRIES:-60}"  # merge-settle polls per PR
+SETTLE_WAIT="${UNSORRY_REGISTRY_SETTLE_WAIT:-10}"    # seconds between polls
 MODEL="${UNSORRY_MODEL:-opus}"
 WALL="${UNSORRY_REGISTRY_WALL:-600}"
 AGENT_ID="${UNSORRY_AGENT_ID:-housekeeping}"
 BASE_BRANCH="${UNSORRY_BASE_BRANCH:-main}"
+CONTRIBUTOR=""  # resolved in main(); used by research_and_write()
 
-log() { printf '%s housekeeping: %s\n' "$(now_z)" "$*" >&2; }
 now_z() { date -u +%Y-%m-%dT%H:%M:%SZ; }
+log() { printf '%s housekeeping: %s\n' "$(now_z)" "$*" >&2; }
 
 usage() {
   cat <<'EOF'
 Usage: swarm/housekeeping.sh [--self-test]
-Assign Pokémon identities to unnamed models (ADR-083). Run from the repo root.
+Resolve a Pokémon identity for every unnamed model (ADR-083). Run from the repo
+root. Drains the whole unnamed list (one labelled PR per Pokémon, each merged
+before the next); run.sh blocks on it before starting the proving arms.
 EOF
 }
 
@@ -47,6 +55,11 @@ registry_slug() {
 branch_name() { printf 'chore/registry-%s' "$(registry_slug "$1")"; }
 
 commit_subject() { printf 'chore(registry): name %s as %s' "$1" "$2"; }
+
+# The naming model in provider_model form, so the frontend can show that model's
+# own Pokémon ("named by model/Pokémon"). The housekeeping agent is the `claude`
+# CLI, so provider=claude, model=$1.
+named_by_model() { printf 'claude / %s' "$1"; }
 
 # The research + selection brief handed to the agent. $1 provider/model,
 # $2 comma-separated taken Pokémon names.
@@ -89,6 +102,7 @@ run_self_test() {
   [ "$(registry_slug 'openai / Leanstral-2603-GGUF')" = 'openai-leanstral-2603-gguf' ] || { echo "registry_slug FAIL2" >&2; rc=1; }
   [ "$(branch_name 'claude / opus')" = 'chore/registry-claude-opus' ] || { echo "branch_name FAIL" >&2; rc=1; }
   [ "$(commit_subject 'claude / opus' 'Alakazam')" = 'chore(registry): name claude / opus as Alakazam' ] || { echo "commit_subject FAIL" >&2; rc=1; }
+  [ "$(named_by_model 'opus')" = 'claude / opus' ] || { echo "named_by_model FAIL" >&2; rc=1; }
   build_prompt 'x / y' 'Ditto, Abra' | grep -q 'Ditto, Abra' || { echo "build_prompt taken FAIL" >&2; rc=1; }
   [ "$rc" -eq 0 ] && echo "housekeeping self-test: OK" >&2
   return "$rc"
@@ -96,8 +110,24 @@ run_self_test() {
 
 # --- live helpers (network / git / gh) ------------------------------------
 
+# Owning swarm contributor: the operator's GitHub handle, mirroring how the
+# prover resolves the solver. UNSORRY_SOLVER wins; else the gh-authenticated
+# user; else git config; else "unknown".
+resolve_contributor() {
+  local c="${UNSORRY_SOLVER:-}"
+  [ -n "$c" ] || c="$(gh api user --jq .login 2>/dev/null || true)"
+  [ -n "$c" ] || c="$(git config user.name 2>/dev/null || true)"
+  printf '%s' "${c:-unknown}"
+}
+
 taken_names() {
   python3 -c "import json;from tools.model_registry import registry as r;print(', '.join(sorted(r.taken_names(r.load_registry('$REGISTRY')))))"
+}
+
+# Is $1 (a provider/model) present in origin/<base>'s registry yet?
+model_landed() {
+  git show "origin/$BASE_BRANCH:$REGISTRY" 2>/dev/null \
+    | python3 -c "import sys,json;d=json.load(sys.stdin);sys.exit(0 if '$1' in {m['provider_model'] for m in d.get('models',[])} else 1)" 2>/dev/null
 }
 
 # Strip optional markdown fences and return the first balanced JSON object.
@@ -120,9 +150,10 @@ sys.exit(1)
 PY
 }
 
-# Ask the agent for a candidate, validate-and-write it. $1 provider/model.
-assign_one() {
-  local pm="$1" taken prompt raw candidate tmp poke attempt
+# Research + write the entry for $1; on success leaves REGISTRY modified in the
+# working tree and echoes the chosen Pokémon name. Returns 1 if it cannot.
+research_and_write() {
+  local pm="$1" taken prompt raw candidate tmp attempt
   taken="$(taken_names)"
   tmp="$(mktemp -d)"
   candidate="$tmp/candidate.json"
@@ -138,23 +169,20 @@ assign_one() {
     fi
     if python3 -m tools.model_registry assign \
         --registry "$REGISTRY" --provider-model "$pm" --candidate "$candidate" \
-        --assigned-by "$AGENT_ID" --assigned-with "$MODEL" --assigned-at "$(now_z)"; then
-      poke="$(python3 -c "import json;print(json.load(open('$candidate'))['pokemon']['name'])")"
-      rm -rf "$tmp"
-      _open_pr "$pm" "$poke"
-      return 0
+        --assigned-by "$AGENT_ID" --assigned-with "$(named_by_model "$MODEL")" \
+        --contributor "$CONTRIBUTOR" --assigned-at "$(now_z)"; then
+      python3 -c "import json;print(json.load(open('$candidate'))['pokemon']['name'])"
+      rm -rf "$tmp"; return 0
     fi
     log "attempt $attempt: candidate for '$pm' failed validation; retrying"
   done
   rm -rf "$tmp"
-  git checkout -- "$REGISTRY" 2>/dev/null || true
   return 1
 }
 
-# Branch, commit, push and open an auto-merging PR for the one new entry.
-_open_pr() {
-  local pm="$1" poke="$2" branch
-  branch="$(branch_name "$pm")"
+# Branch, commit, push and open one labelled PR for the staged registry change.
+open_pr() {
+  local pm="$1" poke="$2" branch="$3"
   git checkout -b "$branch" >/dev/null
   git add "$REGISTRY"
   git commit -m "$(commit_subject "$pm" "$poke")" \
@@ -165,10 +193,44 @@ _open_pr() {
     --title "$(commit_subject "$pm" "$poke")" \
     --body "Names \`$pm\` as **$poke** in the model → Pokémon registry (ADR-083). Validated by the model-registry gate (schema · uniqueness · one-Pokémon-per-PR)." \
     >/dev/null
-  gh pr merge --auto --squash "$branch" >/dev/null 2>&1 \
-    || log "auto-merge not enabled for $branch (will need a manual merge)"
-  git checkout "$BASE_BRANCH" >/dev/null
-  log "opened PR: named '$pm' as $poke ($branch)"
+  gh pr merge "$branch" --squash --auto >/dev/null 2>&1 || true  # auto-merge if the repo allows
+}
+
+# Block until $pm's PR ($branch) lands on main, then re-sync the local checkout.
+# Nudges the merge each poll (GitHub still gates on required checks), so it works
+# whether or not repo-level auto-merge is enabled.
+settle_pr() {
+  local pm="$1" branch="$2"
+  for _ in $(seq 1 "$SETTLE_TRIES"); do
+    git fetch -q origin "$BASE_BRANCH" 2>/dev/null || true
+    if model_landed "$pm"; then
+      git checkout -q "$BASE_BRANCH"
+      git reset --hard -q "origin/$BASE_BRANCH"
+      git branch -D "$branch" >/dev/null 2>&1 || true
+      return 0
+    fi
+    gh pr merge "$branch" --squash --delete-branch >/dev/null 2>&1 || true
+    sleep "$SETTLE_WAIT"
+  done
+  log "timed out waiting for '$pm' (PR $branch) to merge"
+  return 1
+}
+
+# Name one model end-to-end: research → PR → settle onto main.
+name_one() {
+  local pm="$1" poke branch
+  branch="$(branch_name "$pm")"
+  if ! poke="$(research_and_write "$pm")"; then
+    git checkout -- "$REGISTRY" 2>/dev/null || true
+    log "could not research/validate a Pokémon for '$pm'"
+    return 1
+  fi
+  open_pr "$pm" "$poke" "$branch"
+  if ! settle_pr "$pm" "$branch"; then
+    return 1
+  fi
+  log "named '$pm' as $poke — landed on $BASE_BRANCH"
+  return 0
 }
 
 main() {
@@ -183,22 +245,25 @@ main() {
     log "no $DISTRIBUTION yet — leaderboard not generated; nothing to do"; exit 0
   fi
 
+  CONTRIBUTOR="$(resolve_contributor)"
+  log "owning swarm contributor: $CONTRIBUTOR; naming model: $(named_by_model "$MODEL")"
+
   local named=0 pm
-  while [ "$named" -lt "$MAX" ]; do
+  while [ "$MAX" -le 0 ] || [ "$named" -lt "$MAX" ]; do
     pm="$(python3 -m tools.model_registry unassigned \
       --distribution "$DISTRIBUTION" --registry "$REGISTRY" | head -n1)"
     if [ -z "$pm" ]; then
       [ "$named" -eq 0 ] && log "every model already has a Pokémon — nothing to do"
       break
     fi
-    if assign_one "$pm"; then
+    if name_one "$pm"; then
       named=$((named + 1))
     else
-      log "could not name '$pm' this cycle; stopping"
-      break
+      log "FAILED to resolve '$pm'; aborting so it is named before any proving"
+      return 1
     fi
   done
-  log "named $named model(s) this cycle"
+  log "resolved $named model(s); every distribution model now has a Pokémon"
 }
 
 main "$@"

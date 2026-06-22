@@ -32,7 +32,8 @@ def _opus_entry() -> dict:
         "profile": "Alakazam's deliberate, supercomputer-grade intellect mirrors Opus.",
         "provenance": {
             "assigned_by": "agent-test",
-            "assigned_with": "claude-opus",
+            "assigned_with": "claude / opus",
+            "contributor": "cgbarlow",
             "sources": ["https://www.anthropic.com/claude"],
             "assigned_at": "2026-06-22T00:00:00Z",
         },
@@ -60,7 +61,8 @@ def _sonnet_entry() -> dict:
         "profile": "The balanced mid-stage Kadabra suits the everyday Sonnet.",
         "provenance": {
             "assigned_by": "agent-test",
-            "assigned_with": "claude-opus",
+            "assigned_with": "claude / opus",
+            "contributor": "cgbarlow",
             "sources": ["https://www.anthropic.com/claude"],
             "assigned_at": "2026-06-22T00:00:00Z",
         },
@@ -103,6 +105,12 @@ def test_empty_description_is_flagged() -> None:
     e = _opus_entry()
     e["pokemon"]["description"] = "  "
     assert any("description" in v for v in _violations(e))
+
+
+def test_missing_contributor_is_flagged() -> None:
+    e = _opus_entry()
+    del e["provenance"]["contributor"]
+    assert any("contributor" in v for v in _violations(e))
 
 
 def test_empty_profile_is_flagged() -> None:
@@ -256,7 +264,8 @@ def _ditto_entry() -> dict:
         "profile": "A router that becomes any model — Ditto in essence.",
         "provenance": {
             "assigned_by": "agent-test",
-            "assigned_with": "claude-opus",
+            "assigned_with": "claude / opus",
+            "contributor": "cgbarlow",
             "sources": ["https://openrouter.ai"],
             "assigned_at": "2026-06-22T00:00:00Z",
         },
@@ -322,13 +331,16 @@ def test_assemble_entry_fills_authoritative_fields() -> None:
         "openrouter / unknown",
         candidate,
         assigned_by="agent-1",
-        assigned_with="claude-opus",
+        assigned_with="claude / opus",
+        contributor="cgbarlow",
         assigned_at="2026-06-22T00:00:00Z",
         description_fn=lambda dex_id: f"flavour-for-{dex_id}",
     )
     assert entry["slug"] == "openrouter-unknown"
     assert entry["pokemon"]["sprite_url"] == registry.pokedex.sprite_url(132)
     assert entry["pokemon"]["description"] == "flavour-for-132"
+    assert entry["provenance"]["contributor"] == "cgbarlow"
+    assert entry["provenance"]["assigned_with"] == "claude / opus"
     # sources defaults to the canonical url when the candidate omits them.
     assert entry["provenance"]["sources"] == ["https://openrouter.ai/"]
     # the assembled entry passes full validation.

@@ -32,7 +32,11 @@ REQUIRED_RESEARCH_FIELDS = (
 
 REQUIRED_PROVENANCE_FIELDS = (
     "assigned_by",
+    # the model that did the naming, in provider_model form ("claude / opus") so
+    # the frontend can show that model's own Pokémon ("named by model/Pokémon").
     "assigned_with",
+    # the GitHub handle of the swarm contributor who ran the naming task.
+    "contributor",
     "sources",
     "assigned_at",
 )
@@ -269,6 +273,7 @@ def assemble_entry(
     *,
     assigned_by: str,
     assigned_with: str,
+    contributor: str,
     assigned_at: str,
     description_fn: Any = pokedex.fetch_flavor_text,
 ) -> dict[str, Any]:
@@ -301,6 +306,7 @@ def assemble_entry(
         "provenance": {
             "assigned_by": assigned_by,
             "assigned_with": assigned_with,
+            "contributor": contributor,
             "sources": sources,
             "assigned_at": assigned_at,
         },

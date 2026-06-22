@@ -31,8 +31,9 @@ Single source of truth; served by Pages and read by the guild. Shape:
       },
       "profile": "Alakazam's deliberate, supercomputer-grade intellect mirrors Opus...",
       "provenance": {
-        "assigned_by": "housekeeping",
-        "assigned_with": "opus",
+        "assigned_by": "housekeeping",          // agent id
+        "assigned_with": "claude / opus",        // the model that named it, in provider_model form → joins to *its* Pokémon ("named by model/Pokémon")
+        "contributor": "cgbarlow",               // owning swarm contributor (GitHub handle)
         "sources": ["https://..."],
         "assigned_at": "2026-06-22T00:00:00Z"
       }
@@ -74,16 +75,25 @@ model can never hallucinate a sprite or flavour text.
 ## 4. Operational task — `swarm/housekeeping.sh`
 
 Run by `run.sh` as the first work package (governed swarm only; `UNSORRY_HOUSEKEEPING=0` to skip).
-Per invocation, for up to `UNSORRY_REGISTRY_MAX` (default **1**) unnamed models:
+It **drains every unnamed model** (`UNSORRY_REGISTRY_MAX` default **0** = all) and **blocks**: run.sh
+refuses to start the proving/dispatch/sourcing arms unless every distribution model has a Pokémon, so
+no other swarm work happens while a model is still unnamed (the ADR-083 guarantee). The drain is
+serialised so the single-file registry never sees concurrent edits. For each unnamed `PM`:
 
-1. `unassigned` → next model `PM`.
+1. `unassigned` → next model `PM` (recomputed each iteration against the freshly-synced main).
 2. `build_prompt PM <taken>` → `claude -p` (tools: WebSearch, WebFetch, Read) → JSON candidate
    `{pokemon{name,dex_id}, research{…}, profile, sources[]}`; retried up to `UNSORRY_REGISTRY_RETRIES`.
-3. `assign` assembles + validates the single addition + writes `model-registry.json`.
-4. Branch `chore/registry-<slug>`, commit `chore(registry): name <PM> as <Pokémon>`, push, open a PR,
-   enable auto-merge.
+3. `assign` assembles the entry — stamping `provenance.assigned_with = "claude / <model>"` (the naming
+   model) and `provenance.contributor` (the owning swarm contributor, from `UNSORRY_SOLVER`/gh) —
+   validates the single addition, and writes `model-registry.json`.
+4. Branch `chore/registry-<slug>`, commit `chore(registry): name <PM> as <Pokémon>`, push, open one PR
+   labelled `model-registry`/`chore`, and **settle** it: poll until the entry lands on main (nudging
+   the merge; GitHub still gates on the validator), then hard-sync the local checkout before the next
+   model. If a model cannot be named after retries, or its PR cannot land, the drain aborts non-zero
+   and run.sh does not start proving.
 
-`--self-test` exercises the pure helpers (slug/branch/commit/prompt) with no network, git or agent.
+`--self-test` exercises the pure helpers (slug/branch/commit/named-by/prompt) with no network, git or
+agent.
 
 ## 5. CI gate — `.github/workflows/model-registry-gate.yml`
 
