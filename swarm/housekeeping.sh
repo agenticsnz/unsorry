@@ -196,13 +196,13 @@ research_and_write() {
 # Branch, commit, push and open one labelled PR for the staged registry change.
 open_pr() {
   local pm="$1" poke="$2" branch="$3"
-  git checkout -B "$branch" >/dev/null   # -B: reuse the name if a stale local branch exists
+  # The branch name carries a per-attempt unique suffix (see name_one), so it
+  # never collides with a leftover or a *concurrent* runner's branch — no
+  # delete-then-push (which would clobber another runner mid-flight).
+  git checkout -B "$branch" >/dev/null
   git add "$REGISTRY"
   git commit -m "$(commit_subject "$pm" "$poke")" \
     -m "Assign the Pokémon identity for \`$pm\` (ADR-083). One Pokémon per PR." >/dev/null
-  # Clear any stale remote branch of the same name (e.g. an abandoned earlier
-  # run) so the push is never a non-fast-forward; then push the fresh branch.
-  git push origin --delete "$branch" >/dev/null 2>&1 || true
   git push -u origin "$branch" >/dev/null
   gh pr create --base "$BASE_BRANCH" --head "$branch" \
     --label model-registry --label chore \
@@ -212,14 +212,18 @@ open_pr() {
   gh pr merge "$branch" --squash --auto >/dev/null 2>&1 || true  # auto-merge if the repo allows
 }
 
-# Block until $pm's PR ($branch) lands on main, then re-sync the local checkout.
-# Nudges the merge each poll (GitHub still gates on required checks), so it works
-# whether or not repo-level auto-merge is enabled.
+# Block until $pm lands on main (by THIS PR or any concurrent runner's), then
+# re-sync. Nudges the merge each poll (GitHub still gates on required checks), so
+# it works whether or not repo-level auto-merge is enabled. If the model was
+# named by another runner, our now-redundant PR is closed.
 settle_pr() {
   local pm="$1" branch="$2"
   for _ in $(seq 1 "$SETTLE_TRIES"); do
     git fetch -q origin "$BASE_BRANCH" 2>/dev/null || true
     if model_landed "$pm"; then
+      # If our PR lost the race it's still open with a now-duplicate entry the
+      # gate rejects — close it (a no-op if ours is the one that merged).
+      gh pr close "$branch" --delete-branch >/dev/null 2>&1 || true
       git checkout -q "$BASE_BRANCH"
       git reset --hard -q "origin/$BASE_BRANCH"
       git branch -D "$branch" >/dev/null 2>&1 || true
@@ -235,7 +239,9 @@ settle_pr() {
 # Name one model end-to-end: research → PR → settle onto main.
 name_one() {
   local pm="$1" poke branch
-  branch="$(branch_name "$pm")"
+  # Per-attempt unique suffix so concurrent runners (and abandoned earlier runs)
+  # never share a branch name. The PR title/commit stay clean (slug only).
+  branch="$(branch_name "$pm")-$$-${RANDOM}"
   if ! poke="$(research_and_write "$pm")"; then
     git checkout -- "$REGISTRY" 2>/dev/null || true
     log "could not research/validate a Pokémon for '$pm'"
@@ -258,6 +264,18 @@ sync_base() {
   git checkout -q -B "$BASE_BRANCH" "origin/$BASE_BRANCH"
 }
 
+# Force the checkout back to an up-to-date BASE_BRANCH at the top of every naming
+# cycle, discarding our own transient registry edit. This is what makes
+# CONCURRENT runners cooperate: each cycle re-reads what others have merged, so a
+# runner only ever attempts a genuinely-unnamed model (it won't keep re-picking
+# Pokémon another operator already found).
+goto_clean_base() {
+  git checkout -q -- . 2>/dev/null || true
+  git checkout -q "$BASE_BRANCH" 2>/dev/null || true
+  git fetch -q origin "$BASE_BRANCH" 2>/dev/null || true
+  git reset --hard -q "origin/$BASE_BRANCH" 2>/dev/null || true
+}
+
 main() {
   case "${1:-}" in
     -h|--help) usage; exit 0 ;;
@@ -277,22 +295,40 @@ main() {
   CONTRIBUTOR="$(resolve_contributor)"
   log "owning swarm contributor: $CONTRIBUTOR; naming model: $(named_by_model "$MODEL")"
 
-  local named=0 pm
+  local named=0 misses=0 pm
+  local cap_misses="${UNSORRY_REGISTRY_MAX_MISSES:-8}"
   while [ "$MAX" -le 0 ] || [ "$named" -lt "$MAX" ]; do
+    # Re-sync to main, then pick a RANDOM unnamed model. Both points let multiple
+    # run.sh operators cooperate: the re-sync drops models others just named, and
+    # the random pick keeps two runners from lock-stepping on the same model.
+    goto_clean_base
     pm="$(python3 -m tools.model_registry unassigned \
-      --distribution "$DISTRIBUTION" --registry "$REGISTRY" | head -n1)"
+      --distribution "$DISTRIBUTION" --registry "$REGISTRY" | shuf | head -n1)"
     if [ -z "$pm" ]; then
       [ "$named" -eq 0 ] && log "every model already has a Pokémon — nothing to do"
       break
     fi
     if name_one "$pm"; then
-      named=$((named + 1))
+      named=$((named + 1)); misses=0
     else
-      log "FAILED to resolve '$pm'; aborting so it is named before any proving"
-      return 1
+      # A lost race or a transient failure — skip and try another model rather
+      # than aborting (another runner likely took this one).
+      misses=$((misses + 1))
+      log "did not land '$pm' (another runner may have taken it) — skipping [$misses/$cap_misses]"
+      [ "$misses" -ge "$cap_misses" ] && { log "too many consecutive misses — stopping"; break; }
     fi
   done
-  log "resolved $named model(s); every distribution model now has a Pokémon"
+
+  # Guarantee check: every distribution model must have a Pokémon (named by any
+  # runner) before run.sh starts proving. Re-sync first so we count what's truly
+  # on main.
+  goto_clean_base
+  if [ -n "$(python3 -m tools.model_registry unassigned \
+      --distribution "$DISTRIBUTION" --registry "$REGISTRY")" ]; then
+    log "some models are still unnamed (named $named here); re-run to finish"
+    return 1
+  fi
+  log "every distribution model now has a Pokémon (named $named here this run)"
 }
 
 main "$@"
