@@ -1,0 +1,8 @@
+𝔸5.1.lemma.bb91729f7a65@2026-06-16
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜bb91729f7a65b6094f0c915d156a9b49689d4e60da6565b18f23711f5bcd58b3; goal≜sum-hexagonal-numbers-closed-form; name≜sum_hexagonal_numbers_closed_form}
+⟦Σ:Source⟧{src≜goals/sum-hexagonal-numbers-closed-form.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜ruvnet; agent≜ruvnet-swarm; provider≜openrouter}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

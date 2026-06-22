@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜cyclic-quartic-ge-asym-cubic-cross
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/cyclic-quartic-ge-asym-cubic-cross.md
+  src≜packages/unsorry-archive-0011/backlog/cyclic-quartic-ge-asym-cubic-cross.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/cyclic-quartic-ge-asym-cubic-cross.lean
+  lean≜packages/unsorry-archive-0011/goals/cyclic-quartic-ge-asym-cubic-cross.lean
   sha≜423ff21d32ea7ee1d4f01eaef408b7e2bfc2ddbf309f1d9cab0e529183343cb4
   aff≜-9
 }

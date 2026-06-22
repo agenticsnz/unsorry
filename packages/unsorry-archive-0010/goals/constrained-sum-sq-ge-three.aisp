@@ -1,0 +1,20 @@
+𝔸5.1.goal.constrained-sum-sq-ge-three@2026-06-14
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜constrained-sum-sq-ge-three
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/constrained-sum-sq-ge-three.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/constrained-sum-sq-ge-three.lean
+  sha≜38cb3b4970c4b271bbd84079e1ab7788c76147664a02951f1b0d0503b54aba43
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
