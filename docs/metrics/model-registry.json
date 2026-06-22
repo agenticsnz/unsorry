@@ -30,6 +30,35 @@
         ],
         "assigned_at": "2026-06-22T09:19:20Z"
       }
+    },
+    {
+      "provider_model": "lean / decide",
+      "slug": "lean-decide",
+      "pokemon": {
+        "name": "Metagross",
+        "dex_id": 376,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/376.png",
+        "description": "METAGROSS has four brains in total. Combined, the four brains can breeze through difficult calculations faster than a supercomputer. This POKéMON can float in the air by tucking in its four legs."
+      },
+      "research": {
+        "classification": "n/a",
+        "publisher": "Lean FRO (orig. Microsoft Research)",
+        "country": "USA",
+        "parameter_size": "n/a",
+        "license": "Apache 2.0",
+        "canonical_url": "https://github.com/leanprover/lean4"
+      },
+      "profile": "`decide` is not a model but a Lean 4 core tactic that proves decidable propositions by brute-force kernel computation, reducing a goal to a definitive true/false verdict. Metagross fits: its four-brain neural network outpaces a supercomputer, crunching data into one decisive, deterministic answer.",
+      "provenance": {
+        "assigned_by": "housekeeping",
+        "assigned_with": "claude / opus",
+        "contributor": "cgbarlow",
+        "sources": [
+          "https://github.com/leanprover/lean4",
+          "https://lean-lang.org/doc/reference/latest/Tactic-Proofs/Tactic-Reference/"
+        ],
+        "assigned_at": "2026-06-22T09:21:02Z"
+      }
     }
   ]
 }
