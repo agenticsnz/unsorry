@@ -1,0 +1,8 @@
+𝔸5.1.run.gbinom-falling-seven-fact-dvd.mac-158f.20260619t172241395563z-6d392dd9@2026-06-19
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260619t172241395563z-6d392dd9; goal≜gbinom-falling-seven-fact-dvd; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜python; model≜sympy}
+⟦Γ:Goal⟧{goal≜gbinom-falling-seven-fact-dvd}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-19T17:22:41Z}
+⟦Σ:Artifact⟧{sha≜9d754dd8290742c98e78d8be99b590ceb4c527c2a2b33a276d76660e62924f14}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

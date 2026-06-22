@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜dvd-5040-seven-consecutive-product
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜4
 }
 ⟦Σ:Source⟧{
-  src≜backlog/dvd-5040-seven-consecutive-product.md
+  src≜packages/unsorry-archive-0014/backlog/dvd-5040-seven-consecutive-product.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/dvd-5040-seven-consecutive-product.lean
+  lean≜packages/unsorry-archive-0014/goals/dvd-5040-seven-consecutive-product.lean
   sha≜5e8db99623823d91a1159c096e1c0e2caaf2f54213ec5beabdf03849b09eab9f
   aff≜-19
 }

@@ -1,0 +1,20 @@
+𝔸5.1.goal.gbinom-sp-0-2-7@2026-06-19
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gbinom-sp-0-2-7
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/gbinom-sp-0-2-7.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/gbinom-sp-0-2-7.lean
+  sha≜7b0144370e262ea58913665d332f568cc148b1dc7a542cb2aaebba60aa890fd5
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

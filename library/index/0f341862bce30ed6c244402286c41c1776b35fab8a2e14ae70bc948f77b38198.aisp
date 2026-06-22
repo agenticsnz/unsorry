@@ -1,0 +1,8 @@
+𝔸5.1.lemma.0f341862bce3@2026-06-19
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜0f341862bce30ed6c244402286c41c1776b35fab8a2e14ae70bc948f77b38198; goal≜gpow-sum-four-pow-eleven; name≜gpow_sum_four_pow_eleven}
+⟦Σ:Source⟧{src≜goals/gpow-sum-four-pow-eleven.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜cgbarlow; agent≜mac-158f; provider≜python; model≜sympy; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

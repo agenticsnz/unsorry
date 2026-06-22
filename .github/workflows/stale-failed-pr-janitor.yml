@@ -1,0 +1,78 @@
+# Rescue prove-PRs whose Gate A failed ONLY because the branch fell stale.
+#
+# The swarm opens a prove/<target> PR, then main races thousands of commits ahead
+# and seals once-live library modules into archive packages (ADR-041/ADR-048).
+# Gate A then rebuilds those archived modules in their OLD state on the stale
+# branch and trips a --wfail bar main has since fixed — the PR's own proof is
+# fine. (2026-06-22: 22 valid prove/* PRs ~6,300 behind, all green after one
+# update-branch.) See tools/repo/stale_failed_prs.py for the conservative guards
+# (draft / non-prove / DIRTY / gate-not-failed / current-branch / too-fresh all
+# left alone).
+#
+# This is the inverse of dropped-gate-janitor.yml: there the required gate is
+# ABSENT; here it is PRESENT and FAILED — so that janitor skips these on purpose.
+#
+# Trigger is schedule + manual ONLY. The --min-behind guard is both the staleness
+# signal and the loop guard: update-branch resets the branch to ~0 behind, so a
+# just-rebased PR cannot re-qualify until main drifts >= --min-behind ahead again.
+#
+# The branch update MUST use a non-default token: events triggered by the default
+# GITHUB_TOKEN do not start new workflow runs, so the update-branch would leave
+# Gate A un-dispatched. It authenticates with REFRESH_TOKEN (admin PAT / App
+# token, same secret as the artifact-refresh workflows, #417); when unset the job
+# degrades to report-only instead of silently no-op'ing the rebase.
+name: stale-failed-pr-janitor
+
+on:
+  schedule:
+    # Hourly backstop, off the top-of-hour congestion and clear of the
+    # dropped-gate janitor (minute 23). Stale PRs are not time-critical.
+    - cron: "41 * * * *"
+  workflow_dispatch:
+    inputs:
+      apply:
+        description: "Set false for a dry-run (report only)"
+        default: "true"
+
+concurrency:
+  group: stale-failed-pr-janitor
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  janitor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          ref: main # only need the tools/ module; the tool reads state via the API
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.12"
+      - name: Detect refresh token (#417)
+        id: tok
+        env:
+          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+        run: |
+          if [ -n "${REFRESH_TOKEN}" ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Rebase prove-PRs failed only because they fell stale
+        env:
+          # Non-default token on purpose (see header): GITHUB_TOKEN events don't
+          # start workflow runs, so update-branch must run as the PAT to
+          # re-dispatch Gate A. Falls back to GITHUB_TOKEN for the report path.
+          GH_TOKEN: ${{ secrets.REFRESH_TOKEN || github.token }}
+        run: |
+          python3 -m tools.repo.stale_failed_prs \
+            --repo "${{ github.repository }}" \
+            ${{ (steps.tok.outputs.present == 'true' && github.event.inputs.apply != 'false') && '--apply' || '' }}
+      - name: No REFRESH_TOKEN — report-only notice (#417)
+        if: steps.tok.outputs.present != 'true'
+        run: |
+          echo "::warning::REFRESH_TOKEN unset — stale-failed janitor ran report-only. An update-branch with the default GITHUB_TOKEN would not re-dispatch Gate A; add the admin PAT/App token as REFRESH_TOKEN to enable rebasing."

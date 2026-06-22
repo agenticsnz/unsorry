@@ -1,0 +1,155 @@
+{
+  "block_id": "unsorry-archive-0038",
+  "target_size": 40,
+  "proof_count": 34,
+  "status": "frozen",
+  "source_commit": "944aaabdaa21d27cfbf78f5750d72f08a30fdc32",
+  "validation_commit": null,
+  "pins": {
+    "lean_toolchain": "leanprover/lean4:v4.30.0",
+    "mathlib": "v4.30.0"
+  },
+  "notes": [
+    "ADR-041 proof archive block 0038.",
+    "Whole decomposition trees + standalone proved goals only (invariant A).",
+    "Active goal records remain as archived metadata pointing at this package."
+  ],
+  "goals": [
+    {
+      "goal": "sum-range-recip-consecutive",
+      "module": "Unsorry.SumRangeRecipConsecutive"
+    },
+    {
+      "goal": "sum-range-recip-odd-product",
+      "module": "Unsorry.SumRangeRecipOddProduct"
+    },
+    {
+      "goal": "sum-range-triangular-eq-tetrahedral",
+      "module": "Unsorry.SumRangeTriangularEqTetrahedral"
+    },
+    {
+      "goal": "sum-range-odd-div-two-pow",
+      "module": "Unsorry.SumRangeOddDivTwoPow"
+    },
+    {
+      "goal": "sum-range-odd-num-sq-succ-sq-telescope",
+      "module": "Unsorry.SumRangeOddNumSqSuccSqTelescope"
+    },
+    {
+      "goal": "sum-range-pascal-diagonal-eq-choose",
+      "module": "Unsorry.SumRangePascalDiagonalEqChoose"
+    },
+    {
+      "goal": "sum-range-recip-choose-two-eq-two-n-div-succ",
+      "module": "Unsorry.SumRangeRecipChooseTwoEqTwoNDivSucc"
+    },
+    {
+      "goal": "sum-range-recip-five-step-product",
+      "module": "Unsorry.SumRangeRecipFiveStepProduct"
+    },
+    {
+      "goal": "sum-range-recip-five-step-residue-one",
+      "module": "Unsorry.SumRangeRecipFiveStepResidueOne"
+    },
+    {
+      "goal": "sum-range-recip-four-consec-product",
+      "module": "Unsorry.SumRangeRecipFourConsecProduct"
+    },
+    {
+      "goal": "sum-range-recip-four-step-product",
+      "module": "Unsorry.SumRangeRecipFourStepProduct"
+    },
+    {
+      "goal": "sum-range-recip-four-step-residue-one",
+      "module": "Unsorry.SumRangeRecipFourStepResidueOne"
+    },
+    {
+      "goal": "sum-range-recip-odd-consecutive",
+      "module": "Unsorry.SumRangeRecipOddConsecutive"
+    },
+    {
+      "goal": "sum-range-recip-odd-pair-consecutive",
+      "module": "Unsorry.SumRangeRecipOddPairConsecutive"
+    },
+    {
+      "goal": "sum-range-recip-odd-pair-step-two-eq-n-div",
+      "module": "Unsorry.SumRangeRecipOddPairStepTwoEqNDiv"
+    },
+    {
+      "goal": "sum-range-recip-shift-two-shift-five-telescope",
+      "module": "Unsorry.SumRangeRecipShiftTwoShiftFiveTelescope"
+    },
+    {
+      "goal": "sum-range-recip-three-consec-odd-telescope",
+      "module": "Unsorry.SumRangeRecipThreeConsecOddTelescope"
+    },
+    {
+      "goal": "sum-range-recip-three-consec-shifted",
+      "module": "Unsorry.SumRangeRecipThreeConsecShifted"
+    },
+    {
+      "goal": "sum-range-recip-three-consecutive",
+      "module": "Unsorry.SumRangeRecipThreeConsecutive"
+    },
+    {
+      "goal": "sum-range-recip-three-step-residue-one",
+      "module": "Unsorry.SumRangeRecipThreeStepResidueOne"
+    },
+    {
+      "goal": "sum-range-recip-triple-consecutive",
+      "module": "Unsorry.SumRangeRecipTripleConsecutive"
+    },
+    {
+      "goal": "sum-range-shifted-choose-eq-two-pow-sub-one",
+      "module": "Unsorry.SumRangeShiftedChooseEqTwoPowSubOne"
+    },
+    {
+      "goal": "sum-range-stirling-first-row-eq-factorial",
+      "module": "Unsorry.SumRangeStirlingFirstRowEqFactorial"
+    },
+    {
+      "goal": "sum-range-succ-div-factorial-add-two-telescope",
+      "module": "Unsorry.SumRangeSuccDivFactorialAddTwoTelescope"
+    },
+    {
+      "goal": "sum-range-succ-mul-choose-sq-eq",
+      "module": "Unsorry.SumRangeSuccMulChooseSqEq"
+    },
+    {
+      "goal": "sum-range-succ-mul-factorial-eq",
+      "module": "Unsorry.SumRangeSuccMulFactorialEq"
+    },
+    {
+      "goal": "sum-range-succ-mul-factorial-succ",
+      "module": "Unsorry.SumRangeSuccMulFactorialSucc"
+    },
+    {
+      "goal": "sum-range-three-mul-add-one",
+      "module": "Unsorry.SumRangeThreeMulAddOne"
+    },
+    {
+      "goal": "sum-range-two-k-sub-n-mul-choose-sq-eq-zero",
+      "module": "Unsorry.SumRangeTwoKSubNMulChooseSqEqZero"
+    },
+    {
+      "goal": "sum-range-two-k-succ-mul-choose-eq",
+      "module": "Unsorry.SumRangeTwoKSuccMulChooseEq"
+    },
+    {
+      "goal": "gzmod-152-pow-twentyeight-sub-pow-ten",
+      "module": "Unsorry.Gzmod152PowTwentyeightSubPowTen"
+    },
+    {
+      "goal": "gzmod-152-pow-twentyfive-sub-pow-seven",
+      "module": "Unsorry.Gzmod152PowTwentyfiveSubPowSeven"
+    },
+    {
+      "goal": "gzmod-152-pow-twentyfour-sub-pow-six",
+      "module": "Unsorry.Gzmod152PowTwentyfourSubPowSix"
+    },
+    {
+      "goal": "gzmod-152-pow-twentynine-sub-pow-eleven",
+      "module": "Unsorry.Gzmod152PowTwentynineSubPowEleven"
+    }
+  ]
+}

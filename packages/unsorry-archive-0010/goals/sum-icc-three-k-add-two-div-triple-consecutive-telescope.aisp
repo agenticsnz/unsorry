@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-icc-three-k-add-two-div-triple-consecutive-telescope@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-icc-three-k-add-two-div-triple-consecutive-telescope
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-icc-three-k-add-two-div-triple-consecutive-telescope.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-icc-three-k-add-two-div-triple-consecutive-telescope.lean
+  sha≜052ccedd545f80f046e9171a45a5a902b9e0ca87a9a70d3754abbcbe921f8cd9
+  aff≜-10
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

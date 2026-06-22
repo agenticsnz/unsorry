@@ -1,0 +1,8 @@
+𝔸5.1.run.gpow-diff-ten-pow-thirteen.mac-158f.20260619t094820019076z-40616202@2026-06-19
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260619t094820019076z-40616202; goal≜gpow-diff-ten-pow-thirteen; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-ring-cofactor}
+⟦Γ:Goal⟧{goal≜gpow-diff-ten-pow-thirteen}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-19T09:48:20Z}
+⟦Σ:Artifact⟧{sha≜e2e4cda6e93ed3f5b4d9e620e98b58eeee5dd69fec6a97e4a5cb382dea922d39}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
