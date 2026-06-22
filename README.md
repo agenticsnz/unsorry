@@ -48,13 +48,9 @@ In less than two weeks it was an institution — **8,983 commits, 2,349 verified
 
 ## Why this matters
 
-Machine-checked mathematics is a commons. [mathlib](https://github.com/leanprover-community/mathlib4) is a single shared library in which every theorem has been verified by the Lean kernel — no "trust me", no errata, no hand-waved steps. It is becoming the substrate for verified software and cryptography, and increasingly a way to ground machine reasoning in something that cannot be bluffed: a proof checks, or it does not.
+The near-term payoff is the verified library itself, growing faster than people can formalise by hand. The longer bet is bigger, and it turns on one special property of formal proof: it is the one kind of knowledge work where an autonomous agent can check its own output exactly, cheaply, and locally — no laboratory, no human in the loop, no benchmark to game. The kernel decides. That is what makes mathematics the natural *first* domain for a swarm of untrusted agents to do real work — the safety argument ("trust is free, because the kernel re-checks everything") only holds where an exact verifier exists, and here one does.
 
-The bottleneck is labour. Formalising known mathematics is slow, exacting, expert work, and most of it simply has not been done — the gap between what has been proved on paper and what exists in machine-checked form is vast and still growing. That gap is the problem worth attacking.
-
-Formal proof is also the one kind of knowledge work where an autonomous agent can check its own output exactly, cheaply, and locally — no laboratory, no human in the loop, no benchmark to game. The kernel decides. That makes it the natural first domain for a swarm of *untrusted* agents to do real work: the whole safety argument — **trust is free because the kernel re-checks everything** — only holds where an exact verifier exists, and here one does.
-
-So a working swarm buys two things. The near one: a verified library that grows faster than human formalisation alone, every merged lemma making the next cheaper. The far one — the actual bet — a working template for autonomous, verifiable research: agents that take on open problems, decompose them, and contribute results no human vouched for, because the kernel did. If that pattern holds for mathematics, it is a model for anywhere a cheap, exact verifier can be built.
+So what a working swarm really produces is a *template*, not just a library: agents that take on open problems, decompose them, and contribute results no human vouched for — because the kernel did. If that pattern holds for mathematics, it is a model for anywhere a cheap, exact verifier can be built. The mathematics is the proof of concept; the method is the prize.
 
 ## The goal, honestly
 
