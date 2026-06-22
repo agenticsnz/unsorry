@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-oblong-eq
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-oblong-eq.md
+  src≜packages/unsorry-archive-0015/backlog/sum-oblong-eq.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-oblong-eq.lean
+  lean≜packages/unsorry-archive-0015/goals/sum-oblong-eq.lean
   sha≜9704ec30efec1708e8db3d94c5b5182c1110e5f9cfdda1db042e1de95699c8ae
   aff≜-9
 }

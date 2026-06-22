@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜cube-mod-twentyone-mem
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/cube-mod-twentyone-mem.md
+  src≜packages/unsorry-archive-0011/backlog/cube-mod-twentyone-mem.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/cube-mod-twentyone-mem.lean
+  lean≜packages/unsorry-archive-0011/goals/cube-mod-twentyone-mem.lean
   sha≜3c4d5b6fb4bb5b42d112fad5f197ff7489e28fcaa46157ce373adab23279c18e
   aff≜-9
 }

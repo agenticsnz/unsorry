@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-tetrahedral-eq-pentatope@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-tetrahedral-eq-pentatope
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-tetrahedral-eq-pentatope.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-tetrahedral-eq-pentatope.lean
+  sha≜4d95437b0fd8d267269398b350ffb4fb04ec601aab52a880c46cd39e9cc2b041
+  aff≜-10
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

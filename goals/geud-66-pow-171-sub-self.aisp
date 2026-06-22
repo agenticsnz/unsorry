@@ -1,0 +1,20 @@
+𝔸5.1.goal.geud-66-pow-171-sub-self@2026-06-19
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜geud-66-pow-171-sub-self
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/geud-66-pow-171-sub-self.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/geud-66-pow-171-sub-self.lean
+  sha≜64d5c0be1f516febeafe312b2e13d9a601429ae279a9e8be6c9a2bc67a5c0644
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

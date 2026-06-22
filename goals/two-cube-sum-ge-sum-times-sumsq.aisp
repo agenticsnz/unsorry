@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜two-cube-sum-ge-sum-times-sumsq
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/two-cube-sum-ge-sum-times-sumsq.md
+  src≜packages/unsorry-archive-0010/backlog/two-cube-sum-ge-sum-times-sumsq.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/two-cube-sum-ge-sum-times-sumsq.lean
+  lean≜packages/unsorry-archive-0010/goals/two-cube-sum-ge-sum-times-sumsq.lean
   sha≜ded16a5b8c1b3daacb02277afa6aa2144691f65ac514a544657cac6e7bb260af
   aff≜-10
 }

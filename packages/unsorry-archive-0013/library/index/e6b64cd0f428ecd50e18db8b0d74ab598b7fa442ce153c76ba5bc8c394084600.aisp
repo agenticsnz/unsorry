@@ -1,0 +1,8 @@
+𝔸5.1.lemma.e6b64cd0f428@2026-06-16
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜e6b64cd0f428ecd50e18db8b0d74ab598b7fa442ce153c76ba5bc8c394084600; goal≜sum-range-id-div-two-pow; name≜sum_range_id_div_two_pow}
+⟦Σ:Source⟧{src≜goals/sum-range-id-div-two-pow.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜python; model≜sympy; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

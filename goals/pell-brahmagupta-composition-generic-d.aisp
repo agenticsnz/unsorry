@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜pell-brahmagupta-composition-generic-d
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/pell-brahmagupta-composition-generic-d.md
+  src≜packages/unsorry-archive-0008/backlog/pell-brahmagupta-composition-generic-d.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/pell-brahmagupta-composition-generic-d.lean
+  lean≜packages/unsorry-archive-0008/goals/pell-brahmagupta-composition-generic-d.lean
   sha≜5b640a966144975b8b958a65e46f6fc546aaea76608b07dd9b5387dea1c3838b
   aff≜-10
 }

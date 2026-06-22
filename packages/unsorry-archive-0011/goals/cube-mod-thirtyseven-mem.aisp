@@ -1,0 +1,20 @@
+𝔸5.1.goal.cube-mod-thirtyseven-mem@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜cube-mod-thirtyseven-mem
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/cube-mod-thirtyseven-mem.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/cube-mod-thirtyseven-mem.lean
+  sha≜ede7035522317794b3f0f1898d6581203f9bb4d18947924a228d83d05005b9f0
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -1,0 +1,8 @@
+𝔸5.1.run.alternating-sum-shifted-choose-eq-one.thebeast-ace7.20260617t160310173067z-4250b8b1@2026-06-17
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260617t160310173067z-4250b8b1; goal≜alternating-sum-shifted-choose-eq-one; agent≜thebeast-ace7; outcome≜proved}
+⟦Π:Provenance⟧{solver≜adam91holt; provider≜codex; effort≜high}
+⟦Γ:Goal⟧{goal≜alternating-sum-shifted-choose-eq-one}
+⟦Λ:Metrics⟧{attempts≜2; solve_s≜384; ended≜2026-06-17T16:03:10Z; lessons≜0}
+⟦Σ:Artifact⟧{sha≜d435b629fdd231e7bd332ffb46fbee2481070882067bf271fb82ddcee37ace32}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

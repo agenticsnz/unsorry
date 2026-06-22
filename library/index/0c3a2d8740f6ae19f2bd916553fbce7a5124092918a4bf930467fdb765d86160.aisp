@@ -1,8 +1,0 @@
-𝔸5.1.lemma.0c3a2d8740f6@2026-06-16
-γ≔unsorry.lemma.index
-⟦Ω:Lemma⟧{sha≜0c3a2d8740f6ae19f2bd916553fbce7a5124092918a4bf930467fdb765d86160; goal≜sum-range-succ-sq-mul-two-pow-closed; name≜sum_range_succ_sq_mul_two_pow_closed}
-⟦Σ:Source⟧{src≜goals/sum-range-succ-sq-mul-two-pow-closed.lean}
-⟦Γ:Tags⟧{tags≜⟨⟩}
-⟦Λ:Meta⟧{use≜0; aff≜0}
-⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜claude; model≜template-sum-closedform; attempts≜1}
-⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
