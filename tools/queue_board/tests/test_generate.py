@@ -179,7 +179,7 @@ def test_render_html_shares_nav_and_design():
     # Nav wraps instead of spilling on narrow viewports (mobile UX).
     assert "flex-wrap" in html
     # Shared design language (ADR-038).
-    assert "cdn.tailwindcss.com" in html and "Inter" in html and ">Unsorry<" in html
+    assert "cdn.tailwindcss.com" in html and "Inter" in html and ">unsorry<" in html
     assert 'name="viewport"' in html
     # Solver sections + state badges + summary chips.
     assert "@ruvnet" in html and "macbook" in html
