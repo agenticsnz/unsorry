@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-recip-four-consec-product
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-recip-four-consec-product.md
+  src≜packages/unsorry-archive-0038/backlog/sum-range-recip-four-consec-product.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-recip-four-consec-product.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0038/goals/sum-range-recip-four-consec-product.lean
+  sha≜ce82e254e8defbb62797b2db5b9c12ba15a94d5f682285857f441e3ea96bce77
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
