@@ -220,6 +220,13 @@ def test_check_added_rejects_removing_existing_entry() -> None:
     assert any("remov" in v.lower() for v in registry.check_single_addition(base, head))
 
 
+def test_check_added_allows_reset_to_empty() -> None:
+    # A deliberate reset (clear all entries) is exempt from append-only/one-add.
+    base = _registry(_opus_entry(), _sonnet_entry())
+    head = _registry()  # zero models
+    assert registry.check_single_addition(base, head) == []
+
+
 def test_check_added_rejects_invalid_new_entry() -> None:
     base = _registry(_opus_entry())
     bad = _sonnet_entry()

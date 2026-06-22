@@ -161,6 +161,7 @@ _open_pr() {
     -m "Assign the Pokémon identity for \`$pm\` (ADR-083). One Pokémon per PR." >/dev/null
   git push -u origin "$branch" >/dev/null
   gh pr create --base "$BASE_BRANCH" --head "$branch" \
+    --label model-registry --label chore \
     --title "$(commit_subject "$pm" "$poke")" \
     --body "Names \`$pm\` as **$poke** in the model → Pokémon registry (ADR-083). Validated by the model-registry gate (schema · uniqueness · one-Pokémon-per-PR)." \
     >/dev/null

@@ -336,8 +336,16 @@ def check_single_addition(
     base: dict[str, Any], head: dict[str, Any], manifest_path: Path | None = None
 ) -> list[str]:
     """Enforce one-Pokémon-per-PR: head is valid, exactly one model added,
-    nothing removed or modified relative to base."""
+    nothing removed or modified relative to base.
+
+    Exception — a deliberate **reset**: a PR that clears the registry to zero
+    models is allowed (head must still be a valid, empty registry). This is the
+    rare, obviously-destructive admin op used to hand naming back to the swarm;
+    it is not bound by the append-only / one-add rule."""
     out: list[str] = list(validate_registry(head, manifest_path))
+
+    if not _models(head):
+        return out  # reset to empty — append-only/one-add rules do not apply
 
     base_by = _index_by_model(base)
     head_by = _index_by_model(head)

@@ -89,12 +89,16 @@ Per invocation, for up to `UNSORRY_REGISTRY_MAX` (default **1**) unnamed models:
 
 On PRs/pushes touching the registry, the tool, or the workflow: run `pytest tools/model_registry`,
 `validate` the artifact, and (on PRs that **modify** an existing registry) `check-added` against the
-base — enforcing one Pokémon per PR. The PR that first introduces the file (the seed) is exempt from
-the single-addition rule. Always reports (short-circuits vacuously when no registry paths change).
+base — enforcing one Pokémon per PR. Two exemptions: the PR that first **introduces** the file, and a
+deliberate **reset** that clears the registry to zero models (handing naming back to the swarm).
+Always reports (short-circuits vacuously when no registry paths change). Housekeeping PRs are
+labelled `model-registry` and `chore`.
 
-## 6. Seed
+## 6. Population
 
-The initial `model-registry.json` names every model currently in the distribution with
-`verified_proofs > 0` (11 models), using the same research + selection process the housekeeping task
-automates. Notable mapping: the Claude tier ladder is the Abra evolutionary line —
-`claude / unknown` → Abra, `claude / sonnet` → Kadabra, `claude / opus` → Alakazam.
+`model-registry.json` ships **empty**; the swarm populates it. Each `run.sh` launch (or a direct
+`swarm/housekeeping.sh`) names the next unnamed model for real — researching it and opening one
+labelled, auto-merging PR — so the data is genuinely swarm-produced (`provenance.assigned_by:
+housekeeping`), not hand-curated. Observed mapping once populated: the Claude tier ladder follows the
+Abra evolutionary line — `claude / unknown` → Abra, `claude / sonnet` → Kadabra, `claude / opus` →
+Alakazam.
