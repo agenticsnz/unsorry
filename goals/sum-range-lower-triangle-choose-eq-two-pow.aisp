@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-lower-triangle-choose-eq-two-pow
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-lower-triangle-choose-eq-two-pow.md
+  src≜packages/unsorry-archive-0037/backlog/sum-range-lower-triangle-choose-eq-two-pow.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-lower-triangle-choose-eq-two-pow.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0037/goals/sum-range-lower-triangle-choose-eq-two-pow.lean
+  sha≜cf13af6183fd9789fb6d221a4a1fa3a6659daf803dea25e441d37c519bbe844a
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜pell-d2-quad-ladder-step-preserves
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/pell-d2-quad-ladder-step-preserves.md
+  src≜packages/unsorry-archive-0009/backlog/pell-d2-quad-ladder-step-preserves.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/pell-d2-quad-ladder-step-preserves.lean
+  lean≜packages/unsorry-archive-0009/goals/pell-d2-quad-ladder-step-preserves.lean
   sha≜c6e31d864774411a6e6ff7ffbc11672df89177d9503527b738ba2b0899cba6e2
   aff≜-10
 }

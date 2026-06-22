@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜pell-d13-ladder-step-preserves
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/pell-d13-ladder-step-preserves.md
+  src≜packages/unsorry-archive-0008/backlog/pell-d13-ladder-step-preserves.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/pell-d13-ladder-step-preserves.lean
+  lean≜packages/unsorry-archive-0008/goals/pell-d13-ladder-step-preserves.lean
   sha≜b3974d3293a1bd75f8bed35e00f337721b38e10b087f44a1ff32aaf0550022cd
   aff≜-10
 }

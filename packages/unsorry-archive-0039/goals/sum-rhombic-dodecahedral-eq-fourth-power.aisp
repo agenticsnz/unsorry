@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-rhombic-dodecahedral-eq-fourth-power@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-rhombic-dodecahedral-eq-fourth-power
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-rhombic-dodecahedral-eq-fourth-power.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-rhombic-dodecahedral-eq-fourth-power.lean
+  sha≜146e6579131271ccd5232be45c0e622e9b260d1ce7dde9a0548227f6a0013809
+  aff≜-10
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

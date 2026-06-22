@@ -1,0 +1,20 @@
+𝔸5.1.goal.dvd-510-pow-thirtythree-sub-pow-seventeen@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜dvd-510-pow-thirtythree-sub-pow-seventeen
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/dvd-510-pow-thirtythree-sub-pow-seventeen.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/dvd-510-pow-thirtythree-sub-pow-seventeen.lean
+  sha≜f23e2fd8c219f129bfbb9d7ad1a2ddcf17ae5c8819404046101efa4f91560577
+  aff≜-19
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜gcd-three-pow-succ-three-pow-add-one
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/gcd-three-pow-succ-three-pow-add-one.md
+  src≜packages/unsorry-archive-0008/backlog/gcd-three-pow-succ-three-pow-add-one.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/gcd-three-pow-succ-three-pow-add-one.lean
+  lean≜packages/unsorry-archive-0008/goals/gcd-three-pow-succ-three-pow-add-one.lean
   sha≜85fcc952e2a4189a5ab1a4f205bd93bcd33e22aa0b5e4a3c2326d1057c6bb866
   aff≜-10
 }
