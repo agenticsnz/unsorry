@@ -1,0 +1,20 @@
+𝔸5.1.goal.sos-weighted-three-one-two@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sos-weighted-three-one-two
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/sos-weighted-three-one-two.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sos-weighted-three-one-two.lean
+  sha≜5d6e441a3b4598b6523284b33a93e02f9161a7b15d8fd26625392e6b0958e89d
+  aff≜-19
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

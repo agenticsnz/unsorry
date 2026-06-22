@@ -1,0 +1,8 @@
+𝔸5.1.lemma.e50d98a4eae6@2026-06-19
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜e50d98a4eae6dce734cdcf8d4e78bacfc217af6aba42818763176b3ecc8eb8e5; goal≜gbinom-consec-four-fact-dvd; name≜gbinom_consec_four_fact_dvd}
+⟦Σ:Source⟧{src≜goals/gbinom-consec-four-fact-dvd.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜perttu; agent≜mac-158f; provider≜python; model≜sympy; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

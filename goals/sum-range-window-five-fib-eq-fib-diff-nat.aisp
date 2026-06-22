@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-window-five-fib-eq-fib-diff-nat
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-window-five-fib-eq-fib-diff-nat.md
+  src≜packages/unsorry-archive-0039/backlog/sum-range-window-five-fib-eq-fib-diff-nat.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-window-five-fib-eq-fib-diff-nat.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0039/goals/sum-range-window-five-fib-eq-fib-diff-nat.lean
+  sha≜94b6ad24279fed5397a9a55e9b4bb4e3706878ca356bb5b0fe107b2950dfc65e
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
