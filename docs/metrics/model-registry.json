@@ -293,6 +293,35 @@
         ],
         "assigned_at": "2026-06-22T10:07:08Z"
       }
+    },
+    {
+      "provider_model": "openai / jackcloudman/Leanstral-2603-GGUF",
+      "slug": "openai-jackcloudman-leanstral-2603-gguf",
+      "pokemon": {
+        "name": "Magnezone",
+        "dex_id": 462,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/462.png",
+        "description": "It evolved from exposure to a special magnetic field. Three units generate magnetism."
+      },
+      "research": {
+        "classification": "open",
+        "publisher": "jackcloudman (GGUF quant of Mistral AI's Leanstral-2603)",
+        "country": "France (Mistral AI base model)",
+        "parameter_size": "119B (MoE)",
+        "license": "Apache 2.0",
+        "canonical_url": "https://huggingface.co/jackcloudman/Leanstral-2603-GGUF"
+      },
+      "profile": "Leanstral is a Lean 4 formal-proof code agent built on Mistral's MoE + MLA architecture, quantized to GGUF. Magnezone—a steel/electric mind formed from multiple linked units—mirrors its mixture-of-experts wiring and precise, logic-scanning, verification-grade computation.",
+      "provenance": {
+        "assigned_by": "housekeeping",
+        "assigned_with": "claude / opus",
+        "contributor": "ab0t-core",
+        "sources": [
+          "https://huggingface.co/jackcloudman/Leanstral-2603-GGUF",
+          "https://huggingface.co/mistralai/Leanstral-2603"
+        ],
+        "assigned_at": "2026-06-22T10:08:50Z"
+      }
     }
   ]
 }
