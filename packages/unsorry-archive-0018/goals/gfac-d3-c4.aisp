@@ -1,0 +1,20 @@
+𝔸5.1.goal.gfac-d3-c4@2026-06-17
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gfac-d3-c4
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/gfac-d3-c4.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/gfac-d3-c4.lean
+  sha≜fd29b208dc1403658693d4a5b5b092acb92a2d156f26c105cbca037315e9a790
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -1,0 +1,179 @@
+{
+  "block_id": "unsorry-archive-0010",
+  "target_size": 40,
+  "proof_count": 40,
+  "status": "frozen",
+  "source_commit": "bd6e826771a24226e999855dd45238988eb6eda5",
+  "validation_commit": null,
+  "pins": {
+    "lean_toolchain": "leanprover/lean4:v4.30.0",
+    "mathlib": "v4.30.0"
+  },
+  "notes": [
+    "ADR-041 proof archive block 0010.",
+    "Whole decomposition trees + standalone proved goals only (invariant A).",
+    "Active goal records remain as archived metadata pointing at this package."
+  ],
+  "goals": [
+    {
+      "goal": "sixth-power-mod-thirteen-mem",
+      "module": "Unsorry.SixthPowerModThirteenMem"
+    },
+    {
+      "goal": "sq-mod-eight-mem",
+      "module": "Unsorry.SqModEightMem"
+    },
+    {
+      "goal": "sq-mod-eleven-mem",
+      "module": "Unsorry.SqModElevenMem"
+    },
+    {
+      "goal": "sq-mod-fifteen-mem",
+      "module": "Unsorry.SqModFifteenMem"
+    },
+    {
+      "goal": "sq-mod-thirteen-mem",
+      "module": "Unsorry.SqModThirteenMem"
+    },
+    {
+      "goal": "sum-cubes-sym-divisible-by-quadratic",
+      "module": "Unsorry.SumCubesSymDivisibleByQuadratic"
+    },
+    {
+      "goal": "sum-fourth-powers-ge-cube-times-sum",
+      "module": "Unsorry.SumFourthPowersGeCubeTimesSum"
+    },
+    {
+      "goal": "sum-icc-four-div-three-consec-odd-telescope",
+      "module": "Unsorry.SumIccFourDivThreeConsecOddTelescope"
+    },
+    {
+      "goal": "sum-icc-k-div-three-shifted-consecutive-telescope",
+      "module": "Unsorry.SumIccKDivThreeShiftedConsecutiveTelescope"
+    },
+    {
+      "goal": "sum-icc-k-mul-three-k-sub-one-eq",
+      "module": "Unsorry.SumIccKMulThreeKSubOneEq"
+    },
+    {
+      "goal": "sum-icc-k-mul-two-k-sub-one-closed-form",
+      "module": "Unsorry.SumIccKMulTwoKSubOneClosedForm"
+    },
+    {
+      "goal": "sum-icc-recip-four-consecutive-product-telescope",
+      "module": "Unsorry.SumIccRecipFourConsecutiveProductTelescope"
+    },
+    {
+      "goal": "sum-icc-recip-k-sq-sub-one-telescope",
+      "module": "Unsorry.SumIccRecipKSqSubOneTelescope"
+    },
+    {
+      "goal": "sum-icc-recip-km1-k-kp1-telescope",
+      "module": "Unsorry.SumIccRecipKm1KKp1Telescope"
+    },
+    {
+      "goal": "sum-icc-three-div-three-k-sub-one-three-k-add-two-telescope",
+      "module": "Unsorry.SumIccThreeDivThreeKSubOneThreeKAddTwoTelescope"
+    },
+    {
+      "goal": "sum-icc-three-k-add-two-div-triple-consecutive-telescope",
+      "module": "Unsorry.SumIccThreeKAddTwoDivTripleConsecutiveTelescope"
+    },
+    {
+      "goal": "sum-icc-two-div-k-mul-k-add-two-telescope",
+      "module": "Unsorry.SumIccTwoDivKMulKAddTwoTelescope"
+    },
+    {
+      "goal": "sum-icc-two-k-add-one-div-k-sq-succ-sq-telescope",
+      "module": "Unsorry.SumIccTwoKAddOneDivKSqSuccSqTelescope"
+    },
+    {
+      "goal": "sum-nonagonal-closed-form",
+      "module": "Unsorry.SumNonagonalClosedForm"
+    },
+    {
+      "goal": "sum-nonagonal-numbers-closed-form",
+      "module": "Unsorry.SumNonagonalNumbersClosedForm"
+    },
+    {
+      "goal": "sum-sixth-power-two-var-ge-mixed-fourth-second",
+      "module": "Unsorry.SumSixthPowerTwoVarGeMixedFourthSecond"
+    },
+    {
+      "goal": "sum-sq-ge-third-sq-sum",
+      "module": "Unsorry.SumSqGeThirdSqSum"
+    },
+    {
+      "goal": "sum-sq-norm-sq-le-twice-sum-fourth",
+      "module": "Unsorry.SumSqNormSqLeTwiceSumFourth"
+    },
+    {
+      "goal": "two-cube-sum-ge-sum-times-sumsq",
+      "module": "Unsorry.TwoCubeSumGeSumTimesSumsq"
+    },
+    {
+      "goal": "two-var-sq-add-one-ge-cross-plus-sum",
+      "module": "Unsorry.TwoVarSqAddOneGeCrossPlusSum"
+    },
+    {
+      "goal": "coprime-2n1-n1",
+      "module": "Unsorry.Coprime2n1N1"
+    },
+    {
+      "goal": "cube-mod-nine",
+      "module": "Unsorry.CubeModNine"
+    },
+    {
+      "goal": "discriminant-nonneg-s2",
+      "module": "Unsorry.DiscriminantNonnegS2"
+    },
+    {
+      "goal": "discriminant-nonneg-s3",
+      "module": "Unsorry.DiscriminantNonnegS3"
+    },
+    {
+      "goal": "discriminant-nonneg-s1",
+      "module": "Unsorry.DiscriminantNonnegS1"
+    },
+    {
+      "goal": "discriminant-nonneg",
+      "module": "Unsorry.DiscriminantNonneg"
+    },
+    {
+      "goal": "cube-mod-thirteen-mem",
+      "module": "Unsorry.CubeModThirteenMem"
+    },
+    {
+      "goal": "dvd-30-pow-nine-sub-self",
+      "module": "Unsorry.Dvd30PowNineSubSelf"
+    },
+    {
+      "goal": "dvd-66-pow-eleven-sub-self",
+      "module": "Unsorry.Dvd66PowElevenSubSelf"
+    },
+    {
+      "goal": "dvd-nine-pow-nine-sub-pow-three",
+      "module": "Unsorry.DvdNinePowNineSubPowThree"
+    },
+    {
+      "goal": "eight-sum-pow-four-ge-sum-pow-four",
+      "module": "Unsorry.EightSumPowFourGeSumPowFour"
+    },
+    {
+      "goal": "fifth-power-mod-eleven",
+      "module": "Unsorry.FifthPowerModEleven"
+    },
+    {
+      "goal": "constrained-sum-sq-ge-three",
+      "module": "Unsorry.ConstrainedSumSqGeThree"
+    },
+    {
+      "goal": "four-not-dvd-sq-add-two",
+      "module": "Unsorry.FourNotDvdSqAddTwo"
+    },
+    {
+      "goal": "four-var-cyclic-sos",
+      "module": "Unsorry.FourVarCyclicSos"
+    }
+  ]
+}

@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-three-mul-add-one
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-three-mul-add-one.md
+  src≜packages/unsorry-archive-0038/backlog/sum-range-three-mul-add-one.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-three-mul-add-one.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0038/goals/sum-range-three-mul-add-one.lean
+  sha≜6b8c774c1ca3490a41e408dbfec89c8ddf1f2f9bbd756980a222d3bf304c4981
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

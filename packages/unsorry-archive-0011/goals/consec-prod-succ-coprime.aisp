@@ -1,0 +1,20 @@
+𝔸5.1.goal.consec-prod-succ-coprime@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜consec-prod-succ-coprime
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/consec-prod-succ-coprime.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/consec-prod-succ-coprime.lean
+  sha≜8a583ca6bbaf9b45aebda3b466b4c7e91d1f02a51e024bf1e719e8d710bbd2cb
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

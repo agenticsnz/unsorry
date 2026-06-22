@@ -1,0 +1,155 @@
+{
+  "block_id": "unsorry-archive-0042",
+  "target_size": 40,
+  "proof_count": 34,
+  "status": "frozen",
+  "source_commit": "3e59e8f89ab31754839d966435a349fce15e7a5f",
+  "validation_commit": null,
+  "pins": {
+    "lean_toolchain": "leanprover/lean4:v4.30.0",
+    "mathlib": "v4.30.0"
+  },
+  "notes": [
+    "ADR-041 proof archive block 0042.",
+    "Whole decomposition trees + standalone proved goals only (invariant A).",
+    "Active goal records remain as archived metadata pointing at this package."
+  ],
+  "goals": [
+    {
+      "goal": "sum-range-fall-three-mul-choose",
+      "module": "Unsorry.SumRangeFallThreeMulChoose"
+    },
+    {
+      "goal": "sum-range-vandermonde-self-eq-central-choose",
+      "module": "Unsorry.SumRangeVandermondeSelfEqCentralChoose"
+    },
+    {
+      "goal": "gzmod-195-pow-twentythree-sub-pow-eleven",
+      "module": "Unsorry.Gzmod195PowTwentythreeSubPowEleven"
+    },
+    {
+      "goal": "gzmod-195-pow-twentytwo-sub-pow-ten",
+      "module": "Unsorry.Gzmod195PowTwentytwoSubPowTen"
+    },
+    {
+      "goal": "gzmod-208-pow-eighteen-sub-pow-six",
+      "module": "Unsorry.Gzmod208PowEighteenSubPowSix"
+    },
+    {
+      "goal": "gzmod-208-pow-nineteen-sub-pow-seven",
+      "module": "Unsorry.Gzmod208PowNineteenSubPowSeven"
+    },
+    {
+      "goal": "gzmod-208-pow-seventeen-sub-pow-five",
+      "module": "Unsorry.Gzmod208PowSeventeenSubPowFive"
+    },
+    {
+      "goal": "gzmod-208-pow-sixteen-sub-pow-four",
+      "module": "Unsorry.Gzmod208PowSixteenSubPowFour"
+    },
+    {
+      "goal": "gzmod-208-pow-twenty-sub-pow-eight",
+      "module": "Unsorry.Gzmod208PowTwentySubPowEight"
+    },
+    {
+      "goal": "gzmod-210-pow-eighteen-sub-pow-six",
+      "module": "Unsorry.Gzmod210PowEighteenSubPowSix"
+    },
+    {
+      "goal": "gzmod-210-pow-fifteen-sub-pow-three",
+      "module": "Unsorry.Gzmod210PowFifteenSubPowThree"
+    },
+    {
+      "goal": "gzmod-210-pow-nineteen-sub-pow-seven",
+      "module": "Unsorry.Gzmod210PowNineteenSubPowSeven"
+    },
+    {
+      "goal": "gzmod-210-pow-seventeen-sub-pow-five",
+      "module": "Unsorry.Gzmod210PowSeventeenSubPowFive"
+    },
+    {
+      "goal": "gzmod-210-pow-sixteen-sub-pow-four",
+      "module": "Unsorry.Gzmod210PowSixteenSubPowFour"
+    },
+    {
+      "goal": "gzmod-210-pow-twenty-sub-pow-eight",
+      "module": "Unsorry.Gzmod210PowTwentySubPowEight"
+    },
+    {
+      "goal": "gzmod-216-pow-thirty-sub-pow-twelve",
+      "module": "Unsorry.Gzmod216PowThirtySubPowTwelve"
+    },
+    {
+      "goal": "gzmod-216-pow-twentyeight-sub-pow-ten",
+      "module": "Unsorry.Gzmod216PowTwentyeightSubPowTen"
+    },
+    {
+      "goal": "gzmod-216-pow-twentyfive-sub-pow-seven",
+      "module": "Unsorry.Gzmod216PowTwentyfiveSubPowSeven"
+    },
+    {
+      "goal": "gzmod-216-pow-twentyfour-sub-pow-six",
+      "module": "Unsorry.Gzmod216PowTwentyfourSubPowSix"
+    },
+    {
+      "goal": "gzmod-216-pow-twentynine-sub-pow-eleven",
+      "module": "Unsorry.Gzmod216PowTwentynineSubPowEleven"
+    },
+    {
+      "goal": "gzmod-216-pow-twentyone-sub-pow-three",
+      "module": "Unsorry.Gzmod216PowTwentyoneSubPowThree"
+    },
+    {
+      "goal": "gzmod-216-pow-twentyseven-sub-pow-nine",
+      "module": "Unsorry.Gzmod216PowTwentysevenSubPowNine"
+    },
+    {
+      "goal": "gzmod-216-pow-twentysix-sub-pow-eight",
+      "module": "Unsorry.Gzmod216PowTwentysixSubPowEight"
+    },
+    {
+      "goal": "gzmod-216-pow-twentythree-sub-pow-five",
+      "module": "Unsorry.Gzmod216PowTwentythreeSubPowFive"
+    },
+    {
+      "goal": "gzmod-216-pow-twentytwo-sub-pow-four",
+      "module": "Unsorry.Gzmod216PowTwentytwoSubPowFour"
+    },
+    {
+      "goal": "gzmod-228-pow-thirty-sub-pow-twelve",
+      "module": "Unsorry.Gzmod228PowThirtySubPowTwelve"
+    },
+    {
+      "goal": "gzmod-228-pow-twentyeight-sub-pow-ten",
+      "module": "Unsorry.Gzmod228PowTwentyeightSubPowTen"
+    },
+    {
+      "goal": "gzmod-228-pow-twentyfive-sub-pow-seven",
+      "module": "Unsorry.Gzmod228PowTwentyfiveSubPowSeven"
+    },
+    {
+      "goal": "gzmod-228-pow-twentyfour-sub-pow-six",
+      "module": "Unsorry.Gzmod228PowTwentyfourSubPowSix"
+    },
+    {
+      "goal": "gzmod-228-pow-twentynine-sub-pow-eleven",
+      "module": "Unsorry.Gzmod228PowTwentynineSubPowEleven"
+    },
+    {
+      "goal": "gzmod-228-pow-twentyone-sub-pow-three",
+      "module": "Unsorry.Gzmod228PowTwentyoneSubPowThree"
+    },
+    {
+      "goal": "gzmod-228-pow-twentyseven-sub-pow-nine",
+      "module": "Unsorry.Gzmod228PowTwentysevenSubPowNine"
+    },
+    {
+      "goal": "gzmod-228-pow-twentysix-sub-pow-eight",
+      "module": "Unsorry.Gzmod228PowTwentysixSubPowEight"
+    },
+    {
+      "goal": "gzmod-228-pow-twentythree-sub-pow-five",
+      "module": "Unsorry.Gzmod228PowTwentythreeSubPowFive"
+    }
+  ]
+}
