@@ -181,7 +181,9 @@ research_and_write() {
     if python3 -m tools.model_registry assign \
         --registry "$REGISTRY" --provider-model "$pm" --candidate "$candidate" \
         --assigned-by "$AGENT_ID" --assigned-with "$(named_by_model "$MODEL")" \
-        --contributor "$CONTRIBUTOR" --assigned-at "$(now_z)"; then
+        --contributor "$CONTRIBUTOR" --assigned-at "$(now_z)" >/dev/null; then
+      # Echo ONLY the Pokémon name (assign's "OK" was sent to /dev/null) so the
+      # caller's commit/PR title isn't polluted.
       python3 -c "import json;print(json.load(open('$candidate'))['pokemon']['name'])"
       rm -rf "$tmp"; return 0
     fi
