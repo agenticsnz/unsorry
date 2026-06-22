@@ -264,6 +264,35 @@
         ],
         "assigned_at": "2026-06-22T10:05:05Z"
       }
+    },
+    {
+      "provider_model": "claude / unknown",
+      "slug": "claude-unknown",
+      "pokemon": {
+        "name": "Mew",
+        "dex_id": 151,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png",
+        "description": "So rare that it is still said to be a mirage by many experts. Only a few people have seen it worldwide."
+      },
+      "research": {
+        "classification": "closed",
+        "publisher": "Anthropic",
+        "country": "USA",
+        "parameter_size": "undisclosed",
+        "license": "Proprietary (commercial API/ToS)",
+        "canonical_url": "https://www.anthropic.com/claude"
+      },
+      "profile": "Mew is the mysterious mythical said to hold the genetic blueprint of all Pokemon, mirroring an unidentified Claude model — a versatile generalist of undisclosed origin. Its enigmatic, rarely-seen nature fits a 'claude / unknown' entry, and it sits naturally beside its lab-made descendant Mewtwo.",
+      "provenance": {
+        "assigned_by": "housekeeping",
+        "assigned_with": "claude / opus",
+        "contributor": "ab0t-core",
+        "sources": [
+          "https://www.anthropic.com/claude",
+          "https://en.wikipedia.org/wiki/Claude_(language_model)"
+        ],
+        "assigned_at": "2026-06-22T10:07:08Z"
+      }
     }
   ]
 }
