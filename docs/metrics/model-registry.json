@@ -235,6 +235,35 @@
         ],
         "assigned_at": "2026-06-22T10:03:06Z"
       }
+    },
+    {
+      "provider_model": "claude / sonnet",
+      "slug": "claude-sonnet",
+      "pokemon": {
+        "name": "Meloetta",
+        "dex_id": 648,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/648.png",
+        "description": "Its melodies are sung with a special vocalization method that can control the feelings of those who hear it."
+      },
+      "research": {
+        "classification": "closed",
+        "publisher": "Anthropic",
+        "country": "United States",
+        "parameter_size": "undisclosed",
+        "license": "Proprietary (commercial)",
+        "canonical_url": "https://www.anthropic.com/claude/sonnet"
+      },
+      "profile": "Sonnet is a poetic form, and Meloetta the Melody Pokémon embodies that lyrical, expressive character. Its dual Aria/Pirouette forms mirror Sonnet's balance of graceful articulation and capable performance as the mid-tier Claude.",
+      "provenance": {
+        "assigned_by": "housekeeping",
+        "assigned_with": "claude / opus",
+        "contributor": "cgbarlow",
+        "sources": [
+          "https://www.anthropic.com/claude/sonnet",
+          "https://www.anthropic.com/news/claude-sonnet-4-6"
+        ],
+        "assigned_at": "2026-06-22T10:04:52Z"
+      }
     }
   ]
 }
