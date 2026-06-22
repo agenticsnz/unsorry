@@ -176,6 +176,35 @@
         ],
         "assigned_at": "2026-06-22T09:59:36Z"
       }
+    },
+    {
+      "provider_model": "gemini / gemini-3.1-pro-preview",
+      "slug": "gemini-gemini-3-1-pro-preview",
+      "pokemon": {
+        "name": "Hydreigon",
+        "dex_id": 635,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/635.png",
+        "description": "This brutal Pokémon travels the skies on its six wings. Anything that moves seems like a foe to it, triggering its attack."
+      },
+      "research": {
+        "classification": "closed",
+        "publisher": "Google DeepMind",
+        "country": "United States",
+        "parameter_size": "undisclosed",
+        "license": "Proprietary",
+        "canonical_url": "https://deepmind.google/models/gemini/pro/"
+      },
+      "profile": "Hydreigon's three heads mirror Gemini 3.1 Pro's new three-tier thinking system, and as a powerful, multi-typed pseudo-legendary it captures this top-ranking, natively multimodal reasoning model. Its commanding, voracious nature reflects a frontier model that ingests text, audio, images, video, and whole code repositories at once.",
+      "provenance": {
+        "assigned_by": "housekeeping",
+        "assigned_with": "claude / opus",
+        "contributor": "ab0t-core",
+        "sources": [
+          "https://deepmind.google/models/model-cards/gemini-3-1-pro/",
+          "https://deepmind.google/blog/gemini-3-1-pro-a-smarter-model-for-your-most-complex-tasks/"
+        ],
+        "assigned_at": "2026-06-22T10:01:21Z"
+      }
     }
   ]
 }
