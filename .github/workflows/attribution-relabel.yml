@@ -1,0 +1,88 @@
+# Keep deterministic-template proof attribution honest on `main` (replaces the
+# one-shot PR #3218, which could not survive a live corpus). ohdearquant's
+# `mac-158f` sympy-template pipeline records proofs as `provider≜claude;
+# model≜template-*`, overstating LLM involvement; the honest label is
+# `provider≜python; model≜sympy`. This idempotent sweep rewrites every matching
+# record (agent≜mac-158f + provider≜claude + model≜template-*) and no-ops once
+# they are all corrected — self-healing as the pipeline produces more.
+#
+# Precise: genuine LLM proofs by the same agent (e.g. model≜sonnet), seedkit
+# fixtures (provider≜seedkit), and other contributors are untouched; solver/credit
+# never changes. It edits provenance metadata only (soundness-neutral; Gate A
+# checks proofs, not provider labels).
+#
+# Token: a default-GITHUB_TOKEN push cannot update protected `main`, so the commit
+# authenticates with the admin REFRESH_TOKEN (same secret as the leaderboard/
+# board refreshers, #417). Unset → report-only.
+name: attribution-relabel
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "library/index/**"
+      - "packages/unsorry-archive-*/library/index/**"
+      - "proof-runs/**"
+      - "tools/repo/relabel_attribution.py"
+  schedule:
+    - cron: "47 * * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: attribution-relabel
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  relabel:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Detect refresh token (#417)
+        id: tok
+        env:
+          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+        run: |
+          if [ -n "${REFRESH_TOKEN}" ]; then echo "present=true" >> "$GITHUB_OUTPUT";
+          else echo "present=false" >> "$GITHUB_OUTPUT"; fi
+      - name: No REFRESH_TOKEN — report only (#417)
+        if: steps.tok.outputs.present != 'true'
+        run: |
+          echo "::warning::REFRESH_TOKEN is unset — skipping the attribution relabel push to main. Add an admin PAT/App token to enable it."
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        if: steps.tok.outputs.present == 'true'
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.REFRESH_TOKEN || github.token }}
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        if: steps.tok.outputs.present == 'true'
+        with:
+          python-version: "3.12"
+      - name: Relabel + commit on change
+        if: steps.tok.outputs.present == 'true'
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Retry-rebase (#426): the corpus churns; reset to latest main, relabel,
+          # commit, push; a lost race just retries onto the updated tip. The sweep
+          # is idempotent so re-running is always safe. `[skip ci]` keeps it from
+          # re-triggering CI/itself.
+          for attempt in 1 2 3 4 5; do
+            git fetch --quiet origin main
+            git reset --hard --quiet origin/main
+            python3 -m tools.repo.relabel_attribution --apply .
+            if git diff --quiet; then
+              echo "attribution relabel: nothing to correct"
+              exit 0
+            fi
+            git add -A
+            git commit -q -m "chore: relabel template proofs as python/sympy [skip ci]"
+            if git push --quiet origin HEAD:main; then
+              echo "pushed attribution relabel (attempt ${attempt})"
+              exit 0
+            fi
+            echo "push raced on attempt ${attempt} — retrying onto updated main"
+          done
+          echo "::warning::could not push the attribution relabel after 5 attempts (#426); the next run will retry"

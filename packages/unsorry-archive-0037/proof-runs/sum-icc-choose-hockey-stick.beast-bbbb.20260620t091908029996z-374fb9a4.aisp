@@ -1,0 +1,8 @@
+𝔸5.1.run.sum-icc-choose-hockey-stick.beast-bbbb.20260620t091908029996z-374fb9a4@2026-06-20
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260620t091908029996z-374fb9a4; goal≜sum-icc-choose-hockey-stick; agent≜beast-bbbb; outcome≜proved}
+⟦Π:Provenance⟧{solver≜adam91holt; provider≜codex; effort≜medium}
+⟦Γ:Goal⟧{goal≜sum-icc-choose-hockey-stick}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜694; ended≜2026-06-20T09:19:08Z; lessons≜1}
+⟦Σ:Artifact⟧{sha≜f128fc953731afc7c997b7e7b72d186a5c18732d98955051beb56edfa07d7536}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜pairwise-product-sum-sq-ge-three-abc-sum
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/pairwise-product-sum-sq-ge-three-abc-sum.md
+  src≜packages/unsorry-archive-0008/backlog/pairwise-product-sum-sq-ge-three-abc-sum.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/pairwise-product-sum-sq-ge-three-abc-sum.lean
+  lean≜packages/unsorry-archive-0008/goals/pairwise-product-sum-sq-ge-three-abc-sum.lean
   sha≜20de29a8789594664dc7f0bf035e3d5102ee0dfa45e7d93ad3a5d27081047e0f
   aff≜-20
 }
