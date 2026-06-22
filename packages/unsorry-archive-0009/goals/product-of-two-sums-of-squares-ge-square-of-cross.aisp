@@ -1,0 +1,20 @@
+𝔸5.1.goal.product-of-two-sums-of-squares-ge-square-of-cross@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜product-of-two-sums-of-squares-ge-square-of-cross
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/product-of-two-sums-of-squares-ge-square-of-cross.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/product-of-two-sums-of-squares-ge-square-of-cross.lean
+  sha≜96e043a3fbf7b83a9fd5785f5745be82cf1d13ff8706c77dadd3ae0ddc630cff
+  aff≜-10
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

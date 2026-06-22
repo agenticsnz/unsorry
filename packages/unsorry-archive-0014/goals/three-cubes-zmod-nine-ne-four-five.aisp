@@ -1,0 +1,20 @@
+𝔸5.1.goal.three-cubes-zmod-nine-ne-four-five@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜three-cubes-zmod-nine-ne-four-five
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/three-cubes-zmod-nine-ne-four-five.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/three-cubes-zmod-nine-ne-four-five.lean
+  sha≜2409680ea477c6bc5e5c267ee371bd04c2683a7385057f76bcd72135ab8e1fe0
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

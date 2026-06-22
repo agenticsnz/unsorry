@@ -6,7 +6,7 @@
 | **Initiative** | contributor scale / problem supply |
 | **Proposed By** | unsorry maintainers |
 | **Date** | 2026-06-17 |
-| **Status** | Proposed |
+| **Status** | Accepted |
 
 ## Context
 
@@ -157,3 +157,4 @@ change across a CODEOWNERS-owned surface.
 | Status | Approver | Date |
 |--------|----------|------|
 | Proposed | unsorry maintainers | 2026-06-17 |
+| Accepted (implemented — swarm/sourcing.sh runner, #1898) | unsorry maintainers | 2026-06-19 |

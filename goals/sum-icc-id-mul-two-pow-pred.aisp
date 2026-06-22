@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-icc-id-mul-two-pow-pred
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-icc-id-mul-two-pow-pred.md
+  src≜packages/unsorry-archive-0034/backlog/sum-icc-id-mul-two-pow-pred.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-icc-id-mul-two-pow-pred.lean
-  sha≜∅
-  aff≜-10
+  lean≜packages/unsorry-archive-0034/goals/sum-icc-id-mul-two-pow-pred.lean
+  sha≜32656fe78c35026ad41f49cb3b52b6cc0822544656b8593b21ec4c77b0e3595c
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

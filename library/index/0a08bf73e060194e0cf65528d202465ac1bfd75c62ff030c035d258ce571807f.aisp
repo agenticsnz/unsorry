@@ -1,0 +1,8 @@
+𝔸5.1.lemma.0a08bf73e060@2026-06-19
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜0a08bf73e060194e0cf65528d202465ac1bfd75c62ff030c035d258ce571807f; goal≜gpow-sum-eight-pow-twelve; name≜gpow_sum_eight_pow_twelve}
+⟦Σ:Source⟧{src≜goals/gpow-sum-eight-pow-twelve.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜cgbarlow; agent≜mac-158f; provider≜python; model≜sympy; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
