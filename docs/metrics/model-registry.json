@@ -61,6 +61,36 @@
         ],
         "assigned_at": "2026-06-22T08:27:52Z"
       }
+    },
+    {
+      "provider_model": "openrouter / unknown",
+      "slug": "openrouter-unknown",
+      "pokemon": {
+        "name": "Unown",
+        "dex_id": 201,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/201.png",
+        "description": "Their shapes look like hieroglyphs on ancient tablets. It is said that the two are somehow related."
+      },
+      "research": {
+        "classification": "n/a",
+        "publisher": "OpenRouter (Auto Router, via NotDiamond)",
+        "country": "USA",
+        "parameter_size": "undisclosed",
+        "license": "proprietary routing platform",
+        "canonical_url": "https://openrouter.ai/openrouter/auto"
+      },
+      "profile": "Like the unrecorded model behind OpenRouter's Auto Router, Unown's very name is \"unknown\" and its identity stays a mystery. It manifests in 28 interchangeable forms, mirroring a request that could resolve to any model in the pool.",
+      "provenance": {
+        "assigned_by": "housekeeping",
+        "assigned_with": "claude / opus",
+        "contributor": "cgbarlow",
+        "sources": [
+          "https://openrouter.ai/openrouter/auto",
+          "https://openrouter.ai/docs/guides/routing/routers/auto-router",
+          "https://openrouter.ai/"
+        ],
+        "assigned_at": "2026-06-22T08:29:36Z"
+      }
     }
   ]
 }
