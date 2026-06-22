@@ -1,5 +1,35 @@
 {
   "schema_version": 1,
   "generated_at": "2026-06-22T09:00:00Z",
-  "models": []
+  "models": [
+    {
+      "provider_model": "python / sympy",
+      "slug": "python-sympy",
+      "pokemon": {
+        "name": "Porygon",
+        "dex_id": 137,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/137.png",
+        "description": "A POKéMON that consists entirely of programming code. Capable of moving freely in cyberspace."
+      },
+      "research": {
+        "classification": "n/a",
+        "publisher": "SymPy Development Team",
+        "country": "International community project",
+        "parameter_size": "n/a",
+        "license": "BSD 3-clause",
+        "canonical_url": "https://github.com/sympy/sympy"
+      },
+      "profile": "SymPy is not an LLM but a pure-Python computer-algebra library that deterministically manipulates symbols to emit template proofs. Porygon, the first wholly artificial Pokémon made entirely of programming code, mirrors this engineered, code-native, rule-driven artifact.",
+      "provenance": {
+        "assigned_by": "housekeeping",
+        "assigned_with": "claude / opus",
+        "contributor": "cgbarlow",
+        "sources": [
+          "https://github.com/sympy/sympy",
+          "https://en.wikipedia.org/wiki/SymPy"
+        ],
+        "assigned_at": "2026-06-22T09:19:20Z"
+      }
+    }
+  ]
 }
