@@ -117,6 +117,35 @@
         ],
         "assigned_at": "2026-06-22T09:55:37Z"
       }
+    },
+    {
+      "provider_model": "codex / unknown",
+      "slug": "codex-unknown",
+      "pokemon": {
+        "name": "Porygon-Z",
+        "dex_id": 474,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/474.png",
+        "description": "Additional software was installed to make it a better Pokémon. It began acting oddly, however."
+      },
+      "research": {
+        "classification": "closed",
+        "publisher": "OpenAI",
+        "country": "United States",
+        "parameter_size": "undisclosed",
+        "license": "Proprietary",
+        "canonical_url": "https://developers.openai.com/codex/models"
+      },
+      "profile": "Codex is a man-made, code-native agent, just as Porygon-Z is a fully digital, programmatically-upgraded Pokémon. Its rapidly-iterated, sometimes unpredictable agentic coding power mirrors Porygon-Z's overclocked, glitch-prone code.",
+      "provenance": {
+        "assigned_by": "housekeeping",
+        "assigned_with": "claude / opus",
+        "contributor": "ab0t-core",
+        "sources": [
+          "https://developers.openai.com/codex/models",
+          "https://openai.com/index/introducing-gpt-5-3-codex/"
+        ],
+        "assigned_at": "2026-06-22T09:57:43Z"
+      }
     }
   ]
 }
