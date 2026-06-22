@@ -493,7 +493,7 @@ def test_ui_payload_is_stable_browser_contract(tmp_path):
 
     assert json.loads(render_ui_json(tmp_path)) == payload
     svg = render_svg(tmp_path)
-    assert "Unsorry Leaderboard" in svg
+    assert "unsorry — Leaderboard" in svg
     assert "@perttu" in svg
     assert "425 pts" in svg
     assert "href=\"https://github.com/perttu\"" in svg
@@ -697,7 +697,7 @@ def test_render_timeline_svg(tmp_path):
     _index(tmp_path, "b" * 64, "g2")
     svg = render_timeline_svg(tmp_path)
     assert svg.startswith("<svg") and svg.rstrip().endswith("</svg>")
-    assert "Unsorry — Proofs Over Time" in svg
+    assert "unsorry — Proofs Over Time" in svg
     assert "Inter, system-ui, sans-serif" in svg  # shared design language
     assert "<polyline" in svg  # the cumulative line
     assert "2 cumulative kernel-verified proofs" in svg
