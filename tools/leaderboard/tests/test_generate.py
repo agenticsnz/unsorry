@@ -14,6 +14,7 @@ from tools.leaderboard.generate import (
     render_json,
     render_sourcing,
     render_svg,
+    render_timeline_svg,
     render_ui_json,
     sourcing_contributors,
     sourcing_payload,
@@ -204,6 +205,66 @@ def test_git_add_author_is_historical_visibility_not_solver_credit(tmp_path):
     assert "1 inferred" in svg
 
 
+def test_generated_at_tracks_latest_source_commit(tmp_path, monkeypatch):
+    # A relabel (or proof merge) commits to library/index but records no new run.
+    # generated_at must still bump to that commit's time — the staleness the live
+    # board showed after the attribution relabel. (With no git repo it falls back to
+    # the latest run time, which the other ui_payload tests exercise.)
+    monkeypatch.setenv("GIT_AUTHOR_DATE", "2026-06-21T03:12:00+00:00")
+    monkeypatch.setenv("GIT_COMMITTER_DATE", "2026-06-21T03:12:00+00:00")
+    _git(tmp_path, "init")
+    _goal(tmp_path, "goal-easy", 1, "proved")
+    _index(
+        tmp_path, "b" * 64, "goal-easy",
+        "⟦Π:Provenance⟧{solver≜perttu; agent≜mac-158f; "
+        "provider≜python; model≜sympy; attempts≜1}\n",
+    )
+    _run(tmp_path, "goal-easy", "20260613t120000000000z-11111111", "proved",
+         attempts=1, solve_s=10, solver="perttu")
+    _git(tmp_path, "add", "-A")
+    _git(tmp_path, "commit", "-m", "relabel", author="Bot <bot@example.test>")
+
+    # latest source-commit time, NOT the run's recorded ended (2026-06-13T12:00:00Z)
+    assert ui_payload(tmp_path)["generated_at"] == "2026-06-21T03:12:00Z"
+
+
+def test_dispatch_credit_for_landing_anothers_proof(tmp_path):
+    _git(tmp_path, "init")
+    _goal(tmp_path, "g1", 4)
+    _goal(tmp_path, "g2", 6)
+    _index(tmp_path, "a" * 64, "g1",
+           provenance="⟦Π:Provenance⟧{solver≜alice; agent≜x; provider≜manual}\n")
+    _index(tmp_path, "b" * 64, "g2",
+           provenance="⟦Π:Provenance⟧{solver≜bob; agent≜y; provider≜manual}\n")
+    _git(tmp_path, "add", "goals", "library/index")
+    # Bob is the git add-author of BOTH index files (he opened/landed both PRs):
+    # g1 is alice's proof (cross-dispatch -> credit) and g2 is his own (self -> none).
+    _git(tmp_path, "commit", "-m", "land proofs",
+         author="Bob Builder <bob@example.test>")
+    _alias(tmp_path, "Bob Builder <bob@example.test>", "bob", "Bob Builder")
+
+    rows = {r["github"]: r for r in base_stats(tmp_path)["credited_contributors"]}
+
+    # alice proved g1 and dispatched nothing
+    assert rows["alice"]["credited_proofs"] == 1
+    assert rows["alice"]["difficulty_points"] == 4
+    assert rows["alice"]["dispatch_proofs"] == 0
+    assert rows["alice"]["dispatch_points"] == 0.0
+
+    # bob proved g2 (self-dispatch excluded) AND dispatched alice's g1 (flat 0.9)
+    assert rows["bob"]["credited_proofs"] == 1
+    assert rows["bob"]["difficulty_points"] == 6
+    assert rows["bob"]["dispatch_proofs"] == 1
+    assert rows["bob"]["dispatch_points"] == 0.9
+
+    # score now includes dispatch: bob = 6*100 + 1*25 + 0.9*100 = 715; alice = 425
+    contribs = {c["github"]: c for c in ui_payload(tmp_path)["contributors"]}
+    assert contribs["bob"]["score"] == 715
+    assert contribs["bob"]["dispatch_proofs"] == 1
+    assert contribs["bob"]["dispatch_points"] == 0.9
+    assert contribs["alice"]["score"] == 425
+
+
 def test_archived_index_files_keep_original_active_attribution(tmp_path):
     _git(tmp_path, "init")
     _goal(tmp_path, "retired-goal", 2, "archived")
@@ -333,7 +394,7 @@ def test_base_stats_derive_failure_and_efficiency_metrics(tmp_path):
     out = render(tmp_path)
     assert "Run success rate | 50.0%" in out
     assert "Failed attempts | 4" in out
-    assert "[@perttu](https://github.com/perttu) | 1 | 1 | 0 | 2 | 50.0% | 4 | 425" in out
+    assert "[@perttu](https://github.com/perttu) | 1 | 1 | 0 | 2 | 50.0% | 4 | 0.0 | 425" in out
     assert "`codex / gpt-5.1-codex` | 1 | 2 | 50.0% | 4" in out
 
 
@@ -432,7 +493,7 @@ def test_ui_payload_is_stable_browser_contract(tmp_path):
 
     assert json.loads(render_ui_json(tmp_path)) == payload
     svg = render_svg(tmp_path)
-    assert "Unsorry Leaderboard" in svg
+    assert "unsorry — Leaderboard" in svg
     assert "@perttu" in svg
     assert "425 pts" in svg
     assert "href=\"https://github.com/perttu\"" in svg
@@ -462,6 +523,61 @@ def test_check_and_write_modes_cover_markdown_json_ui_json_and_svg(tmp_path):
     assert main(["--check", str(tmp_path)]) == 1
 
 
+def test_write_if_stale_writes_once_and_signals_drift(tmp_path):
+    # ADR-082: a single recompute that writes iff stale, returning 1 when it
+    # wrote (mirroring --check's drift signal) and 0 when already in sync — so the
+    # leaderboard workflow no longer pays the ~10-min regen twice (once to --check,
+    # once to --write).
+    _goal(tmp_path, "g", 1)
+    _index(tmp_path, "a" * 64, "g")
+    # First run: artifacts are absent → stale → written, exit 1 (drift).
+    assert main(["--write-if-stale", str(tmp_path)]) == 1
+    ui_path = tmp_path / "docs" / "metrics" / "leaderboard-ui.json"
+    assert ui_path.is_file()
+    assert (tmp_path / "docs" / "metrics" / "community-stats.json").is_file()
+    assert (tmp_path / "docs" / "metrics" / "attribution-gaps.json").is_file()
+    assert (tmp_path / "docs" / "metrics" / "sourcing-leaderboard.json").is_file()
+    assert (tmp_path / "docs" / "leaderboard.md").is_file()
+    assert (tmp_path / "docs" / "leaderboard.svg").is_file()
+    assert (tmp_path / "docs" / "proofs-over-time.svg").is_file()
+    # The artifacts it wrote are exactly what --check considers in sync.
+    assert main(["--check", str(tmp_path)]) == 0
+
+
+def test_write_if_stale_is_a_noop_when_in_sync(tmp_path):
+    _goal(tmp_path, "g", 1)
+    _index(tmp_path, "a" * 64, "g")
+    assert main(["--write", str(tmp_path)]) == 0
+    ui_path = tmp_path / "docs" / "metrics" / "leaderboard-ui.json"
+    before = ui_path.read_text(encoding="utf-8")
+    # Already in sync → no drift → exit 0 and the artifacts are left byte-identical.
+    assert main(["--write-if-stale", str(tmp_path)]) == 0
+    assert ui_path.read_text(encoding="utf-8") == before
+    # A subsequent --write-if-stale stays a clean no-op (idempotent/deterministic).
+    assert main(["--write-if-stale", str(tmp_path)]) == 0
+    assert ui_path.read_text(encoding="utf-8") == before
+
+
+def test_write_if_stale_rewrites_only_the_drifted_artifact(tmp_path):
+    _goal(tmp_path, "g", 1)
+    _index(tmp_path, "a" * 64, "g")
+    assert main(["--write", str(tmp_path)]) == 0
+    ui_path = tmp_path / "docs" / "metrics" / "leaderboard-ui.json"
+    canonical = ui_path.read_text(encoding="utf-8")
+    ui_path.write_text("{}\n", encoding="utf-8")  # tamper one artifact
+    # Drift detected and repaired in a single pass.
+    assert main(["--write-if-stale", str(tmp_path)]) == 1
+    assert ui_path.read_text(encoding="utf-8") == canonical
+    assert main(["--check", str(tmp_path)]) == 0
+
+
+def test_write_if_stale_is_mutually_exclusive_with_other_modes(tmp_path):
+    _goal(tmp_path, "g", 1)
+    _index(tmp_path, "a" * 64, "g")
+    assert main(["--check", "--write-if-stale", str(tmp_path)]) == 2
+    assert main(["--write", "--write-if-stale", str(tmp_path)]) == 2
+
+
 def test_docs_leaderboard_html_consumes_generated_ui_json():
     root = Path(__file__).resolve().parents[3]
     html = (root / "docs" / "leaderboard.html").read_text(encoding="utf-8")
@@ -478,12 +594,14 @@ def test_docs_leaderboard_html_consumes_generated_ui_json():
     assert "LocalDataStore" not in html
     assert "seedData" not in html
     assert "pravatar" not in html
-    # Issue #738: shared top-nav + proofs-over-time toggle consuming payload.timeline.
+    # Issue #738: shared top-nav + proofs-over-time toggle consuming payload.timelines.
     assert 'href="index.html"' in html
     assert 'href="proofs-contributors-visualisation.html"' in html
     assert 'id="tab-leaderboard"' in html and 'id="tab-timeline"' in html
     assert 'id="view-timeline"' in html
-    assert "renderTimeline" in html and "payload.timeline" in html
+    assert "renderTimeline" in html and "payload.timelines" in html
+    # Solve/merge basis toggle (merge is the default).
+    assert 'id="tl-mode-merge"' in html and 'id="tl-mode-solve"' in html
     # Top 5 view: a third toggle tab rendering the top five contributors.
     assert 'id="tab-top5"' in html and 'id="view-top5"' in html
     assert "renderTop5" in html
@@ -505,15 +623,100 @@ def test_docs_index_links_readme():
 
 
 def test_ui_payload_includes_proof_timeline(tmp_path):
-    # Issue #738: cumulative proofs-over-time series for the leaderboard line graph.
+    # Issue #738: proofs-over-time toggle — a solve series (daily, by AISP @date)
+    # and a merge series (hourly, by prove-commit time; empty without a checkout).
     _goal(tmp_path, "g1", 1)
     _goal(tmp_path, "g2", 2)
     _index(tmp_path, "a" * 64, "g1")
     _index(tmp_path, "b" * 64, "g2")
     payload = ui_payload(tmp_path)
-    assert payload["timeline"] == [
-        {"date": "2026-06-13", "proofs": 2, "cumulative_proofs": 2}
+    assert payload["timelines"]["default"] == "merge"
+    assert payload["timelines"]["solve"] == [
+        {"t": "2026-06-13", "proofs": 2, "cumulative_proofs": 2}
     ]
+    # No git history in the fixture dir → the merge series degrades to empty.
+    assert payload["timelines"]["merge"] == []
+
+
+def test_parse_merge_log_keeps_oldest_prove_commit_per_goal():
+    # git log is newest-first, so the oldest prove(<goal>) commit (the proof's
+    # first landing) must win; recompose counts; non-prove subjects are ignored.
+    from tools.leaderboard.generate import parse_merge_log
+
+    text = (
+        "2026-06-20T17:00:00Z\x00recompose(g1): g1 by claude (#9)\n"
+        "2026-06-19T08:00:00Z\x00prove(g1): g1 by claude (#3)\n"
+        "2026-06-19T09:00:00Z\x00prove(g2): g2 by ruvnet (#4)\n"
+        "2026-06-19T10:00:00Z\x00docs: refresh leaderboard\n"
+    )
+    assert parse_merge_log(text) == {
+        "g1": "2026-06-19T08:00:00Z",
+        "g2": "2026-06-19T09:00:00Z",
+    }
+
+
+def test_merge_timeline_buckets_by_prove_commit_hour(tmp_path):
+    # With a real checkout, the merge series buckets each proof by its prove-commit
+    # hour (UTC). The wall-clock is the commit's, so assert the bucket shape.
+    import re as _re
+
+    from tools.leaderboard.generate import merge_times, proof_timelines, proofs
+
+    _goal(tmp_path, "g1", 1)
+    _index(tmp_path, "a" * 64, "g1")
+    _git(tmp_path, "init")
+    _git(tmp_path, "add", "goals", "library/index")
+    _git(
+        tmp_path,
+        "commit",
+        "-m",
+        "prove(g1): g1 by claude (#1)",
+        author="Claude <c@e.com>",
+    )
+
+    mt = merge_times(tmp_path)
+    assert set(mt) == {"g1"}
+    assert _re.fullmatch(r"\d{4}-\d{2}-\d{2}T\d{2}:00:00Z", mt["g1"])
+
+    series = proof_timelines(proofs(tmp_path), mt)
+    assert series["default"] == "merge"
+    assert series["merge"] == [
+        {"t": mt["g1"], "proofs": 1, "cumulative_proofs": 1}
+    ]
+    # The solve series still buckets by the recorded AISP @date, not the commit.
+    assert series["solve"] == [
+        {"t": "2026-06-13", "proofs": 1, "cumulative_proofs": 1}
+    ]
+
+
+def test_render_timeline_svg(tmp_path):
+    # README preview card for the proofs-over-time line graph (issue #738).
+    _goal(tmp_path, "g1", 1)
+    _goal(tmp_path, "g2", 2)
+    _index(tmp_path, "a" * 64, "g1")
+    _index(tmp_path, "b" * 64, "g2")
+    svg = render_timeline_svg(tmp_path)
+    assert svg.startswith("<svg") and svg.rstrip().endswith("</svg>")
+    assert "unsorry — Proofs Over Time" in svg
+    assert "Inter, system-ui, sans-serif" in svg  # shared design language
+    assert "<polyline" in svg  # the cumulative line
+    assert "2 cumulative kernel-verified proofs" in svg
+    # No git in the fixture → merge series empty, falls back to the daily solve view.
+    assert "solved, daily" in svg
+
+
+def test_render_timeline_svg_empty(tmp_path):
+    svg = render_timeline_svg(tmp_path)
+    assert svg.startswith("<svg") and "No dated proofs yet." in svg
+
+
+def test_main_write_includes_timeline_svg(tmp_path):
+    _goal(tmp_path, "g1", 1)
+    _index(tmp_path, "a" * 64, "g1")
+    assert main(["--write", str(tmp_path)]) == 0
+    assert (tmp_path / "docs" / "proofs-over-time.svg").is_file()
+    # Freshly written → the drift check is clean (the new SVG is checked too).
+    assert main(["--check", str(tmp_path)]) == 0
 
 
 # --- Phantom-solver guard (ADR-037) ------------------------------------------

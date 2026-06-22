@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜nesbitt-inequality-s2
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜decompositions/nesbitt-inequality.d337a70018c9-90fd.aisp
+  src≜packages/unsorry-archive-0033/decompositions/nesbitt-inequality.d337a70018c9-90fd.aisp
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/nesbitt-inequality-s2.lean
+  lean≜packages/unsorry-archive-0033/goals/nesbitt-inequality-s2.lean
   sha≜c825189d82bd965f2f4b82bc256e324bc03f7af5755e13aab5046ef0fec9092f
   aff≜1
   depth≜1

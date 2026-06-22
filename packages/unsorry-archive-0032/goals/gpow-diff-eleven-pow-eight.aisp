@@ -1,0 +1,20 @@
+𝔸5.1.goal.gpow-diff-eleven-pow-eight@2026-06-19
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gpow-diff-eleven-pow-eight
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/gpow-diff-eleven-pow-eight.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/gpow-diff-eleven-pow-eight.lean
+  sha≜3d34f24ff8fcfa1661bed591be54a9f91041d24b7293eccb8c9b0d90b0046305
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-range-lucas-shift-nat@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-range-lucas-shift-nat
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-range-lucas-shift-nat.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-range-lucas-shift-nat.lean
+  sha≜58ab2876e72949724b314df25b6784050179f5900d75308531b6c51800e244aa
+  aff≜-10
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

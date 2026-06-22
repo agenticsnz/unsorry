@@ -1,6 +1,6 @@
 {
   "generated_by": "python3 -m tools.adr_index --write",
-  "count": 72,
+  "count": 84,
   "adrs": [
     {
       "id": "ADR-001",
@@ -454,7 +454,7 @@
       "id": "ADR-058",
       "number": 58,
       "title": "Runner Pool Segmentation and Verification Capacity Governance",
-      "status": "Proposed",
+      "status": "Accepted",
       "date": "2026-06-16",
       "file": "ADR-058-Runner-Pool-Segmentation-And-Verification-Capacity.md"
     },
@@ -470,7 +470,7 @@
       "id": "ADR-060",
       "number": 60,
       "title": "Contributor-Facing Goal-Sourcing Skill",
-      "status": "Proposed",
+      "status": "Accepted",
       "date": "2026-06-16",
       "file": "ADR-060-Contributor-Goal-Sourcing-Skill.md"
     },
@@ -486,7 +486,7 @@
       "id": "ADR-062",
       "number": 62,
       "title": "Swarm Goal-Sourcing Runner",
-      "status": "Proposed",
+      "status": "Accepted",
       "date": "2026-06-17",
       "file": "ADR-062-Swarm-Goal-Sourcing-Runner.md"
     },
@@ -494,7 +494,7 @@
       "id": "ADR-063",
       "number": 63,
       "title": "Sharded Gate A Kernel Replay",
-      "status": "Proposed",
+      "status": "Accepted",
       "date": "2026-06-17",
       "file": "ADR-063-Sharded-Gate-A-Kernel-Replay.md"
     },
@@ -526,7 +526,7 @@
       "id": "ADR-067",
       "number": 67,
       "title": "Demand-Driven Sourcing",
-      "status": "Proposed",
+      "status": "Accepted",
       "date": "2026-06-17",
       "file": "ADR-067-Demand-Driven-Sourcing.md"
     },
@@ -534,7 +534,7 @@
       "id": "ADR-068",
       "number": 68,
       "title": "Fork-Native Contribution Mode",
-      "status": "Proposed",
+      "status": "Accepted",
       "date": "2026-06-17",
       "file": "ADR-068-Fork-Native-Contribution-Mode.md"
     },
@@ -542,7 +542,7 @@
       "id": "ADR-069",
       "number": 69,
       "title": "Launcher Demand-Driven Sourcing Arm",
-      "status": "Proposed",
+      "status": "Accepted",
       "date": "2026-06-17",
       "file": "ADR-069-Launcher-Demand-Driven-Sourcing-Arm.md"
     },
@@ -550,7 +550,7 @@
       "id": "ADR-070",
       "number": 70,
       "title": "Duplicate-Verifier-Waste Metric",
-      "status": "Proposed",
+      "status": "Accepted",
       "date": "2026-06-18",
       "file": "ADR-070-Duplicate-Verifier-Waste-Metric.md"
     },
@@ -577,6 +577,102 @@
       "status": "Accepted",
       "date": "2026-06-18",
       "file": "ADR-073-ADR-Index-Generated-README.md"
+    },
+    {
+      "id": "ADR-074",
+      "number": 74,
+      "title": "Deterministic Proof Import Narrowing (Best-Effort, Verify-Fallback)",
+      "status": "Accepted",
+      "date": "2026-06-19",
+      "file": "ADR-074-Proof-Import-Narrowing.md"
+    },
+    {
+      "id": "ADR-075",
+      "number": 75,
+      "title": "Solver-Fair Queue Dispatch Order",
+      "status": "Accepted",
+      "date": "2026-06-20",
+      "file": "ADR-075-Solver-Fair-Queue-Dispatch-Order.md"
+    },
+    {
+      "id": "ADR-076",
+      "number": 76,
+      "title": "Sharded Fork Goal Selection",
+      "status": "Proposed",
+      "date": "2026-06-20",
+      "file": "ADR-076-Sharded-Fork-Goal-Selection.md"
+    },
+    {
+      "id": "ADR-077",
+      "number": 77,
+      "title": "Roadmap GitHub Project, Synced from Repo State",
+      "status": "Proposed",
+      "date": "2026-06-20",
+      "file": "ADR-077-Roadmap-Project-Synced-From-Repo-State.md"
+    },
+    {
+      "id": "ADR-078",
+      "number": 78,
+      "title": "Sponsor-Registered Targets and Obligation-Discharge Credit",
+      "status": "Proposed",
+      "date": "2026-06-20",
+      "file": "ADR-078-Sponsor-Registered-Targets-And-Obligation-Discharge-Credit.md"
+    },
+    {
+      "id": "ADR-079",
+      "number": 79,
+      "title": "Deterministic Solver Provider — Zero-LLM Template/sympy Discharge, Honestly Attributed",
+      "status": "Proposed",
+      "date": "2026-06-20",
+      "file": "ADR-079-Deterministic-Solver-Provider.md"
+    },
+    {
+      "id": "ADR-080",
+      "number": 80,
+      "title": "Platform Generalisation and the Self-Verification Gating Invariant",
+      "status": "Draft",
+      "date": "2026-06-20",
+      "file": "ADR-080-Platform-Generalisation-And-Domain-Neutrality.md"
+    },
+    {
+      "id": "ADR-081",
+      "number": 81,
+      "title": "Problem Admission and the Skeleton Intake Pipeline",
+      "status": "Draft",
+      "date": "2026-06-20",
+      "file": "ADR-081-Problem-Admission-And-Intake-Pipeline.md"
+    },
+    {
+      "id": "ADR-082",
+      "number": 82,
+      "title": "Single-Pass Leaderboard Refresh (`--write-if-stale`)",
+      "status": "Accepted",
+      "date": "2026-06-22",
+      "file": "ADR-082-Single-Pass-Leaderboard-Refresh.md"
+    },
+    {
+      "id": "ADR-083",
+      "number": 83,
+      "title": "The Model → Pokémon Registry and Swarm Operational Tasks",
+      "status": "Accepted",
+      "date": "2026-06-22",
+      "file": "ADR-083-Model-Pokemon-Registry-And-Operational-Tasks.md"
+    },
+    {
+      "id": "ADR-084",
+      "number": 84,
+      "title": "Demand-Driven Sourcing Dedup — Skip When a Sourcing PR Is In Flight",
+      "status": "Accepted",
+      "date": "2026-06-22",
+      "file": "ADR-084-Demand-Driven-Sourcing-Dedup.md"
+    },
+    {
+      "id": "ADR-085",
+      "number": 85,
+      "title": "Isolate the Sourcer in a Per-Sourcer Worktree (ADR-042 parity)",
+      "status": "Proposed",
+      "date": "2026-06-22",
+      "file": "ADR-085-Sourcer-Worktree-Isolation.md"
     }
   ]
 }

@@ -1,0 +1,20 @@
+𝔸5.1.goal.gzmod-168-pow-fourteen-sub-pow-eight@2026-06-18
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gzmod-168-pow-fourteen-sub-pow-eight
+  phase≜prove
+  status≜archived
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜packages/unsorry-archive-0040/backlog/gzmod-168-pow-fourteen-sub-pow-eight.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜packages/unsorry-archive-0040/goals/gzmod-168-pow-fourteen-sub-pow-eight.lean
+  sha≜1d9eb452474b83eeef76ebb762c9eb5f7b38826a17b18985026bff2eccc34097
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
