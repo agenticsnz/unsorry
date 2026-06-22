@@ -323,6 +323,36 @@
         ],
         "assigned_at": "2026-06-22T10:09:05Z"
       }
+    },
+    {
+      "provider_model": "codex / gpt-5.3-codex-spark",
+      "slug": "codex-gpt-5-3-codex-spark",
+      "pokemon": {
+        "name": "Jolteon",
+        "dex_id": 135,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+        "description": "It accumulates negative ions in the atmosphere to blast out 10000- volt lightning bolts."
+      },
+      "research": {
+        "classification": "closed",
+        "publisher": "OpenAI",
+        "country": "United States",
+        "parameter_size": "undisclosed",
+        "license": "Proprietary",
+        "canonical_url": "https://openai.com/index/introducing-gpt-5-3-codex-spark/"
+      },
+      "profile": "Jolteon, the Lightning Pokémon, is a small, nimble Eeveelution famed for near-instant speed and electric reflexes — mirroring this compact, Cerebras-accelerated Codex variant built for real-time coding at 1000+ tokens/sec. Its spark-charged agility captures the model's 'Spark' identity and 15x latency edge.",
+      "provenance": {
+        "assigned_by": "housekeeping",
+        "assigned_with": "claude / opus",
+        "contributor": "ab0t-core",
+        "sources": [
+          "https://openai.com/index/introducing-gpt-5-3-codex-spark/",
+          "https://simonwillison.net/2026/Feb/12/codex-spark/",
+          "https://www.cerebras.ai/blog/openai-codexspark"
+        ],
+        "assigned_at": "2026-06-22T10:10:42Z"
+      }
     }
   ]
 }
