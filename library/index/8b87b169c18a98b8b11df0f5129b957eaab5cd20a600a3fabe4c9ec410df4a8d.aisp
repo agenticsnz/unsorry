@@ -1,0 +1,8 @@
+𝔸5.1.lemma.8b87b169c18a@2026-06-19
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜8b87b169c18a98b8b11df0f5129b957eaab5cd20a600a3fabe4c9ec410df4a8d; goal≜gpow-sum-ten-pow-nineteen; name≜gpow_sum_ten_pow_nineteen}
+⟦Σ:Source⟧{src≜goals/gpow-sum-ten-pow-nineteen.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜python; model≜sympy; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

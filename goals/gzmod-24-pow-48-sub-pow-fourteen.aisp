@@ -1,0 +1,20 @@
+𝔸5.1.goal.gzmod-24-pow-48-sub-pow-fourteen@2026-06-19
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gzmod-24-pow-48-sub-pow-fourteen
+  phase≜prove
+  status≜archived
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜packages/unsorry-archive-0025/backlog/gzmod-24-pow-48-sub-pow-fourteen.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜packages/unsorry-archive-0025/goals/gzmod-24-pow-48-sub-pow-fourteen.lean
+  sha≜768f933b900417fb8cc580d491209d28e0e740baec62efd258f8d9f5cdc17e69
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

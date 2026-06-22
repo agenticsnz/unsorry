@@ -1,0 +1,8 @@
+𝔸5.1.lemma.9855fd9ac4d7@2026-06-16
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜9855fd9ac4d7379fe31d3bde123b2650961dfa6f6dd3f1e76866b630bb21a878; goal≜dvd-1365-pow-thirteen-sub-self; name≜dvd_1365_pow_thirteen_sub_self}
+⟦Σ:Source⟧{src≜goals/dvd-1365-pow-thirteen-sub-self.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜python; model≜sympy; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

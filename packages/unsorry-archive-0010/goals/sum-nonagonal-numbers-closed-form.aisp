@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-nonagonal-numbers-closed-form@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-nonagonal-numbers-closed-form
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-nonagonal-numbers-closed-form.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-nonagonal-numbers-closed-form.lean
+  sha≜e19addb052623d8f09d456f264745517ff825865e7049adaa3c28375b38b82f4
+  aff≜-10
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

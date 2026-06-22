@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜pell-d3-rational-bound-above
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/pell-d3-rational-bound-above.md
+  src≜packages/unsorry-archive-0009/backlog/pell-d3-rational-bound-above.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/pell-d3-rational-bound-above.lean
+  lean≜packages/unsorry-archive-0009/goals/pell-d3-rational-bound-above.lean
   sha≜d5b2f85d6e28fd359509e8369ed6adfa7fe3070052d4f0134eb21efb3f2391a5
   aff≜-10
 }

@@ -1,0 +1,20 @@
+𝔸5.1.goal.dvd-twentyfour-pow-five-sub-pow-three@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜dvd-twentyfour-pow-five-sub-pow-three
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/dvd-twentyfour-pow-five-sub-pow-three.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/dvd-twentyfour-pow-five-sub-pow-three.lean
+  sha≜2565264fd6f893389cebe059e34fe2416b295fe26e62c9030e347f11c147a9cb
+  aff≜-19
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-sq-mul-two-pow
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-sq-mul-two-pow.md
+  src≜packages/unsorry-archive-0016/backlog/sum-range-sq-mul-two-pow.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-sq-mul-two-pow.lean
+  lean≜packages/unsorry-archive-0016/goals/sum-range-sq-mul-two-pow.lean
   sha≜3c70ab926345e9172b7dd1ef957a015e4fc4e93b703b8d9b19d8472d00ac44e7
   aff≜-9
 }

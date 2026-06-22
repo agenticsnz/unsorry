@@ -1,0 +1,20 @@
+𝔸5.1.goal.sophie-germain-not-prime@2026-06-14
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sophie-germain-not-prime
+  phase≜prove
+  status≜proved
+  difficulty≜4
+}
+⟦Σ:Source⟧{
+  src≜backlog/sophie-germain-not-prime.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sophie-germain-not-prime.lean
+  sha≜136dd02266cfaa21c26ecb022ccb7015c04e1ba4f2ca81b9d1fa5c8491133de8
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

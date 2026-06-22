@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜pell-d2-form-product-telescope-step
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/pell-d2-form-product-telescope-step.md
+  src≜packages/unsorry-archive-0009/backlog/pell-d2-form-product-telescope-step.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/pell-d2-form-product-telescope-step.lean
+  lean≜packages/unsorry-archive-0009/goals/pell-d2-form-product-telescope-step.lean
   sha≜70238bd30c936e7b29cfa5a32337c3dd915bedbfd8bc799804c38bb5c203f3dd
   aff≜-10
 }

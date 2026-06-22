@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-recip-three-consecutive
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-recip-three-consecutive.md
+  src≜packages/unsorry-archive-0038/backlog/sum-range-recip-three-consecutive.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-recip-three-consecutive.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0038/goals/sum-range-recip-three-consecutive.lean
+  sha≜d0ac643899a4750e939d8d7e10d82c53007b8c764a0131f120b4657cfd0b918e
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

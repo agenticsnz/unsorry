@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜pell-d2-y-even
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/pell-d2-y-even.md
+  src≜packages/unsorry-archive-0011/backlog/pell-d2-y-even.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/pell-d2-y-even.lean
+  lean≜packages/unsorry-archive-0011/goals/pell-d2-y-even.lean
   sha≜85463cd742e7bcf2dc4e90388a7472ac33479ae3aa0c30d7abf754db9e98e6ec
   aff≜-9
 }

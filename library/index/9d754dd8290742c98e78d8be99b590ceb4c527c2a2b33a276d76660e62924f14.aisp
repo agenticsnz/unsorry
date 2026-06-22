@@ -1,0 +1,8 @@
+𝔸5.1.lemma.9d754dd82907@2026-06-19
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜9d754dd8290742c98e78d8be99b590ceb4c527c2a2b33a276d76660e62924f14; goal≜gbinom-falling-seven-fact-dvd; name≜gbinom_falling_seven_fact_dvd}
+⟦Σ:Source⟧{src≜goals/gbinom-falling-seven-fact-dvd.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜python; model≜sympy; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
