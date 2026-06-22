@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜prod-icc-one-sub-two-div-pronic
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/prod-icc-one-sub-two-div-pronic.md
+  src≜packages/unsorry-archive-0033/backlog/prod-icc-one-sub-two-div-pronic.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/prod-icc-one-sub-two-div-pronic.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0033/goals/prod-icc-one-sub-two-div-pronic.lean
+  sha≜910e1755afdd911deddf227c777f7b33ab5aa80a45fc199d7449fcdf18a018a9
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

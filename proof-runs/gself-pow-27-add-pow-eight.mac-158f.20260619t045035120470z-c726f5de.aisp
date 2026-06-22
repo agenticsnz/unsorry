@@ -1,0 +1,8 @@
+𝔸5.1.run.gself-pow-27-add-pow-eight.mac-158f.20260619t045035120470z-c726f5de@2026-06-19
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260619t045035120470z-c726f5de; goal≜gself-pow-27-add-pow-eight; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜python; model≜sympy}
+⟦Γ:Goal⟧{goal≜gself-pow-27-add-pow-eight}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-19T04:50:35Z}
+⟦Σ:Artifact⟧{sha≜c40d7edd012ccd6e4e0c08cfe1ad4f8e2e77339242455f921457ab0b53035981}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

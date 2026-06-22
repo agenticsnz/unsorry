@@ -1,0 +1,20 @@
+𝔸5.1.goal.gzmod-72-pow-eighteen-sub-pow-six@2026-06-18
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gzmod-72-pow-eighteen-sub-pow-six
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/gzmod-72-pow-eighteen-sub-pow-six.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/gzmod-72-pow-eighteen-sub-pow-six.lean
+  sha≜a2d15f34223ef7d4af80c30e2ca370ed0a5c1a085c8441d9e53bf96b4eeda4e9
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

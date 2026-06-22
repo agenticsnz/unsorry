@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜quartic-n4-plus-four-dvd-by-shift-quadratic
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/quartic-n4-plus-four-dvd-by-shift-quadratic.md
+  src≜packages/unsorry-archive-0012/backlog/quartic-n4-plus-four-dvd-by-shift-quadratic.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/quartic-n4-plus-four-dvd-by-shift-quadratic.lean
+  lean≜packages/unsorry-archive-0012/goals/quartic-n4-plus-four-dvd-by-shift-quadratic.lean
   sha≜d1c197c8c22be8a753d10e172ada2e30e69c9b96c91cb45657c10d31951b6369
   aff≜-9
 }

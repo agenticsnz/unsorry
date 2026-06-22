@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-icc-two-div-k-mul-k-add-two-telescope@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-icc-two-div-k-mul-k-add-two-telescope
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-icc-two-div-k-mul-k-add-two-telescope.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-icc-two-div-k-mul-k-add-two-telescope.lean
+  sha≜ebfd4ad73ea4420c1fb1937da066fdda47f3f7d9e8971849ec31e6481aa9e7b9
+  aff≜-10
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

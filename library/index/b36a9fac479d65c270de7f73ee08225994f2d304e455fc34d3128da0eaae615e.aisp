@@ -1,8 +1,0 @@
-𝔸5.1.lemma.b36a9fac479d@2026-06-16
-γ≔unsorry.lemma.index
-⟦Ω:Lemma⟧{sha≜b36a9fac479d65c270de7f73ee08225994f2d304e455fc34d3128da0eaae615e; goal≜sum-two-k-add-one-mul-two-pow; name≜sum_two_k_add_one_mul_two_pow}
-⟦Σ:Source⟧{src≜goals/sum-two-k-add-one-mul-two-pow.lean}
-⟦Γ:Tags⟧{tags≜⟨⟩}
-⟦Λ:Meta⟧{use≜0; aff≜0}
-⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜claude; model≜template-sum-closedform; attempts≜1}
-⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
