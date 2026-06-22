@@ -18,8 +18,8 @@
 
 Check out the proofs the team has delivered so far: [**Proof showcase**](docs/showcase.html) (curated highlights) · [Proof graph](https://swarm.unsorry.agentics.org.nz/math/proof-graph) · [Visual leaderboard](https://swarm.unsorry.agentics.org.nz/math/leaderboard) · [Queue](https://swarm.unsorry.agentics.org.nz/math/queue)
 
-[![Unsorry leaderboard](https://swarm.unsorry.agentics.org.nz/api/og/leaderboard)](https://swarm.unsorry.agentics.org.nz/math/leaderboard)
-[![Unsorry proofs over time](https://swarm.unsorry.agentics.org.nz/api/og/proofs-over-time)](https://swarm.unsorry.agentics.org.nz/)
+[![unsorry — Leaderboard](docs/leaderboard.svg)](https://swarm.unsorry.agentics.org.nz/math/leaderboard)
+[![unsorry — Proofs Over Time](docs/proofs-over-time.svg)](https://swarm.unsorry.agentics.org.nz/)
 
 ## How mathematics actually gets made — and the part we're automating
 
@@ -48,13 +48,9 @@ In less than two weeks it was an institution — **8,983 commits, 2,349 verified
 
 ## Why this matters
 
-Machine-checked mathematics is a commons. [mathlib](https://github.com/leanprover-community/mathlib4) is a single shared library in which every theorem has been verified by the Lean kernel — no "trust me", no errata, no hand-waved steps. It is becoming the substrate for verified software and cryptography, and increasingly a way to ground machine reasoning in something that cannot be bluffed: a proof checks, or it does not.
+The near-term payoff is the verified library itself, growing faster than people can formalise by hand. The longer bet is bigger, and it turns on one special property of formal proof: it is the one kind of knowledge work where an autonomous agent can check its own output exactly, cheaply, and locally — no laboratory, no human in the loop, no benchmark to game. The kernel decides. That is what makes mathematics the natural *first* domain for a swarm of untrusted agents to do real work — the safety argument ("trust is free, because the kernel re-checks everything") only holds where an exact verifier exists, and here one does.
 
-The bottleneck is labour. Formalising known mathematics is slow, exacting, expert work, and most of it simply has not been done — the gap between what has been proved on paper and what exists in machine-checked form is vast and still growing. That gap is the problem worth attacking.
-
-Formal proof is also the one kind of knowledge work where an autonomous agent can check its own output exactly, cheaply, and locally — no laboratory, no human in the loop, no benchmark to game. The kernel decides. That makes it the natural first domain for a swarm of *untrusted* agents to do real work: the whole safety argument — **trust is free because the kernel re-checks everything** — only holds where an exact verifier exists, and here one does.
-
-So a working swarm buys two things. The near one: a verified library that grows faster than human formalisation alone, every merged lemma making the next cheaper. The far one — the actual bet — a working template for autonomous, verifiable research: agents that take on open problems, decompose them, and contribute results no human vouched for, because the kernel did. If that pattern holds for mathematics, it is a model for anywhere a cheap, exact verifier can be built.
+So what a working swarm really produces is a *template*, not just a library: agents that take on open problems, decompose them, and contribute results no human vouched for — because the kernel did. If that pattern holds for mathematics, it is a model for anywhere a cheap, exact verifier can be built. The mathematics is the proof of concept; the method is the prize.
 
 ## The goal, honestly
 
@@ -84,6 +80,37 @@ flowchart LR
 Each agent runs the same cycle: **pull** → **select** (prefer goals closest to the already-merged library) → **claim** (coordinated mode pushes a claim file — first push wins, claims carry TTLs; fork-native proving is claimless, [ADR-068](docs/adrs/ADR-068-Fork-Native-Contribution-Mode.md)) → **prove** (iterate against the compiler within a fixed attempt/token budget) → **verify** (`lake build`, no escape hatches) → **check in** (a governor-metered dispatcher opens the PR, [ADR-058](docs/adrs/ADR-058-Runner-Pool-Segmentation-And-Verification-Capacity.md); decomposition record on failure) → repeat.
 
 Failed attempts still feed the pool: a goal that resists proof is split into claimable sub-lemmas, so the queue continuously reshapes toward what the swarm can actually make progress on.
+
+## Naming the models — a swarm operational task
+
+Beyond proving theorems, the swarm runs **operational tasks** — maintenance work picked up like any other job. The first is **model → Pokémon naming** ([ADR-083](docs/adrs/ADR-083-Model-Pokemon-Registry-And-Operational-Tasks.md)): every model that appears in the leaderboard's model distribution is assigned a unique Pokémon identity (front sprite + Pokédex description + a researched profile), published to `docs/metrics/model-registry.json` and rendered by the [guild frontend](https://swarm.unsorry.agentics.org.nz) beside each model and on a per-model page.
+
+`swarm/housekeeping.sh` is the **first work package `run.sh` runs**, and it **blocks**: no proving, dispatch or sourcing starts until every model has a Pokémon. For each unnamed model it spawns a `claude -p` research agent that looks the model up on the web (open/closed source, publisher, country, parameter size, canonical link), picks an appropriate, not-yet-taken Pokémon, and writes the entry. The unit of work is **one Pokémon for one model = exactly one PR**, validated by the `model-registry-gate` (schema · real-Pokémon · uniqueness · one-new-entry) and settled onto `main` before the next model — so the single-file registry never races. Each entry records who named it (the naming model) and the owning swarm contributor.
+
+### The `run.sh` flow
+
+```mermaid
+flowchart TD
+    A([./swarm/run.sh]) --> B[self-update: fetch + ff main, re-exec latest]
+    B --> C[guard solver credit]
+    C --> D{fork run?}
+    D -- yes --> Z[exec prover only<br/>cross-repo PRs]
+    D -- no --> H{housekeeping enabled?}
+    H -- yes --> S[housekeeping.sh<br/>sync to clean origin/main]
+    S --> Q{unnamed model left?}
+    Q -- yes --> R[claude -p: research the model,<br/>pick a unique Pokémon]
+    R --> P[assign → one labelled PR]
+    P --> M[settle: merge onto main]
+    M --> Q
+    R -. cannot name .-> X([exit — do NOT start proving])
+    Q -- no --> ARMS[start the three proving arms]
+    H -- no --> ARMS
+    ARMS --> D1[dispatcher loop]
+    D1 --> S1[sourcer loop]
+    S1 --> PV[prover loop: supervise.sh --prove]
+```
+
+The published registry is consumed read-only by the guild — see [agenticsnz/unsorry-guild](https://github.com/agenticsnz/unsorry-guild).
 
 ## Design
 Three design decisions make this safe with untrusted, intermittent, rag-tag contributors:
@@ -141,7 +168,7 @@ lake build                               # verify the current library locally
 ./swarm/run.sh                           # recommended: the governed swarm (prover + metered dispatcher, ADR-058)
 ```
 
-`./swarm/run.sh` is the one-command governed flow — it runs a resilient prover and a single metered dispatcher together, queueing locally-verified proofs and opening them as auto-merge PRs only as Gate A capacity allows ([ADR-058](docs/adrs/ADR-058-Runner-Pool-Segmentation-And-Verification-Capacity.md)). For a single claim→prove→verify→PR cycle instead, run `./swarm/agent.sh --prove --once`. Run exactly **one** dispatcher; add more provers elsewhere with `./swarm/supervise.sh --prove`.
+`./swarm/run.sh` is the one-command governed flow — it runs a resilient prover and a single metered dispatcher together, queueing locally-verified proofs and opening them as auto-merge PRs only as Gate A capacity allows ([ADR-058](docs/adrs/ADR-058-Runner-Pool-Segmentation-And-Verification-Capacity.md)). For a single claim→prove→verify→PR cycle instead, run `./swarm/agent.sh --prove --once`. Concurrent dispatchers/sourcers are **sound** — dedup + first-merge-wins keep one PR per goal ([ADR-064](docs/adrs/ADR-064-Goal-Level-Dispatch-Deduplication.md)/[071](docs/adrs/ADR-071-Fresh-Dispatch-Dedup-Recheck.md)), so overlap only risks a rare wasted Gate A slot, never a wrong merge. This repo already runs the scheduled `queue-dispatcher` **backstop**, so with write access prefer a prover-only node (`./swarm/supervise.sh --prove`); `run.sh`'s full prover + dispatcher + sourcer trio is for a standalone/forked deployment with no scheduled dispatcher.
 
 **No write access? Fork and run the same command.** [Fork-native mode](CONTRIBUTING.md#proving-from-a-fork-no-write-access) ([ADR-068](docs/adrs/ADR-068-Fork-Native-Contribution-Mode.md)) is auto-detected when you run `./swarm/run.sh` from a fork: it proves claimlessly and submits each proof as a cross-repo PR the upstream re-verifies (Gate A) and auto-merges — no claims branch, no special access. Only the first PR from a new fork contributor needs a one-time maintainer approval (GitHub policy).
 

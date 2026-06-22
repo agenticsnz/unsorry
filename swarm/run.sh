@@ -22,21 +22,25 @@
 #       resilient via ADR-017.
 # All three inherit this shell's UNSORRY_* env and are torn down together on exit.
 #
-# Run exactly ONE dispatcher and ONE sourcer. For a multi-node swarm, run this
-# once and start additional `./swarm/supervise.sh --prove` provers elsewhere — do
-# not start more dispatchers or sourcers.
+# Concurrent dispatchers and sourcers are SOUND, not a conflict: dispatch dedup
+# (ADR-064 + ADR-071) plus first-merge-wins (ADR-004) keep "one PR per goal"
+# across passes AND across processes, so the worst case of overlap is a rare
+# wasted Gate A slot, never a wrong merge. Prefer ONE dispatcher and ONE sourcer
+# per swarm anyway — extra ones are redundant, not harmful. For a multi-node
+# swarm, run this once and start additional `./swarm/supervise.sh --prove`
+# provers elsewhere.
 #
-# NOTE: if the repository's scheduled `queue-dispatcher` workflow (.github/
-# workflows/queue-dispatcher.yml) is enabled, IT is already that one dispatcher.
-# Launching run.sh then adds a SECOND dispatcher. ADR-064 goal-level dedup makes
-# this mostly safe — both read the same open-PR set and skip a goal already
-# proved or already PR'd — but two passes can still both open a PR for the same
-# goal inside the window before one is visible to the other (first-merge-wins
-# then closes the loser as a conflict, wasting a Gate A slot). So on a repo with
-# the scheduled dispatcher, run a prover only — `./swarm/supervise.sh --prove` —
-# rather than run.sh. Use run.sh for a standalone/forked deployment that has no
-# scheduled dispatcher (and so no scheduled sourcing either — its demand-driven
-# sourcer arm is then the backlog's only automatic top-up).
+# NOTE: the repository's scheduled `queue-dispatcher` workflow (.github/
+# workflows/queue-dispatcher.yml) is an always-on BACKSTOP, not a rival owner —
+# it drains the queue even when no swarm node is running locally (#1909), is
+# governor-capped, and no-ops when full. Running run.sh's dispatcher alongside it
+# is therefore REDUNDANT, not conflicting (the dedup above keeps it sound; at
+# worst a duplicate pass wastes a Gate A slot). So on a repo that already runs
+# that backstop (e.g. agenticsnz/unsorry), prefer a prover only —
+# `./swarm/supervise.sh --prove` — to avoid spending verifier capacity twice.
+# Use run.sh's full trio for a standalone/forked deployment that has no scheduled
+# dispatcher (and so no scheduled sourcing either — its demand-driven sourcer arm
+# is then the backlog's only automatic top-up).
 #
 # Usage:
 #   ./swarm/run.sh [--goal <id>] [--provider <name>] [-pi [<model>]] [...]

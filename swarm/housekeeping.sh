@@ -15,13 +15,16 @@
 # Exit codes: 0 all models named / nothing to do · 1 could not name some model
 # (run.sh then refuses to start the proving arms) · 2 config error.
 set -euo pipefail
+# Force Python UTF-8 everywhere: agent responses carry non-ASCII (accented names,
+# em-dashes) and a C locale would otherwise crash stdin decode in the helpers.
+export PYTHONUTF8=1
 
 REGISTRY="docs/metrics/model-registry.json"
 DISTRIBUTION="docs/metrics/leaderboard-ui.json"
 # Models to name per invocation. Default 0 = drain ALL unnamed models (the
 # run.sh guarantee). A positive value caps the run (testing/manual use).
 MAX="${UNSORRY_REGISTRY_MAX:-0}"
-RETRIES="${UNSORRY_REGISTRY_RETRIES:-3}"      # research attempts per model
+RETRIES="${UNSORRY_REGISTRY_RETRIES:-5}"      # research attempts per model
 SETTLE_TRIES="${UNSORRY_REGISTRY_SETTLE_TRIES:-60}"  # merge-settle polls per PR
 SETTLE_WAIT="${UNSORRY_REGISTRY_SETTLE_WAIT:-10}"    # seconds between polls
 MODEL="${UNSORRY_MODEL:-opus}"
@@ -81,7 +84,10 @@ You are a swarm operational agent performing a model-naming work package
    ${taken:-(none yet)}.
    Give its name and national Pokédex id. Justify the choice.
 
-3. OUTPUT ONLY a single JSON object (no prose, no markdown fences) of the form:
+3. Respond with ONLY this JSON object. Your ENTIRE reply MUST start with "{" and
+   end with "}" — no preamble, no explanation, no markdown fences. Keep it
+   COMPACT so the JSON is complete and valid: each research value at most ~8
+   words; "profile" at most 2 short sentences; at most 3 sources.
    {
      "pokemon": {"name": "<Name>", "dex_id": <int>},
      "research": {
@@ -89,7 +95,7 @@ You are a swarm operational agent performing a model-naming work package
        "publisher": "...", "country": "...", "parameter_size": "...",
        "license": "...", "canonical_url": "https://..."
      },
-     "profile": "<2-3 sentences explaining why this Pokémon represents this model>",
+     "profile": "<<=2 sentences on why this Pokémon represents this model>",
      "sources": ["https://...", "https://..."]
    }
 Do not include the sprite_url or description — those are filled deterministically.
@@ -130,24 +136,26 @@ model_landed() {
     | python3 -c "import sys,json;d=json.load(sys.stdin);sys.exit(0 if '$1' in {m['provider_model'] for m in d.get('models',[])} else 1)" 2>/dev/null
 }
 
-# Strip optional markdown fences and return the first balanced JSON object.
+# Return the first JSON object from the agent's reply. Uses `-c` (NOT `- <<EOF`)
+# so the piped reply stays on stdin — a heredoc would itself BE python's stdin
+# and the piped reply would be discarded (sys.stdin.read() → empty). raw_decode
+# parses correctly through braces inside strings and rejects a truncated object.
 extract_json() {
-  python3 - <<'PY'
+  # shellcheck disable=SC2016  # the program is literal; $ must not be expanded
+  python3 -c '
 import json, re, sys
-text = sys.stdin.read()
-text = re.sub(r"^\s*```(?:json)?|```\s*$", "", text.strip(), flags=re.MULTILINE)
+text = sys.stdin.buffer.read().decode("utf-8", "replace")
+text = re.sub(r"^\s*```(?:json)?\s*|\s*```\s*$", "", text.strip(), flags=re.MULTILINE)
 start = text.find("{")
-depth = 0
-for i in range(start, len(text)):
-    if text[i] == "{":
-        depth += 1
-    elif text[i] == "}":
-        depth -= 1
-        if depth == 0:
-            sys.stdout.write(text[start : i + 1])
-            sys.exit(0)
-sys.exit(1)
-PY
+if start == -1:
+    sys.exit(1)
+try:
+    obj, _ = json.JSONDecoder().raw_decode(text[start:])
+except ValueError:
+    sys.exit(1)
+sys.stdout.buffer.write(json.dumps(obj, ensure_ascii=False).encode("utf-8"))
+sys.exit(0)
+'
 }
 
 # Research + write the entry for $1; on success leaves REGISTRY modified in the
@@ -160,17 +168,22 @@ research_and_write() {
   for attempt in $(seq 1 "$RETRIES"); do
     prompt="$(build_prompt "$pm" "$taken")"
     raw="$(timeout "$WALL" claude -p "$prompt" --model "$MODEL" \
-      --output-format text --allowedTools "WebSearch,WebFetch,Read" 2>/dev/null || true)"
+      --output-format text --allowedTools "WebSearch,WebFetch,Read" \
+      </dev/null 2>"$tmp/err.log" || true)"
     if [ -z "$raw" ]; then
-      log "attempt $attempt: empty agent response for '$pm'"; continue
+      log "attempt $attempt: empty agent response for '$pm' (stderr: $(tr '\n' ' ' < "$tmp/err.log" | tail -c 300))"
+      continue
     fi
     if ! printf '%s' "$raw" | extract_json > "$candidate"; then
-      log "attempt $attempt: no JSON object in response for '$pm'"; continue
+      log "attempt $attempt: no JSON object for '$pm' (raw head: $(printf '%s' "$raw" | tr '\n' ' ' | head -c 220))"
+      continue
     fi
     if python3 -m tools.model_registry assign \
         --registry "$REGISTRY" --provider-model "$pm" --candidate "$candidate" \
         --assigned-by "$AGENT_ID" --assigned-with "$(named_by_model "$MODEL")" \
-        --contributor "$CONTRIBUTOR" --assigned-at "$(now_z)"; then
+        --contributor "$CONTRIBUTOR" --assigned-at "$(now_z)" >/dev/null; then
+      # Echo ONLY the Pokémon name (assign's "OK" was sent to /dev/null) so the
+      # caller's commit/PR title isn't polluted.
       python3 -c "import json;print(json.load(open('$candidate'))['pokemon']['name'])"
       rm -rf "$tmp"; return 0
     fi
@@ -183,7 +196,10 @@ research_and_write() {
 # Branch, commit, push and open one labelled PR for the staged registry change.
 open_pr() {
   local pm="$1" poke="$2" branch="$3"
-  git checkout -b "$branch" >/dev/null
+  # The branch name carries a per-attempt unique suffix (see name_one), so it
+  # never collides with a leftover or a *concurrent* runner's branch — no
+  # delete-then-push (which would clobber another runner mid-flight).
+  git checkout -B "$branch" >/dev/null
   git add "$REGISTRY"
   git commit -m "$(commit_subject "$pm" "$poke")" \
     -m "Assign the Pokémon identity for \`$pm\` (ADR-083). One Pokémon per PR." >/dev/null
@@ -196,14 +212,18 @@ open_pr() {
   gh pr merge "$branch" --squash --auto >/dev/null 2>&1 || true  # auto-merge if the repo allows
 }
 
-# Block until $pm's PR ($branch) lands on main, then re-sync the local checkout.
-# Nudges the merge each poll (GitHub still gates on required checks), so it works
-# whether or not repo-level auto-merge is enabled.
+# Block until $pm lands on main (by THIS PR or any concurrent runner's), then
+# re-sync. Nudges the merge each poll (GitHub still gates on required checks), so
+# it works whether or not repo-level auto-merge is enabled. If the model was
+# named by another runner, our now-redundant PR is closed.
 settle_pr() {
   local pm="$1" branch="$2"
   for _ in $(seq 1 "$SETTLE_TRIES"); do
     git fetch -q origin "$BASE_BRANCH" 2>/dev/null || true
     if model_landed "$pm"; then
+      # If our PR lost the race it's still open with a now-duplicate entry the
+      # gate rejects — close it (a no-op if ours is the one that merged).
+      gh pr close "$branch" --delete-branch >/dev/null 2>&1 || true
       git checkout -q "$BASE_BRANCH"
       git reset --hard -q "origin/$BASE_BRANCH"
       git branch -D "$branch" >/dev/null 2>&1 || true
@@ -219,7 +239,9 @@ settle_pr() {
 # Name one model end-to-end: research → PR → settle onto main.
 name_one() {
   local pm="$1" poke branch
-  branch="$(branch_name "$pm")"
+  # Per-attempt unique suffix so concurrent runners (and abandoned earlier runs)
+  # never share a branch name. The PR title/commit stay clean (slug only).
+  branch="$(branch_name "$pm")-$$-${RANDOM}"
   if ! poke="$(research_and_write "$pm")"; then
     git checkout -- "$REGISTRY" 2>/dev/null || true
     log "could not research/validate a Pokémon for '$pm'"
@@ -233,6 +255,27 @@ name_one() {
   return 0
 }
 
+# Put the checkout on an up-to-date, clean BASE_BRANCH before naming, so each
+# per-model branch is cut from origin/<base> even if run.sh left us on a stale
+# branch (e.g. a previous feature branch). Refuses to clobber tracked changes.
+sync_base() {
+  git fetch -q origin "$BASE_BRANCH" 2>/dev/null || return 1
+  git diff --quiet && git diff --cached --quiet || return 1
+  git checkout -q -B "$BASE_BRANCH" "origin/$BASE_BRANCH"
+}
+
+# Force the checkout back to an up-to-date BASE_BRANCH at the top of every naming
+# cycle, discarding our own transient registry edit. This is what makes
+# CONCURRENT runners cooperate: each cycle re-reads what others have merged, so a
+# runner only ever attempts a genuinely-unnamed model (it won't keep re-picking
+# Pokémon another operator already found).
+goto_clean_base() {
+  git checkout -q -- . 2>/dev/null || true
+  git checkout -q "$BASE_BRANCH" 2>/dev/null || true
+  git fetch -q origin "$BASE_BRANCH" 2>/dev/null || true
+  git reset --hard -q "origin/$BASE_BRANCH" 2>/dev/null || true
+}
+
 main() {
   case "${1:-}" in
     -h|--help) usage; exit 0 ;;
@@ -244,26 +287,48 @@ main() {
   if [ ! -f "$DISTRIBUTION" ]; then
     log "no $DISTRIBUTION yet — leaderboard not generated; nothing to do"; exit 0
   fi
+  if ! sync_base; then
+    log "could not sync to a clean $BASE_BRANCH (uncommitted tracked changes, or no network) — aborting before naming"
+    exit 2
+  fi
 
   CONTRIBUTOR="$(resolve_contributor)"
   log "owning swarm contributor: $CONTRIBUTOR; naming model: $(named_by_model "$MODEL")"
 
-  local named=0 pm
+  local named=0 misses=0 pm
+  local cap_misses="${UNSORRY_REGISTRY_MAX_MISSES:-8}"
   while [ "$MAX" -le 0 ] || [ "$named" -lt "$MAX" ]; do
+    # Re-sync to main, then pick a RANDOM unnamed model. Both points let multiple
+    # run.sh operators cooperate: the re-sync drops models others just named, and
+    # the random pick keeps two runners from lock-stepping on the same model.
+    goto_clean_base
     pm="$(python3 -m tools.model_registry unassigned \
-      --distribution "$DISTRIBUTION" --registry "$REGISTRY" | head -n1)"
+      --distribution "$DISTRIBUTION" --registry "$REGISTRY" | shuf | head -n1)"
     if [ -z "$pm" ]; then
       [ "$named" -eq 0 ] && log "every model already has a Pokémon — nothing to do"
       break
     fi
     if name_one "$pm"; then
-      named=$((named + 1))
+      named=$((named + 1)); misses=0
     else
-      log "FAILED to resolve '$pm'; aborting so it is named before any proving"
-      return 1
+      # A lost race or a transient failure — skip and try another model rather
+      # than aborting (another runner likely took this one).
+      misses=$((misses + 1))
+      log "did not land '$pm' (another runner may have taken it) — skipping [$misses/$cap_misses]"
+      [ "$misses" -ge "$cap_misses" ] && { log "too many consecutive misses — stopping"; break; }
     fi
   done
-  log "resolved $named model(s); every distribution model now has a Pokémon"
+
+  # Guarantee check: every distribution model must have a Pokémon (named by any
+  # runner) before run.sh starts proving. Re-sync first so we count what's truly
+  # on main.
+  goto_clean_base
+  if [ -n "$(python3 -m tools.model_registry unassigned \
+      --distribution "$DISTRIBUTION" --registry "$REGISTRY")" ]; then
+    log "some models are still unnamed (named $named here); re-run to finish"
+    return 1
+  fi
+  log "every distribution model now has a Pokémon (named $named here this run)"
 }
 
 main "$@"

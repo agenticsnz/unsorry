@@ -4,15 +4,15 @@
 <rect width="900" height="100%" rx="18" fill="#ffffff"/>
 <rect x="0.5" y="0.5" width="899" height="485" rx="18" fill="none" stroke="#e2e8f0"/>
 <text x="32" y="44" font-family="Inter, system-ui, sans-serif" font-size="28" font-weight="700" fill="#334155">unsorry — Leaderboard</text>
-<text x="32" y="72" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#64748b">2608 credited proofs · 2300 explicit · 308 inferred from git · 9 contributors</text>
+<text x="32" y="72" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#64748b">2617 credited proofs · 2309 explicit · 308 inferred from git · 9 contributors</text>
 <text x="34" y="148" font-family="Georgia, serif" font-size="24" font-style="italic" font-weight="700" fill="#fbbf24">1</text>
 <a href="https://github.com/ohdearquant">
 <text x="82" y="138" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="650" fill="#334155">@ohdearquant</text>
 </a>
-<text x="82" y="158" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">1556 proofs · 2433 difficulty · 1555 explicit · 1 inferred · 719 runs</text>
+<text x="82" y="158" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">1565 proofs · 2442 difficulty · 1564 explicit · 1 inferred · 660 runs</text>
 <rect x="320" y="127" width="420" height="26" rx="13" fill="#f1f5f9"/>
 <rect x="320" y="127" width="390" height="26" rx="13" fill="#e0f2fe"/>
-<text x="760" y="146" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">282200 pts</text>
+<text x="760" y="146" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">283325 pts</text>
 <text x="760" y="162" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#64748b">explicit + inferred</text>
 <text x="34" y="212" font-family="Georgia, serif" font-size="24" font-style="italic" font-weight="700" fill="#94a3b8">2</text>
 <a href="https://github.com/chat-bit-01">
@@ -20,17 +20,17 @@
 </a>
 <text x="82" y="222" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">564 proofs · 1525 difficulty · 317 explicit · 247 inferred · 0 runs</text>
 <rect x="320" y="191" width="420" height="26" rx="13" fill="#f1f5f9"/>
-<rect x="320" y="191" width="230" height="26" rx="13" fill="#e0f2fe"/>
+<rect x="320" y="191" width="229" height="26" rx="13" fill="#e0f2fe"/>
 <text x="760" y="210" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">166600 pts</text>
 <text x="760" y="226" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#64748b">explicit + inferred</text>
 <text x="34" y="276" font-family="Georgia, serif" font-size="24" font-style="italic" font-weight="700" fill="#b45309">3</text>
 <a href="https://github.com/cgbarlow">
 <text x="82" y="266" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="650" fill="#334155">@cgbarlow</text>
 </a>
-<text x="82" y="286" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">191 proofs · 297 difficulty · 144 explicit · 47 inferred · 330 runs</text>
+<text x="82" y="286" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">191 proofs · 297 difficulty · 144 explicit · 47 inferred · 331 runs</text>
 <rect x="320" y="255" width="420" height="26" rx="13" fill="#f1f5f9"/>
-<rect x="320" y="255" width="194" height="26" rx="13" fill="#e0f2fe"/>
-<text x="760" y="274" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">141035 pts</text>
+<rect x="320" y="255" width="195" height="26" rx="13" fill="#e0f2fe"/>
+<text x="760" y="274" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">141665 pts</text>
 <text x="760" y="290" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#64748b">explicit + inferred</text>
 <text x="34" y="340" font-family="Georgia, serif" font-size="24" font-style="italic" font-weight="700" fill="#cbd5e1">4</text>
 <a href="https://github.com/ruvnet">
@@ -47,7 +47,7 @@
 </a>
 <text x="82" y="414" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">106 proofs · 170 difficulty · 102 explicit · 4 inferred · 82 runs</text>
 <rect x="320" y="383" width="420" height="26" rx="13" fill="#f1f5f9"/>
-<rect x="320" y="383" width="47" height="26" rx="13" fill="#e0f2fe"/>
+<rect x="320" y="383" width="46" height="26" rx="13" fill="#e0f2fe"/>
 <text x="760" y="402" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">34050 pts</text>
 <text x="760" y="418" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#64748b">explicit + inferred</text>
 <text x="32" y="454" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">Inferred credits use git add-author history only when explicit solver provenance is missing.</text>
