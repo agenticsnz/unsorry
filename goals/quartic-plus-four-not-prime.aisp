@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜quartic-plus-four-not-prime
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜4
 }
 ⟦Σ:Source⟧{
-  src≜backlog/quartic-plus-four-not-prime.md
+  src≜packages/unsorry-archive-0033/backlog/quartic-plus-four-not-prime.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/quartic-plus-four-not-prime.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0033/goals/quartic-plus-four-not-prime.lean
+  sha≜9043d8e79f0ae595cde0739b50c3b2838f035c2cfeeec261588235df7bc19982
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

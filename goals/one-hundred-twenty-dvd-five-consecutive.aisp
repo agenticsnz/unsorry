@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜one-hundred-twenty-dvd-five-consecutive
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/one-hundred-twenty-dvd-five-consecutive.md
+  src≜packages/unsorry-archive-0014/backlog/one-hundred-twenty-dvd-five-consecutive.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/one-hundred-twenty-dvd-five-consecutive.lean
+  lean≜packages/unsorry-archive-0014/goals/one-hundred-twenty-dvd-five-consecutive.lean
   sha≜a2e7963872363095f1dd3014f6a2647e9e4995d0724528ba135ba789c02266b6
   aff≜-19
 }

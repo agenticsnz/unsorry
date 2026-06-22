@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-two-cubes-zmod-nine-ne-four
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-two-cubes-zmod-nine-ne-four.md
+  src≜packages/unsorry-archive-0039/backlog/sum-two-cubes-zmod-nine-ne-four.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-two-cubes-zmod-nine-ne-four.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0039/goals/sum-two-cubes-zmod-nine-ne-four.lean
+  sha≜e0b95670db56b2281ef35efb0b2c630ba6a1b91242c9271620b489cfe4cc1c08
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

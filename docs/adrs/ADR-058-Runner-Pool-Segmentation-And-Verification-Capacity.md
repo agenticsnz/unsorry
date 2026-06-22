@@ -6,7 +6,7 @@
 | **Initiative** | unsorry CI scalability and fork-safe verification |
 | **Proposed By** | unsorry maintainers |
 | **Date** | 2026-06-16 |
-| **Status** | Proposed |
+| **Status** | Accepted |
 
 ## Context
 
@@ -185,3 +185,4 @@ operations plan.
 | Status | Approver | Date |
 |--------|----------|------|
 | Proposed | unsorry maintainers | 2026-06-16 |
+| Accepted (implemented — Gate A job routing, #1915) | unsorry maintainers | 2026-06-19 |

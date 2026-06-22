@@ -1,0 +1,20 @@
+𝔸5.1.goal.gzmod-480-pow-25-sub-pow-seventeen@2026-06-19
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gzmod-480-pow-25-sub-pow-seventeen
+  phase≜prove
+  status≜archived
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜packages/unsorry-archive-0028/backlog/gzmod-480-pow-25-sub-pow-seventeen.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜packages/unsorry-archive-0028/goals/gzmod-480-pow-25-sub-pow-seventeen.lean
+  sha≜d20234b98bb82a35a47070d6461376b48f3f4bfc3ff6a81cacbaf744533b126b
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
