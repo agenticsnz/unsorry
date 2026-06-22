@@ -68,6 +68,21 @@ def changed_archive_roots(
     return archive_roots_from_paths(root, paths)
 
 
+def only_index_metadata_changed(package_rel: str, changed) -> bool:
+    """True iff this package's changed files (vs base) are confined to
+    ``library/index/*.aisp`` — proof modules, lakefile, toolchain and goals all
+    untouched. Such a change (e.g. an attribution/provenance edit) cannot affect
+    proof content or packaging, so the disk-heavy ``lake build`` is redundant given
+    the ADR-048 provenance byte-identity guard already proves the modules unchanged.
+    Returns False if the package has no changes (nothing to fast-path)."""
+    prefix = f"{package_rel}/"
+    index_prefix = f"{package_rel}/library/index/"
+    in_pkg = [c for c in changed if c.startswith(prefix)]
+    if not in_pkg:
+        return False
+    return all(c.startswith(index_prefix) and c.endswith(".aisp") for c in in_pkg)
+
+
 def default_targets(package_root: Path) -> list[str]:
     lakefile = package_root / "lakefile.toml"
     if not lakefile.is_file():
@@ -242,6 +257,19 @@ def validate_archive_package(
     )
     if generate != 0:
         return generate
+
+    # ADR-048 fast-path: a change confined to library/index/*.aisp (attribution /
+    # provenance metadata) leaves every proof module, the lakefile, and the
+    # toolchain byte-identical — the provenance guard above already proved it. The
+    # lake build only re-checks packaging, which a metadata edit cannot break, and
+    # rebuilding every changed package (each cloning mathlib) exhausts the runner
+    # disk on a wide metadata PR (#3218). Skip the redundant build for such changes.
+    if base is not None:
+        changed_now = changed_paths(repo_root, base, runner) or []
+        if only_index_metadata_changed(rel.as_posix(), changed_now):
+            print(f"[archive] {rel}: index-metadata-only change — proof modules "
+                  f"byte-identical (provenance OK), skipping redundant rebuild (ADR-048)")
+            return 0
 
     modules = module_names(package_root, "library")
     targets = default_targets(package_root)

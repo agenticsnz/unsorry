@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-quadruple-product-closed-form@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-quadruple-product-closed-form
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-quadruple-product-closed-form.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-quadruple-product-closed-form.lean
+  sha≜9dfd7f81f84e6465761b5ed94fffed4fb21bc91bd190b4ed52546151551d1011
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

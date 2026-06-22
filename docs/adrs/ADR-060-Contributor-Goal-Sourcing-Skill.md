@@ -6,7 +6,7 @@
 | **Initiative** | contributor scale / problem supply |
 | **Proposed By** | unsorry maintainers |
 | **Date** | 2026-06-16 |
-| **Status** | Proposed |
+| **Status** | Accepted |
 
 ## Context
 
@@ -159,3 +159,4 @@ ADR-054 quota/abuse controls before the fork path is advertised broadly.
 | Status | Approver | Date |
 |--------|----------|------|
 | Proposed | unsorry maintainers | 2026-06-16 |
+| Accepted (implemented — goal-sourcing skill / gen_triples / leaderboard, #1836, #1837, #1838) | unsorry maintainers | 2026-06-19 |

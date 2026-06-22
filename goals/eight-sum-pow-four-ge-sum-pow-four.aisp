@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜eight-sum-pow-four-ge-sum-pow-four
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/eight-sum-pow-four-ge-sum-pow-four.md
+  src≜packages/unsorry-archive-0010/backlog/eight-sum-pow-four-ge-sum-pow-four.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/eight-sum-pow-four-ge-sum-pow-four.lean
+  lean≜packages/unsorry-archive-0010/goals/eight-sum-pow-four-ge-sum-pow-four.lean
   sha≜8274b125083a1a6f1991980f2cb8f55780a7f226e551212d7d9a3ef4b1290e65
   aff≜-9
 }

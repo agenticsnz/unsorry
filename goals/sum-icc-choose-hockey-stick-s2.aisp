@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-icc-choose-hockey-stick-s2
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜decompositions/sum-icc-choose-hockey-stick.adam91holt.aisp
+  src≜packages/unsorry-archive-0037/decompositions/sum-icc-choose-hockey-stick.adam91holt.aisp
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-icc-choose-hockey-stick-s2.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0037/goals/sum-icc-choose-hockey-stick-s2.lean
+  sha≜e37fdeb054cbd14f4754652ed4fd2c9f7ef8621bd8f24bdce2d7e654aed0ab6e
   aff≜-10
   depth≜1
 }

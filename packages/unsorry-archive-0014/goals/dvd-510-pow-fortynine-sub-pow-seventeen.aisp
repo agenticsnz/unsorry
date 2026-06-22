@@ -1,0 +1,20 @@
+𝔸5.1.goal.dvd-510-pow-fortynine-sub-pow-seventeen@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜dvd-510-pow-fortynine-sub-pow-seventeen
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/dvd-510-pow-fortynine-sub-pow-seventeen.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/dvd-510-pow-fortynine-sub-pow-seventeen.lean
+  sha≜504c58279170601e478d56359e2a99f9e8ae1f6ddfd76382e09075747dc0f2e3
+  aff≜-19
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

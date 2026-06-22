@@ -1,0 +1,8 @@
+𝔸5.1.lemma.b86ca7ff3500@2026-06-19
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜b86ca7ff3500ae96d4038d03fb71b01eee6a5e4fcabb652f4301795d2a0b9271; goal≜gpow-diff-twelve-pow-five; name≜gpow_diff_twelve_pow_five}
+⟦Σ:Source⟧{src≜goals/gpow-diff-twelve-pow-five.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜cgbarlow; agent≜mac-158f; provider≜python; model≜sympy; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

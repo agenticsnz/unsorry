@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-two-k-sub-one-mul-two-pow
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-two-k-sub-one-mul-two-pow.md
+  src≜packages/unsorry-archive-0013/backlog/sum-two-k-sub-one-mul-two-pow.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-two-k-sub-one-mul-two-pow.lean
+  lean≜packages/unsorry-archive-0013/goals/sum-two-k-sub-one-mul-two-pow.lean
   sha≜1c7e8ed42e29f7d56c8d0b904c5d384c181c47bf6a133b6c3ccd70e6ea7753aa
   aff≜-9
 }

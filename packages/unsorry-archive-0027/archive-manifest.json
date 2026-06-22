@@ -1,0 +1,139 @@
+{
+  "block_id": "unsorry-archive-0027",
+  "target_size": 40,
+  "proof_count": 30,
+  "status": "frozen",
+  "source_commit": "b2d827f61643c397e2230e962c79644c942146e8",
+  "validation_commit": null,
+  "pins": {
+    "lean_toolchain": "leanprover/lean4:v4.30.0",
+    "mathlib": "v4.30.0"
+  },
+  "notes": [
+    "ADR-041 proof archive block 0027.",
+    "Whole decomposition trees + standalone proved goals only (invariant A).",
+    "Active goal records remain as archived metadata pointing at this package."
+  ],
+  "goals": [
+    {
+      "goal": "gzmod-24-pow-58-sub-pow-32",
+      "module": "Unsorry.Gzmod24Pow58SubPow32"
+    },
+    {
+      "goal": "gzmod-24-pow-59-sub-pow-21",
+      "module": "Unsorry.Gzmod24Pow59SubPow21"
+    },
+    {
+      "goal": "gzmod-24-pow-59-sub-pow-25",
+      "module": "Unsorry.Gzmod24Pow59SubPow25"
+    },
+    {
+      "goal": "gzmod-24-pow-59-sub-pow-33",
+      "module": "Unsorry.Gzmod24Pow59SubPow33"
+    },
+    {
+      "goal": "gzmod-24-pow-59-sub-pow-45",
+      "module": "Unsorry.Gzmod24Pow59SubPow45"
+    },
+    {
+      "goal": "gzmod-24-pow-59-sub-pow-57",
+      "module": "Unsorry.Gzmod24Pow59SubPow57"
+    },
+    {
+      "goal": "gzmod-24-pow-60-sub-pow-22",
+      "module": "Unsorry.Gzmod24Pow60SubPow22"
+    },
+    {
+      "goal": "gzmod-24-pow-60-sub-pow-26",
+      "module": "Unsorry.Gzmod24Pow60SubPow26"
+    },
+    {
+      "goal": "gzmod-24-pow-60-sub-pow-34",
+      "module": "Unsorry.Gzmod24Pow60SubPow34"
+    },
+    {
+      "goal": "gzmod-24-pow-60-sub-pow-46",
+      "module": "Unsorry.Gzmod24Pow60SubPow46"
+    },
+    {
+      "goal": "gzmod-24-pow-60-sub-pow-58",
+      "module": "Unsorry.Gzmod24Pow60SubPow58"
+    },
+    {
+      "goal": "gzmod-24-pow-61-sub-pow-23",
+      "module": "Unsorry.Gzmod24Pow61SubPow23"
+    },
+    {
+      "goal": "gzmod-24-pow-61-sub-pow-27",
+      "module": "Unsorry.Gzmod24Pow61SubPow27"
+    },
+    {
+      "goal": "gzmod-24-pow-61-sub-pow-35",
+      "module": "Unsorry.Gzmod24Pow61SubPow35"
+    },
+    {
+      "goal": "gzmod-24-pow-61-sub-pow-47",
+      "module": "Unsorry.Gzmod24Pow61SubPow47"
+    },
+    {
+      "goal": "gzmod-24-pow-61-sub-pow-59",
+      "module": "Unsorry.Gzmod24Pow61SubPow59"
+    },
+    {
+      "goal": "gzmod-24-pow-62-sub-pow-24",
+      "module": "Unsorry.Gzmod24Pow62SubPow24"
+    },
+    {
+      "goal": "gzmod-24-pow-62-sub-pow-28",
+      "module": "Unsorry.Gzmod24Pow62SubPow28"
+    },
+    {
+      "goal": "gzmod-24-pow-62-sub-pow-36",
+      "module": "Unsorry.Gzmod24Pow62SubPow36"
+    },
+    {
+      "goal": "gzmod-24-pow-62-sub-pow-48",
+      "module": "Unsorry.Gzmod24Pow62SubPow48"
+    },
+    {
+      "goal": "gzmod-24-pow-62-sub-pow-60",
+      "module": "Unsorry.Gzmod24Pow62SubPow60"
+    },
+    {
+      "goal": "gzmod-24-pow-63-sub-pow-25",
+      "module": "Unsorry.Gzmod24Pow63SubPow25"
+    },
+    {
+      "goal": "gzmod-24-pow-63-sub-pow-29",
+      "module": "Unsorry.Gzmod24Pow63SubPow29"
+    },
+    {
+      "goal": "gzmod-24-pow-63-sub-pow-37",
+      "module": "Unsorry.Gzmod24Pow63SubPow37"
+    },
+    {
+      "goal": "gzmod-24-pow-63-sub-pow-49",
+      "module": "Unsorry.Gzmod24Pow63SubPow49"
+    },
+    {
+      "goal": "gzmod-24-pow-63-sub-pow-61",
+      "module": "Unsorry.Gzmod24Pow63SubPow61"
+    },
+    {
+      "goal": "gzmod-12-pow-64-sub-pow-two",
+      "module": "Unsorry.Gzmod12Pow64SubPowTwo"
+    },
+    {
+      "goal": "gzmod-24-pow-64-sub-pow-30",
+      "module": "Unsorry.Gzmod24Pow64SubPow30"
+    },
+    {
+      "goal": "gzmod-24-pow-64-sub-pow-50",
+      "module": "Unsorry.Gzmod24Pow64SubPow50"
+    },
+    {
+      "goal": "gzmod-24-pow-64-sub-pow-62",
+      "module": "Unsorry.Gzmod24Pow64SubPow62"
+    }
+  ]
+}
