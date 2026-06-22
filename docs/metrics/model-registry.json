@@ -353,6 +353,36 @@
         ],
         "assigned_at": "2026-06-22T10:10:42Z"
       }
+    },
+    {
+      "provider_model": "openai / leanstral-2603-sovereign",
+      "slug": "openai-leanstral-2603-sovereign",
+      "pokemon": {
+        "name": "Klinklang",
+        "dex_id": 601,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/601.png",
+        "description": "The gear with the red core is rotated at high speed for a rapid energy charge."
+      },
+      "research": {
+        "classification": "open",
+        "publisher": "Mistral AI",
+        "country": "France",
+        "parameter_size": "119B total / 6.5B active (MoE)",
+        "license": "Apache 2.0",
+        "canonical_url": "https://huggingface.co/mistralai/Leanstral-2603"
+      },
+      "profile": "Klinklang's tightly interlocking gears mirror Leanstral's formal Lean 4 proofs, where every logical step must mesh exactly to stay kernel-verified, and its meshed components echo the model's mixture-of-experts design. The steel-type rigor and efficient, compact power capture a lean agent that beats far larger models at trustworthy proof engineering.",
+      "provenance": {
+        "assigned_by": "housekeeping",
+        "assigned_with": "claude / opus",
+        "contributor": "ab0t-core",
+        "sources": [
+          "https://huggingface.co/mistralai/Leanstral-2603",
+          "https://mistral.ai/news/leanstral/",
+          "https://docs.mistral.ai/models/model-cards/leanstral-26-03"
+        ],
+        "assigned_at": "2026-06-22T10:12:36Z"
+      }
     }
   ]
 }
