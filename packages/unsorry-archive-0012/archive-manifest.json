@@ -1,0 +1,179 @@
+{
+  "block_id": "unsorry-archive-0012",
+  "target_size": 40,
+  "proof_count": 40,
+  "status": "frozen",
+  "source_commit": "bd6e826771a24226e999855dd45238988eb6eda5",
+  "validation_commit": null,
+  "pins": {
+    "lean_toolchain": "leanprover/lean4:v4.30.0",
+    "mathlib": "v4.30.0"
+  },
+  "notes": [
+    "ADR-041 proof archive block 0012.",
+    "Whole decomposition trees + standalone proved goals only (invariant A).",
+    "Active goal records remain as archived metadata pointing at this package."
+  ],
+  "goals": [
+    {
+      "goal": "pell-d2-y-lt-x-of-pos",
+      "module": "Unsorry.PellD2YLtXOfPos"
+    },
+    {
+      "goal": "quartic-n4-plus-four-dvd-by-shift-quadratic",
+      "module": "Unsorry.QuarticN4PlusFourDvdByShiftQuadratic"
+    },
+    {
+      "goal": "quartic-x4-plus-64-dvd-by-x2-minus-4x-plus-8",
+      "module": "Unsorry.QuarticX4Plus64DvdByX2Minus4xPlus8"
+    },
+    {
+      "goal": "sixth-power-mod-fourteen-mem",
+      "module": "Unsorry.SixthPowerModFourteenMem"
+    },
+    {
+      "goal": "sixth-power-mod-nineteen-mem",
+      "module": "Unsorry.SixthPowerModNineteenMem"
+    },
+    {
+      "goal": "sixth-power-mod-sixtythree-mem",
+      "module": "Unsorry.SixthPowerModSixtythreeMem"
+    },
+    {
+      "goal": "sixth-power-mod-thirtyone-mem",
+      "module": "Unsorry.SixthPowerModThirtyoneMem"
+    },
+    {
+      "goal": "sixth-power-mod-twentyone-mem",
+      "module": "Unsorry.SixthPowerModTwentyoneMem"
+    },
+    {
+      "goal": "sq-mod-eighteen-mem",
+      "module": "Unsorry.SqModEighteenMem"
+    },
+    {
+      "goal": "sq-mod-five",
+      "module": "Unsorry.SqModFive"
+    },
+    {
+      "goal": "sq-mod-forty-mem",
+      "module": "Unsorry.SqModFortyMem"
+    },
+    {
+      "goal": "sq-mod-fourteen-mem",
+      "module": "Unsorry.SqModFourteenMem"
+    },
+    {
+      "goal": "sq-mod-nine",
+      "module": "Unsorry.SqModNine"
+    },
+    {
+      "goal": "sq-mod-sixteen-mem",
+      "module": "Unsorry.SqModSixteenMem"
+    },
+    {
+      "goal": "sq-mod-ten-mem",
+      "module": "Unsorry.SqModTenMem"
+    },
+    {
+      "goal": "sq-mod-thirtytwo-mem",
+      "module": "Unsorry.SqModThirtytwoMem"
+    },
+    {
+      "goal": "sq-mod-twelve-mem",
+      "module": "Unsorry.SqModTwelveMem"
+    },
+    {
+      "goal": "sq-mod-twenty-mem",
+      "module": "Unsorry.SqModTwentyMem"
+    },
+    {
+      "goal": "sq-mod-twentyfive-mem",
+      "module": "Unsorry.SqModTwentyfiveMem"
+    },
+    {
+      "goal": "sq-mod-twentyfour-mem",
+      "module": "Unsorry.SqModTwentyfourMem"
+    },
+    {
+      "goal": "sq-mod-twentytwo-mem",
+      "module": "Unsorry.SqModTwentytwoMem"
+    },
+    {
+      "goal": "tenth-power-mod-eleven-mem",
+      "module": "Unsorry.TenthPowerModElevenMem"
+    },
+    {
+      "goal": "dvd-30-pow-twentyone-sub-pow-five",
+      "module": "Unsorry.Dvd30PowTwentyoneSubPowFive"
+    },
+    {
+      "goal": "dvd-42-pow-twentyfive-sub-pow-seven",
+      "module": "Unsorry.Dvd42PowTwentyfiveSubPowSeven"
+    },
+    {
+      "goal": "dvd-sixty-pow-six-sub-sq",
+      "module": "Unsorry.DvdSixtyPowSixSubSq"
+    },
+    {
+      "goal": "dvd-sixty-pow-ten-sub-sq",
+      "module": "Unsorry.DvdSixtyPowTenSubSq"
+    },
+    {
+      "goal": "dvd-twentyfour-pow-five-sub-pow-three",
+      "module": "Unsorry.DvdTwentyfourPowFiveSubPowThree"
+    },
+    {
+      "goal": "dvd-twentyfour-pow-seven-sub-pow-five",
+      "module": "Unsorry.DvdTwentyfourPowSevenSubPowFive"
+    },
+    {
+      "goal": "dvd-twentyfour-pow-six-sub-pow-four",
+      "module": "Unsorry.DvdTwentyfourPowSixSubPowFour"
+    },
+    {
+      "goal": "six-dvd-n-mul-succ-mul-two-n-add-one",
+      "module": "Unsorry.SixDvdNMulSuccMulTwoNAddOne"
+    },
+    {
+      "goal": "six-dvd-pow-three-add-five-mul",
+      "module": "Unsorry.SixDvdPowThreeAddFiveMul"
+    },
+    {
+      "goal": "six-dvd-pow-three-add-five-mul-s2",
+      "module": "Unsorry.SixDvdPowThreeAddFiveMulS2"
+    },
+    {
+      "goal": "six-dvd-pow-three-add-five-mul-s1",
+      "module": "Unsorry.SixDvdPowThreeAddFiveMulS1"
+    },
+    {
+      "goal": "three-dvd-n-cubed-add-two-n",
+      "module": "Unsorry.ThreeDvdNCubedAddTwoN"
+    },
+    {
+      "goal": "sophie-germain-not-prime",
+      "module": "Unsorry.SophieGermainNotPrime"
+    },
+    {
+      "goal": "dvd-1023-pow-thirtyone-sub-self",
+      "module": "Unsorry.Dvd1023PowThirtyoneSubSelf"
+    },
+    {
+      "goal": "dvd-1365-pow-thirteen-sub-self",
+      "module": "Unsorry.Dvd1365PowThirteenSubSelf"
+    },
+    {
+      "goal": "dvd-240-pow-eight-sub-pow-four",
+      "module": "Unsorry.Dvd240PowEightSubPowFour"
+    },
+    {
+      "goal": "dvd-273-pow-thirteen-sub-self",
+      "module": "Unsorry.Dvd273PowThirteenSubSelf"
+    },
+    {
+      "goal": "dvd-282-pow-fortyseven-sub-self",
+      "module": "Unsorry.Dvd282PowFortysevenSubSelf"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+𝔸5.1.lemma.b933ef8de232@2026-06-19
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜b933ef8de2325603250eb193516be0d33e98ed0c2d63d6ced8953d384add13c8; goal≜gself-pow-thirteen-add-pow-two; name≜gself_pow_thirteen_add_pow_two}
+⟦Σ:Source⟧{src≜goals/gself-pow-thirteen-add-pow-two.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜python; model≜sympy; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

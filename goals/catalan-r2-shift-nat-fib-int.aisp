@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜catalan-r2-shift-nat-fib-int
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/catalan-r2-shift-nat-fib-int.md
+  src≜packages/unsorry-archive-0016/backlog/catalan-r2-shift-nat-fib-int.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/catalan-r2-shift-nat-fib-int.lean
+  lean≜packages/unsorry-archive-0016/goals/catalan-r2-shift-nat-fib-int.lean
   sha≜930f9960b12865e03cde67e8747f6bf394912d01a7f6f7a12df4c4e9c97bfed7
   aff≜-19
 }

@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-cube-mul-three-pow-closed
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-cube-mul-three-pow-closed.md
+  src≜packages/unsorry-archive-0015/backlog/sum-range-cube-mul-three-pow-closed.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-cube-mul-three-pow-closed.lean
+  lean≜packages/unsorry-archive-0015/goals/sum-range-cube-mul-three-pow-closed.lean
   sha≜5cd097848a0813ef59373a18dc9f714ca6d0534d7a760cb4a5001a50a1c14d33
   aff≜-9
 }
