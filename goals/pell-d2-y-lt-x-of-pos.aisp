@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜pell-d2-y-lt-x-of-pos
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/pell-d2-y-lt-x-of-pos.md
+  src≜packages/unsorry-archive-0012/backlog/pell-d2-y-lt-x-of-pos.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/pell-d2-y-lt-x-of-pos.lean
+  lean≜packages/unsorry-archive-0012/goals/pell-d2-y-lt-x-of-pos.lean
   sha≜06f186aa7e3755f96e21441db7901c6f8ffd877cab8e871f6911c23c09072488
   aff≜-9
 }

@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-recip-odd-pair-step-two-eq-n-div
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-recip-odd-pair-step-two-eq-n-div.md
+  src≜packages/unsorry-archive-0038/backlog/sum-range-recip-odd-pair-step-two-eq-n-div.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-recip-odd-pair-step-two-eq-n-div.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0038/goals/sum-range-recip-odd-pair-step-two-eq-n-div.lean
+  sha≜e9a83ec7127c3e011b591758981f087df27ddbc26b87a1f4b09d57eb0d991ea4
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

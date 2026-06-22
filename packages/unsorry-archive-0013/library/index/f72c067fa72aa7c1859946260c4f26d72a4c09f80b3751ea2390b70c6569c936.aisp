@@ -1,0 +1,8 @@
+𝔸5.1.lemma.f72c067fa72a@2026-06-16
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜f72c067fa72aa7c1859946260c4f26d72a4c09f80b3751ea2390b70c6569c936; goal≜sum-range-k-mul-two-pow-eq; name≜sum_range_k_mul_two_pow_eq}
+⟦Σ:Source⟧{src≜goals/sum-range-k-mul-two-pow-eq.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜python; model≜sympy; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
