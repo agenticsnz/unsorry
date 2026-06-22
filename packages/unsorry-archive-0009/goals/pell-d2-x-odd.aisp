@@ -1,0 +1,20 @@
+𝔸5.1.goal.pell-d2-x-odd@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜pell-d2-x-odd
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/pell-d2-x-odd.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/pell-d2-x-odd.lean
+  sha≜de0a8c26697cf114a229eac86eb9cc862b2dc9e67fa6a1e2641f9a3453c69438
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

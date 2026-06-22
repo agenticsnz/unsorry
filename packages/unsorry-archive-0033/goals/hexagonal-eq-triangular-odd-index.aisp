@@ -1,0 +1,20 @@
+𝔸5.1.goal.hexagonal-eq-triangular-odd-index@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜hexagonal-eq-triangular-odd-index
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/hexagonal-eq-triangular-odd-index.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/hexagonal-eq-triangular-odd-index.lean
+  sha≜5a99f84fc7f403d8443464bc2323935e773304337d7bc187f5415a97318b130d
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

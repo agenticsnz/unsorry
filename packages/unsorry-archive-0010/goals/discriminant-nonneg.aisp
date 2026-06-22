@@ -1,0 +1,20 @@
+𝔸5.1.goal.discriminant-nonneg@2026-06-14
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜discriminant-nonneg
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/discriminant-nonneg.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/discriminant-nonneg.lean
+  sha≜a11f12812dea769b2037e0d6f9f9b3b65c628922b5421604bb1abb0c0dbeaaeb
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-fourth-powers-eq@2026-06-14
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-fourth-powers-eq
+  phase≜prove
+  status≜proved
+  difficulty≜4
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-fourth-powers-eq.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-fourth-powers-eq.lean
+  sha≜0459ec6b25b9f78135b7ca6520062bfcb5549e9089b5f09587495b5229076bd5
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
