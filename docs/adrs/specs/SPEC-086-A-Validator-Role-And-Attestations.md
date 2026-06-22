@@ -46,26 +46,28 @@ Distinct from calculator credit. On the **trusted outcome** (central re-check or
 
 | Event | Effect |
 |---|---|
-| correct attestation, in deadline, independent | **base credit** |
+| correct attestation (verdict matches trusted outcome), in deadline, independent | **base credit** |
 | correctly flagged an **invalid** that others passed | **bonus credit** (the behaviour we most want) |
-| attestation matches majority but contradicts trusted outcome | **false attestation → penalty** (§6) |
+| **false accept** — `valid` but trusted outcome is invalid | **false attestation → penalty** (§6) |
+| **false reject** — `invalid` but trusted outcome is valid (suppresses a good proof) | **false attestation → penalty** (§6) |
 | missed deadline / no-show on assignment | `timeout_count++` (reputation drag, no credit) |
-| verdict ≜ valid on a **honeypot** (known-invalid) | **false attestation → penalty** (§5) |
+| `valid` on a known-**invalid** honeypot | false accept → **penalty** (§5) |
+| `invalid` on a known-**valid** honeypot | false reject → **penalty** (§5) |
 
-Credit is **never** granted for agreeing with the majority per se — only for matching the *trusted* outcome. This removes the rubber-stamp incentive.
+Credit is **never** granted for agreeing with the majority per se — only for matching the *trusted* outcome. This removes the rubber-stamp incentive **in both directions**: a validator is scored the same whether it rubber-stamps "valid" or lazily/maliciously stamps "invalid". A peer rejection therefore is **not** a free action — the rejected candidate still reaches a trusted outcome via the appeal/sample lane (§7), so a false reject is caught and penalised exactly like a false accept.
 
 ## 5. Honeypot discipline (anti-rubber-stamping — normative)
 
 Proof-of-execution is unattainable for deterministic public computation (ADR-086): a node can emit a correct §3 record without running anything. The defence is statistical.
 
-- The dispatcher injects **honeypots** — candidates known (by the trusted gate) to be **invalid** — into validator assignment streams, indistinguishable from real work to the validator.
-- A validator that attests `verdict≜valid` on a honeypot has produced a **provable false attestation** → §6 penalty.
-- **Rate `h`** (fraction of a validator's assigned checks that are honeypots) is a **tunable security parameter**, set so blind-attesting is −EV. With base reward `r` per attestation, penalty `p` per false attestation, and `c` the cost a validator saves by skipping the real check:
-  - blind "valid" EV per task ≈ `r − h·p`; honest EV per task ≈ `r − c`.
-  - require **`h·p > c`** ⇒ **`h > c/p`** so honest dominates.
+- The dispatcher injects **honeypots of both kinds** — candidates known (by the trusted gate) to be **invalid** (catch the lazy "valid" stamp) **and** candidates known to be **valid** (catch the lazy/malicious "invalid" stamp) — into validator assignment streams, indistinguishable from real work. Both kinds are essential: invalid honeypots police false *accepts*, valid honeypots police false *rejects* (the proof-suppression / censorship attack).
+- A validator whose attestation contradicts a honeypot's known verdict has produced a **provable false attestation** → §6 penalty.
+- **Rate `h`** (fraction of a validator's assigned checks that are honeypots, split across both kinds) is a **tunable security parameter**, set so blind-attesting *either* direction is −EV. With base reward `r` per attestation, slash `P_slash` per false attestation, and `c` the cost a validator saves by skipping the real check:
+  - blind-stamp EV per task ≈ `r − h·P_slash`; honest EV per task ≈ `r − c`.
+  - require **`h·P_slash > c`** ⇒ **`h > c / P_slash`** so honest dominates.
   - Bootstrap default: `h ≈ 0.1–0.2` (tunable), decaying as `validator_reliability_score` matures; never below a floor `h_min` (tunable) so policing never fully stops.
-- Honeypots are **not** soundness — they police *credit integrity*. A honeypot that escapes detection costs nothing to correctness (it never reaches the library; the trusted gate rejects it anyway).
-- Under the retained **p = 1** central re-check, the trusted verdict confirms or contradicts **every** attestation, so any real proof a validator mis-attests is caught and scored (§6) — honeypots additionally police validators who would blind-stamp proofs they *expect* to be valid. (If a future ADR lowers central p < 1, random re-sampling would replace this automatic comparison — out of scope here.)
+- Honeypots are **not** soundness — they police *credit integrity* and *liveness* (anti-suppression). An invalid honeypot that escapes detection costs nothing to correctness (the trusted gate rejects it anyway); a valid honeypot that a validator wrongly rejects is the signal that catches a suppressor.
+- Under the retained **p = 1** central re-check, the trusted verdict confirms or contradicts **every** attestation — including attestations on candidates a peer quorum *rejected*, which still flow to the central gate via the appeal/sample lane (§7) — so any real proof a validator mis-attests, in *either* direction, is caught and scored (§6). (If a future ADR lowers central p < 1, random re-sampling of both accepted and **rejected** candidates would replace this automatic comparison — out of scope here.)
 
 ## 6. Reputation and penalty (ADR-054 substrate)
 
@@ -78,14 +80,15 @@ Per-validator signals: `correct_attestations`, `false_attestation_count`, `timeo
 ## 7. Promotion rule (phased — mirrors ADR-086)
 
 - **Phase 1 — bootstrap.** Calculators produce; ≥3 validators attest (≥1 `independent`); **central CI re-checks 100% (p = 1)**; reputation built from attestation-vs-trusted agreement; honeypots live; quorum is **measured, not gating**.
-- **Phase 2 — pre-promotion offload (not a promotion gate).** A **quorum** (e.g. 2-of-3, ≥1 `independent`, dispatcher unweighted) of `score ≥ θ_quorum` validators gates a **pre-promotion lane only** — prioritisation, credit, and pre-filtering (a quorum-rejected candidate never reaches the central gate, saving its compute). The central re-check stays **p = 1 at promotion** (SPEC-049-A unchanged). An open **challenge window** of duration `W` (tunable) lets any node overturn a *peer* verdict with a reproducible counter-result (a failing `leanchecker` transcript on the same `proof_sha`+`toolchain`); the **kernel adjudicates** by re-running on the trusted gate; a successful challenge drops the candidate from the lane, penalises false attesters (§6), and credits the challenger.
+- **Phase 2 — pre-promotion offload (not a promotion gate, never a discard).** A **quorum** (e.g. 2-of-3, ≥1 `independent`, dispatcher unweighted) of `score ≥ θ_quorum` validators **prioritises** candidates — accepted ones fast-tracked to the central gate — but **never discards**. The central re-check stays **p = 1 at promotion** (SPEC-049-A unchanged) for accepted candidates. A **rejected candidate is not dropped**; it routes to a lower-priority **appeal/sample lane** that still reaches the central gate, by three independent paths so a false reject can never silently suppress a valid proof: (a) the **producer may appeal**, forcing a full central re-check → a trusted outcome; (b) a configurable **sample fraction `s_reject` (tunable, > 0)** of rejected candidates is centrally re-checked regardless; (c) **valid honeypots (§5)** independently catch quorums that reject good proofs. Any rejected candidate the central gate then passes is **promoted normally**, and the validators that rejected it are scored a **false reject** (§4/§6). (Because the central gate is still p = 1 here, the quorum buys *prioritisation/credit/audit*, not central-compute reduction — that arrives only with a cheaper gate or a future p < 1 amendment, §7 Phase 3 / ADR-049.) An open **challenge window** of duration `W` (tunable) additionally lets any node overturn a *peer* verdict **in either direction** with a reproducible counter-result; the **kernel adjudicates** by re-running on the trusted gate; a successful challenge re-routes the candidate, penalises the false attesters (§6), and credits the challenger.
 - **Phase 3 — cheaper promotion gate (future; amends ADR-049).** The promotion gate stays guaranteed-honest, deterministic, and **p = 1**, but becomes **cheaper / portable** (e.g. `lean4export`) so its cost falls. *Sampling* the promotion gate (central p < 1, leaning on proven reputation) is **out of scope** — a separate ADR + SPEC amending ADR-049's p = 1 invariant, gated on pilot reputation data.
 
 ## 8. Conformance (defined for the eventual implementation)
 
 - **Schema/signature:** `attest` records that fail signature, reference a non-pending candidate, or miss the deadline are rejected (recorded as malformed, never as a verdict). Pure validator unit-tested.
 - **Invariant guard:** a regression test (cf. SPEC-049-A §5) asserts that **no code path admits a proof to `UnsorryLibrary` on attestations alone** while the active phase requires the trusted gate.
-- **Honeypot:** a validator that attests a seeded known-invalid as `valid` is detected and penalised deterministically.
+- **Honeypot (both kinds):** a validator that attests a seeded known-**invalid** as `valid` (false accept) *or* a seeded known-**valid** as `invalid` (false reject) is detected and penalised deterministically.
+- **No suppression:** a peer-**rejected** candidate is never discarded — a test asserts every rejected candidate is reachable by the central gate via the appeal/sample lane, and that a rejected-but-actually-valid candidate is promoted and its rejecters scored a false reject.
 - **Reputation:** the score update is a pure, deterministic function of trusted outcomes (unit-tested); peer-majority is never an input.
 - **Independence:** an attestation with `validator == calculator` is recorded but does **not** count toward the `independent` quorum requirement.
 
@@ -102,4 +105,4 @@ Per-validator signals: `correct_attestations`, `false_attestation_count`, `timeo
 - The P2P assignment/transport mechanism (carried by the ADR-053 substrate).
 - Cross-domain generalisation (ADR-030) — Lean is VERIFIED; this spec assumes a cheap deterministic verifier exists.
 - TEE/hardware attestation (rejected by ADR-049).
-- Exact numeric constants (`h`, `p`, `κ`, `θ_quorum`, `θ_demote`, `W`, `susp_window`) — pilot-calibrated at acceptance.
+- Exact numeric constants (`h`, `h_min`, `P_slash`, `s_reject`, `κ`, `θ_quorum`, `θ_demote`, `W`, `susp_window`) — pilot-calibrated at acceptance. (`p` is reserved throughout for the central re-check probability, e.g. `p = 1`.)
