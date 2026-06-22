@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-quintic-gnomon-eq-fifth-power@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-quintic-gnomon-eq-fifth-power
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-quintic-gnomon-eq-fifth-power.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-quintic-gnomon-eq-fifth-power.lean
+  sha≜072c9e52daf07805e88b9002469b78778c9651393b036587029c31e83923cad1
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

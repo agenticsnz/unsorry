@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-range-sq-mul-four-pow-closed@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-range-sq-mul-four-pow-closed
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-range-sq-mul-four-pow-closed.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-range-sq-mul-four-pow-closed.lean
+  sha≜95fcd2c922043dcaba1c9fa33527d17b8aeffa42d40e29bbd870123ed2113095
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

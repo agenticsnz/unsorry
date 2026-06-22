@@ -1,8 +1,0 @@
-𝔸5.1.lemma.5cd097848a08@2026-06-17
-γ≔unsorry.lemma.index
-⟦Ω:Lemma⟧{sha≜5cd097848a0813ef59373a18dc9f714ca6d0534d7a760cb4a5001a50a1c14d33; goal≜sum-range-cube-mul-three-pow-closed; name≜sum_range_cube_mul_three_pow_closed}
-⟦Σ:Source⟧{src≜goals/sum-range-cube-mul-three-pow-closed.lean}
-⟦Γ:Tags⟧{tags≜⟨⟩}
-⟦Λ:Meta⟧{use≜0; aff≜0}
-⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜claude; model≜template-sum-induction; attempts≜1}
-⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
