@@ -216,6 +216,26 @@ jobs:
         if: needs.detect.outputs.active == 'true'
         run: lake build UnsorryLibrary --wfail
 
+      # Publish the freshly-built library oleans as a GitHub-cache fallback so the
+      # downstream audit/replay jobs can RESTORE them when they land on a cold
+      # Namespace runner. Measured 2026-06-22: in a single run gate-a-prepare
+      # mounted a warm 20 GB .lake while gate-a-audit got an empty 4 KB one and
+      # cold-rebuilt the whole library (~45 min, hit the timeout) — the .lake
+      # volume is per-runner and is NOT reliably shared to the downstream jobs.
+      # The library oleans compress to ~320 MB, so this restores in well under a
+      # minute. main-only + Namespace-only bounds the entry count (one per main
+      # commit, LRU-evicted; restore-keys gives the latest). Save-only here; the
+      # non-Namespace lane below still round-trips via actions/cache as before.
+      # Soundness unchanged — leanchecker re-checks every olean it loads against
+      # the kernel, and lake rebuilds any restored olean whose source changed.
+      - name: Publish library oleans to fallback cache (main, ADR-045)
+        if: needs.detect.outputs.active == 'true' && github.ref == 'refs/heads/main' && needs.detect.outputs.prepare_volume == 'true'
+        continue-on-error: true
+        uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: .lake/build
+          key: lake-build-${{ runner.os }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json', 'lakefile.toml') }}-${{ github.sha }}
+
       - name: Audit self-test (gate cannot rot silently)
         if: needs.detect.outputs.active == 'true'
         run: ./tools/gate_a/test_audit.sh
@@ -284,6 +304,23 @@ jobs:
             echo "::warning::Namespace .lake cache MISS on this profile — Gate A cold-builds mathlib + the library (slow, #1921). Check the volume is attached (ADR-046)."
           fi
           du -sh .lake .lake/packages .lake/build 2>/dev/null || true
+
+      # Cold-volume fallback (ADR-045): when the Namespace .lake volume MISSED
+      # (measured: audit can get an empty 4 KB volume even when prepare was warm
+      # in the SAME run — the volume is per-runner, not shared), RESTORE the
+      # library oleans gate-a-prepare published on main. This turns the --wfail
+      # build below from a ~21-min cold rebuild into a cheap incremental. Restore
+      # ONLY — never writes the cache (no per-PR churn). leanchecker still
+      # kernel-re-checks every olean; lake rebuilds any whose source changed.
+      - name: Fallback restore of library oleans on a cold volume (ADR-045)
+        if: needs.detect.outputs.audit_volume == 'true' && steps.ns_lake_cache.outputs.cache-hit != 'true'
+        continue-on-error: true
+        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: .lake/build
+          key: lake-build-${{ runner.os }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json', 'lakefile.toml') }}-${{ github.sha }}
+          restore-keys: |
+            lake-build-${{ runner.os }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json', 'lakefile.toml') }}-
 
       # GitHub-cache fallback for the local oleans — NON-Namespace only. On a
       # Namespace profile the .lake cache volume (ADR-046) already persists
@@ -466,6 +503,22 @@ jobs:
             echo "::warning::Namespace .lake cache MISS on this profile — Gate A cold-builds mathlib + the library (slow, #1921). Check the volume is attached (ADR-046)."
           fi
           du -sh .lake .lake/packages .lake/build 2>/dev/null || true
+
+      # Cold-volume fallback (ADR-045): when the Namespace .lake volume MISSED,
+      # RESTORE the library oleans gate-a-prepare published on main so the build
+      # below this job needs (to produce the oleans leanchecker replays) is a
+      # cheap incremental instead of a cold ~21-min rebuild. Restore ONLY — never
+      # writes the cache. Soundness unchanged: the kernel replay re-checks every
+      # olean regardless of where it came from.
+      - name: Fallback restore of library oleans on a cold volume (ADR-045)
+        if: needs.detect.outputs.replay_volume == 'true' && steps.ns_lake_cache.outputs.cache-hit != 'true'
+        continue-on-error: true
+        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: .lake/build
+          key: lake-build-${{ runner.os }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json', 'lakefile.toml') }}-${{ github.sha }}
+          restore-keys: |
+            lake-build-${{ runner.os }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json', 'lakefile.toml') }}-
 
       # GitHub-cache fallback for the local oleans — NON-Namespace only. On a
       # Namespace profile the .lake cache volume (ADR-046) already persists

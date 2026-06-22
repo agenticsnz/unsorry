@@ -1296,14 +1296,14 @@ def render_timeline_svg(root: Path) -> str:
     out = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" '
         f'viewBox="0 0 {width} {height}" role="img" aria-labelledby="title desc">',
-        '<title id="title">Unsorry proofs over time</title>',
+        '<title id="title">unsorry proofs over time</title>',
         '<desc id="desc">Cumulative kernel-verified proofs over time, '
         "by the hour each proof was merged.</desc>",
         f'<rect width="{width}" height="100%" rx="18" fill="#ffffff"/>',
         f'<rect x="0.5" y="0.5" width="{width - 1}" height="{height - 1}" rx="18" '
         'fill="none" stroke="#e2e8f0"/>',
         f'<text x="32" y="44" font-family="{font}" font-size="28" font-weight="700" '
-        'fill="#334155">Unsorry — Proofs Over Time</text>',
+        'fill="#334155">unsorry — Proofs Over Time</text>',
         f'<text x="32" y="72" font-family="{font}" font-size="13" fill="#64748b">'
         f"{total} cumulative kernel-verified proofs · "
         f"{'merged, hourly' if by_merge else 'solved, daily'}</text>",
@@ -1386,11 +1386,11 @@ def render_svg(root: Path) -> str:
     summary = payload["summary"]
     lines = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-labelledby="title desc">',
-        "<title id=\"title\">Unsorry leaderboard</title>",
-        "<desc id=\"desc\">Gamified Unsorry contributor leaderboard ranked by credited verified proofs and difficulty points.</desc>",
+        "<title id=\"title\">unsorry leaderboard</title>",
+        "<desc id=\"desc\">Gamified unsorry contributor leaderboard ranked by credited verified proofs and difficulty points.</desc>",
         "<rect width=\"900\" height=\"100%\" rx=\"18\" fill=\"#ffffff\"/>",
         "<rect x=\"0.5\" y=\"0.5\" width=\"899\" height=\"{h}\" rx=\"18\" fill=\"none\" stroke=\"#e2e8f0\"/>".format(h=height - 1),
-        "<text x=\"32\" y=\"44\" font-family=\"Inter, system-ui, sans-serif\" font-size=\"28\" font-weight=\"700\" fill=\"#334155\">Unsorry Leaderboard</text>",
+        "<text x=\"32\" y=\"44\" font-family=\"Inter, system-ui, sans-serif\" font-size=\"28\" font-weight=\"700\" fill=\"#334155\">unsorry — Leaderboard</text>",
         (
             "<text x=\"32\" y=\"72\" font-family=\"Inter, system-ui, sans-serif\" "
             "font-size=\"13\" fill=\"#64748b\">"
