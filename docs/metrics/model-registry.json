@@ -88,6 +88,35 @@
         ],
         "assigned_at": "2026-06-22T09:52:19Z"
       }
+    },
+    {
+      "provider_model": "claude / opus",
+      "slug": "claude-opus",
+      "pokemon": {
+        "name": "Alakazam",
+        "dex_id": 65,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/65.png",
+        "description": "Its brain can outperform a supercomputer. Its intelligence quotient is said to be 5,000."
+      },
+      "research": {
+        "classification": "closed",
+        "publisher": "Anthropic",
+        "country": "USA",
+        "parameter_size": "undisclosed",
+        "license": "Proprietary (commercial)",
+        "canonical_url": "https://www.anthropic.com/claude/opus"
+      },
+      "profile": "Alakazam embodies raw intelligence and deep reasoning, mirroring Opus as Anthropic's most capable flagship model. Its ever-expanding psychic intellect matches Opus's deliberate, high-reasoning problem-solving.",
+      "provenance": {
+        "assigned_by": "housekeeping",
+        "assigned_with": "claude / opus",
+        "contributor": "ab0t-core",
+        "sources": [
+          "https://www.anthropic.com/claude/opus",
+          "https://www.anthropic.com/news/claude-opus-4-8"
+        ],
+        "assigned_at": "2026-06-22T09:55:37Z"
+      }
     }
   ]
 }
