@@ -323,6 +323,15 @@ if is_fork_run "$@"; then
   esac
 fi
 
+# First work package (ADR-083): a swarm *operational task*. Before the proving
+# arms start, name any models in the distribution that lack a Pokémon identity
+# (docs/metrics/model-registry.json), one Pokémon per PR. Best-effort — a
+# registry hiccup must never block the swarm. Disable with UNSORRY_HOUSEKEEPING=0.
+if [ "${UNSORRY_HOUSEKEEPING:-1}" = "1" ]; then
+  log "first work package: model → Pokémon housekeeping (ADR-083)"
+  ./swarm/housekeeping.sh || log "housekeeping exited non-zero; continuing to proving"
+fi
+
 dispatcher &
 dispatch_pid=$!
 
