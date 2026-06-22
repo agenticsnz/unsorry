@@ -1595,12 +1595,16 @@ def main(argv: list[str] | None = None) -> int:
             render_sourcing_json(root) if "--json" in argv else render_sourcing(root)
         )
         return 0
-    modes = [flag for flag in ("--check", "--write", "--json") if flag in argv]
+    write_modes = ("--check", "--write", "--write-if-stale", "--json")
+    modes = [flag for flag in write_modes if flag in argv]
     if len(modes) > 1:
-        print("--check, --write, and --json are mutually exclusive", file=sys.stderr)
+        print(
+            "--check, --write, --write-if-stale, and --json are mutually exclusive",
+            file=sys.stderr,
+        )
         return 2
     mode = modes[0] if modes else ""
-    rest = [arg for arg in argv if arg not in ("--check", "--write", "--json")]
+    rest = [arg for arg in argv if arg not in write_modes]
     root = Path(rest[0]) if rest else Path.cwd()
     markdown = render(root)
     payload = render_json(root)
@@ -1616,22 +1620,32 @@ def main(argv: list[str] | None = None) -> int:
     sourcing_json_path = root / "docs" / "metrics" / "sourcing-leaderboard.json"
     svg_path = root / "docs" / "leaderboard.svg"
     timeline_svg_path = root / "docs" / "proofs-over-time.svg"
+    # Single source of truth for the generated artifacts so --check, --write and
+    # --write-if-stale share one staleness/write definition (DRY).
+    artifacts = (
+        (markdown_path, markdown),
+        (json_path, payload),
+        (ui_json_path, ui_payload_json),
+        (gaps_json_path, gaps_payload),
+        (sourcing_json_path, sourcing_payload_json),
+        (svg_path, svg),
+        (timeline_svg_path, timeline_svg),
+    )
+
+    def stale_paths() -> list[str]:
+        return [
+            path.relative_to(root).as_posix()
+            for path, content in artifacts
+            if not path.is_file() or path.read_text(encoding="utf-8") != content
+        ]
+
+    def write_all() -> None:
+        for path, content in artifacts:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(content, encoding="utf-8")
+
     if mode == "--check":
-        stale = []
-        if not markdown_path.is_file() or markdown_path.read_text(encoding="utf-8") != markdown:
-            stale.append(markdown_path.relative_to(root).as_posix())
-        if not json_path.is_file() or json_path.read_text(encoding="utf-8") != payload:
-            stale.append(json_path.relative_to(root).as_posix())
-        if not ui_json_path.is_file() or ui_json_path.read_text(encoding="utf-8") != ui_payload_json:
-            stale.append(ui_json_path.relative_to(root).as_posix())
-        if not gaps_json_path.is_file() or gaps_json_path.read_text(encoding="utf-8") != gaps_payload:
-            stale.append(gaps_json_path.relative_to(root).as_posix())
-        if not sourcing_json_path.is_file() or sourcing_json_path.read_text(encoding="utf-8") != sourcing_payload_json:
-            stale.append(sourcing_json_path.relative_to(root).as_posix())
-        if not svg_path.is_file() or svg_path.read_text(encoding="utf-8") != svg:
-            stale.append(svg_path.relative_to(root).as_posix())
-        if not timeline_svg_path.is_file() or timeline_svg_path.read_text(encoding="utf-8") != timeline_svg:
-            stale.append(timeline_svg_path.relative_to(root).as_posix())
+        stale = stale_paths()
         if stale:
             print(
                 f"{', '.join(stale)} stale — regenerate with "
@@ -1641,16 +1655,20 @@ def main(argv: list[str] | None = None) -> int:
             return 1
         return 0
     if mode == "--write":
-        markdown_path.parent.mkdir(parents=True, exist_ok=True)
-        json_path.parent.mkdir(parents=True, exist_ok=True)
-        markdown_path.write_text(markdown, encoding="utf-8")
-        json_path.write_text(payload, encoding="utf-8")
-        ui_json_path.write_text(ui_payload_json, encoding="utf-8")
-        gaps_json_path.write_text(gaps_payload, encoding="utf-8")
-        sourcing_json_path.write_text(sourcing_payload_json, encoding="utf-8")
-        svg_path.write_text(svg, encoding="utf-8")
-        timeline_svg_path.write_text(timeline_svg, encoding="utf-8")
+        write_all()
         return 0
+    if mode == "--write-if-stale":
+        # ADR-082: fold --check + --write into ONE recompute for the post-merge
+        # refresh. The artifacts above are computed exactly once; here we write
+        # them only if they drifted and signal that via the exit code — mirroring
+        # --check (1 = was stale, now rewritten; 0 = already in sync) — so the
+        # workflow no longer pays the heavy regen twice per refresh.
+        stale = stale_paths()
+        if not stale:
+            return 0
+        write_all()
+        print(f"{', '.join(stale)} regenerated", file=sys.stderr)
+        return 1
     sys.stdout.write(payload if mode == "--json" else markdown)
     return 0
 

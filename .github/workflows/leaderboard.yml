@@ -8,7 +8,8 @@
 # the churn #415 removed for the board: every merged proof refreshes the
 # leaderboard, so two concurrent goal PRs conflict on docs/leaderboard.*. So the
 # leaderboard moves to the post-merge model: when a merge changes the inputs it
-# runs `--check`, and on drift it regenerates and commits the artifacts straight
+# regenerates in a single pass (`--write-if-stale`, ADR-082) and, on drift,
+# commits the artifacts straight
 # back to `main` as a single docs-only `[skip ci]` commit (the standard
 # generated-artifact exception). It is push-triggered like its siblings
 # targets-board.yml and proofs-visualisation.yml, which stay within ~1 min of the
@@ -55,8 +56,8 @@ on:
       - ".github/workflows/leaderboard.yml"
   # Backstop only: catches drift during quiescent periods and any push-triggered
   # run that loses its pending slot mid-burst. GitHub's cron is best-effort, so
-  # this is a safety net, not the primary path; `--check` makes a no-drift tick
-  # cheap.
+  # this is a safety net, not the primary path; a no-drift tick still pays one
+  # recompute but pushes nothing.
   schedule:
     - cron: "*/15 * * * *"
   workflow_dispatch:
@@ -93,55 +94,46 @@ jobs:
           else
             echo "present=false" >> "$GITHUB_OUTPUT"
           fi
-      - name: Check for leaderboard drift (ADR-023 / ADR-036)
-        id: check
-        run: |
-          if python3 -m tools.leaderboard --check .; then
-            echo "stale=false" >> "$GITHUB_OUTPUT"
-          else
-            echo "stale=true" >> "$GITHUB_OUTPUT"
-          fi
-      - name: Regenerate once, then push with cheap retries on drift
-        if: steps.check.outputs.stale == 'true' && steps.tok.outputs.present == 'true'
+      - name: Refresh leaderboard in a single recompute, then push (ADR-082)
+        if: steps.tok.outputs.present == 'true'
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          # Regenerate ONCE, then retry only the *push* (follow-up to #426).
+          # Single-pass post-merge refresh (ADR-082; follow-up to #426/#3735).
           #
-          # The original #426 loop reset to the latest main and *regenerated* on
-          # every push attempt. That is safe for the targets board and the proofs
-          # visualisation — their regen is sub-second — but the leaderboard regen
-          # is a ~2-minute, CPU-bound recompute of contributor/rate/attribution
-          # stats over the whole corpus. Under the swarm's merge firehose (a proof
-          # landing roughly every ~2 min) main always advanced *during* a regen, so
-          # every push hit a non-fast-forward, all five retries lost, and the board
-          # stayed frozen for hours while the other two refreshed normally.
+          # The leaderboard regen is the heaviest of the three post-merge
+          # refreshers — a CPU-bound recompute of contributor/rate/attribution
+          # stats over the whole active+archive corpus (ADR-041), now ~10 min as
+          # the corpus grew. The previous shape recomputed it TWICE per refresh:
+          # once for a standalone `--check` drift probe, then again for `--write`.
+          # Under the swarm's merge firehose that doubled the window in which
+          # `main` advances mid-refresh, so the board could only land a fresh
+          # snapshot every ~25-30 min and its `generated_at` lagged the latest
+          # merges. (Two recomputes is also wasted CI runner time.)
           #
-          # Fix: pay the regen exactly once, then on a lost race rebase the single
-          # docs commit onto the updated main and push again — no second regen. The
-          # generated artifacts (below) are disjoint from the goals/ + library/index
-          # + proof-runs/ paths a proof merge touches, so the rebase is always
-          # conflict-free and each retry is sub-second; it converges even mid-burst.
-          # Trade-off: the pushed snapshot reflects main as of regen start, so a
-          # handful of proofs merged during the ~2-min regen land on the next push
-          # or tick rather than instantly — acceptable for a human-facing board, and
-          # a strict improvement over the multi-hour staleness it replaces.
+          # `--write-if-stale` computes the artifacts exactly ONCE: it writes them
+          # iff they drifted and exits 1 in that case (0 = already in sync), so the
+          # drift signal and the write come from a single recompute. Everything
+          # else is unchanged from the #426 fix: regenerate against the freshest
+          # `main`, then retry only the *push* — on a lost race rebase the single
+          # docs commit (conflict-free; the generated artifacts are disjoint from
+          # the goals/ + library/index + proof-runs/ paths a proof merge touches)
+          # and push again, so each retry is sub-second and it converges mid-burst.
+          # If that disjoint-paths invariant is ever violated the rebase conflicts;
+          # we abort and fall back to a fresh single-pass regen so we never push a
+          # half-merged tree. Trade-off (unchanged): the pushed snapshot reflects
+          # `main` as of regen start, so a handful of proofs merged during the
+          # regen land on the next push or tick — acceptable for a human board.
           paths="docs/leaderboard.md docs/leaderboard.svg docs/proofs-over-time.svg docs/metrics/community-stats.json docs/metrics/leaderboard-ui.json docs/metrics/attribution-gaps.json docs/metrics/sourcing-leaderboard.json"
           git fetch --quiet origin main
           git reset --hard --quiet origin/main
-          python3 -m tools.leaderboard --write .
-          if git diff --quiet -- $paths; then
+          if python3 -m tools.leaderboard --write-if-stale .; then
             echo "leaderboard already in sync with latest main — nothing to push"
             exit 0
           fi
           git add $paths
           git commit -q -m "docs: refresh leaderboard [skip ci]"
-          # Cheap push-retry: only the push repeats. On a lost race, rebase the
-          # docs commit onto the new main (conflict-free — disjoint files) and push
-          # again. If the disjoint-paths invariant is ever violated the rebase
-          # would conflict; abort and fall back to a fresh regen so we never push a
-          # half-merged tree.
           for attempt in 1 2 3 4 5 6 7 8 9 10; do
             if git push --quiet origin HEAD:main; then
               echo "pushed leaderboard refresh (attempt ${attempt})"
@@ -152,8 +144,7 @@ jobs:
             if ! git rebase --quiet origin/main; then
               git rebase --abort || true
               git reset --hard --quiet origin/main
-              python3 -m tools.leaderboard --write .
-              if git diff --quiet -- $paths; then
+              if python3 -m tools.leaderboard --write-if-stale .; then
                 echo "leaderboard already in sync with latest main — nothing to push"
                 exit 0
               fi
@@ -163,6 +154,8 @@ jobs:
           done
           echo "::warning::could not push the leaderboard refresh after 10 attempts (persistent concurrent pushes, #426); the next push or scheduled tick will refresh it"
       - name: Drift but no REFRESH_TOKEN — report only (#417)
-        if: steps.check.outputs.stale == 'true' && steps.tok.outputs.present != 'true'
+        if: steps.tok.outputs.present != 'true'
         run: |
-          echo "::warning::leaderboard drifted but the REFRESH_TOKEN secret is unset — skipping the push to main (issue #417). Add an admin PAT/App token as the REFRESH_TOKEN secret to enable the post-merge refresh."
+          if ! python3 -m tools.leaderboard --check .; then
+            echo "::warning::leaderboard drifted but the REFRESH_TOKEN secret is unset — skipping the push to main (issue #417). Add an admin PAT/App token as the REFRESH_TOKEN secret to enable the post-merge refresh."
+          fi

@@ -523,6 +523,61 @@ def test_check_and_write_modes_cover_markdown_json_ui_json_and_svg(tmp_path):
     assert main(["--check", str(tmp_path)]) == 1
 
 
+def test_write_if_stale_writes_once_and_signals_drift(tmp_path):
+    # ADR-082: a single recompute that writes iff stale, returning 1 when it
+    # wrote (mirroring --check's drift signal) and 0 when already in sync — so the
+    # leaderboard workflow no longer pays the ~10-min regen twice (once to --check,
+    # once to --write).
+    _goal(tmp_path, "g", 1)
+    _index(tmp_path, "a" * 64, "g")
+    # First run: artifacts are absent → stale → written, exit 1 (drift).
+    assert main(["--write-if-stale", str(tmp_path)]) == 1
+    ui_path = tmp_path / "docs" / "metrics" / "leaderboard-ui.json"
+    assert ui_path.is_file()
+    assert (tmp_path / "docs" / "metrics" / "community-stats.json").is_file()
+    assert (tmp_path / "docs" / "metrics" / "attribution-gaps.json").is_file()
+    assert (tmp_path / "docs" / "metrics" / "sourcing-leaderboard.json").is_file()
+    assert (tmp_path / "docs" / "leaderboard.md").is_file()
+    assert (tmp_path / "docs" / "leaderboard.svg").is_file()
+    assert (tmp_path / "docs" / "proofs-over-time.svg").is_file()
+    # The artifacts it wrote are exactly what --check considers in sync.
+    assert main(["--check", str(tmp_path)]) == 0
+
+
+def test_write_if_stale_is_a_noop_when_in_sync(tmp_path):
+    _goal(tmp_path, "g", 1)
+    _index(tmp_path, "a" * 64, "g")
+    assert main(["--write", str(tmp_path)]) == 0
+    ui_path = tmp_path / "docs" / "metrics" / "leaderboard-ui.json"
+    before = ui_path.read_text(encoding="utf-8")
+    # Already in sync → no drift → exit 0 and the artifacts are left byte-identical.
+    assert main(["--write-if-stale", str(tmp_path)]) == 0
+    assert ui_path.read_text(encoding="utf-8") == before
+    # A subsequent --write-if-stale stays a clean no-op (idempotent/deterministic).
+    assert main(["--write-if-stale", str(tmp_path)]) == 0
+    assert ui_path.read_text(encoding="utf-8") == before
+
+
+def test_write_if_stale_rewrites_only_the_drifted_artifact(tmp_path):
+    _goal(tmp_path, "g", 1)
+    _index(tmp_path, "a" * 64, "g")
+    assert main(["--write", str(tmp_path)]) == 0
+    ui_path = tmp_path / "docs" / "metrics" / "leaderboard-ui.json"
+    canonical = ui_path.read_text(encoding="utf-8")
+    ui_path.write_text("{}\n", encoding="utf-8")  # tamper one artifact
+    # Drift detected and repaired in a single pass.
+    assert main(["--write-if-stale", str(tmp_path)]) == 1
+    assert ui_path.read_text(encoding="utf-8") == canonical
+    assert main(["--check", str(tmp_path)]) == 0
+
+
+def test_write_if_stale_is_mutually_exclusive_with_other_modes(tmp_path):
+    _goal(tmp_path, "g", 1)
+    _index(tmp_path, "a" * 64, "g")
+    assert main(["--check", "--write-if-stale", str(tmp_path)]) == 2
+    assert main(["--write", "--write-if-stale", str(tmp_path)]) == 2
+
+
 def test_docs_leaderboard_html_consumes_generated_ui_json():
     root = Path(__file__).resolve().parents[3]
     html = (root / "docs" / "leaderboard.html").read_text(encoding="utf-8")
