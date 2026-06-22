@@ -205,6 +205,36 @@
         ],
         "assigned_at": "2026-06-22T10:01:21Z"
       }
+    },
+    {
+      "provider_model": "manual / gpt-5.5",
+      "slug": "manual-gpt-5-5",
+      "pokemon": {
+        "name": "Mewtwo",
+        "dex_id": 150,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png",
+        "description": "It was created by a scientist after years of horrific gene splicing and DNA engineering experiments."
+      },
+      "research": {
+        "classification": "closed",
+        "publisher": "OpenAI",
+        "country": "USA",
+        "parameter_size": "undisclosed",
+        "license": "Proprietary",
+        "canonical_url": "https://openai.com/index/introducing-gpt-5-5/"
+      },
+      "profile": "Mewtwo is a lab-engineered apex of raw intelligence and power, mirroring OpenAI's flagship, most capable general-purpose model. Like the frontier 'super app' GPT-5.5, it dominates across domains while its inner workings stay deliberately undisclosed.",
+      "provenance": {
+        "assigned_by": "housekeeping",
+        "assigned_with": "claude / opus",
+        "contributor": "cgbarlow",
+        "sources": [
+          "https://openai.com/index/introducing-gpt-5-5/",
+          "https://developers.openai.com/api/docs/models/gpt-5.5",
+          "https://en.wikipedia.org/wiki/GPT-5.5"
+        ],
+        "assigned_at": "2026-06-22T10:02:58Z"
+      }
     }
   ]
 }
