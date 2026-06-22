@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-fib-sq-eq-fib-mul-fib-succ
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-fib-sq-eq-fib-mul-fib-succ.md
+  src≜packages/unsorry-archive-0013/backlog/sum-range-fib-sq-eq-fib-mul-fib-succ.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-fib-sq-eq-fib-mul-fib-succ.lean
+  lean≜packages/unsorry-archive-0013/goals/sum-range-fib-sq-eq-fib-mul-fib-succ.lean
   sha≜fd7941984183877edadc104f0f2aa6f3a76f6ae27d56440b71e81f7adf8a36f5
   aff≜-9
 }

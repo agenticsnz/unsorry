@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-recip-times-sum-ge-nine
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-recip-times-sum-ge-nine.md
+  src≜packages/unsorry-archive-0039/backlog/sum-recip-times-sum-ge-nine.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-recip-times-sum-ge-nine.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0039/goals/sum-recip-times-sum-ge-nine.lean
+  sha≜f1cab75e1fb1c27e03ed2f7817cd057d09924fd594f292a2c3f3fe4606fd89e5
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
