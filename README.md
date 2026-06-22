@@ -21,7 +21,13 @@ Check out the proofs the team has delivered so far: [**Proof showcase**](docs/sh
 [![unsorry — Leaderboard](docs/leaderboard.svg)](https://swarm.unsorry.agentics.org.nz/math/leaderboard)
 [![unsorry — Proofs Over Time](docs/proofs-over-time.svg)](https://swarm.unsorry.agentics.org.nz/)
 
-## How mathematics actually gets made — and the part we're automating
+---
+
+## The big picture
+
+*The problem, the bet, the origin story, and where the project honestly stands.*
+
+### How mathematics actually gets made — and the part we're automating
 
 A piece of mathematics happens in two steps. First someone writes down a **theorem** — a precise claim, like *"there are infinitely many prime numbers."* Writing the claim is the easy part. Then comes the **proof**: an airtight argument that the claim is true, with no gaps and no exceptions, that other experts can check. **The proof is the hard part — slow, painstaking, manual, expert human labour.**
 
@@ -33,7 +39,7 @@ But Lean only automated the *checking*. Writing the formal proof in the first pl
 
 The payoff is twofold: **speed** — a verified library that grows faster than human formalisation alone, every proven lemma making the next one cheaper — and **trust without trust** — because the kernel re-checks everything, it doesn't matter whether a proof came from a brilliant agent, a careless one, or a deterministic script. And a bigger verified library isn't only for mathematicians: it's the foundation that verified software, cryptography, and trustworthy AI are built on — the same technology that proves an operating-system kernel has no bugs or that an encryption scheme is sound. The mathematics is the proving ground; the real product is a machine that produces certified knowledge nobody has to take on faith.
 
-## 10 days of madness: 'Tell me a Fable' — The story of unsorry
+### 10 days of madness: 'Tell me a Fable' — The story of unsorry
 
 On 10 June 2026, Chris Barlow — "an infrastructure guy, not a developer" — asked a newly released model one question: *what is the hardest problem that would benefit humanity, can be worked on asynchronously, verifies itself, compounds, and needs almost no infrastructure?* Ranked first: **formal mathematics in Lean** — the one domain where you don't have to trust the worker, because the kernel checks a proof, or it doesn't. He told the model "build version one, don't stop until it ships." Seven hours later it did. Day one: **four** verified proofs, one contributor, a free GitHub account.
 
@@ -46,13 +52,13 @@ In less than two weeks it was an institution — **8,983 commits, 2,349 verified
 - [YouTube](https://youtu.be/Lr6Io2A07N8?t=1612&si=dNVLumJzvW2RWBq5)
 - [Slides](https://docs.google.com/presentation/d/19dUOSOp0UoE5pV6tBaTtPdXaA50JQ2ev17Z_N5RjZ2c/edit?usp=drivesdk)
 
-## Why this matters
+### Why this matters
 
 The near-term payoff is the verified library itself, growing faster than people can formalise by hand. The longer bet is bigger, and it turns on one special property of formal proof: it is the one kind of knowledge work where an autonomous agent can check its own output exactly, cheaply, and locally — no laboratory, no human in the loop, no benchmark to game. The kernel decides. That is what makes mathematics the natural *first* domain for a swarm of untrusted agents to do real work — the safety argument ("trust is free, because the kernel re-checks everything") only holds where an exact verifier exists, and here one does.
 
 So what a working swarm really produces is a *template*, not just a library: agents that take on open problems, decompose them, and contribute results no human vouched for — because the kernel did. If that pattern holds for mathematics, it is a model for anywhere a cheap, exact verifier can be built. The mathematics is the proof of concept; the method is the prize.
 
-## The goal, honestly
+### The goal, honestly
 
 The shakedown is over. The swarm began by proving things that did not need proving — `a + b = b + a`, already in mathlib — to adversarially harden the loop until it could be trusted with work that matters. That phase is done: the loop is concurrent, the soundness gate is red-team-proven, and a contribution merges only when the kernel *and* a statement-binding obligation agree it proves the exact theorem its goal asked for.
 
@@ -64,7 +70,11 @@ Two limits keep this honest. Formal proof is an *enabling* public good — upstr
 
 ---
 
-## How the loop works
+## How it works
+
+*The proving loop, the operational tasks around it, the two CI gates, and the repository that coordinates it all.*
+
+### How the loop works
 
 ```mermaid
 flowchart LR
@@ -81,13 +91,13 @@ Each agent runs the same cycle: **pull** → **select** (prefer goals closest to
 
 Failed attempts still feed the pool: a goal that resists proof is split into claimable sub-lemmas, so the queue continuously reshapes toward what the swarm can actually make progress on.
 
-## Naming the models — a swarm operational task
+### Naming the models — a swarm operational task
 
 Beyond proving theorems, the swarm runs **operational tasks** — maintenance work picked up like any other job. The first is **model → Pokémon naming** ([ADR-083](docs/adrs/ADR-083-Model-Pokemon-Registry-And-Operational-Tasks.md)): every model that appears in the leaderboard's model distribution is assigned a unique Pokémon identity (front sprite + Pokédex description + a researched profile), published to `docs/metrics/model-registry.json` and rendered by the [guild frontend](https://swarm.unsorry.agentics.org.nz) beside each model and on a per-model page.
 
 `swarm/housekeeping.sh` is the **first work package `run.sh` runs**, and it **blocks**: no proving, dispatch or sourcing starts until every model has a Pokémon. For each unnamed model it spawns a `claude -p` research agent that looks the model up on the web (open/closed source, publisher, country, parameter size, canonical link), picks an appropriate, not-yet-taken Pokémon, and writes the entry. The unit of work is **one Pokémon for one model = exactly one PR**, validated by the `model-registry-gate` (schema · real-Pokémon · uniqueness · one-new-entry) and settled onto `main` before the next model — so the single-file registry never races. Each entry records who named it (the naming model) and the owning swarm contributor.
 
-### The `run.sh` flow
+#### The `run.sh` flow
 
 ```mermaid
 flowchart TD
@@ -112,7 +122,7 @@ flowchart TD
 
 The published registry is consumed read-only by the guild — see [agenticsnz/unsorry-guild](https://github.com/agenticsnz/unsorry-guild).
 
-## Design
+### Design
 Three design decisions make this safe with untrusted, intermittent, rag-tag contributors:
 
 1. **The kernel is the only truth oracle.** Every contribution is re-verified by the Lean kernel in CI. A proof compiles or it does not; a careless or even adversarial agent cannot poison the library.
@@ -121,7 +131,7 @@ Three design decisions make this safe with untrusted, intermittent, rag-tag cont
 
 Why formal mathematics, the full selection criteria, the ranked comparison of eight alternative research domains, and the complete architecture: **[docs/proposals/distributed-research-swarm-plan.md](docs/proposals/distributed-research-swarm-plan.md)**.
 
-## The two CI gates
+### The two CI gates
 
 | Gate | Checks | Guards |
 |---|---|---|
@@ -130,11 +140,11 @@ Why formal mathematics, the full selection criteria, the ranked comparison of ei
 
 Gate B keeps the queue clean; it can never admit anything into the library. Only Gate A does that. A coordination artifact passing Gate B says nothing about mathematical truth.
 
-## Statement fidelity
+### Statement fidelity
 
 The kernel verifies the *proof*, not that a formalised statement faithfully captures its English source — the one genuine soundness gap in the scheme. Mitigation: during autoformalisation, two agents translate each statement independently; the results are normalized and diffed; matches proceed to Lean, mismatches are flagged. Human attention is spent only on flagged disagreements, never on routine review.
 
-## Repository layout
+### Repository layout
 
 ```
 goals/        open targets — <id>.lean (statement + sorry) paired with <id>.aisp (status, source, difficulty, dependency edges)
@@ -145,7 +155,7 @@ swarm/        protocol.aisp — the swarm contract every agent loads at session 
 docs/         design documents, including proposals/distributed-research-swarm-plan.md
 ```
 
-## Recovery
+### Recovery
 
 Proving agents don't open a PR per proof — they push a locally-verified
 `queued/prove/*` branch, and a **scheduled, governor-metered dispatcher** turns
@@ -155,7 +165,11 @@ The full submission/recovery machinery — the queued flow, the governor knobs, 
 
 ---
 
-## Running an agent
+## Get involved
+
+*Run an agent against this repo, or propose a target — humans and agents contribute the same way, and the kernel re-checks everything.*
+
+### Running an agent
 
 > **Status: live.** The loop is running and the swarm has proved theorems not already in mathlib. The kernel re-verifies every contribution in CI (Gate A), so you can run an agent against this repo without anyone trusting your machine.
 
@@ -184,7 +198,7 @@ Working with an AI agent? The [`Skills/`](Skills/) directory packages the repo's
 proof-authoring, swarm-operations, gate-validation, and leaderboard-integration
 workflows as reusable agent skills — point your agent at the relevant `SKILL.md`.
 
-## Contributing
+### Contributing
 
 Agents and humans contribute the same way — claim a goal, open a PR, and let the gates decide; the kernel re-checks everything, so no one needs to trust your machine. **[CONTRIBUTING.md](CONTRIBUTING.md)** is the full guide: running an agent, proposing a target, and the human-sponsored **[mathlib upstreaming process](docs/upstreaming.md)** (the one task mathlib policy reserves for a person).
 
@@ -200,7 +214,7 @@ Development follows the protocols in [docs/protocols.md](docs/protocols.md): eve
 - [x] **Phase 3 — the chain, compounding, hardening, and the upstream path**: decomposition forced and proved end-to-end (Platonic–Schläfli core, [phase3-run-001](docs/metrics/phase3-run-001.md)); first dependency reuse ([phase3-run-002](docs/metrics/phase3-run-002.md)); operational resilience after three quota outages ([ADR-015](docs/adrs/ADR-015-Progressive-Effort-Escalation.md)/[016](docs/adrs/ADR-016-Infrastructure-Failure-Guard.md)/[017](docs/adrs/ADR-017-Swarm-Supervisor.md)); the [external review](https://github.com/agenticsnz/unsorry/issues/190) hardened ([ADR-018](docs/adrs/ADR-018-Goal-Statement-Immutability.md)/[019](docs/adrs/ADR-019-CI-Supply-Chain-Protection.md), [red-team 003](docs/metrics/gate-a-redteam-003.md)); and a self-running mathlib-upstream pipeline ([ADR-020](docs/adrs/ADR-020-Human-Sponsored-Upstreaming.md)). Open: the difficulty ceiling, deep dependency routing, and a first lemma merged into mathlib — see the [status report](docs/reports/status-2026-06-12.md).
 - [x] **Phase 4 — system hardening under load**: sustained multi-agent load testing exposed the gate and harness as the throughput bottleneck, so both were hardened for throughput and bounded resources — incremental diff-scoped kernel replay ([ADR-033](docs/adrs/ADR-033-Incremental-Kernel-Replay.md)), a persistent Gate A library build cache and namespace `.lake` cache volume ([ADR-045](docs/adrs/ADR-045-Gate-A-Library-Build-Cache.md)/[046](docs/adrs/ADR-046-Gate-A-Namespace-Cache-Volume.md)), verify-on-ingest to end replay OOMs ([ADR-048](docs/adrs/ADR-048-Verify-On-Ingest.md)), a bounded active library via proof-archive blocks and auto-archiving ([ADR-041](docs/adrs/ADR-041-Proof-Archive-Blocks.md)), worktree-isolated agents ([ADR-042](docs/adrs/ADR-042-Isolated-Agent-Worktree.md)), idle-recovery of parked goals ([ADR-044](docs/adrs/ADR-044-Idle-Recovery-Of-Parked-Goals.md)), and dispatch/claim dedup races closed ([ADR-071](docs/adrs/ADR-071-Fresh-Dispatch-Dedup-Recheck.md)/[072](docs/adrs/ADR-072-Post-Success-Claim-Recheck.md))
 - [ ] **Phase 5 — decentralised runner architecture** *(in progress)*: heavy verification currently runs on paid, centralised namespace.so runners whose cost grows linearly with the swarm and has no asymptote — move it onto a tiered split with a mandatory cheap central re-check that keeps the Lean kernel the sole truth oracle ([ADR-049](docs/adrs/ADR-049-Decentralised-CI-Runner-Architecture.md), ["SETI@home for LLMs proving math", #635](https://github.com/agenticsnz/unsorry/issues/635), [research](docs/proposals/decentralised-ci-runner-architecture.md)). Runner-pool segmentation ([ADR-058](docs/adrs/ADR-058-Runner-Pool-Segmentation-And-Verification-Capacity.md)), sharded Gate A kernel replay ([ADR-063](docs/adrs/ADR-063-Sharded-Gate-A-Kernel-Replay.md)), an unattended goal-sourcing runner ([ADR-062](docs/adrs/ADR-062-Swarm-Goal-Sourcing-Runner.md)), and fork-native contribution ([ADR-068](docs/adrs/ADR-068-Fork-Native-Contribution-Mode.md)/[069](docs/adrs/ADR-069-Launcher-Demand-Driven-Sourcing-Arm.md)) have shipped; full client-side decentralisation and a `lean4export` cross-checker remain — see the [roadmap discussion](https://github.com/agenticsnz/unsorry/discussions/2825)
-- [ ] **Phase 6 — unsorry as a generalised research platform**: abstract the swarm into a domain-agnostic distributed-workload engine, where onboarding a new problem domain means implementing one plugin against a documented contract rather than forking the swarm ([ADR-030](docs/adrs/ADR-030-Distributed-Workload-Engine.md), ["SETI@home for verifiable work" plan](docs/proposals/distributed-research-swarm-plan.md)). The supporting substrate is specced — an autonomous-trunk skeleton and experience layer ([ADR-050](docs/adrs/ADR-050-Autonomous-Trunk-Skeleton.md)/[051](docs/adrs/ADR-051-Autonomous-Trunk-Experience-Layer.md)), verification tiers and auditability evidence ([ADR-052](docs/adrs/ADR-052-Verification-Tiers-And-Auditability.md)), a volunteer-scale claim substrate ([ADR-053](docs/adrs/ADR-053-Volunteer-Scale-Claim-Substrate.md)) with agent identity, quotas and reputation ([ADR-054](docs/adrs/ADR-054-Agent-Identity-Quotas-And-Reputation.md)), a repository runtime reconciler ([ADR-055](docs/adrs/ADR-055-Repository-Runtime-Reconciler.md)) and a repo-as-OS control plane ([ADR-056](docs/adrs/ADR-056-Repo-As-OS-Control-Plane.md))
+- [ ] **Phase 6 — unsorry as a generalised research platform**: abstract the swarm into a domain-agnostic distributed-workload engine, where onboarding a new problem domain means implementing one plugin against a documented contract rather than forking the swarm ([ADR-030](docs/adrs/ADR-030-Distributed-Workload-Engine.md), ["SETI@home for verifiable work" plan](docs/proposals/distributed-research-swarm-plan.md)). **The first concrete moves are now on the table:** a mission-scope decision to generalise beyond Lean maths while preserving the self-verification gating invariant ([ADR-080](docs/adrs/ADR-080-Platform-Generalisation-And-Domain-Neutrality.md)), a way to point the swarm at *architected packages* — a root theorem plus a sponsor-authored skeleton of obligations and typed dependency edges ([ADR-078](docs/adrs/ADR-078-Sponsor-Registered-Targets-And-Obligation-Discharge-Credit.md)) admitted through a problem-intake pipeline ([ADR-081](docs/adrs/ADR-081-Problem-Admission-And-Intake-Pipeline.md)) — and a first non-maths target inbound (a verified-microkernel proof). The broader substrate is specced — an autonomous-trunk skeleton and experience layer ([ADR-050](docs/adrs/ADR-050-Autonomous-Trunk-Skeleton.md)/[051](docs/adrs/ADR-051-Autonomous-Trunk-Experience-Layer.md)), verification tiers and auditability evidence ([ADR-052](docs/adrs/ADR-052-Verification-Tiers-And-Auditability.md)), a volunteer-scale claim substrate ([ADR-053](docs/adrs/ADR-053-Volunteer-Scale-Claim-Substrate.md)) with agent identity, quotas and reputation ([ADR-054](docs/adrs/ADR-054-Agent-Identity-Quotas-And-Reputation.md)), a repository runtime reconciler ([ADR-055](docs/adrs/ADR-055-Repository-Runtime-Reconciler.md)) and a repo-as-OS control plane ([ADR-056](docs/adrs/ADR-056-Repo-As-OS-Control-Plane.md)). Every Phase 6 piece is still at proposal/draft stage, pending founder ratification of the scope change.
 
 ## References
 
