@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜dvd-1365-pow-thirteen-sub-self
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/dvd-1365-pow-thirteen-sub-self.md
+  src≜packages/unsorry-archive-0012/backlog/dvd-1365-pow-thirteen-sub-self.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/dvd-1365-pow-thirteen-sub-self.lean
+  lean≜packages/unsorry-archive-0012/goals/dvd-1365-pow-thirteen-sub-self.lean
   sha≜9855fd9ac4d7379fe31d3bde123b2650961dfa6f6dd3f1e76866b630bb21a878
   aff≜-19
 }

@@ -1,0 +1,8 @@
+𝔸5.1.lemma.f39ff694817d@2026-06-16
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜f39ff694817de789d2594015445da39d9c9fff821852c723367fbf769f62f1b5; goal≜dvd-255-pow-seventeen-sub-self; name≜dvd_255_pow_seventeen_sub_self}
+⟦Σ:Source⟧{src≜goals/dvd-255-pow-seventeen-sub-self.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜python; model≜sympy; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

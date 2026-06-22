@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜dvd-240-pow-eight-sub-pow-four
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/dvd-240-pow-eight-sub-pow-four.md
+  src≜packages/unsorry-archive-0012/backlog/dvd-240-pow-eight-sub-pow-four.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/dvd-240-pow-eight-sub-pow-four.lean
+  lean≜packages/unsorry-archive-0012/goals/dvd-240-pow-eight-sub-pow-four.lean
   sha≜520c5993c4be7cc477dc47aa408468d499a1ac71696725f000d1fff728ddc350
   aff≜-19
 }

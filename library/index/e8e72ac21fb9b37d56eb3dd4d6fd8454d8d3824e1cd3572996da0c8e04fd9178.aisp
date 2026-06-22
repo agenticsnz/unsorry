@@ -1,0 +1,8 @@
+𝔸5.1.lemma.e8e72ac21fb9@2026-06-19
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜e8e72ac21fb9b37d56eb3dd4d6fd8454d8d3824e1cd3572996da0c8e04fd9178; goal≜gbinom-falling-five-fact-dvd; name≜gbinom_falling_five_fact_dvd}
+⟦Σ:Source⟧{src≜goals/gbinom-falling-five-fact-dvd.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜cgbarlow; agent≜mac-158f; provider≜python; model≜sympy; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

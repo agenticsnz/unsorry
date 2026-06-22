@@ -1,0 +1,20 @@
+𝔸5.1.goal.gpow-diff-nine-pow-nineteen@2026-06-19
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gpow-diff-nine-pow-nineteen
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/gpow-diff-nine-pow-nineteen.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/gpow-diff-nine-pow-nineteen.lean
+  sha≜12af5df88ecefc45b9025af1b82020ca8860a3d05365a579955c108cab5222d6
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

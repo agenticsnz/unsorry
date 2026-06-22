@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜shifted-sum-sq-ge-twice-sum-three-var
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/shifted-sum-sq-ge-twice-sum-three-var.md
+  src≜packages/unsorry-archive-0009/backlog/shifted-sum-sq-ge-twice-sum-three-var.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/shifted-sum-sq-ge-twice-sum-three-var.lean
+  lean≜packages/unsorry-archive-0009/goals/shifted-sum-sq-ge-twice-sum-three-var.lean
   sha≜e28d5aad4fc1ec17acd0cc292e674ac49ec028f416472db5b66516b291841092
   aff≜-10
 }

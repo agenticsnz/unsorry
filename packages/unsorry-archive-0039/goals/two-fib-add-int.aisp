@@ -1,0 +1,20 @@
+𝔸5.1.goal.two-fib-add-int@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜two-fib-add-int
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/two-fib-add-int.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/two-fib-add-int.lean
+  sha≜30b0346abdfa01ac948a6cfaf6fc960617cb6ecde952c3cc76873c0a6b55ce93
+  aff≜-10
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
