@@ -1,0 +1,8 @@
+𝔸5.1.lemma.1f56dbef11d3@2026-06-17
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜1f56dbef11d3b9912f2c578d32ef3f2990a88771d2c733372a93feb37fa5d3ab; goal≜sum-odd-squares-eq; name≜sum_odd_squares_eq}
+⟦Σ:Source⟧{src≜goals/sum-odd-squares-eq.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜python; model≜sympy; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

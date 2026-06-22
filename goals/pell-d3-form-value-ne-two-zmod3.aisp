@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜pell-d3-form-value-ne-two-zmod3
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/pell-d3-form-value-ne-two-zmod3.md
+  src≜packages/unsorry-archive-0009/backlog/pell-d3-form-value-ne-two-zmod3.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/pell-d3-form-value-ne-two-zmod3.lean
+  lean≜packages/unsorry-archive-0009/goals/pell-d3-form-value-ne-two-zmod3.lean
   sha≜5b946a7c5cf5a166f4b9188f1acaee11d87ed3f396edcc5792edadca31bd8782
   aff≜-10
 }

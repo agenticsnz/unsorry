@@ -1,8 +1,0 @@
-𝔸5.1.lemma.bb6f3c034064@2026-06-17
-γ≔unsorry.lemma.index
-⟦Ω:Lemma⟧{sha≜bb6f3c03406443b6d0f71c696d1c5153630648e718499dfadf45a26e560cedc9; goal≜sum-k-mul-succ-mul-two-k-succ; name≜sum_k_mul_succ_mul_two_k_succ}
-⟦Σ:Source⟧{src≜goals/sum-k-mul-succ-mul-two-k-succ.lean}
-⟦Γ:Tags⟧{tags≜⟨⟩}
-⟦Λ:Meta⟧{use≜0; aff≜0}
-⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜claude; model≜template-sum-induction; attempts≜1}
-⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

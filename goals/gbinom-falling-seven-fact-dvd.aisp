@@ -1,0 +1,20 @@
+𝔸5.1.goal.gbinom-falling-seven-fact-dvd@2026-06-19
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gbinom-falling-seven-fact-dvd
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/gbinom-falling-seven-fact-dvd.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/gbinom-falling-seven-fact-dvd.lean
+  sha≜9d754dd8290742c98e78d8be99b590ceb4c527c2a2b33a276d76660e62924f14
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

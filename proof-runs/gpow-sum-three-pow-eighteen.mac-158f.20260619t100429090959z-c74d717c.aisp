@@ -1,0 +1,8 @@
+𝔸5.1.run.gpow-sum-three-pow-eighteen.mac-158f.20260619t100429090959z-c74d717c@2026-06-19
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260619t100429090959z-c74d717c; goal≜gpow-sum-three-pow-eighteen; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜python; model≜sympy}
+⟦Γ:Goal⟧{goal≜gpow-sum-three-pow-eighteen}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-19T10:04:29Z}
+⟦Σ:Artifact⟧{sha≜a7148b0ce6d0cfccb7238b3433b7a3ce94306e1a7604242353f221b8ff1827f9}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

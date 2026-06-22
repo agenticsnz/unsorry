@@ -1,0 +1,76 @@
+# Rescue PRs that GitHub left BLOCKED by a DROPPED required-check dispatch.
+#
+# GitHub occasionally fails to dispatch the `pull_request` workflows when a PR is
+# opened: `gate-a` / `gate-b` are never created on the head SHA, so they can never
+# report and the PR sits BLOCKED forever — auto-merge enabled but unable to fire,
+# and with no new commit nothing re-triggers them. (#3394 sat ~7 h, 927 behind.)
+#
+# This finds exactly that signature (a required gate with ZERO check-runs on the
+# head SHA — not pending, not failed) and re-triggers it via `update-branch`,
+# which fires a fresh `pull_request` synchronize. See tools/repo/dropped_gate_prs.py
+# for the conservative guards (draft / pending / failed / too-fresh / not-behind
+# are all left alone).
+#
+# Trigger is schedule + manual ONLY — NOT workflow_run on gate-a, because the
+# affected PRs have no gate-a run to complete, so that event would never name them.
+#
+# The branch update MUST use a non-default token: events triggered by the default
+# GITHUB_TOKEN do not start new workflow runs, so an update-branch with it would
+# leave the gates un-dispatched. It authenticates with REFRESH_TOKEN (admin PAT /
+# App token, same secret as the artifact-refresh workflows, #417); when unset the
+# job degrades to report-only instead of silently no-op'ing the nudge.
+name: dropped-gate-janitor
+
+on:
+  schedule:
+    # Hourly backstop, off the top-of-hour congestion (GitHub throttles cron, and
+    # these blocks are not time-critical — catching them within ~1 h beats 7 h).
+    - cron: "23 * * * *"
+  workflow_dispatch:
+    inputs:
+      apply:
+        description: "Set false for a dry-run (report only)"
+        default: "true"
+
+concurrency:
+  group: dropped-gate-janitor
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  janitor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          ref: main # only need the tools/ module; the tool reads state via the API
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.12"
+      - name: Detect refresh token (#417)
+        id: tok
+        env:
+          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+        run: |
+          if [ -n "${REFRESH_TOKEN}" ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Nudge PRs blocked by a dropped gate dispatch
+        env:
+          # Non-default token on purpose (see header): GITHUB_TOKEN events don't
+          # start workflow runs, so update-branch must run as the PAT to dispatch
+          # the gates. Falls back to GITHUB_TOKEN only for the report-only path.
+          GH_TOKEN: ${{ secrets.REFRESH_TOKEN || github.token }}
+        run: |
+          python3 -m tools.repo.dropped_gate_prs \
+            --repo "${{ github.repository }}" \
+            ${{ (steps.tok.outputs.present == 'true' && github.event.inputs.apply != 'false') && '--apply' || '' }}
+      - name: No REFRESH_TOKEN — report-only notice (#417)
+        if: steps.tok.outputs.present != 'true'
+        run: |
+          echo "::warning::REFRESH_TOKEN unset — dropped-gate janitor ran report-only. An update-branch with the default GITHUB_TOKEN would not re-dispatch the gates; add the admin PAT/App token as REFRESH_TOKEN to enable nudging."
