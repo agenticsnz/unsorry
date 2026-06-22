@@ -1,0 +1,72 @@
+name: model-registry-gate
+
+# Deterministic gate for the model → Pokémon registry (ADR-083). Validates the
+# artifact's schema, Pokémon validity, uniqueness and completeness, and enforces
+# the work-packet rule: a PR that *modifies* the registry may add exactly one new
+# model (one Pokémon per PR). The very first PR that introduces the file (the
+# seed) is exempt from the single-addition rule. Stdlib only; pytest is the sole
+# test-time dependency. Always reports so branch protection never waits.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  detect:
+    runs-on: ubuntu-latest
+    outputs:
+      relevant: ${{ steps.filter.outputs.registry }}
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - id: filter
+        uses: dorny/paths-filter@d1c1ffe0248fe513906c8e24db8ea791d46f8590 # v3.0.3
+        with:
+          filters: |
+            registry:
+              - '.github/workflows/model-registry-gate.yml'
+              - 'tools/model_registry/**'
+              - 'docs/metrics/model-registry.json'
+
+  gate:
+    needs: detect
+    runs-on: ubuntu-latest
+    steps:
+      - name: Short-circuit (no registry paths touched)
+        if: needs.detect.outputs.relevant != 'true'
+        run: echo "No model-registry paths touched — gate passes vacuously."
+
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        if: needs.detect.outputs.relevant == 'true'
+        with:
+          fetch-depth: 0 # need the base commit to diff the registry
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        if: needs.detect.outputs.relevant == 'true'
+        with:
+          python-version: "3.12"
+      - name: Install test dependency
+        if: needs.detect.outputs.relevant == 'true'
+        run: pip install pytest
+
+      - name: Validator test suite
+        if: needs.detect.outputs.relevant == 'true'
+        run: pytest tools/model_registry -q
+
+      - name: Validate registry artifact
+        if: needs.detect.outputs.relevant == 'true'
+        run: python3 -m tools.model_registry validate docs/metrics/model-registry.json
+
+      - name: Enforce one Pokémon per PR (modifications only)
+        if: needs.detect.outputs.relevant == 'true' && github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          REGISTRY: docs/metrics/model-registry.json
+        run: |
+          set -euo pipefail
+          if git cat-file -e "${BASE_SHA}:${REGISTRY}" 2>/dev/null; then
+            git show "${BASE_SHA}:${REGISTRY}" > /tmp/base-registry.json
+            python3 -m tools.model_registry check-added \
+              --base /tmp/base-registry.json --head "${REGISTRY}"
+          else
+            echo "Registry introduced in this PR (seed) — single-addition rule N/A."
+          fi

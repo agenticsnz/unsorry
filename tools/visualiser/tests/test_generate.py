@@ -218,7 +218,7 @@ def test_render_html(tmp_path):
     assert "cdn.tailwindcss.com" in html and "tailwind.config" in html
     assert "brand" in html and "Inter" in html  # brand palette + Inter font
     assert "lg:grid-cols-[minmax(0,1fr)_320px]" in html  # responsive diagram/panel
-    assert ">Unsorry<" in html  # shared wordmark header
+    assert ">unsorry<" in html  # shared wordmark header
     assert "4 goals" in html  # header summary stat
     # Issue #738: shared top-nav + click-to-sort goals-table headings.
     assert 'href="index.html"' in html and 'href="leaderboard.html"' in html
