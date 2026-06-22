@@ -1,1 +1,0 @@
-The queue dispatcher's fair-ordering helper (`fair_dispatch_order`) no longer prints a `BrokenPipeError` traceback when the dispatch loop stops reading early — normal whenever the dispatch limit is reached or the submission governor pauses. The traceback was harmless (the dispatch decision was already made) but read as a crash in `run.sh` logs.
