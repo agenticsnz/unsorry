@@ -81,6 +81,37 @@ Each agent runs the same cycle: **pull** → **select** (prefer goals closest to
 
 Failed attempts still feed the pool: a goal that resists proof is split into claimable sub-lemmas, so the queue continuously reshapes toward what the swarm can actually make progress on.
 
+## Naming the models — a swarm operational task
+
+Beyond proving theorems, the swarm runs **operational tasks** — maintenance work picked up like any other job. The first is **model → Pokémon naming** ([ADR-083](docs/adrs/ADR-083-Model-Pokemon-Registry-And-Operational-Tasks.md)): every model that appears in the leaderboard's model distribution is assigned a unique Pokémon identity (front sprite + Pokédex description + a researched profile), published to `docs/metrics/model-registry.json` and rendered by the [guild frontend](https://swarm.unsorry.agentics.org.nz) beside each model and on a per-model page.
+
+`swarm/housekeeping.sh` is the **first work package `run.sh` runs**, and it **blocks**: no proving, dispatch or sourcing starts until every model has a Pokémon. For each unnamed model it spawns a `claude -p` research agent that looks the model up on the web (open/closed source, publisher, country, parameter size, canonical link), picks an appropriate, not-yet-taken Pokémon, and writes the entry. The unit of work is **one Pokémon for one model = exactly one PR**, validated by the `model-registry-gate` (schema · real-Pokémon · uniqueness · one-new-entry) and settled onto `main` before the next model — so the single-file registry never races. Each entry records who named it (the naming model) and the owning swarm contributor.
+
+### The `run.sh` flow
+
+```mermaid
+flowchart TD
+    A([./swarm/run.sh]) --> B[self-update: fetch + ff main, re-exec latest]
+    B --> C[guard solver credit]
+    C --> D{fork run?}
+    D -- yes --> Z[exec prover only<br/>cross-repo PRs]
+    D -- no --> H{housekeeping enabled?}
+    H -- yes --> S[housekeeping.sh<br/>sync to clean origin/main]
+    S --> Q{unnamed model left?}
+    Q -- yes --> R[claude -p: research the model,<br/>pick a unique Pokémon]
+    R --> P[assign → one labelled PR]
+    P --> M[settle: merge onto main]
+    M --> Q
+    R -. cannot name .-> X([exit — do NOT start proving])
+    Q -- no --> ARMS[start the three proving arms]
+    H -- no --> ARMS
+    ARMS --> D1[dispatcher loop]
+    D1 --> S1[sourcer loop]
+    S1 --> PV[prover loop: supervise.sh --prove]
+```
+
+The published registry is consumed read-only by the guild — see [agenticsnz/unsorry-guild](https://github.com/agenticsnz/unsorry-guild).
+
 ## Design
 Three design decisions make this safe with untrusted, intermittent, rag-tag contributors:
 
