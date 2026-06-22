@@ -293,6 +293,36 @@
         ],
         "assigned_at": "2026-06-22T10:07:08Z"
       }
+    },
+    {
+      "provider_model": "openai / jackcloudman/Leanstral-2603-GGUF",
+      "slug": "openai-jackcloudman-leanstral-2603-gguf",
+      "pokemon": {
+        "name": "Sigilyph",
+        "dex_id": 561,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/561.png",
+        "description": "They never vary the route they fly, because their memories of guarding an ancient city remain steadfast."
+      },
+      "research": {
+        "classification": "open",
+        "publisher": "jackcloudman (GGUF quant of Mistral AI)",
+        "country": "France (Mistral base model)",
+        "parameter_size": "119B MoE (~6B active)",
+        "license": "Apache 2.0",
+        "canonical_url": "https://huggingface.co/jackcloudman/Leanstral-2603-GGUF"
+      },
+      "profile": "Leanstral is a Lean 4 proof agent that follows strict, predetermined inference paths, much as Sigilyph, the Psychic/Flying guardian, flies fixed geometric routes and never strays. Its airborne nature nods to Mistral's namesake wind, while its psychic intellect mirrors the model's formal-reasoning rigor.",
+      "provenance": {
+        "assigned_by": "housekeeping",
+        "assigned_with": "claude / opus",
+        "contributor": "cgbarlow",
+        "sources": [
+          "https://huggingface.co/jackcloudman/Leanstral-2603-GGUF",
+          "https://huggingface.co/mistralai/Leanstral-2603",
+          "https://mistral.ai/news/leanstral/"
+        ],
+        "assigned_at": "2026-06-22T10:09:05Z"
+      }
     }
   ]
 }
