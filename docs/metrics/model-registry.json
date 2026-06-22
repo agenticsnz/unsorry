@@ -264,6 +264,36 @@
         ],
         "assigned_at": "2026-06-22T10:05:05Z"
       }
+    },
+    {
+      "provider_model": "claude / unknown",
+      "slug": "claude-unknown",
+      "pokemon": {
+        "name": "Espeon",
+        "dex_id": 196,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/196.png",
+        "description": "It uses the fine hair that covers its body to sense air currents and predict its enemy's actions."
+      },
+      "research": {
+        "classification": "closed",
+        "publisher": "Anthropic",
+        "country": "United States",
+        "parameter_size": "undisclosed",
+        "license": "Proprietary (Anthropic Commercial Terms)",
+        "canonical_url": "https://www.anthropic.com/claude"
+      },
+      "profile": "Espeon is a refined Psychic-type that senses feelings and anticipates intent, mirroring Claude's empathetic, nuance-reading helpfulness. It evolves through friendship, echoing Claude's bond with humans via alignment and feedback.",
+      "provenance": {
+        "assigned_by": "housekeeping",
+        "assigned_with": "claude / opus",
+        "contributor": "cgbarlow",
+        "sources": [
+          "https://en.wikipedia.org/wiki/Claude_(language_model)",
+          "https://www.anthropic.com/claude",
+          "https://platform.claude.com/docs/en/about-claude/models/overview"
+        ],
+        "assigned_at": "2026-06-22T10:06:48Z"
+      }
     }
   ]
 }
