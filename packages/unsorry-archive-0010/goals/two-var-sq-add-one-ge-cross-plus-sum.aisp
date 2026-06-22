@@ -1,0 +1,20 @@
+𝔸5.1.goal.two-var-sq-add-one-ge-cross-plus-sum@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜two-var-sq-add-one-ge-cross-plus-sum
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/two-var-sq-add-one-ge-cross-plus-sum.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/two-var-sq-add-one-ge-cross-plus-sum.lean
+  sha≜b0bd02f87be84e71296f407c0d02e8eafb86473bdaceb2d3cc586f08785f1077
+  aff≜-10
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

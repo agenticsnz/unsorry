@@ -1,0 +1,8 @@
+𝔸5.1.lemma.2f90632ec089@2026-06-17
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜2f90632ec089ad922db6cf190d943a2478b814f128b77230a6a49c48c6ec3ce8; goal≜sum-centered-tetrahedral-closed-form; name≜sum_centered_tetrahedral_closed_form}
+⟦Σ:Source⟧{src≜goals/sum-centered-tetrahedral-closed-form.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜python; model≜sympy; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -1,0 +1,109 @@
+# Keep the ADR index (docs/adrs/README.md + docs/adrs/adrs.json) up to date
+# POST-MERGE (ADR-073).
+#
+# The index is a pure function of the `docs/adrs/ADR-*.md` headers, regenerated
+# by `tools.adr_index`. Regenerating it *in every ADR PR* would make any two
+# concurrent ADR PRs conflict on README.md / adrs.json — a whole-corpus table
+# changes on every ADR change — the exact churn ADR-036 moved the targets board
+# away from. So the index follows the same post-merge model: on every push to
+# `main` that could change ADR state it runs `--check`, and on drift it
+# regenerates and commits both artifacts straight back to `main` as a single
+# docs-only `[skip ci]` commit (the standard generated-artifact exception).
+#
+# The refreshed files live *under* the trigger path (`docs/adrs/**`), so the
+# `[skip ci]` commit message is load-bearing: it stops the refresh commit from
+# re-firing this workflow.
+#
+# Pushing the refresh to `main` needs an admin identity: the default
+# GITHUB_TOKEN / github-actions[bot] cannot push to a branch protected by
+# required status checks, and it cannot be granted a bypass. Because the rule has
+# `enforce_admins: false`, an **admin** push bypasses the checks — so the push
+# authenticates with a `REFRESH_TOKEN` secret (an admin PAT / GitHub App token,
+# contents:write), exactly as targets-board.yml / queue-board.yml do. When the
+# secret is unset the workflow degrades to a report-only notice instead of
+# failing red. See issue #417.
+
+name: adr-index
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/adrs/**"
+      - "tools/adr_index/**"
+      - ".github/workflows/adr-index.yml"
+  workflow_dispatch:
+
+# Coalesce bursts of merges into one refresh; never cancel a push mid-commit.
+concurrency:
+  group: adr-index-refresh
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          fetch-depth: 0
+          # REFRESH_TOKEN (admin PAT/App, #417) authenticates the push to `main`;
+          # falls back to GITHUB_TOKEN for the read-only --check when unset.
+          token: ${{ secrets.REFRESH_TOKEN || github.token }}
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.12"
+      - name: Detect refresh token (#417)
+        id: tok
+        env:
+          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+        run: |
+          if [ -n "${REFRESH_TOKEN}" ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Check for ADR-index drift (ADR-073)
+        id: check
+        run: |
+          if python3 -m tools.adr_index --check .; then
+            echo "stale=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "stale=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Regenerate, commit, and push on drift
+        if: steps.check.outputs.stale == 'true' && steps.tok.outputs.present == 'true'
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Retry-rebase (#426): several artifact workflows can fire on the same
+          # merge and push to main, so a plain push races (non-fast-forward). Each
+          # attempt resets to the latest main and regenerates — the index is a
+          # pure function of docs/adrs/ADR-*.md, and the artifacts are disjoint
+          # from the other generators' files — then pushes; a lost race just
+          # retries onto the updated main. `[skip ci]` keeps it from re-firing.
+          paths="docs/adrs/README.md docs/adrs/adrs.json"
+          for attempt in 1 2 3 4 5; do
+            git fetch --quiet origin main
+            git reset --hard --quiet origin/main
+            python3 -m tools.adr_index --write .
+            if git diff --quiet -- $paths; then
+              echo "ADR index already in sync with latest main — nothing to push"
+              exit 0
+            fi
+            git add $paths
+            git commit -q -m "docs: refresh ADR index [skip ci]"
+            if git push --quiet origin HEAD:main; then
+              echo "pushed ADR-index refresh (attempt ${attempt})"
+              exit 0
+            fi
+            echo "push raced on attempt ${attempt} — retrying onto updated main"
+          done
+          echo "::warning::could not push the ADR-index refresh after 5 attempts (persistent concurrent pushes, #426); the next push to main will refresh it"
+      - name: Drift but no REFRESH_TOKEN — report only (#417)
+        if: steps.check.outputs.stale == 'true' && steps.tok.outputs.present != 'true'
+        run: |
+          echo "::warning::ADR index drifted but the REFRESH_TOKEN secret is unset — skipping the push to main (issue #417). Add an admin PAT/App token as the REFRESH_TOKEN secret to enable the post-merge refresh."

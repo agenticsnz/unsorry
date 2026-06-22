@@ -1,0 +1,20 @@
+𝔸5.1.goal.dvd-138-pow-fortyfive-sub-pow-twentythree@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜dvd-138-pow-fortyfive-sub-pow-twentythree
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/dvd-138-pow-fortyfive-sub-pow-twentythree.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/dvd-138-pow-fortyfive-sub-pow-twentythree.lean
+  sha≜57249099306f84af0530303e8107554e8fd853cde36144924f280939564a1bf6
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

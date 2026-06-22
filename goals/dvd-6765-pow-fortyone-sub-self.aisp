@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜dvd-6765-pow-fortyone-sub-self
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/dvd-6765-pow-fortyone-sub-self.md
+  src≜packages/unsorry-archive-0014/backlog/dvd-6765-pow-fortyone-sub-self.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/dvd-6765-pow-fortyone-sub-self.lean
+  lean≜packages/unsorry-archive-0014/goals/dvd-6765-pow-fortyone-sub-self.lean
   sha≜6bccee210b9a4d4210ded74f05726302e5a1c486f092ac7550c3a7f101a3c3b4
   aff≜-19
 }
