@@ -1,4 +1,4 @@
-"""Model → Pokémon registry tooling (ADR-082).
+"""Model → Pokémon registry tooling (ADR-083).
 
 A *swarm operational task* assigns each model in the leaderboard's model
 distribution a unique Pokémon identity. This package provides the deterministic,

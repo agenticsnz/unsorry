@@ -1,8 +1,8 @@
-# ADR-082: The Model → Pokémon Registry and Swarm Operational Tasks
+# ADR-083: The Model → Pokémon Registry and Swarm Operational Tasks
 
 | Field | Value |
 |-------|-------|
-| **Decision ID** | ADR-082 |
+| **Decision ID** | ADR-083 |
 | **Initiative** | unsorry — broadening swarm work beyond proofs; gamifying the model distribution |
 | **Proposed By** | unsorry maintainers (companion to guild issue agenticsnz/unsorry-guild#20) |
 | **Date** | 2026-06-22 |
@@ -65,7 +65,7 @@ the agent's research and is not machine-checkable (only validity, uniqueness and
 - **Work-packet rule.** One model → one Pokémon → one PR. The default `UNSORRY_REGISTRY_MAX=1` names
   the next single unassigned model per invocation, keeping the single-file registry free of
   concurrent edits.
-- **Selection criteria** (SPEC-082-A): *valid* (real Pokémon in the vendored Pokédex manifest),
+- **Selection criteria** (SPEC-083-A): *valid* (real Pokémon in the vendored Pokédex manifest),
   *unique* (name + dex id + slug not already taken), *appropriate* (justified by research; captured
   in `profile`), *complete* (all research fields present; `canonical_url` is the Hugging Face page
   for open models, the official site for closed ones).

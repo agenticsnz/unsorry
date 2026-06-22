@@ -1,4 +1,4 @@
-"""Tests for the shared Pokédex helpers (ADR-082).
+"""Tests for the shared Pokédex helpers (ADR-083).
 
 These run offline against the vendored ``pokedex.json`` — no network.
 """

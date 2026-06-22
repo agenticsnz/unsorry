@@ -1,4 +1,4 @@
-"""Canonical Pokédex manifest and shared identity helpers (ADR-082).
+"""Canonical Pokédex manifest and shared identity helpers (ADR-083).
 
 The manifest (``pokedex.json``) is the *single source of truth* for which
 Pokémon exist and what their national-dex id is. It is reused by:

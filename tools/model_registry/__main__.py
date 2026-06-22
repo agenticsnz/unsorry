@@ -1,4 +1,4 @@
-"""Model registry CLI — the CI gate (ADR-082).
+"""Model registry CLI — the CI gate (ADR-083).
 
 Exit codes: 0 clean, 1 violations found, 2 internal/usage error.
 
@@ -18,7 +18,7 @@ from . import registry
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="python3 -m tools.model_registry",
-        description="Validate the model → Pokémon registry (ADR-082).",
+        description="Validate the model → Pokémon registry (ADR-083).",
     )
     sub = parser.add_subparsers(dest="command", required=True)
 

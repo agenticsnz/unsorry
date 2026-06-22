@@ -1,6 +1,6 @@
-# SPEC-082-A: Model → Pokémon Registry
+# SPEC-083-A: Model → Pokémon Registry
 
-Implements **[ADR-082](../ADR-082-Model-Pokemon-Registry-And-Operational-Tasks.md)**.
+Implements **[ADR-083](../ADR-083-Model-Pokemon-Registry-And-Operational-Tasks.md)**.
 Living document — evolves with the implementation.
 
 ## 1. Artifact: `docs/metrics/model-registry.json`

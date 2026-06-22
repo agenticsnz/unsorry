@@ -1,4 +1,4 @@
-"""Model → Pokémon registry: load + validate (ADR-082).
+"""Model → Pokémon registry: load + validate (ADR-083).
 
 The registry artifact (``docs/metrics/model-registry.json``) is the single
 source of truth the guild frontend reads. ``validate_registry`` is the

@@ -1,6 +1,6 @@
 name: model-registry-gate
 
-# Deterministic gate for the model → Pokémon registry (ADR-082). Validates the
+# Deterministic gate for the model → Pokémon registry (ADR-083). Validates the
 # artifact's schema, Pokémon validity, uniqueness and completeness, and enforces
 # the work-packet rule: a PR that *modifies* the registry may add exactly one new
 # model (one Pokémon per PR). The very first PR that introduces the file (the

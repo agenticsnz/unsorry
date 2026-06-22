@@ -1,4 +1,4 @@
-"""Generate the vendored Pokédex manifest from PokéAPI (ADR-082).
+"""Generate the vendored Pokédex manifest from PokéAPI (ADR-083).
 
 Run once (and whenever new generations are released) to refresh
 ``pokedex.json``:

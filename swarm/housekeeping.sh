@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# swarm/housekeeping.sh — the swarm's first work package (ADR-082).
+# swarm/housekeeping.sh — the swarm's first work package (ADR-083).
 #
 # A *swarm operational task*: assign each model in the leaderboard's model
 # distribution a unique Pokémon identity (sprite + description + research +
@@ -30,7 +30,7 @@ now_z() { date -u +%Y-%m-%dT%H:%M:%SZ; }
 usage() {
   cat <<'EOF'
 Usage: swarm/housekeeping.sh [--self-test]
-Assign Pokémon identities to unnamed models (ADR-082). Run from the repo root.
+Assign Pokémon identities to unnamed models (ADR-083). Run from the repo root.
 EOF
 }
 
@@ -54,7 +54,7 @@ build_prompt() {
   local pm="$1" taken="$2"
   cat <<EOF
 You are a swarm operational agent performing a model-naming work package
-(ADR-082). Research the model identified as "${pm}" and assign it ONE Pokémon.
+(ADR-083). Research the model identified as "${pm}" and assign it ONE Pokémon.
 
 1. RESEARCH the model using web tools. Determine: whether it is open or closed
    source (use "open"/"closed", or "n/a" if it is a tactic/library/artifact, not
@@ -158,11 +158,11 @@ _open_pr() {
   git checkout -b "$branch" >/dev/null
   git add "$REGISTRY"
   git commit -m "$(commit_subject "$pm" "$poke")" \
-    -m "Assign the Pokémon identity for \`$pm\` (ADR-082). One Pokémon per PR." >/dev/null
+    -m "Assign the Pokémon identity for \`$pm\` (ADR-083). One Pokémon per PR." >/dev/null
   git push -u origin "$branch" >/dev/null
   gh pr create --base "$BASE_BRANCH" --head "$branch" \
     --title "$(commit_subject "$pm" "$poke")" \
-    --body "Names \`$pm\` as **$poke** in the model → Pokémon registry (ADR-082). Validated by the model-registry gate (schema · uniqueness · one-Pokémon-per-PR)." \
+    --body "Names \`$pm\` as **$poke** in the model → Pokémon registry (ADR-083). Validated by the model-registry gate (schema · uniqueness · one-Pokémon-per-PR)." \
     >/dev/null
   gh pr merge --auto --squash "$branch" >/dev/null 2>&1 \
     || log "auto-merge not enabled for $branch (will need a manual merge)"

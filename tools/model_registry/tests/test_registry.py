@@ -1,4 +1,4 @@
-"""Tests for the registry validator and PR-gate logic (ADR-082).
+"""Tests for the registry validator and PR-gate logic (ADR-083).
 
 The validator is the mechanical half of the selection criteria: *valid*,
 *unique*, *complete*, *well-formed schema*. The "appropriate" criterion is the
