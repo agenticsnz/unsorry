@@ -1,6 +1,6 @@
 {
   "generated_by": "python3 -m tools.adr_index --write",
-  "count": 81,
+  "count": 82,
   "adrs": [
     {
       "id": "ADR-001",
@@ -649,6 +649,14 @@
       "status": "Accepted",
       "date": "2026-06-22",
       "file": "ADR-082-Single-Pass-Leaderboard-Refresh.md"
+    },
+    {
+      "id": "ADR-083",
+      "number": 83,
+      "title": "The Model → Pokémon Registry and Swarm Operational Tasks",
+      "status": "Accepted",
+      "date": "2026-06-22",
+      "file": "ADR-083-Model-Pokemon-Registry-And-Operational-Tasks.md"
     }
   ]
 }
