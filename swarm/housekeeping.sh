@@ -136,26 +136,26 @@ model_landed() {
     | python3 -c "import sys,json;d=json.load(sys.stdin);sys.exit(0 if '$1' in {m['provider_model'] for m in d.get('models',[])} else 1)" 2>/dev/null
 }
 
-# Strip optional markdown fences and return the first balanced JSON object.
+# Return the first JSON object from the agent's reply. Uses `-c` (NOT `- <<EOF`)
+# so the piped reply stays on stdin — a heredoc would itself BE python's stdin
+# and the piped reply would be discarded (sys.stdin.read() → empty). raw_decode
+# parses correctly through braces inside strings and rejects a truncated object.
 extract_json() {
-  python3 - <<'PY'
-import re, sys
+  # shellcheck disable=SC2016  # the program is literal; $ must not be expanded
+  python3 -c '
+import json, re, sys
 text = sys.stdin.buffer.read().decode("utf-8", "replace")
-text = re.sub(r"^\s*```(?:json)?|```\s*$", "", text.strip(), flags=re.MULTILINE)
+text = re.sub(r"^\s*```(?:json)?\s*|\s*```\s*$", "", text.strip(), flags=re.MULTILINE)
 start = text.find("{")
 if start == -1:
     sys.exit(1)
-depth = 0
-for i in range(start, len(text)):
-    if text[i] == "{":
-        depth += 1
-    elif text[i] == "}":
-        depth -= 1
-        if depth == 0:
-            sys.stdout.buffer.write(text[start : i + 1].encode("utf-8"))
-            sys.exit(0)
-sys.exit(1)
-PY
+try:
+    obj, _ = json.JSONDecoder().raw_decode(text[start:])
+except ValueError:
+    sys.exit(1)
+sys.stdout.buffer.write(json.dumps(obj, ensure_ascii=False).encode("utf-8"))
+sys.exit(0)
+'
 }
 
 # Research + write the entry for $1; on success leaves REGISTRY modified in the
