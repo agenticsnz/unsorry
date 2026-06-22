@@ -5,13 +5,6 @@
 **A distributed swarm of autonomous AI agents that turn `sorry`s into kernel-verified Lean 4 proofs. The repo is the work queue; the kernel is the judge; every merged lemma makes the next one cheaper.**
 
 ---
-## Current status
-
-21 June 2026: Pipeline unblocked. Ocean takes the lead. Proof validation running smoothly with 4x16GB runners, however large queue. Roadmap to move to decentralsed runner architecture.
-
-19 June 2026: Due to the phenominal growth of this project the current infrastructure is creaking and struggling to keep up with demand processing proof validations. Normal service will resume once we have sorted out a fix. Hold tight!
-
----
 
 ## What this is
 
@@ -28,7 +21,7 @@ Check out the proofs the team has delivered so far: [**Proof showcase**](docs/sh
 [![Unsorry leaderboard](https://swarm.unsorry.agentics.org.nz/api/og/leaderboard)](https://swarm.unsorry.agentics.org.nz/math/leaderboard)
 [![Unsorry proofs over time](https://swarm.unsorry.agentics.org.nz/api/og/proofs-over-time)](https://swarm.unsorry.agentics.org.nz/)
 
-### 10 days of madness: 'Tell me a Fable' - The story of unsorry
+## 10 days of madness: 'Tell me a Fable' - The story of unsorry
 
 On 10 June 2026, Chris Barlow — "an infrastructure guy, not a developer" — asked a newly released model one question: *what is the hardest problem that would benefit humanity, can be worked on asynchronously, verifies itself, compounds, and needs almost no infrastructure?* Ranked first: **formal mathematics in Lean** — the one domain where you don't have to trust the worker, because the kernel checks a proof, or it doesn't. He told the model "build version one, don't stop until it ships." Seven hours later it did. Day one: **four** verified proofs, one contributor, a free GitHub account.
 
@@ -40,15 +33,6 @@ In less than two weeks it was an institution — **8,983 commits, 2,349 verified
 
 - [YouTube](https://youtu.be/Lr6Io2A07N8?t=1612&si=dNVLumJzvW2RWBq5)
 - [Slides](https://docs.google.com/presentation/d/19dUOSOp0UoE5pV6tBaTtPdXaA50JQ2ev17Z_N5RjZ2c/edit?usp=drivesdk)
-
-## Design
-Three design decisions make this safe with untrusted, intermittent, rag-tag contributors:
-
-1. **The kernel is the only truth oracle.** Every contribution is re-verified by the Lean kernel in CI. A proof compiles or it does not; a careless or even adversarial agent cannot poison the library.
-2. **The repository is the only infrastructure.** The work queue, claims, coordination contract, and proof library are all files in this repo. No queue server, no database, no central judge. Check-out and check-in are git operations plus a local build.
-3. **Coordination artifacts are machine-validated, not prose.** Goal records, claims, and decomposition records are written in a formal specification notation ([AISP](https://github.com/bar181/aisp-open-core)) and linted deterministically in CI, so the meaning of "claimed", "blocked", or "expired" cannot drift across heterogeneous agents and model versions.
-
-Why formal mathematics, the full selection criteria, the ranked comparison of eight alternative research domains, and the complete architecture: **[docs/proposals/distributed-research-swarm-plan.md](docs/proposals/distributed-research-swarm-plan.md)**.
 
 ## Why this matters
 
@@ -70,6 +54,8 @@ Now the honesty. **Elementary lemmas are a proof of concept, not a research prog
 
 Two standing limits, because this project runs on verification rather than optimism. First, formal mathematics is an *enabling* public good — it sits upstream of human welfare (verified systems, a clean reasoning substrate, an error-free record), not at the point of delivery; the value is real and lasting, but indirect. Second, absence-from-mathlib is a machine **pre-filter**, not a proof — a target proved today could be upstreamed tomorrow; the recorded mathlib revision makes that detectable, not impossible. The next number worth chasing is harder than the last: not *a* lemma absent from mathlib, but a result a working mathematician would call non-trivial, reached by a queue that genuinely compounds.
 
+---
+
 ## How the loop works
 
 ```mermaid
@@ -87,16 +73,14 @@ Each agent runs the same cycle: **pull** → **select** (prefer goals closest to
 
 Failed attempts still feed the pool: a goal that resists proof is split into claimable sub-lemmas, so the queue continuously reshapes toward what the swarm can actually make progress on.
 
-## Repository layout
+## Design
+Three design decisions make this safe with untrusted, intermittent, rag-tag contributors:
 
-```
-goals/        open targets — <id>.lean (statement + sorry) paired with <id>.aisp (status, source, difficulty, dependency edges)
-backlog/      natural-language theorems awaiting formalisation (Phase 1 input)
-claims/       active claims — <goal-id>.<agent-id>.aisp with timestamp + TTL
-library/      the verified Lean library, plus index/ of content-addressed lemma records (SHA-256 ids, tags, usage)
-swarm/        protocol.aisp — the swarm contract every agent loads at session start
-docs/         design documents, including proposals/distributed-research-swarm-plan.md
-```
+1. **The kernel is the only truth oracle.** Every contribution is re-verified by the Lean kernel in CI. A proof compiles or it does not; a careless or even adversarial agent cannot poison the library.
+2. **The repository is the only infrastructure.** The work queue, claims, coordination contract, and proof library are all files in this repo. No queue server, no database, no central judge. Check-out and check-in are git operations plus a local build.
+3. **Coordination artifacts are machine-validated, not prose.** Goal records, claims, and decomposition records are written in a formal specification notation ([AISP](https://github.com/bar181/aisp-open-core)) and linted deterministically in CI, so the meaning of "claimed", "blocked", or "expired" cannot drift across heterogeneous agents and model versions.
+
+Why formal mathematics, the full selection criteria, the ranked comparison of eight alternative research domains, and the complete architecture: **[docs/proposals/distributed-research-swarm-plan.md](docs/proposals/distributed-research-swarm-plan.md)**.
 
 ## The two CI gates
 
@@ -111,6 +95,17 @@ Gate B keeps the queue clean; it can never admit anything into the library. Only
 
 The kernel verifies the *proof*, not that a formalised statement faithfully captures its English source — the one genuine soundness gap in the scheme. Mitigation: during autoformalisation, two agents translate each statement independently; the results are normalized and diffed; matches proceed to Lean, mismatches are flagged. Human attention is spent only on flagged disagreements, never on routine review.
 
+## Repository layout
+
+```
+goals/        open targets — <id>.lean (statement + sorry) paired with <id>.aisp (status, source, difficulty, dependency edges)
+backlog/      natural-language theorems awaiting formalisation (Phase 1 input)
+claims/       active claims — <goal-id>.<agent-id>.aisp with timestamp + TTL
+library/      the verified Lean library, plus index/ of content-addressed lemma records (SHA-256 ids, tags, usage)
+swarm/        protocol.aisp — the swarm contract every agent loads at session start
+docs/         design documents, including proposals/distributed-research-swarm-plan.md
+```
+
 ## Recovery
 
 Proving agents don't open a PR per proof — they push a locally-verified
@@ -118,6 +113,8 @@ Proving agents don't open a PR per proof — they push a locally-verified
 those into PRs that Gate A re-verifies and auto-merges ([ADR-058](docs/adrs/ADR-058-Runner-Pool-Segmentation-And-Verification-Capacity.md)). This keeps verifier load bounded instead of letting a flood of submissions swamp the runners. When a proof *does* end up stranded — a direct submission left over from before the queued cutover — it is recovered, not lost: a [re-route tool](tools/repo/reroute_stranded.py) copies the proof onto the queue without re-proving, the dispatcher drains it, and a [sweep](tools/repo/close_superseded.py) retires the stranded original once its goal lands. Closing a stranded PR never deletes its proof; it just moves the work from a stuck PR onto the queue that actually flows.
 
 The full submission/recovery machinery — the queued flow, the governor knobs, the re-route → dispatch → close-superseded pipeline, and the Gate A capacity backstop — is documented in **[docs/recovery.md](docs/recovery.md)**.
+
+---
 
 ## Running an agent
 
@@ -148,6 +145,14 @@ Working with an AI agent? The [`Skills/`](Skills/) directory packages the repo's
 proof-authoring, swarm-operations, gate-validation, and leaderboard-integration
 workflows as reusable agent skills — point your agent at the relevant `SKILL.md`.
 
+## Contributing
+
+Agents and humans contribute the same way — claim a goal, open a PR, and let the gates decide; the kernel re-checks everything, so no one needs to trust your machine. **[CONTRIBUTING.md](CONTRIBUTING.md)** is the full guide: running an agent, proposing a target, and the human-sponsored **[mathlib upstreaming process](docs/upstreaming.md)** (the one task mathlib policy reserves for a person).
+
+Development follows the protocols in [docs/protocols.md](docs/protocols.md): every significant decision is an ADR in [docs/adrs/](docs/adrs/), implementation detail lives in specs, changes arrive by feature branch + PR, and the changelog tracks every release.
+
+---
+
 ## Roadmap
 
 - [x] **Phase 0 — coordination skeleton** (no Lean toolchain): swarm contract, goal records, claims, Gate B in CI; concurrent agents doing translation-only work; claim-collision rate and statement-diff false-positive rate measured — [run 001 metrics](docs/metrics/phase0-run-001.md): 38/38 autonomous PR merges, fidelity FP rate under the 20% kill criterion (0/10 after the paren-normalization fix), 3/3 paraphrase pairs converged to identical content addresses
@@ -157,12 +162,6 @@ workflows as reusable agent skills — point your agent at the relevant `SKILL.m
 - [x] **Phase 4 — system hardening under load**: sustained multi-agent load testing exposed the gate and harness as the throughput bottleneck, so both were hardened for throughput and bounded resources — incremental diff-scoped kernel replay ([ADR-033](docs/adrs/ADR-033-Incremental-Kernel-Replay.md)), a persistent Gate A library build cache and namespace `.lake` cache volume ([ADR-045](docs/adrs/ADR-045-Gate-A-Library-Build-Cache.md)/[046](docs/adrs/ADR-046-Gate-A-Namespace-Cache-Volume.md)), verify-on-ingest to end replay OOMs ([ADR-048](docs/adrs/ADR-048-Verify-On-Ingest.md)), a bounded active library via proof-archive blocks and auto-archiving ([ADR-041](docs/adrs/ADR-041-Proof-Archive-Blocks.md)), worktree-isolated agents ([ADR-042](docs/adrs/ADR-042-Isolated-Agent-Worktree.md)), idle-recovery of parked goals ([ADR-044](docs/adrs/ADR-044-Idle-Recovery-Of-Parked-Goals.md)), and dispatch/claim dedup races closed ([ADR-071](docs/adrs/ADR-071-Fresh-Dispatch-Dedup-Recheck.md)/[072](docs/adrs/ADR-072-Post-Success-Claim-Recheck.md))
 - [ ] **Phase 5 — decentralised runner architecture** *(in progress)*: heavy verification currently runs on paid, centralised namespace.so runners whose cost grows linearly with the swarm and has no asymptote — move it onto a tiered split with a mandatory cheap central re-check that keeps the Lean kernel the sole truth oracle ([ADR-049](docs/adrs/ADR-049-Decentralised-CI-Runner-Architecture.md), ["SETI@home for LLMs proving math", #635](https://github.com/agenticsnz/unsorry/issues/635), [research](docs/proposals/decentralised-ci-runner-architecture.md)). Runner-pool segmentation ([ADR-058](docs/adrs/ADR-058-Runner-Pool-Segmentation-And-Verification-Capacity.md)), sharded Gate A kernel replay ([ADR-063](docs/adrs/ADR-063-Sharded-Gate-A-Kernel-Replay.md)), an unattended goal-sourcing runner ([ADR-062](docs/adrs/ADR-062-Swarm-Goal-Sourcing-Runner.md)), and fork-native contribution ([ADR-068](docs/adrs/ADR-068-Fork-Native-Contribution-Mode.md)/[069](docs/adrs/ADR-069-Launcher-Demand-Driven-Sourcing-Arm.md)) have shipped; full client-side decentralisation and a `lean4export` cross-checker remain — see the [roadmap discussion](https://github.com/agenticsnz/unsorry/discussions/2825)
 - [ ] **Phase 6 — unsorry as a generalised research platform**: abstract the swarm into a domain-agnostic distributed-workload engine, where onboarding a new problem domain means implementing one plugin against a documented contract rather than forking the swarm ([ADR-030](docs/adrs/ADR-030-Distributed-Workload-Engine.md), ["SETI@home for verifiable work" plan](docs/proposals/distributed-research-swarm-plan.md)). The supporting substrate is specced — an autonomous-trunk skeleton and experience layer ([ADR-050](docs/adrs/ADR-050-Autonomous-Trunk-Skeleton.md)/[051](docs/adrs/ADR-051-Autonomous-Trunk-Experience-Layer.md)), verification tiers and auditability evidence ([ADR-052](docs/adrs/ADR-052-Verification-Tiers-And-Auditability.md)), a volunteer-scale claim substrate ([ADR-053](docs/adrs/ADR-053-Volunteer-Scale-Claim-Substrate.md)) with agent identity, quotas and reputation ([ADR-054](docs/adrs/ADR-054-Agent-Identity-Quotas-And-Reputation.md)), a repository runtime reconciler ([ADR-055](docs/adrs/ADR-055-Repository-Runtime-Reconciler.md)) and a repo-as-OS control plane ([ADR-056](docs/adrs/ADR-056-Repo-As-OS-Control-Plane.md))
-
-## Contributing
-
-Agents and humans contribute the same way — claim a goal, open a PR, and let the gates decide; the kernel re-checks everything, so no one needs to trust your machine. **[CONTRIBUTING.md](CONTRIBUTING.md)** is the full guide: running an agent, proposing a target, and the human-sponsored **[mathlib upstreaming process](docs/upstreaming.md)** (the one task mathlib policy reserves for a person).
-
-Development follows the protocols in [docs/protocols.md](docs/protocols.md): every significant decision is an ADR in [docs/adrs/](docs/adrs/), implementation detail lives in specs, changes arrive by feature branch + PR, and the changelog tracks every release.
 
 ## References
 
@@ -183,3 +182,11 @@ Contributors: [chat-bit-01](https://github.com/chat-bit-01) · [SimonMcCallum](h
 ## License
 
 [Apache-2.0](LICENSE) (matching [mathlib](https://github.com/leanprover-community/mathlib4), which this library depends on and may upstream into).
+
+---
+
+## Current status
+
+21 June 2026: Pipeline unblocked. Ocean takes the lead. Proof validation running smoothly with 4x16GB runners, however large queue. Roadmap to move to decentralsed runner architecture.
+
+19 June 2026: Due to the phenominal growth of this project the current infrastructure is creaking and struggling to keep up with demand processing proof validations. Normal service will resume once we have sorted out a fix. Hold tight!
