@@ -31,6 +31,36 @@
         ],
         "assigned_at": "2026-06-22T08:21:50Z"
       }
+    },
+    {
+      "provider_model": "lean / decide",
+      "slug": "lean-decide",
+      "pokemon": {
+        "name": "Klinklang",
+        "dex_id": 601,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/601.png",
+        "description": "The gear with the red core is rotated at high speed for a rapid energy charge."
+      },
+      "research": {
+        "classification": "n/a",
+        "publisher": "Lean FRO",
+        "country": "United States",
+        "parameter_size": "n/a",
+        "license": "Apache-2.0",
+        "canonical_url": "https://github.com/leanprover/lean4"
+      },
+      "profile": "Lean's `decide` is not a model but a deterministic tactic that mechanically grinds a goal through Decidable-instance kernel computation to a definite verdict. Klinklang's interlocking gears turning in perfect, repeatable lockstep mirror this Steel-clad, no-randomness decision machine.",
+      "provenance": {
+        "assigned_by": "housekeeping",
+        "assigned_with": "claude / opus",
+        "contributor": "cgbarlow",
+        "sources": [
+          "https://github.com/leanprover/lean4",
+          "https://lean4.dev/tactics/automation/decide",
+          "https://github.com/leanprover/lean4/blob/master/LICENSE"
+        ],
+        "assigned_at": "2026-06-22T08:27:52Z"
+      }
     }
   ]
 }
