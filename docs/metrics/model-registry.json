@@ -205,6 +205,36 @@
         ],
         "assigned_at": "2026-06-22T10:01:21Z"
       }
+    },
+    {
+      "provider_model": "manual / gpt-5.5",
+      "slug": "manual-gpt-5-5",
+      "pokemon": {
+        "name": "Mewtwo",
+        "dex_id": 150,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png",
+        "description": "It was created by a scientist after years of horrific gene splicing and DNA engineering experiments."
+      },
+      "research": {
+        "classification": "closed",
+        "publisher": "OpenAI",
+        "country": "United States",
+        "parameter_size": "undisclosed",
+        "license": "Proprietary",
+        "canonical_url": "https://openai.com/index/introducing-gpt-5-5/"
+      },
+      "profile": "Mewtwo, the engineered apex of psychic intelligence and raw power, mirrors GPT-5.5 as OpenAI's smartest, most capable flagship model. Both are artificial creations built to surpass everything before them and act autonomously.",
+      "provenance": {
+        "assigned_by": "housekeeping",
+        "assigned_with": "claude / opus",
+        "contributor": "ab0t-core",
+        "sources": [
+          "https://openai.com/index/introducing-gpt-5-5/",
+          "https://openai.com/index/gpt-5-5-system-card/",
+          "https://techcrunch.com/2026/04/23/openai-chatgpt-gpt-5-5-ai-model-superapp/"
+        ],
+        "assigned_at": "2026-06-22T10:03:06Z"
+      }
     }
   ]
 }
