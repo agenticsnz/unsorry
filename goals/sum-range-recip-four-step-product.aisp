@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-recip-four-step-product
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-recip-four-step-product.md
+  src≜packages/unsorry-archive-0038/backlog/sum-range-recip-four-step-product.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-recip-four-step-product.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0038/goals/sum-range-recip-four-step-product.lean
+  sha≜508f5f4176fec11c48c378ebe9e3dc2886db10d270cbdb00b18731c50d2d735e
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

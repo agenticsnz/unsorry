@@ -1,0 +1,8 @@
+𝔸5.1.lemma.d7f3568e1f3a@2026-06-19
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜d7f3568e1f3a3cdb365276e3671217a718213ee27d3aaeb1347ef297ad4fe1b4; goal≜gbinom-consec-seven-fact-dvd; name≜gbinom_consec_seven_fact_dvd}
+⟦Σ:Source⟧{src≜goals/gbinom-consec-seven-fact-dvd.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜cgbarlow; agent≜mac-158f; provider≜python; model≜sympy; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

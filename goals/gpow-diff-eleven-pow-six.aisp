@@ -1,0 +1,20 @@
+𝔸5.1.goal.gpow-diff-eleven-pow-six@2026-06-19
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gpow-diff-eleven-pow-six
+  phase≜prove
+  status≜archived
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜packages/unsorry-archive-0032/backlog/gpow-diff-eleven-pow-six.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜packages/unsorry-archive-0032/goals/gpow-diff-eleven-pow-six.lean
+  sha≜ad48b0e8ceb81bae02be8ca02111e5e89967bc2617734c627c2629088bbb43f2
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

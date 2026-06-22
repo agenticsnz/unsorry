@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-range-cube-diff-eq-cube@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-range-cube-diff-eq-cube
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-range-cube-diff-eq-cube.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-range-cube-diff-eq-cube.lean
+  sha≜ab7f9534e03b6f11bdadba6551777e56f588a49e40d2bc482a5a9e965b0fad8b
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
