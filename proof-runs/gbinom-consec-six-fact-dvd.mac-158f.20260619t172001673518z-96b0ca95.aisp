@@ -1,0 +1,8 @@
+𝔸5.1.run.gbinom-consec-six-fact-dvd.mac-158f.20260619t172001673518z-96b0ca95@2026-06-19
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260619t172001673518z-96b0ca95; goal≜gbinom-consec-six-fact-dvd; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜cgbarlow; provider≜python; model≜sympy}
+⟦Γ:Goal⟧{goal≜gbinom-consec-six-fact-dvd}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-19T17:20:01Z}
+⟦Σ:Artifact⟧{sha≜88633f55e93c2f6de33c5c2a33590b287de6610043664337a02ba3b29b283f6b}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

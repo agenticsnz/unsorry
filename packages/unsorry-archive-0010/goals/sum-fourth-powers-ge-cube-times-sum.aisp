@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-fourth-powers-ge-cube-times-sum@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-fourth-powers-ge-cube-times-sum
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-fourth-powers-ge-cube-times-sum.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-fourth-powers-ge-cube-times-sum.lean
+  sha≜59c76dd9108598ea71fced282aa4ec9cb2bf826bfe0d7d6315a5ad01926df91e
+  aff≜-10
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

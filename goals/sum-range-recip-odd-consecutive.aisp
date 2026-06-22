@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-recip-odd-consecutive
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-recip-odd-consecutive.md
+  src≜packages/unsorry-archive-0038/backlog/sum-range-recip-odd-consecutive.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-recip-odd-consecutive.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0038/goals/sum-range-recip-odd-consecutive.lean
+  sha≜6ac2558f9391d54598dcb45d0b94a20dbdea452c6b204ef47e09e0d780f4d2a9
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

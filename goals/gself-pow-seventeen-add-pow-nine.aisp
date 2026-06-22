@@ -1,0 +1,20 @@
+𝔸5.1.goal.gself-pow-seventeen-add-pow-nine@2026-06-19
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gself-pow-seventeen-add-pow-nine
+  phase≜prove
+  status≜archived
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜packages/unsorry-archive-0050/backlog/gself-pow-seventeen-add-pow-nine.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜packages/unsorry-archive-0050/goals/gself-pow-seventeen-add-pow-nine.lean
+  sha≜9381cbd46c8bb6cdc6e4650a74d2196e2f4d933c299f75fb4cb8266a92ca7708
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
