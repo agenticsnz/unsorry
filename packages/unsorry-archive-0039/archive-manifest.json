@@ -1,0 +1,155 @@
+{
+  "block_id": "unsorry-archive-0039",
+  "target_size": 40,
+  "proof_count": 34,
+  "status": "frozen",
+  "source_commit": "8276f2065de606097869d1a2846943d8df27b5c1",
+  "validation_commit": null,
+  "pins": {
+    "lean_toolchain": "leanprover/lean4:v4.30.0",
+    "mathlib": "v4.30.0"
+  },
+  "notes": [
+    "ADR-041 proof archive block 0039.",
+    "Whole decomposition trees + standalone proved goals only (invariant A).",
+    "Active goal records remain as archived metadata pointing at this package."
+  ],
+  "goals": [
+    {
+      "goal": "sum-two-cubes-zmod-nine-ne-four",
+      "module": "Unsorry.SumTwoCubesZmodNineNeFour"
+    },
+    {
+      "goal": "sum-two-k-plus-one-div-sq-succ-sq-telescope",
+      "module": "Unsorry.SumTwoKPlusOneDivSqSuccSqTelescope"
+    },
+    {
+      "goal": "sum-range-window-five-fib-eq-fib-diff-nat",
+      "module": "Unsorry.SumRangeWindowFiveFibEqFibDiffNat"
+    },
+    {
+      "goal": "sum-range-window-four-fib-eq-fib-diff-nat",
+      "module": "Unsorry.SumRangeWindowFourFibEqFibDiffNat"
+    },
+    {
+      "goal": "sum-recip-times-sum-ge-nine",
+      "module": "Unsorry.SumRecipTimesSumGeNine"
+    },
+    {
+      "goal": "sum-rhombic-dodecahedral-eq-fourth-power",
+      "module": "Unsorry.SumRhombicDodecahedralEqFourthPower"
+    },
+    {
+      "goal": "sum-square-pyramidal-eq-hyper",
+      "module": "Unsorry.SumSquarePyramidalEqHyper"
+    },
+    {
+      "goal": "sum-star-numbers-closed-form",
+      "module": "Unsorry.SumStarNumbersClosedForm"
+    },
+    {
+      "goal": "sum-tetrahedral-eq-pentatope",
+      "module": "Unsorry.SumTetrahedralEqPentatope"
+    },
+    {
+      "goal": "sum-two-fourth-powers-zmod-sixteen-mem",
+      "module": "Unsorry.SumTwoFourthPowersZmodSixteenMem"
+    },
+    {
+      "goal": "sum-vandermonde-diagonal-eq-choose",
+      "module": "Unsorry.SumVandermondeDiagonalEqChoose"
+    },
+    {
+      "goal": "tangent-line-cube-trick",
+      "module": "Unsorry.TangentLineCubeTrick"
+    },
+    {
+      "goal": "three-cubes-minus-three-prod-dvd-sum",
+      "module": "Unsorry.ThreeCubesMinusThreeProdDvdSum"
+    },
+    {
+      "goal": "three-mul-fib-eq-fib-add-two-add-fib-sub-two",
+      "module": "Unsorry.ThreeMulFibEqFibAddTwoAddFibSubTwo"
+    },
+    {
+      "goal": "two-cubes-zmod-nine-ne-three-four-five-six",
+      "module": "Unsorry.TwoCubesZmodNineNeThreeFourFiveSix"
+    },
+    {
+      "goal": "two-fib-add-int",
+      "module": "Unsorry.TwoFibAddInt"
+    },
+    {
+      "goal": "two-fourth-powers-zmod-five-ne-three-four",
+      "module": "Unsorry.TwoFourthPowersZmodFiveNeThreeFour"
+    },
+    {
+      "goal": "two-mul-sum-icc-three-k-sub-two-eq-pentagonal",
+      "module": "Unsorry.TwoMulSumIccThreeKSubTwoEqPentagonal"
+    },
+    {
+      "goal": "two-mul-sum-range-fib-triple-eq-fib-pred",
+      "module": "Unsorry.TwoMulSumRangeFibTripleEqFibPred"
+    },
+    {
+      "goal": "two-squares-zmod-sixteen-ne-three-seven-eleven",
+      "module": "Unsorry.TwoSquaresZmodSixteenNeThreeSevenEleven"
+    },
+    {
+      "goal": "gzmod-152-pow-twentyone-sub-pow-three",
+      "module": "Unsorry.Gzmod152PowTwentyoneSubPowThree"
+    },
+    {
+      "goal": "gzmod-152-pow-twentyseven-sub-pow-nine",
+      "module": "Unsorry.Gzmod152PowTwentysevenSubPowNine"
+    },
+    {
+      "goal": "gzmod-152-pow-twentysix-sub-pow-eight",
+      "module": "Unsorry.Gzmod152PowTwentysixSubPowEight"
+    },
+    {
+      "goal": "gzmod-152-pow-twentythree-sub-pow-five",
+      "module": "Unsorry.Gzmod152PowTwentythreeSubPowFive"
+    },
+    {
+      "goal": "gzmod-152-pow-twentytwo-sub-pow-four",
+      "module": "Unsorry.Gzmod152PowTwentytwoSubPowFour"
+    },
+    {
+      "goal": "gzmod-156-pow-eighteen-sub-pow-six",
+      "module": "Unsorry.Gzmod156PowEighteenSubPowSix"
+    },
+    {
+      "goal": "gzmod-156-pow-fifteen-sub-pow-three",
+      "module": "Unsorry.Gzmod156PowFifteenSubPowThree"
+    },
+    {
+      "goal": "gzmod-156-pow-nineteen-sub-pow-seven",
+      "module": "Unsorry.Gzmod156PowNineteenSubPowSeven"
+    },
+    {
+      "goal": "gzmod-156-pow-seventeen-sub-pow-five",
+      "module": "Unsorry.Gzmod156PowSeventeenSubPowFive"
+    },
+    {
+      "goal": "gzmod-156-pow-sixteen-sub-pow-four",
+      "module": "Unsorry.Gzmod156PowSixteenSubPowFour"
+    },
+    {
+      "goal": "gzmod-156-pow-twenty-sub-pow-eight",
+      "module": "Unsorry.Gzmod156PowTwentySubPowEight"
+    },
+    {
+      "goal": "gzmod-160-pow-fifteen-sub-pow-seven",
+      "module": "Unsorry.Gzmod160PowFifteenSubPowSeven"
+    },
+    {
+      "goal": "gzmod-160-pow-fourteen-sub-pow-six",
+      "module": "Unsorry.Gzmod160PowFourteenSubPowSix"
+    },
+    {
+      "goal": "gzmod-160-pow-sixteen-sub-pow-eight",
+      "module": "Unsorry.Gzmod160PowSixteenSubPowEight"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+𝔸5.1.run.sq-add-sq-eq-three-mul-sq-s4-s3-s2.oma-2-c05e-52ed.20260621t091306403893z-6fbcf83b@2026-06-21
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260621t091306403893z-6fbcf83b; goal≜sq-add-sq-eq-three-mul-sq-s4-s3-s2; agent≜oma-2-c05e-52ed; outcome≜failed}
+⟦Π:Provenance⟧{solver≜perttu; provider≜claude; model≜opus; effort≜max}
+⟦Γ:Goal⟧{goal≜sq-add-sq-eq-three-mul-sq-s4-s3-s2}
+⟦Λ:Metrics⟧{attempts≜3; solve_s≜514; ended≜2026-06-21T09:13:06Z; lessons≜3}
+⟦Σ:Artifact⟧{sha≜∅}
+⟦Δ:Lesson⟧{sig≜(no file was written at library/Unsorry/SqAddSqEqThreeMulSqS4S3S2.lean)}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

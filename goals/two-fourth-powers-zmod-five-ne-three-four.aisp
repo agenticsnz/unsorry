@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜two-fourth-powers-zmod-five-ne-three-four
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/two-fourth-powers-zmod-five-ne-three-four.md
+  src≜packages/unsorry-archive-0039/backlog/two-fourth-powers-zmod-five-ne-three-four.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/two-fourth-powers-zmod-five-ne-three-four.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0039/goals/two-fourth-powers-zmod-five-ne-three-four.lean
+  sha≜cc82c8034de587e3d5ba0b3cb8a0b1770da2501a792d3e85adf8da019ae9d536
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜dvd-sixty-pow-ten-sub-sq
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/dvd-sixty-pow-ten-sub-sq.md
+  src≜packages/unsorry-archive-0012/backlog/dvd-sixty-pow-ten-sub-sq.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/dvd-sixty-pow-ten-sub-sq.lean
+  lean≜packages/unsorry-archive-0012/goals/dvd-sixty-pow-ten-sub-sq.lean
   sha≜31e706cd382ecf5dfb0d77cbbac42775b9d4195f00825459948ea4c5bf2b0e54
   aff≜-19
 }

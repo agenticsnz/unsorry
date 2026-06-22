@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-fourth-powers-three-var-ge-sym-square-products
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-fourth-powers-three-var-ge-sym-square-products.md
+  src≜packages/unsorry-archive-0013/backlog/sum-fourth-powers-three-var-ge-sym-square-products.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-fourth-powers-three-var-ge-sym-square-products.lean
+  lean≜packages/unsorry-archive-0013/goals/sum-fourth-powers-three-var-ge-sym-square-products.lean
   sha≜39aab2d1d190b17200e1d10709859a4bb23c6ca593df8045559b48b4e5c95d80
   aff≜-9
 }

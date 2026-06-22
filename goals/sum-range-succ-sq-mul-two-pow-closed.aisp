@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-succ-sq-mul-two-pow-closed
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-succ-sq-mul-two-pow-closed.md
+  src≜packages/unsorry-archive-0013/backlog/sum-range-succ-sq-mul-two-pow-closed.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-succ-sq-mul-two-pow-closed.lean
+  lean≜packages/unsorry-archive-0013/goals/sum-range-succ-sq-mul-two-pow-closed.lean
   sha≜0c3a2d8740f6ae19f2bd916553fbce7a5124092918a4bf930467fdb765d86160
   aff≜-9
 }
