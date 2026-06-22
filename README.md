@@ -18,8 +18,8 @@
 
 Check out the proofs the team has delivered so far: [**Proof showcase**](docs/showcase.html) (curated highlights) · [Proof graph](https://swarm.unsorry.agentics.org.nz/math/proof-graph) · [Visual leaderboard](https://swarm.unsorry.agentics.org.nz/math/leaderboard) · [Queue](https://swarm.unsorry.agentics.org.nz/math/queue)
 
-[![Unsorry leaderboard](https://swarm.unsorry.agentics.org.nz/api/og/leaderboard)](https://swarm.unsorry.agentics.org.nz/math/leaderboard)
-[![Unsorry proofs over time](https://swarm.unsorry.agentics.org.nz/api/og/proofs-over-time)](https://swarm.unsorry.agentics.org.nz/)
+[![unsorry — Leaderboard](docs/leaderboard.svg)](https://swarm.unsorry.agentics.org.nz/math/leaderboard)
+[![unsorry — Proofs Over Time](docs/proofs-over-time.svg)](https://swarm.unsorry.agentics.org.nz/)
 
 ## How mathematics actually gets made — and the part we're automating
 
