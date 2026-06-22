@@ -15,13 +15,16 @@
 # Exit codes: 0 all models named / nothing to do · 1 could not name some model
 # (run.sh then refuses to start the proving arms) · 2 config error.
 set -euo pipefail
+# Force Python UTF-8 everywhere: agent responses carry non-ASCII (accented names,
+# em-dashes) and a C locale would otherwise crash stdin decode in the helpers.
+export PYTHONUTF8=1
 
 REGISTRY="docs/metrics/model-registry.json"
 DISTRIBUTION="docs/metrics/leaderboard-ui.json"
 # Models to name per invocation. Default 0 = drain ALL unnamed models (the
 # run.sh guarantee). A positive value caps the run (testing/manual use).
 MAX="${UNSORRY_REGISTRY_MAX:-0}"
-RETRIES="${UNSORRY_REGISTRY_RETRIES:-3}"      # research attempts per model
+RETRIES="${UNSORRY_REGISTRY_RETRIES:-5}"      # research attempts per model
 SETTLE_TRIES="${UNSORRY_REGISTRY_SETTLE_TRIES:-60}"  # merge-settle polls per PR
 SETTLE_WAIT="${UNSORRY_REGISTRY_SETTLE_WAIT:-10}"    # seconds between polls
 MODEL="${UNSORRY_MODEL:-opus}"
@@ -81,7 +84,10 @@ You are a swarm operational agent performing a model-naming work package
    ${taken:-(none yet)}.
    Give its name and national Pokédex id. Justify the choice.
 
-3. OUTPUT ONLY a single JSON object (no prose, no markdown fences) of the form:
+3. Respond with ONLY this JSON object. Your ENTIRE reply MUST start with "{" and
+   end with "}" — no preamble, no explanation, no markdown fences. Keep it
+   COMPACT so the JSON is complete and valid: each research value at most ~8
+   words; "profile" at most 2 short sentences; at most 3 sources.
    {
      "pokemon": {"name": "<Name>", "dex_id": <int>},
      "research": {
@@ -89,7 +95,7 @@ You are a swarm operational agent performing a model-naming work package
        "publisher": "...", "country": "...", "parameter_size": "...",
        "license": "...", "canonical_url": "https://..."
      },
-     "profile": "<2-3 sentences explaining why this Pokémon represents this model>",
+     "profile": "<<=2 sentences on why this Pokémon represents this model>",
      "sources": ["https://...", "https://..."]
    }
 Do not include the sprite_url or description — those are filled deterministically.
@@ -133,10 +139,12 @@ model_landed() {
 # Strip optional markdown fences and return the first balanced JSON object.
 extract_json() {
   python3 - <<'PY'
-import json, re, sys
-text = sys.stdin.read()
+import re, sys
+text = sys.stdin.buffer.read().decode("utf-8", "replace")
 text = re.sub(r"^\s*```(?:json)?|```\s*$", "", text.strip(), flags=re.MULTILINE)
 start = text.find("{")
+if start == -1:
+    sys.exit(1)
 depth = 0
 for i in range(start, len(text)):
     if text[i] == "{":
@@ -144,7 +152,7 @@ for i in range(start, len(text)):
     elif text[i] == "}":
         depth -= 1
         if depth == 0:
-            sys.stdout.write(text[start : i + 1])
+            sys.stdout.buffer.write(text[start : i + 1].encode("utf-8"))
             sys.exit(0)
 sys.exit(1)
 PY
@@ -160,12 +168,15 @@ research_and_write() {
   for attempt in $(seq 1 "$RETRIES"); do
     prompt="$(build_prompt "$pm" "$taken")"
     raw="$(timeout "$WALL" claude -p "$prompt" --model "$MODEL" \
-      --output-format text --allowedTools "WebSearch,WebFetch,Read" 2>/dev/null || true)"
+      --output-format text --allowedTools "WebSearch,WebFetch,Read" \
+      </dev/null 2>"$tmp/err.log" || true)"
     if [ -z "$raw" ]; then
-      log "attempt $attempt: empty agent response for '$pm'"; continue
+      log "attempt $attempt: empty agent response for '$pm' (stderr: $(tr '\n' ' ' < "$tmp/err.log" | tail -c 300))"
+      continue
     fi
     if ! printf '%s' "$raw" | extract_json > "$candidate"; then
-      log "attempt $attempt: no JSON object in response for '$pm'"; continue
+      log "attempt $attempt: no JSON object for '$pm' (raw head: $(printf '%s' "$raw" | tr '\n' ' ' | head -c 220))"
+      continue
     fi
     if python3 -m tools.model_registry assign \
         --registry "$REGISTRY" --provider-model "$pm" --candidate "$candidate" \
