@@ -1,0 +1,36 @@
+# Advisory reminder when a user-facing harness change lands without a
+# changelog.d/ fragment (ADR-040, issue #445). Advisory, NOT a gate: it only
+# emits a ::warning:: annotation and a job-summary line — it never fails the PR
+# (tools.repo.pr_changelog always exits 0). Same safe idiom as pr-scope:
+# pull_request_target on the BASE ref with a read-only token; the changed-file
+# list and title are read as data (API + event payload), so no PR-head code runs.
+name: pr-changelog
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, edited]
+permissions:
+  contents: read
+  pull-requests: read
+jobs:
+  changelog:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3 — base ref, never the PR head
+      - name: Advise on a missing changelog fragment (ADR-040)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          advice="$(gh pr view "$PR" --repo "$GITHUB_REPOSITORY" --json files --jq '.files[].path' \
+            | python3 -m tools.repo.pr_changelog check "$TITLE")"
+          if [ -n "$advice" ]; then
+            echo "::warning title=changelog fragment::${advice}"
+            {
+              echo "### Changelog fragment advisory (ADR-040)"
+              echo
+              echo "${advice}"
+            } >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "No changelog-fragment advisory for this PR." >> "$GITHUB_STEP_SUMMARY"
+          fi

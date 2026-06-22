@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-two-k-succ-mul-choose-eq
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-two-k-succ-mul-choose-eq.md
+  src≜packages/unsorry-archive-0038/backlog/sum-range-two-k-succ-mul-choose-eq.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-two-k-succ-mul-choose-eq.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0038/goals/sum-range-two-k-succ-mul-choose-eq.lean
+  sha≜33bfea8117218b0fb918b15ebde86d175080f5686044c7c2eaf0092b1c79be6b
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

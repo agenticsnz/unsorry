@@ -263,6 +263,33 @@ open_goal_count() {
   printf '%s\n' "$n"
 }
 
+# True iff a chore(sourcing) PR is already open — replenishment already in flight.
+# Prints 1 (an open PR exists) or 0 (none / unknown). Best-effort, mirroring
+# agent.sh's dedup posture (ADR-016): any gh failure degrades to 0 so a transient
+# API error never blocks sourcing. Uses one core-API `gh pr list` filtered by
+# title prefix rather than the rate-limited search API (per ADR-064/071), and is
+# only called on an empty pool, so it costs at most one list per empty-pool tick.
+sourcing_pr_in_flight() {
+  local n
+  n="$(gh pr list --state open --limit 200 --json title \
+        --jq '[.[] | select(.title | startswith("chore(sourcing)"))] | length' \
+        2>/dev/null)" || { printf '0\n'; return 0; }
+  case "$n" in ''|*[!0-9]*|0) printf '0\n' ;; *) printf '1\n' ;; esac
+}
+
+# Pure demand-driven gate decision (ADR-084): given the open-goal count and whether
+# a chore(sourcing) PR is already open, decide the --if-pool-empty action. Pure in
+# its args (no I/O) so the self-test exercises every branch hermetically.
+#   open_goals > 0           -> have-work  (provers still have goals; don't source)
+#   open_goals == 0, pr open -> in-flight  (replenishment already on the way; skip)
+#   open_goals == 0, no pr   -> source     (open one chore(sourcing) PR)
+sourcing_gate_decision() {
+  local open_n="$1" pr_open="$2"
+  if [ "$open_n" -gt 0 ]; then printf 'have-work\n'; return 0; fi
+  if [ "$pr_open" = 1 ]; then printf 'in-flight\n'; return 0; fi
+  printf 'source\n'
+}
+
 # Assemble the Claude prompt: the sourcing playbook (source.md) plus a runtime
 # block fixing this cycle's theme, goal cap, solver, and dedup snapshot. Pure in
 # its arguments (the snapshot is passed in) so it is hermetically testable.
@@ -432,18 +459,29 @@ main() {
   fi
   solver="$(resolve_solver)"
 
-  local i rc overall=0 open_n
+  local i rc overall=0 open_n pr_open
   for (( i = 1; i <= cycles; i++ )); do
     if [ "$IF_POOL_EMPTY" -eq 1 ]; then
       # Demand-driven (ADR-067): re-check the synced main each cycle, so we both
       # gate the first cycle and stop the moment a prior cycle's PR (or a prover)
-      # refills the backlog. No open goals ⇒ kick off a sourcing run instead.
+      # refills the backlog. No open goals ⇒ source — UNLESS a chore(sourcing) PR
+      # is already open (ADR-084): that PR is replenishment in flight, but it isn't
+      # counted as backlog until it merges (ADR-067 snapshot), so without this two
+      # sourcers — or one sourcer on its next tick before its PR merges — both
+      # source. The PR-open check runs only on an empty pool (≤ one gh call/tick).
       open_n="$(open_goal_count goals)"
-      if [ "$open_n" -gt 0 ]; then
-        log "--if-pool-empty: $open_n open goal(s) still to solve — skipping sourcing (no PR)"
-        break
-      fi
-      log "--if-pool-empty: prove pool empty — sourcing to replenish the backlog"
+      pr_open=0
+      [ "$open_n" -eq 0 ] && pr_open="$(sourcing_pr_in_flight)"
+      case "$(sourcing_gate_decision "$open_n" "$pr_open")" in
+        have-work)
+          log "--if-pool-empty: $open_n open goal(s) still to solve — skipping sourcing (no PR)"
+          break ;;
+        in-flight)
+          log "--if-pool-empty: a chore(sourcing) PR is already open — replenishment in flight, skipping (no PR)"
+          break ;;
+        source)
+          log "--if-pool-empty: prove pool empty and no sourcing PR in flight — sourcing to replenish the backlog" ;;
+      esac
     fi
     [ "$cycles" -gt 1 ] && log "=== sourcing cycle $i/$cycles ==="
     rc=0
@@ -519,6 +557,15 @@ test_open_goal_count() {
   return "$rc"
 }
 
+test_sourcing_gate_decision() {
+  local rc=0
+  _assert_eq have-work "$(sourcing_gate_decision 3 0)" "open goals ⇒ have-work"         || rc=1
+  _assert_eq have-work "$(sourcing_gate_decision 1 1)" "open goals beat an open PR"       || rc=1
+  _assert_eq in-flight "$(sourcing_gate_decision 0 1)" "empty + sourcing PR ⇒ in-flight"  || rc=1
+  _assert_eq source    "$(sourcing_gate_decision 0 0)" "empty + no PR ⇒ source"           || rc=1
+  return "$rc"
+}
+
 test_build_prompt() {
   local out
   out="$(build_prompt "euler-substrate" 7 "alice" "foo-goal"$'\n'"bar-goal")"
@@ -581,6 +628,7 @@ run_self_tests() {
     test_resolve_cycles
     test_goal_slugs
     test_open_goal_count
+    test_sourcing_gate_decision
     test_build_prompt
     test_build_prompt_model_choice
     test_fetch_retry_delay
