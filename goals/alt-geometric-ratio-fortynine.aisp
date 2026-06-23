@@ -1,0 +1,20 @@
+𝔸5.1.goal.alt-geometric-ratio-fortynine@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜alt-geometric-ratio-fortynine
+  phase≜prove
+  status≜proved
+  difficulty≜5
+}
+⟦Σ:Source⟧{
+  src≜backlog/alt-geometric-ratio-fortynine.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/alt-geometric-ratio-fortynine.lean
+  sha≜5340ecc521ba80d1f118913a11cb3348313dd794dbe96ec08a9f64562abcca44
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.85;τ≜◊⁺⟩
