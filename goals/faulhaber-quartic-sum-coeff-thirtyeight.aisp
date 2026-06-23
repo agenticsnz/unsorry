@@ -1,0 +1,20 @@
+𝔸5.1.goal.faulhaber-quartic-sum-coeff-thirtyeight@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜faulhaber-quartic-sum-coeff-thirtyeight
+  phase≜prove
+  status≜proved
+  difficulty≜5
+}
+⟦Σ:Source⟧{
+  src≜backlog/faulhaber-quartic-sum-coeff-thirtyeight.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/faulhaber-quartic-sum-coeff-thirtyeight.lean
+  sha≜a7efa1bd6c2662cbbdb1a408de6e47920602ee390a92b378543871880d60ede3
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.85;τ≜◊⁺⟩
