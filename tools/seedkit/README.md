@@ -8,6 +8,19 @@ the scheduled dispatcher to open and auto-merge. All proofs use kernel tactics
 (`decide`, `induction … ; ring` — no `native_decide`), so the axiom profile
 stays `[propext, Classical.choice, Quot.sound]`.
 
+> **This is the _fixture_ path, not sourcing.** seedkit mints goals **born
+> `status≜proved`** (statement + finished proof in one artifact) to grow the
+> _library_; it is deterministic template generation, **not** the demand-driven
+> [`unsorry-goal-sourcing`](../../Skills/unsorry-goal-sourcing/SKILL.md) pipeline
+> that produces open (`status≜open`) goals for the swarm to prove. If you were
+> sent here to "source new goals", use that skill instead. Provenance and
+> difficulty follow the sourcing paradigm by
+> [ADR-086](../../docs/adrs/ADR-086-Seedkit-Fixture-Generation-Path.md): an
+> authenticated `solver` (no anonymous fixtures), the honest Lean engine
+> (`provider≜lean`, `model≜decide`/`ring`), and **difficulty `1`** — these
+> one-tactic / fixed-template goals sit at the bottom of the sourcing difficulty
+> rubric, not the top.
+
 ## Families
 
 Each family is a `(generator, writer)` pair plus a one-line batch wrapper. The
@@ -15,17 +28,22 @@ generator enumerates and *proves-true* candidates; the writer materialises the
 [5-file artifact](#the-5-file-artifact). All families share the same gate
 pipeline, push step, and record shapes (`_artifact.py`, `_words.py`).
 
+All families rate **difficulty 1** (ADR-086): a goal closed by a single `decide`
+or a fixed `induction … ; ring` is, by the sourcing skeptic's *"no short
+one-tactic proof"* bar, a trivial goal — the difficulty column reflects that
+honestly rather than the engine's old 3–5 self-tag.
+
 | Family | Statement (∀ over the free variables) | Proof | Difficulty |
 |---|---|---|---|
-| **divisibility** (`gzmod`) | `M ∣ nᵃ − nᵇ` over `ℤ` | finite `ZMod M` `decide`, lifted via `ZMod.intCast_zmod_eq_zero_iff_dvd` | 3 |
-| **residue** | `((Σ vᵢᵈ : ℤ) : ZMod m) ≠ r` (two squares, three squares, two cubes) | `push_cast`/`ring` cast, `generalize`, finite `decide` | 2 |
-| **telescoping** | `∑ k∈range n, a·((k+1)ᵖ−kᵖ) = a·nᵖ` (p = 2…6) | induction on `n`; `sum_range_succ`; `push_cast`; `ring` | 4 |
-| **faulhaber / geometric** | `(v−1)·∑ vᵏ = vⁿ−1`; `c·∑ kᵖ = v·poly(n)` (p = 2…5) | induction on `n`; `sum_range_succ`; `ring` | 5 |
-| **arith** | `2·∑ k∈range n, (k+c) = n(n−1) + 2cn` | induction on `n`; `sum_range_succ`; `push_cast`; `ring` | 3 |
-| **shiftsq** | `6·∑ k∈range n, (k+c)² = n(n−1)(2n−1) + 6c·n(n−1) + 6nc²` | induction on `n`; `sum_range_succ`; `push_cast`; `ring` | 4 |
-| **oddsq** | `3·∑ k∈range n, c·(2k+1)² = c·n(2n−1)(2n+1)` | induction on `n`; `sum_range_succ`; `push_cast`; `ring` | 4 |
-| **altgeom** | `(r+1)·∑ k∈range n, (−r)ᵏ = 1 − (−r)ⁿ` | induction on `n`; `sum_range_succ`; `ring` | 5 |
-| **factdvd** | `(k! : ℤ) ∣ n·(n+1)·…·(n+k−1)` (k = 2…6) | finite `ZMod k!` `decide`, lifted via `ZMod.intCast_zmod_eq_zero_iff_dvd` | 3 |
+| **divisibility** (`gzmod`) | `M ∣ nᵃ − nᵇ` over `ℤ` | finite `ZMod M` `decide`, lifted via `ZMod.intCast_zmod_eq_zero_iff_dvd` | 1 |
+| **residue** | `((Σ vᵢᵈ : ℤ) : ZMod m) ≠ r` (two squares, three squares, two cubes) | `push_cast`/`ring` cast, `generalize`, finite `decide` | 1 |
+| **telescoping** | `∑ k∈range n, a·((k+1)ᵖ−kᵖ) = a·nᵖ` (p = 2…6) | induction on `n`; `sum_range_succ`; `push_cast`; `ring` | 1 |
+| **faulhaber / geometric** | `(v−1)·∑ vᵏ = vⁿ−1`; `c·∑ kᵖ = v·poly(n)` (p = 2…5) | induction on `n`; `sum_range_succ`; `ring` | 1 |
+| **arith** | `2·∑ k∈range n, (k+c) = n(n−1) + 2cn` | induction on `n`; `sum_range_succ`; `push_cast`; `ring` | 1 |
+| **shiftsq** | `6·∑ k∈range n, (k+c)² = n(n−1)(2n−1) + 6c·n(n−1) + 6nc²` | induction on `n`; `sum_range_succ`; `push_cast`; `ring` | 1 |
+| **oddsq** | `3·∑ k∈range n, c·(2k+1)² = c·n(2n−1)(2n+1)` | induction on `n`; `sum_range_succ`; `push_cast`; `ring` | 1 |
+| **altgeom** | `(r+1)·∑ k∈range n, (−r)ᵏ = 1 − (−r)ⁿ` | induction on `n`; `sum_range_succ`; `ring` | 1 |
+| **factdvd** | `(k! : ℤ) ∣ n·(n+1)·…·(n+k−1)` (k = 2…6) | finite `ZMod k!` `decide`, lifted via `ZMod.intCast_zmod_eq_zero_iff_dvd` | 1 |
 
 The two `decide` families — `gzmod`, `residue`, `factdvd` — and `residue` are
 *filtered by an exhaustive check* before emission (a residue `r` only when
@@ -144,7 +162,8 @@ artifacts between batches (faster reruns, unbounded disk).
 
 | Variable | Default | Meaning |
 |---|---|---|
-| `SEEDKIT_SOLVER` | `anon` | `solver` id stamped into each index record's provenance |
+| `UNSORRY_SOLVER` | — | **preferred** `solver` id (the authenticated identity). seedkit **refuses to write** if neither this nor `SEEDKIT_SOLVER` is set — no anonymous fixtures (ADR-086) |
+| `SEEDKIT_SOLVER` | — | fallback `solver` id, used only when `UNSORRY_SOLVER` is unset |
 | `SEEDKIT_AGENT` | `seedkit` | `agent` id in provenance and in branch/commit names |
 | `SEEDKIT_BRANCH` | current branch | working branch the drivers return to |
 | `SEEDKIT_BUILD_TIMEOUT` | `540` | seconds bounding each `lake build` |

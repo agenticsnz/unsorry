@@ -133,6 +133,7 @@ def test_generator_writer_agree(sample, tmp_path, monkeypatch) -> None:
     """Generator-published sha == writer-embedded sha == written statement's sha."""
     gen_sha, write = sample()
     monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("UNSORRY_SOLVER", "test-solver")  # ADR-086: seedkit requires an authenticated solver
     line = write()
     gid, _name, _mod, writer_sha = line.split("|")
     assert writer_sha == gen_sha

@@ -53,6 +53,10 @@ Gate B rules a fresh goal must satisfy:
   (`[a-z0-9][a-z0-9-]*`, **no dots**).
 - `phase≜prove`; `status≜open`; `difficulty` a single digit 0–5.
 - `status≜open` **requires `sha≜∅`** (a real 64-hex sha is only for proved/archived).
+  This is the *sourcing* contract; the seedkit fixture path
+  ([ADR-086](../../../docs/adrs/ADR-086-Seedkit-Fixture-Generation-Path.md))
+  deliberately writes brand-new records already `status≜proved` with a real sha —
+  a different tool, not a counterexample to this rule for sourced goals.
 - `lean≜goals/<slug>.lean` must point at the existing stub; `deps≜⟨⟩` (or
   `⟨id,id,…⟩` referencing real goals).
 - All five blocks present (`⟦Ω⟧⟦Σ⟧⟦Γ⟧⟦Λ⟧⟦Ε⟧`); the band is exactly

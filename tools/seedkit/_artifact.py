@@ -18,9 +18,14 @@ varying strings and calls :func:`write_artifacts`, which derives the content
 address, writes the five files atomically-enough for the push step, and returns
 the ``"<id>|<name>|<Module>|<sha>"`` line that ``split_push.sh`` consumes.
 
-The provenance ``solver`` id is taken from ``$SEEDKIT_SOLVER`` (default
-``anon``) and the ``agent`` id from ``$SEEDKIT_AGENT`` (default ``seedkit``), so
-a run is attributable without hard-coding an identity into the kit.
+The provenance ``solver`` id is taken from ``$UNSORRY_SOLVER`` (preferred) or
+``$SEEDKIT_SOLVER``; if neither is set the writer raises rather than stamping an
+anonymous id (ADR-086 — seedkit attribution conforms to the sourcing paradigm).
+The ``agent`` id comes from ``$SEEDKIT_AGENT`` (default ``seedkit``), and the
+engine is recorded honestly as ``provider≜lean`` with the real closing tactic as
+``model`` (``decide`` for the finite-``ZMod`` families, ``ring`` for the
+``induction; ring`` closed forms) — attributable to an authenticated identity and
+a true engine, with no post-hoc relabel needed.
 """
 from __future__ import annotations
 
@@ -45,7 +50,7 @@ def write_artifacts(
     difficulty: int,
     delta: str,
     model: str,
-    provider: str = "seedkit",
+    provider: str = "lean",
     solver: str | None = None,
     agent: str | None = None,
     date: str | None = None,
@@ -66,7 +71,12 @@ def write_artifacts(
         )
 
     mod = LS.camel_name(gid)
-    solver = solver or os.environ.get("SEEDKIT_SOLVER", "anon")
+    solver = solver or os.environ.get("UNSORRY_SOLVER") or os.environ.get("SEEDKIT_SOLVER")
+    if not solver:
+        raise ValueError(
+            "seedkit refuses to stamp anonymous provenance (ADR-086): set "
+            "UNSORRY_SOLVER (preferred) or SEEDKIT_SOLVER to the authenticated solver id"
+        )
     agent = agent or os.environ.get("SEEDKIT_AGENT", "seedkit")
     date = date or datetime.date.today().isoformat()
     sha = LS.statement_sha(goal_lean)
