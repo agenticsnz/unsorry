@@ -1,0 +1,20 @@
+𝔸5.1.goal.geometric-series-ratio-fortythree@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜geometric-series-ratio-fortythree
+  phase≜prove
+  status≜proved
+  difficulty≜5
+}
+⟦Σ:Source⟧{
+  src≜backlog/geometric-series-ratio-fortythree.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/geometric-series-ratio-fortythree.lean
+  sha≜ccb08f065f24f4ac296ffb5fa4de8877cc36b26f88f5b45dd9f3e39f3c05cf33
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.85;τ≜◊⁺⟩
