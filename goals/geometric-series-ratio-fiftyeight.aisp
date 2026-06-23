@@ -1,0 +1,20 @@
+𝔸5.1.goal.geometric-series-ratio-fiftyeight@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜geometric-series-ratio-fiftyeight
+  phase≜prove
+  status≜proved
+  difficulty≜5
+}
+⟦Σ:Source⟧{
+  src≜backlog/geometric-series-ratio-fiftyeight.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/geometric-series-ratio-fiftyeight.lean
+  sha≜fe91d250da53a9f9f64189ae20ecb5760d4993a7da39350ce4405d330e88de74
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.85;τ≜◊⁺⟩
