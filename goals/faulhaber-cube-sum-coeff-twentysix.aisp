@@ -1,0 +1,20 @@
+𝔸5.1.goal.faulhaber-cube-sum-coeff-twentysix@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜faulhaber-cube-sum-coeff-twentysix
+  phase≜prove
+  status≜proved
+  difficulty≜5
+}
+⟦Σ:Source⟧{
+  src≜backlog/faulhaber-cube-sum-coeff-twentysix.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/faulhaber-cube-sum-coeff-twentysix.lean
+  sha≜67eeafe08cb35d06b2af0bf1a642f37b1ec8288f7e43613cb3af563524968bbb
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.85;τ≜◊⁺⟩
