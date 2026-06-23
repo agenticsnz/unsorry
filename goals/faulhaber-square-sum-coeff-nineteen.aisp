@@ -1,0 +1,20 @@
+𝔸5.1.goal.faulhaber-square-sum-coeff-nineteen@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜faulhaber-square-sum-coeff-nineteen
+  phase≜prove
+  status≜proved
+  difficulty≜5
+}
+⟦Σ:Source⟧{
+  src≜backlog/faulhaber-square-sum-coeff-nineteen.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/faulhaber-square-sum-coeff-nineteen.lean
+  sha≜dd9efc9854640c7308e06ab60c1926b12675c89d3702eabcc2cec7d560052ab7
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.85;τ≜◊⁺⟩
