@@ -1,0 +1,20 @@
+𝔸5.1.goal.arith-series-sum-coeff-sixtyfive@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜arith-series-sum-coeff-sixtyfive
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/arith-series-sum-coeff-sixtyfive.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/arith-series-sum-coeff-sixtyfive.lean
+  sha≜c2b660d6f56c5746d95bcacdecad045171674a9a3ab267ed9aad8cff3d6176a8
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.55;τ≜◊⁺⟩
