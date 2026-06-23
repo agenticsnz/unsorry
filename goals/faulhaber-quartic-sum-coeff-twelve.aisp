@@ -1,0 +1,20 @@
+𝔸5.1.goal.faulhaber-quartic-sum-coeff-twelve@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜faulhaber-quartic-sum-coeff-twelve
+  phase≜prove
+  status≜proved
+  difficulty≜5
+}
+⟦Σ:Source⟧{
+  src≜backlog/faulhaber-quartic-sum-coeff-twelve.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/faulhaber-quartic-sum-coeff-twelve.lean
+  sha≜93abbbe62d8be4d1794d945cf5b057b0e0adef45db3c8a7685c5bfaabcdecfbf
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.85;τ≜◊⁺⟩
