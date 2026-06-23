@@ -1,0 +1,8 @@
+𝔸5.1.lemma.e9a438b1f72f@2026-06-23
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜e9a438b1f72f3fa0292bc290cc278d6a5e8cff63ceea3dc434f4870f6babefcb; goal≜telescoping-sextic-sum-coeff-seven; name≜telescoping_sextic_sum_coeff_seven}
+⟦Σ:Source⟧{src≜goals/telescoping-sextic-sum-coeff-seven.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜chat-bit-01; agent≜claude-web; provider≜claude; model≜template-induction-ring; attempts≜1}
+⟦Ε⟧⟨δ≜0.75;τ≜◊⁺⟩
