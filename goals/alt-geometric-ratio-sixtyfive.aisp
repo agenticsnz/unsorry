@@ -1,0 +1,20 @@
+𝔸5.1.goal.alt-geometric-ratio-sixtyfive@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜alt-geometric-ratio-sixtyfive
+  phase≜prove
+  status≜proved
+  difficulty≜5
+}
+⟦Σ:Source⟧{
+  src≜backlog/alt-geometric-ratio-sixtyfive.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/alt-geometric-ratio-sixtyfive.lean
+  sha≜192bcb977d1530ce8f8bb1640a5639818be6e36ffb641b61900cb122c3ed0d51
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.85;τ≜◊⁺⟩
