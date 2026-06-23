@@ -46,26 +46,26 @@ sympy, not Lean; agent-keying preserves this.
 **Scope & invariants (unchanged from today):** `_iter_files` already globs active
 `library/index/*.aisp` **and** `packages/unsorry-archive-*/library/index/*.aisp`;
 `solver≜` is never touched; rewriting is metadata-only (soundness-neutral).
-Expected first-run effect: ~142 active induction-ring records → `lean/ring`
-(exact count reported by the tool).
+Expected first-run effect: ~158 records (the `template-induction-ring` family +
+the `provider≜seedkit` `template-zmod-decide` records the sweep previously
+skipped) → `lean/ring`|`lean/decide` (exact count reported by the tool).
 
 ## 3. Difficulty backfill (D2)
 
-A new pure function (e.g. `correct_goal_difficulty(text, gid) -> (text, changed)`)
-plus a goal-record pass in `main`.
+A pure `correct_difficulty(text) -> (text, changed)` plus a goal-record pass in
+`main`, fed by an `index_is_seedkit(text)` / `goal_of(text)` collection pass.
 
-**Identify a seedkit-origin goal.** Primary filter: the goal id begins with one of
-seedkit's family prefixes, enumerated from the generators' `goal_id`/`sides`
-functions — `gzmod-`, `factdvd-`, `residue-`/the residue family ids,
-`telescoping-`, `faulhaber-`/`geometric-`, `arith-`, `shiftsq-`, `oddsq-`,
-`altgeom-` (the canonical list lives in the tool as a constant with a test that
-fails if a generator coins a prefix not listed). Safety guard: before editing,
-cross-check that the goal's proof index record (joined by the goal's `sha`/id)
-carries a seedkit signature — `agent≜seedkit`/`claude-web` with a
-`template-*`/`decide`/`ring` model (tolerant of pre- and post-provenance-relabel
-state). If a prefixed goal's proof is **not** a seedkit signature, **skip it and
-warn** (surfaces a prefix collision rather than silently editing a non-seedkit
-goal).
+**Identify a seedkit-origin goal — by provenance, not by name.** seedkit's goal-id
+prefixes are irregular (`gzmod-`, `alt-geometric-ratio-`, `factorial-dvd-consec-`,
+`odd-square-sum-coeff-`, the residue family ids, …) and easy to under-enumerate,
+so identification is driven by the authoritative signal: the goal's own **proof
+index record**. A first read-only pass over the index records (active + archive)
+collects every `goal≜<id>` whose record carries a seedkit signature
+(`index_is_seedkit`) — one of the kit's agents (`agent≜seedkit`/`claude-web`) with
+either a `template-*` model or, post-relabel, the Lean engine (`provider≜lean;
+model≜decide`/`ring`), tolerant of pre- and post-provenance-relabel state. The
+difficulty pass then edits **exactly those** goals' records; a goal whose proof is
+not a seedkit signature is never touched. (No goal-id prefix list to maintain.)
 
 **Edit.** For an identified goal whose record has `difficulty≜<2-5>`, rewrite to
 `difficulty≜1`. Idempotent: `difficulty≜1` (or `0`) is left unchanged. The
@@ -75,7 +75,9 @@ statement, `sha`, `status`, and every other field are untouched — only the sin
 **Scope.** `goals/*.aisp` only. Goals are never archived under `packages/`
 (`tools/leaderboard/generate.py`), so one pass over `goals/` corrects the
 `difficulty_points` of both active and archived proofs. Expected first-run effect:
-~1,550 goal records → `difficulty≜1` (exact count reported).
+~561 seedkit goal records → `difficulty≜1` (gzmod ~403, faulhaber ~158; exact
+count reported). ~306 `gzmod-` goals proved by the separate `mac-158f` pipeline
+are **not** matched — identification is by proof provenance, not goal-id family.
 
 ## 4. Automation (D4)
 
@@ -101,18 +103,19 @@ Extend `tools/repo/tests/test_relabel_attribution.py` (pure functions, no I/O):
 - `mac-158f template-*` still → `python/sympy` (not Lean); a genuine LLM proof
   (`agent≜claude-web; model≜sonnet`) is untouched; an already-`lean` record is a
   no-op (idempotency);
-- difficulty corrector: a seedkit-prefixed goal at `difficulty≜4` → `1`; at
-  `difficulty≜1` unchanged; a non-seedkit-prefixed goal untouched; a
-  seedkit-prefixed goal whose proof is **not** a seedkit signature is skipped +
-  warned (collision guard);
-- the family-prefix constant matches what the `gen_*` generators emit (guards
-  against a new family being added without listing its prefix).
+- `index_is_seedkit`: a kit agent + template-* or relabelled `lean/decide`|`ring`
+  is a fixture; a genuine LLM proof by the same agent (`model≜opus`) and another
+  contributor's `lean/decide` are **not**;
+- difficulty corrector: `difficulty≜4` → `1`; `difficulty≜1` unchanged
+  (idempotent);
+- end-to-end: a seedkit goal's record is corrected to `1` while a non-seedkit
+  goal at the same difficulty is left untouched; a second run is a no-op.
 
 ## 6. Rollout & impact
 
 1. Land the tool PR (auto-merge, `tools/repo/` only).
 2. The next scheduled/post-merge sweep settles the corpus in one pass
-   (~1,550 goals + ~142 index records), then converges to a no-op.
+   (~561 goals + ~158 index records), then converges to a no-op.
 3. The leaderboard regenerates: fixture contributors' `difficulty_points` and
    score **drop** to reflect honest difficulty 1 (chat-bit-01 most). **This is an
    announced, maintainer-approved standings change** (ADR-087) — note it in the

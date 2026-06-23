@@ -6,7 +6,7 @@
 | **Initiative** | corpus & attribution integrity |
 | **Proposed By** | Chris Barlow (maintainer) |
 | **Date** | 2026-06-23 |
-| **Status** | Proposed |
+| **Status** | Accepted |
 
 ## Context
 
@@ -19,17 +19,19 @@ This ADR is that deferred follow-up.
 The deferral left the corpus split. New fixtures are honest; the historical ones
 are not:
 
-- **~1,550 merged goal records** (`goals/*.aisp`) still carry inflated difficulty
-  `2–5` (e.g. gzmod ~709, faulhaber ~142, plus the residue/telescoping/altgeom/
-  oddsq/arith/shiftsq/factdvd families). The leaderboard sums each proof's goal
-  difficulty into the solver's `difficulty_points` and score
+- **~561 merged seedkit goal records** (`goals/*.aisp`) still carry inflated
+  difficulty `2–5` (gzmod ~403, faulhaber ~158). The leaderboard sums each proof's
+  goal difficulty into the solver's `difficulty_points` and score
   (`tools/leaderboard/generate.py`), so a fixture contributor's standing still
-  reflects the old 3–5 self-tags.
-- **~142 active index records** (`library/index/*.aisp`) still carry the bespoke
-  `model≜template-induction-ring` under `provider≜claude` (~87) or
-  `provider≜seedkit` (~55). The `template-zmod-decide` family was already largely
-  corrected to `provider≜lean; model≜decide` by the existing relabel sweep, but
-  the induction-ring family and the `provider≜seedkit` records were not.
+  reflects the old 3–5 self-tags. (Identification is by **proof provenance**, not
+  goal-id family: the difficulty-`2–5` corpus also contains ~306 `gzmod-` goals
+  proved by the **separate** `mac-158f` Python/sympy pipeline, plus genuinely
+  sourced goals — both **out of scope** here; see Consequences.)
+- **~158 index records** still carry a bespoke seedkit label: mostly
+  `model≜template-induction-ring` under `provider≜claude` or `provider≜seedkit`,
+  plus the `provider≜seedkit` `template-zmod-decide` records the existing sweep
+  skipped. (The `claude`/`template-zmod-decide` records were already corrected to
+  `provider≜lean; model≜decide` by that sweep.)
 
 There is already a maintained, idempotent, self-healing mechanism for the
 provenance half: `tools/repo/relabel_attribution.py` + `attribution-relabel.yml`
@@ -50,7 +52,7 @@ is why ADR-086 §8 said this "warrants its own decision."
 ## WH(Y) Decision Statement
 
 **In the context of** ADR-086 conforming seedkit going forward while leaving
-~1,550 merged goal records at inflated difficulty `2–5` and ~142 index records on
+~561 merged seedkit goal records at inflated difficulty `2–5` and ~158 index records on
 bespoke `template`/`seedkit` labels, with the leaderboard still crediting fixture
 contributors the inflated `difficulty_points`,
 
@@ -117,11 +119,19 @@ inflated, so doing one leaves the corpus half-corrected).
 - **Negative — the load-bearing one.** Fixture contributors' `difficulty_points`
   and score **drop retroactively** (chat-bit-01 most). This is the honest
   correction, but it visibly changes historical standings on a public board and
-  must be a conscious, announced maintainer call — hence this ADR is `Proposed`
-  pending sign-off, not auto-accepted.
-- **Negative.** Editing ~1,550 goal records + ~142 index records is a large
-  one-time settling churn; and routing the goal-difficulty commit through
-  `attribution-relabel.yml` touches a CODEOWNERS workflow.
+  must be a conscious, announced maintainer call — accepted by the maintainer
+  (Status History) and announced in the changelog.
+- **Negative.** Editing ~561 goal records + ~158 index records is a one-time
+  settling churn; the goal-difficulty commit rides the existing
+  `attribution-relabel.yml` `git add -A`, so **no CODEOWNERS workflow edit** is
+  needed.
+- **Discovered, out of scope.** The same triviality applies to ~306 `gzmod-`
+  goals proved by the **separate** `mac-158f` Python/sympy pipeline (a different
+  contributor, ohdearquant), which also self-tagged difficulty `3`. This backfill
+  deliberately corrects **seedkit only** (the subject of ADR-086/087), leaving a
+  cross-prover difficulty inconsistency for identical gzmod families. Extending
+  the correction to `mac-158f` would lower another contributor's standings and so
+  warrants its own decision — flagged as a follow-up, not silently bundled here.
 - **Negative.** The difficulty corrector edits a *merged* goal record's metadata.
   ADR-018 immutability governs the *statement*, not difficulty, so this is
   permitted — but it sets a (documented, difficulty-only) precedent for
@@ -144,3 +154,4 @@ inflated, so doing one leaves the corpus half-corrected).
 | Status | Approver | Date |
 |--------|----------|------|
 | Proposed | Chris Barlow | 2026-06-23 |
+| Accepted (implemented — relabel-sweep extension + difficulty backfill) | Chris Barlow | 2026-06-23 |
