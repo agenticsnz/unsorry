@@ -1,0 +1,8 @@
+𝔸5.1.lemma.ccd81bd24b57@2026-06-23
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜ccd81bd24b579cd42fc2776ff29331afe8d8a439040421d85c2460e0d76111e4; goal≜telescoping-cube-sum-coeff-fortysix; name≜telescoping_cube_sum_coeff_fortysix}
+⟦Σ:Source⟧{src≜goals/telescoping-cube-sum-coeff-fortysix.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜chat-bit-01; agent≜claude-web; provider≜seedkit; model≜template-induction-ring; attempts≜1}
+⟦Ε⟧⟨δ≜0.75;τ≜◊⁺⟩
