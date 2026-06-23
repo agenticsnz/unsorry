@@ -1,0 +1,8 @@
+𝔸5.1.lemma.f1fb3a515eb9@2026-06-23
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜f1fb3a515eb9f55c75b7884cea4af7d93c5d4fbcdf6dd339b9a908d4368f343c; goal≜telescoping-quartic-sum-coeff-fortyseven; name≜telescoping_quartic_sum_coeff_fortyseven}
+⟦Σ:Source⟧{src≜goals/telescoping-quartic-sum-coeff-fortyseven.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜chat-bit-01; agent≜claude-web; provider≜seedkit; model≜template-induction-ring; attempts≜1}
+⟦Ε⟧⟨δ≜0.75;τ≜◊⁺⟩
