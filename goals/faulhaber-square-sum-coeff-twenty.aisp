@@ -1,0 +1,20 @@
+𝔸5.1.goal.faulhaber-square-sum-coeff-twenty@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜faulhaber-square-sum-coeff-twenty
+  phase≜prove
+  status≜proved
+  difficulty≜5
+}
+⟦Σ:Source⟧{
+  src≜backlog/faulhaber-square-sum-coeff-twenty.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/faulhaber-square-sum-coeff-twenty.lean
+  sha≜66a527db7fcd2913cf31f22c3ae839f967b50c84544c0f64d05b0227604a1dc6
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.85;τ≜◊⁺⟩
