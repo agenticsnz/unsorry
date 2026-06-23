@@ -1,0 +1,20 @@
+𝔸5.1.goal.telescoping-square-sum-coeff-two@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜telescoping-square-sum-coeff-two
+  phase≜prove
+  status≜proved
+  difficulty≜4
+}
+⟦Σ:Source⟧{
+  src≜backlog/telescoping-square-sum-coeff-two.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/telescoping-square-sum-coeff-two.lean
+  sha≜79fc46d93dfed1457ade77dd876bd10b06e4f3f48586ac40c817759eebc952f4
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.75;τ≜◊⁺⟩
