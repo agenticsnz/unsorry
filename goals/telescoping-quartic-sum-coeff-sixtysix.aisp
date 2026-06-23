@@ -1,0 +1,20 @@
+𝔸5.1.goal.telescoping-quartic-sum-coeff-sixtysix@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜telescoping-quartic-sum-coeff-sixtysix
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/telescoping-quartic-sum-coeff-sixtysix.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/telescoping-quartic-sum-coeff-sixtysix.lean
+  sha≜1081fca472e5b922bdb419b1923ae121f9d745fcdca6b6ca8e5386e86fd0a28d
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.75;τ≜◊⁺⟩
