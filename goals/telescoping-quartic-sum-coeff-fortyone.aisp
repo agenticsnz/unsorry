@@ -1,0 +1,20 @@
+𝔸5.1.goal.telescoping-quartic-sum-coeff-fortyone@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜telescoping-quartic-sum-coeff-fortyone
+  phase≜prove
+  status≜proved
+  difficulty≜4
+}
+⟦Σ:Source⟧{
+  src≜backlog/telescoping-quartic-sum-coeff-fortyone.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/telescoping-quartic-sum-coeff-fortyone.lean
+  sha≜6807b9fb252dc8c61e98c7d8acfc52a760cd5198996e7d85e349dd6103332605
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.75;τ≜◊⁺⟩
