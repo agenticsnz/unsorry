@@ -1,0 +1,20 @@
+𝔸5.1.goal.arith-series-sum-coeff-twentyfour@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜arith-series-sum-coeff-twentyfour
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/arith-series-sum-coeff-twentyfour.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/arith-series-sum-coeff-twentyfour.lean
+  sha≜7b886862ac9f1176d33221338ec68ae8cb75b0aefa570d9f1a9793fab7be86ad
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.55;τ≜◊⁺⟩
