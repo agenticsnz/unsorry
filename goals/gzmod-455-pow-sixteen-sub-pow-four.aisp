@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜gzmod-455-pow-sixteen-sub-pow-four
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/gzmod-455-pow-sixteen-sub-pow-four.md
+  src≜packages/unsorry-archive-0055/backlog/gzmod-455-pow-sixteen-sub-pow-four.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/gzmod-455-pow-sixteen-sub-pow-four.lean
+  lean≜packages/unsorry-archive-0055/goals/gzmod-455-pow-sixteen-sub-pow-four.lean
   sha≜363876da2c1b71dc396c95f6c988c30e9ff45b65c996607b36ccacdda0514804
   aff≜0
 }
