@@ -1,0 +1,20 @@
+𝔸5.1.goal.telescoping-cube-sum-coeff-twentyfive@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜telescoping-cube-sum-coeff-twentyfive
+  phase≜prove
+  status≜proved
+  difficulty≜4
+}
+⟦Σ:Source⟧{
+  src≜backlog/telescoping-cube-sum-coeff-twentyfive.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/telescoping-cube-sum-coeff-twentyfive.lean
+  sha≜9c6c737c1d3b1d438988820d72017c8fb2bbfe3196dae8228b536350d18928cb
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.75;τ≜◊⁺⟩
