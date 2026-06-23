@@ -1,0 +1,20 @@
+𝔸5.1.goal.geometric-series-ratio-thirtynine@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜geometric-series-ratio-thirtynine
+  phase≜prove
+  status≜proved
+  difficulty≜5
+}
+⟦Σ:Source⟧{
+  src≜backlog/geometric-series-ratio-thirtynine.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/geometric-series-ratio-thirtynine.lean
+  sha≜046dcf77a96081070cac727922c78903b4d43b8c92815b1e4a97366574ba1494
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.85;τ≜◊⁺⟩
