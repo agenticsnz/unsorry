@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-two-cubes-zmod-fourteen-ne-four@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-two-cubes-zmod-fourteen-ne-four
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-two-cubes-zmod-fourteen-ne-four.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-two-cubes-zmod-fourteen-ne-four.lean
+  sha≜936f9695c92ed230f6a391f64d4cd92ee048519c06f5808a8440741ca5979b06
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.40;τ≜◊⁺⟩
