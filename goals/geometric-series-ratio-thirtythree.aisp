@@ -1,0 +1,20 @@
+𝔸5.1.goal.geometric-series-ratio-thirtythree@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜geometric-series-ratio-thirtythree
+  phase≜prove
+  status≜proved
+  difficulty≜5
+}
+⟦Σ:Source⟧{
+  src≜backlog/geometric-series-ratio-thirtythree.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/geometric-series-ratio-thirtythree.lean
+  sha≜2dd8149c5a2511555e43435920447719b7e38fc864219e7846f877b827d9c57c
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.85;τ≜◊⁺⟩
