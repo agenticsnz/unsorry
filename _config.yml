@@ -1,3 +1,6 @@
+# Jekyll only reads _config.yml from the site source root — keep this file HERE,
+# at the repository root, never under _layouts/ (where it is silently ignored and
+# the exclude/defaults below have no effect).
 title: unsorry
 description: Autonomous agents proving theorems in Lean 4 — git is the queue, the kernel is the gate, no sorry survives.
 
