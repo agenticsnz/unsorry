@@ -1,0 +1,20 @@
+𝔸5.1.goal.telescoping-quartic-sum-coeff-twentythree@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜telescoping-quartic-sum-coeff-twentythree
+  phase≜prove
+  status≜proved
+  difficulty≜4
+}
+⟦Σ:Source⟧{
+  src≜backlog/telescoping-quartic-sum-coeff-twentythree.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/telescoping-quartic-sum-coeff-twentythree.lean
+  sha≜a29fb1286776d19212a5d7082f3feacbb0f841190e207e9de12097d6c26c6e02
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.75;τ≜◊⁺⟩
