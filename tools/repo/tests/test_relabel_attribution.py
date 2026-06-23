@@ -5,7 +5,9 @@ from pathlib import Path
 
 from tools.repo.relabel_attribution import (
     correct_difficulty,
+    index_is_mac158f,
     index_is_seedkit,
+    index_is_template_fixture,
     main,
     relabel_record,
 )
@@ -206,3 +208,41 @@ def test_difficulty_backfill_end_to_end(tmp_path: Path, capsys):
     # idempotent second run
     assert main([str(tmp_path), "--apply"]) == 0
     assert "corrected 0 goal record(s)" in capsys.readouterr().out
+
+
+# --- ADR-088: extend the difficulty backfill to mac-158f sympy templates ---
+
+def test_index_is_mac158f():
+    # post-relabel honest python/sympy template
+    assert index_is_mac158f(_prov(agent="mac-158f", provider="python", model="sympy"))
+    # pre-relabel template-* (still claude-mislabelled)
+    assert index_is_mac158f(_prov(agent="mac-158f", provider="claude", model="template-gbinom"))
+    # a genuine LLM proof by the same agent is NOT a template fixture
+    assert not index_is_mac158f(_prov(agent="mac-158f", provider="claude", model="sonnet"))
+    # another agent's python/sympy is not mac-158f
+    assert not index_is_mac158f(_prov(agent="oma-2-c05e", provider="python", model="sympy"))
+
+
+def test_index_is_template_fixture_unions_both_pipelines():
+    assert index_is_template_fixture(_prov(agent="seedkit", provider="lean", model="ring"))
+    assert index_is_template_fixture(_prov(agent="mac-158f", provider="python", model="sympy"))
+    assert not index_is_template_fixture(_prov(agent="oma-2-c05e", provider="claude", model="opus"))
+
+
+def test_mac158f_difficulty_backfilled_end_to_end(tmp_path: Path, capsys):
+    idx = tmp_path / "library" / "index"
+    idx.mkdir(parents=True)
+    goals = tmp_path / "goals"
+    goals.mkdir()
+    mac = "gbinom-sum-coeff-seven"
+    # a mac-158f sympy template proof + its inflated goal record
+    (idx / "m.aisp").write_text(
+        _index_for(mac, agent="mac-158f", provider="python", model="sympy"),
+        encoding="utf-8")
+    (goals / f"{mac}.aisp").write_text(_goal_record(mac, difficulty=4), encoding="utf-8")
+
+    assert main([str(tmp_path), "--apply"]) == 0
+    assert "corrected 1 goal record(s)" in capsys.readouterr().out
+    assert "difficulty≜1" in (goals / f"{mac}.aisp").read_text(encoding="utf-8")
+    # mac-158f provenance was already honest (python/sympy) — unchanged
+    assert "provider≜python" in (idx / "m.aisp").read_text(encoding="utf-8")

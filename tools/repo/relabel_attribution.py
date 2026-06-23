@@ -13,10 +13,11 @@ renders as LLM work, overstating model involvement:
   `model≜template-zmod-decide`/`template-induction-ring`. The honest record is
   `provider≜lean; model≜decide`/`ring` (ADR-086).
 
-In addition, seedkit historically self-tagged its template goals at difficulty
-3–5; the honest value under the sourcing rubric is `1` (a one-tactic `decide` /
-fixed `induction; ring`). This sweep backfills those merged goal records to
-`difficulty≜1` (ADR-087), identified by the goal's own proof provenance.
+In addition, both deterministic-template pipelines historically self-tagged their
+template goals at difficulty 3–5; the honest value under the sourcing rubric is
+`1` (a one-tactic `decide` / fixed `induction; ring`, or a sympy template). This
+sweep backfills those merged goal records to `difficulty≜1` — seedkit (ADR-087)
+and mac-158f (ADR-088) — identified by the goal's own proof provenance.
 
 A one-shot PR cannot fix this against a live corpus (it conflicts and is always
 incomplete as the pipelines keep producing). This is the idempotent **sweep**:
@@ -28,8 +29,9 @@ rule's `agent≜…` + a non-honest `provider≜…` (`claude`/`seedkit`) + the 
 `model≜…` shape, so genuine LLM proofs by the same agents (e.g. `model≜sonnet`)
 and any other contributor's identical model shape stay untouched. A goal's
 difficulty is corrected only when the goal's own proof index record carries a
-seedkit signature. `solver≜` credit is never changed — ranking *by credit* is
-unaffected; only difficulty-weighted points move, which is the point (ADR-087).
+seedkit or mac-158f template signature. `solver≜` credit is never changed —
+ranking *by credit* is unaffected; only difficulty-weighted points move, which is
+the point (ADR-087/088).
 
 Usage:
   python3 -m tools.repo.relabel_attribution            # dry-run under . : count changes
@@ -110,6 +112,29 @@ def index_is_seedkit(text: str) -> bool:
     return m in _SEEDKIT_MODELS_HONEST and "provider≜lean" in text
 
 
+def index_is_mac158f(text: str) -> bool:
+    """True if a record is ohdearquant's mac-158f deterministic Python/sympy
+    template proof (ADR-079/088) — tolerant of pre-relabel (`model≜template-*`)
+    and post-relabel (`provider≜python; model≜sympy`) state. A genuine LLM proof
+    by the same agent (e.g. `model≜sonnet`) is NOT matched."""
+    if "agent≜mac-158f" not in text:
+        return False
+    model = _MODEL_RE.search(text)
+    if model is None:
+        return False
+    m = model.group(1)
+    if m.startswith("template-"):
+        return True
+    return m == "sympy" and "provider≜python" in text
+
+
+def index_is_template_fixture(text: str) -> bool:
+    """A born-proved deterministic-template fixture — seedkit (Lean
+    `decide`/`induction; ring`) or mac-158f (Python/sympy) — whose goal's honest
+    difficulty is 1 (ADR-086/087/088)."""
+    return index_is_seedkit(text) or index_is_mac158f(text)
+
+
 def goal_of(text: str) -> str | None:
     """The ``goal≜<id>`` an index record addresses, or None."""
     m = _GOAL_RE.search(text)
@@ -145,26 +170,27 @@ def main(argv: list[str] | None = None) -> int:
 
     root = Path(args.root)
 
-    # Pass A — relabel provenance, and collect the goals whose proof is a seedkit
-    # fixture (read each record's current on-disk state, before any rewrite).
+    # Pass A — relabel provenance, and collect the goals whose proof is a
+    # deterministic-template fixture (seedkit or mac-158f), reading each record's
+    # current on-disk state before any rewrite.
     prov_changed = 0
-    seedkit_goals: set[str] = set()
+    fixture_goals: set[str] = set()
     for path in _iter_files(root):
         text = path.read_text(encoding="utf-8")
-        if index_is_seedkit(text):
+        if index_is_template_fixture(text):
             gid = goal_of(text)
             if gid:
-                seedkit_goals.add(gid)
+                fixture_goals.add(gid)
         new, did = relabel_record(text)
         if did:
             prov_changed += 1
             if args.apply:
                 path.write_text(new, encoding="utf-8")
 
-    # Pass B — backfill difficulty on exactly those seedkit goals (goals are
+    # Pass B — backfill difficulty on exactly those fixture goals (goals are
     # never archived, so one pass over goals/ fixes active + archived proofs).
     diff_changed = 0
-    for gid in sorted(seedkit_goals):
+    for gid in sorted(fixture_goals):
         gp = root / "goals" / f"{gid}.aisp"
         if not gp.exists():
             continue
@@ -179,7 +205,7 @@ def main(argv: list[str] | None = None) -> int:
     print(f"attribution relabel: {'relabelled' if args.apply else 'would relabel'} "
           f"{prov_changed} record(s) (deterministic templates → honest provider/model)"
           f"{suffix}")
-    print(f"seedkit difficulty backfill: {'corrected' if args.apply else 'would correct'} "
+    print(f"template-fixture difficulty backfill: {'corrected' if args.apply else 'would correct'} "
           f"{diff_changed} goal record(s) (inflated difficulty → 1){suffix}")
     return 0
 
