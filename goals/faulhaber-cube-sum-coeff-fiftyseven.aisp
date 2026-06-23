@@ -1,0 +1,20 @@
+𝔸5.1.goal.faulhaber-cube-sum-coeff-fiftyseven@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜faulhaber-cube-sum-coeff-fiftyseven
+  phase≜prove
+  status≜proved
+  difficulty≜5
+}
+⟦Σ:Source⟧{
+  src≜backlog/faulhaber-cube-sum-coeff-fiftyseven.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/faulhaber-cube-sum-coeff-fiftyseven.lean
+  sha≜c2c96504c5365e2f0844039000dbd5cfc98763efa0729ebd5e124aa30f5ced1f
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.85;τ≜◊⁺⟩
