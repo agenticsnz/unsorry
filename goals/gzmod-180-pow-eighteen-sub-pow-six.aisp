@@ -1,19 +1,19 @@
-𝔸5.1.goal.gzmod-180-pow-eighteen-sub-pow-six@2026-06-18
+𝔸5.1.goal.gzmod-180-pow-eighteen-sub-pow-six@2026-06-23
 γ≔unsorry.goal
 ⟦Ω:Goal⟧{
   id≜gzmod-180-pow-eighteen-sub-pow-six
   phase≜prove
-  status≜archived
+  status≜proved
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜packages/unsorry-archive-0040/backlog/gzmod-180-pow-eighteen-sub-pow-six.md
+  src≜backlog/gzmod-180-pow-eighteen-sub-pow-six.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜packages/unsorry-archive-0040/goals/gzmod-180-pow-eighteen-sub-pow-six.lean
+  lean≜goals/gzmod-180-pow-eighteen-sub-pow-six.lean
   sha≜bdd155c09ab3083214ac4dbb23dd2808c3599c92132d624e129444fda0139bc1
   aff≜0
 }
