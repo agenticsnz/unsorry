@@ -1,0 +1,20 @@
+𝔸5.1.goal.telescoping-square-sum-coeff-sixtynine@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜telescoping-square-sum-coeff-sixtynine
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/telescoping-square-sum-coeff-sixtynine.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/telescoping-square-sum-coeff-sixtynine.lean
+  sha≜f21457af913b66e0116b26de71fe59da398e14b459b3c039e03f6f2ee9834293
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.75;τ≜◊⁺⟩
