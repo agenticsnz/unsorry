@@ -1,0 +1,20 @@
+𝔸5.1.goal.geometric-series-ratio-fiftyfour@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜geometric-series-ratio-fiftyfour
+  phase≜prove
+  status≜proved
+  difficulty≜5
+}
+⟦Σ:Source⟧{
+  src≜backlog/geometric-series-ratio-fiftyfour.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/geometric-series-ratio-fiftyfour.lean
+  sha≜dc2c0ac5191f4682b9c5992677a7e4b285c88dcd9e62230c06adc23b81eba68b
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.85;τ≜◊⁺⟩
