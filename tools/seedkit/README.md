@@ -21,27 +21,43 @@ pipeline, push step, and record shapes (`_artifact.py`, `_words.py`).
 | **residue** | `((Σ vᵢᵈ : ℤ) : ZMod m) ≠ r` (two squares, three squares, two cubes) | `push_cast`/`ring` cast, `generalize`, finite `decide` | 2 |
 | **telescoping** | `∑ k∈range n, a·((k+1)ᵖ−kᵖ) = a·nᵖ` (p = 2…6) | induction on `n`; `sum_range_succ`; `push_cast`; `ring` | 4 |
 | **faulhaber / geometric** | `(v−1)·∑ vᵏ = vⁿ−1`; `c·∑ kᵖ = v·poly(n)` (p = 2…5) | induction on `n`; `sum_range_succ`; `ring` | 5 |
+| **arith** | `2·∑ k∈range n, (k+c) = n(n−1) + 2cn` | induction on `n`; `sum_range_succ`; `push_cast`; `ring` | 3 |
+| **shiftsq** | `6·∑ k∈range n, (k+c)² = n(n−1)(2n−1) + 6c·n(n−1) + 6nc²` | induction on `n`; `sum_range_succ`; `push_cast`; `ring` | 4 |
+| **oddsq** | `3·∑ k∈range n, c·(2k+1)² = c·n(2n−1)(2n+1)` | induction on `n`; `sum_range_succ`; `push_cast`; `ring` | 4 |
+| **altgeom** | `(r+1)·∑ k∈range n, (−r)ᵏ = 1 − (−r)ⁿ` | induction on `n`; `sum_range_succ`; `ring` | 5 |
+| **factdvd** | `(k! : ℤ) ∣ n·(n+1)·…·(n+k−1)` (k = 2…6) | finite `ZMod k!` `decide`, lifted via `ZMod.intCast_zmod_eq_zero_iff_dvd` | 3 |
 
-Residue and divisibility candidates are filtered by an exhaustive check (a
-residue `r` is emitted only when it is genuinely unreachable; a `(M,a,b)` only
-when `M ∣ nᵃ−nᵇ` for every residue), so a false statement is never produced.
-Telescoping and Faulhaber/geometric identities are true by construction.
+The two `decide` families — `gzmod`, `residue`, `factdvd` — and `residue` are
+*filtered by an exhaustive check* before emission (a residue `r` only when
+unreachable; a `(M,a,b)` only when `M ∣ nᵃ−nᵇ` on every residue; `factdvd` holds
+for all `k` by the consecutive-product fact), so a false statement is never
+produced. The closed-form families — `telescoping`, `faulhaber`/`geometric`,
+`arith`, `shiftsq`, `oddsq`, `altgeom` — are true by construction.
+
+The coefficient/value parameter of every parametrised family is spelled as an
+English word in the goal id, drawn from the shared `_words.py` table (`1..80`).
 
 ## Files
 
 | File | Purpose |
 |---|---|
-| `_words.py` | shared `int → English-word` table (1…30); the single DRY source for goal-id spelling |
+| `_words.py` | shared `int → English-word` table (1…80); the single DRY source for goal-id spelling |
 | `_artifact.py` | shared writer of the 5-file artifact + AISP records; validates `difficulty ∈ 0..5` (Gate B GB003) |
 | `gen_gzmod.py` / `gen_gzmod_wide.py` | enumerate valid divisibility `(M,a,b)` (gap ≤ 12 / ≤ 18) |
 | `mkfiles.py` / `mkfiles_wide.py` | write the artifact for one `(M,a,b)` |
 | `gen_residue.py` / `mkfiles_residue.py` | residue family (`--family sum-two-squares\|sum-three-squares\|sum-two-cubes`) |
 | `gen_telescoping.py` / `mkfiles_telescoping.py` | telescoping power sums (`--shape square…sextic`) |
 | `gen_faulhaber.py` / `mkfiles_faulhaber.py` | geometric & Faulhaber closed forms (`--family geometric\|faulhaber-square…quintic`) |
+| `gen_arith.py` / `mkfiles_arith.py` | arithmetic series (`--coeffs`, offset `c`) |
+| `gen_shiftsq.py` / `mkfiles_shiftsq.py` | shifted-square sums (`--coeffs`, offset `c`) |
+| `gen_oddsq.py` / `mkfiles_oddsq.py` | scaled odd-square sums (`--coeffs`, coefficient `c`) |
+| `gen_altgeom.py` / `mkfiles_altgeom.py` | alternating geometric series (`--values`, ratio `r`) |
+| `gen_factdvd.py` / `mkfiles_factdvd.py` | consecutive-product divisibility (`--ks`, run length `k`) |
 | `split_push.sh` | one `queued/prove/<id>` branch per goal, off `origin/main`, with push retry |
-| `run_batch_family.sh` | generic per-family driver: gen → write → Gate A → **per-module** build → Gate B → push |
+| `run_batch_family.sh` | generic per-family driver: gen → write → Gate A → **per-module** build → Gate B → push → bounded build cleanup |
 | `run_batch.sh` / `run_batch_wide.sh` | divisibility batch wrappers (a moduli list) |
 | `run_batch_residue.sh` / `run_batch_telescoping.sh` / `run_batch_faulhaber.sh` | one-line per-family batch wrappers |
+| `run_batch_arith.sh` / `run_batch_shiftsq.sh` / `run_batch_oddsq.sh` / `run_batch_altgeom.sh` / `run_batch_factdvd.sh` | one-line per-family batch wrappers (the closed-form/factorial families) |
 | `run_pool.sh` | drive divisibility batches over a moduli pool to a target count |
 | `topup.sh` | top up with the widened divisibility generator to a target count |
 | `tests/` | import-safety + generator/writer statement-agreement regression tests |
@@ -87,6 +103,13 @@ bash tools/seedkit/run_batch_telescoping.sh cube           # default coeff range
 bash tools/seedkit/run_batch_faulhaber.sh faulhaber-cube
 bash tools/seedkit/run_batch_faulhaber.sh geometric 2,3,5,7
 
+# the closed-form / factorial families (single parameter; optional explicit list)
+bash tools/seedkit/run_batch_arith.sh                      # default offset sweep
+bash tools/seedkit/run_batch_shiftsq.sh 61,62,63,64,65
+bash tools/seedkit/run_batch_oddsq.sh 31,32,33
+bash tools/seedkit/run_batch_altgeom.sh 2,3,5,7            # ratio magnitudes
+bash tools/seedkit/run_batch_factdvd.sh 2,3,4,5,6          # consecutive-run lengths
+
 # drive many productive divisibility batches to a target count
 bash tools/seedkit/run_pool.sh 25
 bash tools/seedkit/topup.sh 12
@@ -107,6 +130,16 @@ same `--wfail` strictness. CI's Gate A still builds the entire library on each
 `queued/prove/*` branch — this is the local pre-push gate over the changed
 surface only.
 
+### Disk hygiene
+
+Each batch's per-module build writes `.olean`/`.c` output under `.lake/build`;
+over a long pool run that output accumulates (hundreds of modules × the C file a
+Mathlib-importing module emits) and can exhaust the disk. `run_batch_family.sh`
+therefore runs `rm -rf .lake/build` after every batch (the mathlib binary cache
+lives in `.lake/packages` and is **not** touched, so the next batch only
+recompiles its own few modules). Set `SEEDKIT_CLEAN_BUILD=0` to keep the build
+artifacts between batches (faster reruns, unbounded disk).
+
 ### Environment
 
 | Variable | Default | Meaning |
@@ -115,6 +148,7 @@ surface only.
 | `SEEDKIT_AGENT` | `seedkit` | `agent` id in provenance and in branch/commit names |
 | `SEEDKIT_BRANCH` | current branch | working branch the drivers return to |
 | `SEEDKIT_BUILD_TIMEOUT` | `540` | seconds bounding each `lake build` |
+| `SEEDKIT_CLEAN_BUILD` | `1` | `rm -rf .lake/build` after each batch to bound disk (set `0` to keep) |
 | `SEEDKIT_GEN` / `SEEDKIT_MK` | per wrapper | generator / writer scripts (for `run_batch_family.sh`) |
 | `SEEDKIT_GEN_ARGS` | per wrapper | args passed verbatim to the generator |
 | `SEEDKIT_ARGC` | per wrapper | number of leading generator-line fields that are writer args |

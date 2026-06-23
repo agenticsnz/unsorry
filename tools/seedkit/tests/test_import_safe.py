@@ -89,10 +89,45 @@ def _gzmod_sample():
     return gen_sha, lambda: mkfiles.write_goal(M, a, b)
 
 
+def _single_param_sample(gen_mod_name, mk_mod_name, param):
+    """Shared shape for the single-parameter closed-form/divisibility families:
+    the generator's `goal_id`/`statement_lean` and the writer's `write_goal` all
+    take one integer parameter."""
+    import importlib
+    gen = importlib.import_module(gen_mod_name)
+    mk = importlib.import_module(mk_mod_name)
+    name = gen.goal_id(param).replace("-", "_")
+    gen_sha = LS.statement_sha(gen.statement_lean(param, name))
+    return gen_sha, lambda: mk.write_goal(param)
+
+
+def _arith_sample():
+    return _single_param_sample("gen_arith", "mkfiles_arith", 61)
+
+
+def _shiftsq_sample():
+    return _single_param_sample("gen_shiftsq", "mkfiles_shiftsq", 61)
+
+
+def _oddsq_sample():
+    return _single_param_sample("gen_oddsq", "mkfiles_oddsq", 61)
+
+
+def _altgeom_sample():
+    return _single_param_sample("gen_altgeom", "mkfiles_altgeom", 61)
+
+
+def _factdvd_sample():
+    return _single_param_sample("gen_factdvd", "mkfiles_factdvd", 4)
+
+
 @pytest.mark.parametrize(
     "sample",
-    [_gzmod_sample, _residue_sample, _telescoping_sample, _faulhaber_sample],
-    ids=["gzmod", "residue", "telescoping", "faulhaber"],
+    [_gzmod_sample, _residue_sample, _telescoping_sample, _faulhaber_sample,
+     _arith_sample, _shiftsq_sample, _oddsq_sample, _altgeom_sample,
+     _factdvd_sample],
+    ids=["gzmod", "residue", "telescoping", "faulhaber",
+         "arith", "shiftsq", "oddsq", "altgeom", "factdvd"],
 )
 def test_generator_writer_agree(sample, tmp_path, monkeypatch) -> None:
     """Generator-published sha == writer-embedded sha == written statement's sha."""
