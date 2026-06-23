@@ -1,0 +1,20 @@
+𝔸5.1.goal.faulhaber-cube-sum-coeff-forty@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜faulhaber-cube-sum-coeff-forty
+  phase≜prove
+  status≜proved
+  difficulty≜5
+}
+⟦Σ:Source⟧{
+  src≜backlog/faulhaber-cube-sum-coeff-forty.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/faulhaber-cube-sum-coeff-forty.lean
+  sha≜824bda5ea40839f344800eb1c1bd46168673e72eeb5c68605be511e0586e1b69
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.85;τ≜◊⁺⟩
