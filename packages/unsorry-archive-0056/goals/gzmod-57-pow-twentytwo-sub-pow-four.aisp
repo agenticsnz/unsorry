@@ -1,0 +1,20 @@
+𝔸5.1.goal.gzmod-57-pow-twentytwo-sub-pow-four@2026-06-18
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gzmod-57-pow-twentytwo-sub-pow-four
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/gzmod-57-pow-twentytwo-sub-pow-four.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/gzmod-57-pow-twentytwo-sub-pow-four.lean
+  sha≜2dc2ee28bb408064423111722a5079cb5f16f4f0b0a548cfdcfd6b6fa0d79b98
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
