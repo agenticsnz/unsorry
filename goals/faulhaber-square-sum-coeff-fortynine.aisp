@@ -1,0 +1,20 @@
+𝔸5.1.goal.faulhaber-square-sum-coeff-fortynine@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜faulhaber-square-sum-coeff-fortynine
+  phase≜prove
+  status≜proved
+  difficulty≜5
+}
+⟦Σ:Source⟧{
+  src≜backlog/faulhaber-square-sum-coeff-fortynine.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/faulhaber-square-sum-coeff-fortynine.lean
+  sha≜83a06023793852fea522444424ffe61332525298959e7d14dd0a1ed68502a306
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.85;τ≜◊⁺⟩
