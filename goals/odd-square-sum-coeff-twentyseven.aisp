@@ -1,0 +1,20 @@
+𝔸5.1.goal.odd-square-sum-coeff-twentyseven@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜odd-square-sum-coeff-twentyseven
+  phase≜prove
+  status≜proved
+  difficulty≜4
+}
+⟦Σ:Source⟧{
+  src≜backlog/odd-square-sum-coeff-twentyseven.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/odd-square-sum-coeff-twentyseven.lean
+  sha≜5a7bcff2ab543bf2e4f5c81788d518209aaaf4f4c1f6b1e0cda51d97cd670d08
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.70;τ≜◊⁺⟩
