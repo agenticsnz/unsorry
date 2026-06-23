@@ -1,0 +1,20 @@
+𝔸5.1.goal.odd-square-sum-coeff-four@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜odd-square-sum-coeff-four
+  phase≜prove
+  status≜proved
+  difficulty≜4
+}
+⟦Σ:Source⟧{
+  src≜backlog/odd-square-sum-coeff-four.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/odd-square-sum-coeff-four.lean
+  sha≜030201de5f2f8f006466828412ada401f6e801ee579dda7a15a2f791968adc42
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.70;τ≜◊⁺⟩
