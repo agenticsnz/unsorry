@@ -1,0 +1,20 @@
+𝔸5.1.goal.telescoping-quintic-sum-coeff-fiftynine@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜telescoping-quintic-sum-coeff-fiftynine
+  phase≜prove
+  status≜proved
+  difficulty≜4
+}
+⟦Σ:Source⟧{
+  src≜backlog/telescoping-quintic-sum-coeff-fiftynine.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/telescoping-quintic-sum-coeff-fiftynine.lean
+  sha≜ccd33f650d305eea23678496f6a5d1ad5680effc8d7706393719e1bc4cb17519
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.75;τ≜◊⁺⟩
