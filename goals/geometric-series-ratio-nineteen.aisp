@@ -1,0 +1,20 @@
+𝔸5.1.goal.geometric-series-ratio-nineteen@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜geometric-series-ratio-nineteen
+  phase≜prove
+  status≜proved
+  difficulty≜5
+}
+⟦Σ:Source⟧{
+  src≜backlog/geometric-series-ratio-nineteen.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/geometric-series-ratio-nineteen.lean
+  sha≜b8e536ebbc7574a8fcb684aa36cd46985ff3ae4ce9ccbf8ac1a6ec76b24fc4aa
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.85;τ≜◊⁺⟩
