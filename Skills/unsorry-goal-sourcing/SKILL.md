@@ -83,9 +83,17 @@ Two tiers. Stage cheaply, promote deliberately.
       --triviality '...' --decomposition '...' --validate
   ```
 
-  A fresh goal is always `status≜open`, `sha≜∅`. Templates and the exact schema
+  A fresh **sourced** goal is always `status≜open`, `sha≜∅`. Templates and the exact schema
   are in references/triple-format.md and assets/. The assembler refuses to clobber
   an existing goal (ADR-018) — pick a new slug instead.
+
+  > **Not your path:** the seedkit *fixture* generator (`tools/seedkit/`,
+  > [ADR-086](../../docs/adrs/ADR-086-Seedkit-Fixture-Generation-Path.md)) also
+  > creates goals, but mints them **already `status≜proved`** with the proof
+  > attached, for the *library* — a different tool with a different contract. If a
+  > request is "batch-generate divisibility / Faulhaber / residue identities at
+  > scale", reach for seedkit, not this skill (which sources *hard, open*
+  > problems for the swarm).
 
 ## Don't collide (no pre-claim; dedup at mine-time and merge-time)
 

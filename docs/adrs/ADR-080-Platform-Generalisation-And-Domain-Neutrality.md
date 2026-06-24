@@ -6,10 +6,10 @@
 | **Initiative** | unsorry — from a Lean-maths swarm to a general verifiable-problem engine |
 | **Proposed By** | unsorry maintainers (prompted by Chris Barlow's alignment request); companion to [ADR-078](ADR-078-Sponsor-Registered-Targets-And-Obligation-Discharge-Credit.md) |
 | **Date** | 2026-06-20 |
-| **Status** | Draft |
+| **Status** | Accepted |
 
-> **DRAFT for ratification** — this touches mission scope, so it is for the
-> founders (Chris / Ocean) to ratify, not for me to finalise. Every clause is
+> **Ratified** (2026-06-24, #5643) by Chris Barlow (founder). The founding-plan anchors
+> below were reviewed and accepted as mission scope. Every clause is
 > anchored in the founding plan
 > ([distributed-research-swarm-plan.md](../proposals/distributed-research-swarm-plan.md))
 > so the alignment is provable on the page, not asserted.
@@ -112,7 +112,18 @@ maintainer responsibility.
   target is only registrable in a domain this ADR has admitted. The two do not
   overlap — domain admissibility vs. per-target credit.
 
-## Open questions
-1. Who ratifies a new domain as kernel-grade, and how is it recorded?
-2. The commons-vs-contractor governance test for accepting a target.
-3. Interaction with ADR-052 tiers: is anything below VERIFIED ever allowed to merge?
+## Open questions — resolved at ratification (#5643)
+1. **Who ratifies a new domain, and how is it recorded?** A founder/maintainer decision,
+   recorded as an entry in `docs/governance/admitted-domains.json` via a code-owner-gated PR
+   (SPEC-080-A).
+2. **The commons-vs-contractor governance test for accepting a target.** Applied per-target at
+   registration via the ADR-078 curated-target layer + ADR-054 trust tiers (sponsor + code-owner review).
+3. **Is anything below VERIFIED ever allowed to merge?** No — only `tier: VERIFIED` (kernel-grade)
+   domains join the trustless commons; softer ADR-052 tiers are advisory-only (clause 3).
+
+## Status History
+
+| Status | Approver | Date |
+|--------|----------|------|
+| Draft | unsorry maintainers | 2026-06-20 |
+| Accepted | Chris Barlow (founder, #5643) | 2026-06-24 |

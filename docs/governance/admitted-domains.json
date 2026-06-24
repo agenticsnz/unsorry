@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "domains": [
+    {
+      "id": "lean-math",
+      "verifier": "lean-kernel",
+      "tier": "VERIFIED",
+      "ratified": "2026-06-24",
+      "adr": "ADR-080 (#5643)",
+      "note": "Formal mathematics in Lean 4, re-checked by the Lean kernel at Gate A. The founding in-scope domain."
+    }
+  ],
+  "targets": []
+}
