@@ -32,10 +32,13 @@ from tools.sourcing.gen_triples import render_lean, snake, valid_slug, write_tri
 #: The unenforced sourcing batch cap — a 100-goal batch overran gate-a-prepare.
 DEFAULT_BATCH = 50
 
-#: ``theorem <name> <binders+type> := …`` — the signature is everything between the
-#: name and the first ``:=`` (PutnamBench binders use ``:`` not ``:=``).
+#: ``theorem <name> <binders+type> := by|sorry`` — the signature is everything between
+#: the name and the **proof** ``:=``. The ``:=`` must be followed by ``by``/``sorry`` so
+#: an *internal* ``:=`` (e.g. ``let ⟨p, q⟩ := putnam_X_solution`` inside the statement)
+#: does not truncate the signature (the putnam_1965_b4 bug).
 _THEOREM_RE = re.compile(
-    r"\btheorem\s+(?P<name>[A-Za-z_][A-Za-z0-9_'.]*)\b(?P<sig>.*?):=", re.DOTALL
+    r"\btheorem\s+(?P<name>[A-Za-z_][A-Za-z0-9_'.]*)\b(?P<sig>.*?):=\s*(?:by\b|sorry\b)",
+    re.DOTALL,
 )
 
 
@@ -93,7 +96,11 @@ def extract_putnambench(text: str, source_ref: str = "") -> list[Problem]:
     preamble = companion_preamble(text)
     problems = []
     for match in _THEOREM_RE.finditer(text):
-        sig = re.sub(r"\s+", " ", match.group("sig")).strip()
+        # Preserve the original formatting verbatim — collapsing whitespace breaks
+        # structurally-significant newlines (e.g. `let ⟨p, q⟩ := sol\n  body`, where a
+        # space would re-parse `sol body` as application). The original PutnamBench
+        # statement type-checks, so the only change we make is replacing its proof.
+        sig = match.group("sig").strip()
         problems.append(
             Problem(
                 name=match.group("name"),

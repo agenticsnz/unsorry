@@ -48,8 +48,28 @@ def test_slugify():
 def test_extract_putnambench():
     problems = extract_putnambench(PUTNAM_SRC, "PutnamBench")
     assert [p.name for p in problems] == ["putnam_1988_b2", "putnam_2001_a1"]
-    assert problems[0].signature == "(x : ℝ) : x + 0 = x"  # abbrev := is not matched
+    # sig is captured verbatim (original formatting preserved); compare ws-insensitively
+    assert " ".join(problems[0].signature.split()) == "(x : ℝ) : x + 0 = x"
     assert problems[0].source_ref == "PutnamBench"
+
+
+def test_extract_handles_internal_assignment():
+    """A statement with an internal `:=` (e.g. `let ⟨p, q⟩ := solution`) must NOT
+    truncate the signature — only the proof `:= by|sorry` is the cut point (the
+    putnam_1965_b4 bug, which built a malformed `: let ⟨…⟩ := by sorry` goal)."""
+    src = (
+        "import Mathlib\n\n"
+        "abbrev sol : Nat × Nat := sorry\n"
+        "-- (1, 2)\n"
+        "theorem foo (n : Nat) :\n"
+        "    let ⟨p, q⟩ := sol\n"
+        "    n = p + q := by\n  sorry\n"
+    )
+    problems = extract_putnambench(src)
+    assert len(problems) == 1 and problems[0].name == "foo"
+    assert "let ⟨p, q⟩ := sol" in problems[0].signature   # not truncated at the internal :=
+    assert problems[0].signature.endswith("n = p + q")
+    assert problems[0].preamble == "abbrev sol : Nat × Nat := (1, 2)"  # answer folded in
 
 
 def test_batches():
