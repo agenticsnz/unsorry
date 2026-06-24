@@ -19,18 +19,11 @@ import argparse
 import os
 import sys
 
-sys.path.insert(0, os.getcwd())
+sys.path.insert(0, os.getcwd())  # repo root, for `import tools.lean_sig`
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))  # sibling helpers
 import tools.lean_sig as LS  # noqa: E402
 
-WORDS = {
-    1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six",
-    7: "seven", 8: "eight", 9: "nine", 10: "ten", 11: "eleven", 12: "twelve",
-    13: "thirteen", 14: "fourteen", 15: "fifteen", 16: "sixteen",
-    17: "seventeen", 18: "eighteen", 19: "nineteen", 20: "twenty",
-    21: "twentyone", 22: "twentytwo", 23: "twentythree", 24: "twentyfour",
-    25: "twentyfive", 26: "twentysix", 27: "twentyseven", 28: "twentyeight",
-    29: "twentynine", 30: "thirty",
-}
+from _words import WORDS  # noqa: E402
 
 
 def valid(M: int, a: int, b: int) -> bool:

@@ -6,11 +6,12 @@ contribution in CI (Gate A), so a careless or even adversarial PR cannot poison 
 library. Human review, where it happens at all, is for naming and duplication, never
 for correctness.
 
-There are three ways to contribute, in rough order of involvement:
+There are four ways to contribute, in rough order of involvement:
 
 1. [Run an agent](#running-an-agent) — point a Claude instance at the queue, or prove a goal yourself.
 2. [Propose a target](#proposing-a-target) — suggest a theorem worth proving, or [source new ones at scale](#sourcing-new-targets-at-scale).
-3. [Sponsor an upstream](#upstreaming-to-mathlib) — take a proved lemma into mathlib (the one task that requires a human, by mathlib policy).
+3. [Generate library fixtures](#generating-library-fixtures-at-scale) — batch-produce deterministically-proved lemma families with `tools/seedkit` (the fixture path, distinct from sourcing).
+4. [Sponsor an upstream](#upstreaming-to-mathlib) — take a proved lemma into mathlib (the one task that requires a human, by mathlib policy).
 
 All work follows [`docs/protocols.md`](docs/protocols.md): an ADR for every significant
 decision, a spec per ADR, TDD, feature branches, and a changelog entry per release.
@@ -232,6 +233,26 @@ Sourcing earns its own credit on the **sourcing leaderboard**
 (`python3 -m tools.leaderboard --sourcing`; data in
 `docs/metrics/sourcing-leaderboard.json`), independent of who proves the goal — make
 sure `gh auth status` shows your account, or set `UNSORRY_SOLVER=<your-handle>`.
+
+### Generating library fixtures at scale
+
+Sourcing fills the backlog with **open** problems for the swarm to prove. A
+different tool — [`tools/seedkit/`](tools/seedkit/README.md) — grows the
+**library** directly: it batch-generates parametric, kernel-verified lemma
+*families* (divisibility, residue, telescoping, Faulhaber, …) where each goal
+arrives **already proved**, statement and a deterministic `decide` /
+`induction; ring` proof minted together as a *fixture*
+([ADR-086](docs/adrs/ADR-086-Seedkit-Fixture-Generation-Path.md)).
+
+This is **not sourcing**: there is no open goal for a worker to solve, and these
+template goals sit at **difficulty 1** — the bottom of the sourcing rubric, not
+the top. Reach for it when you want cheap, sound, reusable library lemmas and
+regression fixtures; reach for the sourcing skill when you want *hard new
+problems* for the swarm. Attribution follows the same paradigm as everything
+else: set `UNSORRY_SOLVER=<your-handle>` (seedkit refuses to mint anonymous
+fixtures) and each proof is recorded honestly as `provider≜lean`. See
+[`tools/seedkit/README.md`](tools/seedkit/README.md) for the families, gates, and
+batch drivers.
 
 ---
 

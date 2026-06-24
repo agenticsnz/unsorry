@@ -12,6 +12,56 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 `python3 -m tools.changelog --preview`; a release folds them in here with
 `python3 -m tools.changelog --release <version> <date>`. -->
 
+## [1.32.0] - 2026-06-23
+
+### Added
+
+- The seedkit gains five more theorem families — arithmetic series, shifted-square
+sums, scaled odd-square sums, alternating geometric series, and consecutive-product
+divisibility (`k! ∣ n·(n+1)·…·(n+k−1)`) — each with a one-line `run_batch_<family>.sh`
+wrapper. The shared number-word table now spans 1..80. `run_batch_family.sh` also
+clears `.lake/build` after each batch (`SEEDKIT_CLEAN_BUILD`, default on) so a long
+pool run cannot exhaust the disk with accumulated per-module build output.
+
+### Changed
+
+- Gate A's audit and replay jobs no longer cold-rebuild the whole library (~21–45 min) when they land on a cold Namespace runner. The `.lake` cache volume is per-runner and isn't reliably shared to the downstream jobs — measured 2026-06-22, a single run had `gate-a-prepare` on a warm 20 GB volume while `gate-a-audit` got an empty 4 KB one and rebuilt from scratch, hitting the 45-min timeout. mathlib was unaffected (its own binary cache), but the ~320 MB library oleans (`.lake/build`) had no cross-runner fallback. Now `gate-a-prepare` publishes them to a GitHub `actions/cache` entry on `main` (one bounded, LRU-evicted entry per commit), and `gate-a-audit`/`gate-a-replay` restore it (restore-only, no per-PR churn) only when the Namespace volume missed — turning the cold rebuild into a sub-minute restore plus a cheap incremental. Timeouts are unchanged; soundness is unchanged (leanchecker still kernel-replays every olean, and lake rebuilds any whose source changed). See SPEC-045-A.
+- Rewrote the README's "The goal, honestly" section: tightened it ~45%, marked the decompose→recompose chain and dependency reuse as demonstrated (Phase 3 complete) rather than open, and reframed "what's next" around directing the swarm at sponsor-architected *packages* ([ADR-078](docs/adrs/ADR-078-Sponsor-Registered-Targets-And-Obligation-Discharge-Credit.md)) and generalising the engine beyond Lean maths ([ADR-080](docs/adrs/ADR-080-Platform-Generalisation-And-Domain-Neutrality.md)).
+- Restructured the README's heading navigation from a flat list of ~18 top-level sections into a two-level outline (grouped under **The big picture**, **How it works**, and **Get involved**) for an easier GitHub table of contents, and refreshed the Roadmap's Phase 6 to reflect the newest platform-generalisation work — *architected packages* / sponsor-registered targets ([ADR-078](docs/adrs/ADR-078-Sponsor-Registered-Targets-And-Obligation-Discharge-Credit.md)), the domain-neutrality decision ([ADR-080](docs/adrs/ADR-080-Platform-Generalisation-And-Domain-Neutrality.md)), the problem-intake pipeline ([ADR-081](docs/adrs/ADR-081-Problem-Admission-And-Intake-Pipeline.md)), and a first non-maths target inbound.
+- The seedkit number-word table (`tools/seedkit/_words.py`) now spans 1..60 instead
+of 1..30, and the telescoping/Faulhaber generators default to the full table, so
+their coefficient/value sweeps can continue past 30 once the lower range is
+exhausted by earlier batches. Additive only — existing goal ids are unchanged.
+- The `tools/seedkit` batch generator now produces three further theorem families
+besides divisibility — ZMod residue non-membership (sums of two/three squares,
+two cubes), telescoping power-sum closed forms, and geometric/Faulhaber closed
+forms — each behind a one-line `run_batch_<family>.sh` wrapper sharing the
+generator/writer/gate pipeline. Generators and writers are now import-safe (CLI
+guarded behind `__main__`), and batch validation builds only the new modules and
+their bindings (`lake build Unsorry.<Mod> Unsorry.<Mod>Binding --wfail`) instead
+of the whole library, so a batch no longer times out on a cold runner.
+- `tools/seedkit` is now documented as a first-class **fixture / library-growth**
+path, distinct from sourcing, with its attribution and difficulty conformed to
+the sourcing paradigm ([ADR-086](docs/adrs/ADR-086-Seedkit-Fixture-Generation-Path.md)).
+seedkit mints goals *born proved* straight into the library — a path previously
+undocumented in the README, CONTRIBUTING, and the `unsorry-goal-sourcing` skill,
+and stamped with a bespoke provenance/difficulty scheme. The generator now
+records honest, identity-bearing provenance at write time: an authenticated
+`solver` resolved from `UNSORRY_SOLVER`/`SEEDKIT_SOLVER` (it now **refuses to
+write anonymous fixtures**, replacing the silent `anon` default), `provider≜lean`,
+and the real engine `model≜decide`/`ring` (no more `provider≜seedkit` /
+`model≜template-*`, so no post-hoc relabel is needed). Every template family is
+rated at the honest **difficulty 1** the sourcing skeptic's "no short one-tactic
+proof" bar assigns, replacing the inflated 3–5 self-tags. The README "the path is
+the same" invariant, CONTRIBUTING's ways-to-contribute, and the sourcing skill's
+`status≜open`/`sha≜∅` invariants are amended to admit the fixture exception, with
+cross-references both ways so an agent asked to batch-generate a parametric family
+reaches for seedkit rather than the four-gate sourcer.
+
+### Fixed
+
+- The stuck-PR janitors now clear stranded PRs reliably instead of needing a manual sweep. Two gaps were letting PRs sit red for hours: (1) the dropped-gate janitor only acted on PRs in `BLOCKED` state, but a PR whose required checks never dispatched usually sits in `UNKNOWN` (GitHub never computed its mergeability) — so #3987 was skipped every run for 6 h; it now acts on `BLOCKED` **or** `UNKNOWN` (the gate-absence signal is what proves a dropped dispatch). (2) Both janitors depended on an hourly `schedule` cron, which GitHub silently drops under load — the stale-failed janitor logged only one run in its first nine hours — so the auto-drain never happened exactly when the backlog was worst. Both now trigger on **`workflow_run` after every `gate-a` completion** (dozens an hour in the swarm; each run rescans all open PRs, so any completion catches the stuck ones), with the cron kept only as a backstop and `cancel-in-progress: false` so the frequent triggers coalesce rather than starving the in-flight sweep. Pure detection predicates unit-tested.
+
 ## [1.31.0] - 2026-06-22
 
 ### Added
