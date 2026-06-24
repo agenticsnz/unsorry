@@ -412,6 +412,36 @@
         ],
         "assigned_at": "2026-06-23T21:33:40Z"
       }
+    },
+    {
+      "provider_model": "seedkit / template-zmod-decide",
+      "slug": "seedkit-template-zmod-decide",
+      "pokemon": {
+        "name": "Klink",
+        "dex_id": 599,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/599.png",
+        "description": "The two minigears that mesh together are predetermined. Each will rebound from other minigears without meshing."
+      },
+      "research": {
+        "classification": "n/a",
+        "publisher": "Lean FRO (decide); unsorry seedkit (agenticsnz)",
+        "country": "USA (Lean) / New Zealand (seedkit)",
+        "parameter_size": "n/a (no LLM, zero parameters)",
+        "license": "Apache-2.0",
+        "canonical_url": "https://github.com/agenticsnz/unsorry/tree/main/tools/seedkit"
+      },
+      "profile": "Klink is two meshing minigears whose endless cyclic rotation mirrors modular arithmetic over ZMod n, and its purely mechanical, mindless grinding captures a deterministic kernel `decide` proof with no LLM. As the smallest base-stage gear, it fits a lightweight difficulty-1 seedkit fixture, not a reasoning model.",
+      "provenance": {
+        "assigned_by": "housekeeping",
+        "assigned_with": "claude / opus",
+        "contributor": "cgbarlow",
+        "sources": [
+          "https://github.com/agenticsnz/unsorry/tree/main/tools/seedkit",
+          "https://leanprover-community.github.io/mathlib4_docs/Init/Tactics.html",
+          "https://github.com/leanprover/lean4"
+        ],
+        "assigned_at": "2026-06-24T03:41:43Z"
+      }
     }
   ]
 }
