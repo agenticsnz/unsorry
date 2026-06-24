@@ -19,6 +19,7 @@ from pathlib import Path
 
 from . import claims as claims_mod
 from . import config
+from .graph import EDGE_RE, SUB_RE, has_cycle
 from .records import (
     EMPTY,
     Record,
@@ -45,11 +46,13 @@ _RECORD_TYPES = {
     "proof-run": ("run", "unsorry.proof.run"),
 }
 
-# Subs reference their statement by content address, never inline: the record
-# grammar reserves {} for block delimiters, and real Lean statements contain
-# braces (Finset literals — the platonic-schlafli-core regression).
-_SUB_RE = re.compile(r"(?P<label>sub[^≜\s;]*)≜⟨id≜(?P<id>[^,⟩\s]+)\s*,\s*sha≜(?P<sha>[^⟩\s]+)⟩")
-_EDGE_RE = re.compile(r"Post\((?P<src>[^)]*)\)\s*⊆\s*Pre\((?P<dst>[^)]*)\)")
+# Decomposition-graph helpers (sub refs, dependency edges, DAG check) are factored
+# into tools.gate_b.graph so the curated-package intake validator
+# (tools.intake.skeleton_validate, SPEC-081-A) reuses the exact same logic. The
+# private aliases keep call sites — and `from tools.gate_b.validator import _has_cycle`
+# in the existing tests — unchanged.
+_SUB_RE = SUB_RE
+_EDGE_RE = EDGE_RE
 
 MAX_DECOMP_SUBS = config.MAX_DECOMP_SUBS
 GITHUB_LOGIN_RE = re.compile(r"[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?")
@@ -58,26 +61,7 @@ PROOF_RUN_OUTCOMES = ("proved", "decomposed", "failed")
 PROOF_RUN_ID_RE = re.compile(r"\d{8}t\d{12}z-[0-9a-f]{8}")
 
 
-def _has_cycle(edges: list[tuple[str, str]]) -> bool:
-    """True if the directed edge set (src enables dst) contains a cycle.
-    Post(A)⊆Pre(B) means A is a prerequisite of B, i.e. an edge A→B; a
-    decomposition's dependency graph must be a DAG (ADR-009)."""
-    adj: dict[str, list[str]] = {}
-    for src, dst in edges:
-        adj.setdefault(src, []).append(dst)
-    WHITE, GREY, BLACK = 0, 1, 2
-    colour: dict[str, int] = {}
-
-    def visit(node: str) -> bool:
-        colour[node] = GREY
-        for nxt in adj.get(node, []):
-            c = colour.get(nxt, WHITE)
-            if c == GREY or (c == WHITE and visit(nxt)):
-                return True
-        colour[node] = BLACK
-        return False
-
-    return any(colour.get(n, WHITE) == WHITE and visit(n) for n in list(adj))
+_has_cycle = has_cycle
 
 
 @dataclass(frozen=True, order=True)
