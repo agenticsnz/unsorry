@@ -614,7 +614,7 @@
       "id": "ADR-078",
       "number": 78,
       "title": "Sponsor-Registered Targets and Obligation-Discharge Credit",
-      "status": "Proposed",
+      "status": "Accepted",
       "date": "2026-06-20",
       "file": "ADR-078-Sponsor-Registered-Targets-And-Obligation-Discharge-Credit.md"
     },
@@ -630,7 +630,7 @@
       "id": "ADR-080",
       "number": 80,
       "title": "Platform Generalisation and the Self-Verification Gating Invariant",
-      "status": "Draft",
+      "status": "Accepted",
       "date": "2026-06-20",
       "file": "ADR-080-Platform-Generalisation-And-Domain-Neutrality.md"
     },
@@ -638,7 +638,7 @@
       "id": "ADR-081",
       "number": 81,
       "title": "Problem Admission and the Skeleton Intake Pipeline",
-      "status": "Draft",
+      "status": "Accepted",
       "date": "2026-06-20",
       "file": "ADR-081-Problem-Admission-And-Intake-Pipeline.md"
     },
