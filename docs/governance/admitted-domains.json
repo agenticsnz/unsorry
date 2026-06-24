@@ -17,6 +17,13 @@
       "supplier": "agenticsnz",
       "ratified": "2026-06-24",
       "note": "Demo benchmark suite (#5643) — small true Lean statements to exercise the benchmark track end-to-end; safe to remove."
+    },
+    {
+      "package": "putnam-v1",
+      "domain": "lean-math",
+      "supplier": "trishullab",
+      "ratified": "2026-06-24",
+      "note": "PutnamBench Lean 4 (Apache-2.0, 672 problems) — github.com/trishullab/PutnamBench (Tsoukalas et al.)"
     }
   ]
 }
