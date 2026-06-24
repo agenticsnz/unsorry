@@ -10,5 +10,13 @@
       "note": "Formal mathematics in Lean 4, re-checked by the Lean kernel at Gate A. The founding in-scope domain."
     }
   ],
-  "targets": []
+  "targets": [
+    {
+      "package": "demo-v1",
+      "domain": "lean-math",
+      "supplier": "agenticsnz",
+      "ratified": "2026-06-24",
+      "note": "Demo benchmark suite (#5643) — small true Lean statements to exercise the benchmark track end-to-end; safe to remove."
+    }
+  ]
 }

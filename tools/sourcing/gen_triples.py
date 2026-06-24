@@ -22,7 +22,7 @@ makes the result Gate-B-clean.
 Usage:
   python3 -m tools.sourcing.gen_triples --slug <kebab-id> \\
       --lean-sig '<signature after the theorem name>' \\
-      --statement '<one-line English statement>' --difficulty <0-5> \\
+      --statement '<one-line English statement>' --difficulty <0-9> \\
       --source '<...>' --reference '<...>' --absence '<...>' \\
       --triviality '<...>' --decomposition '<...>' \\
       [--aff -20] [--date YYYY-MM-DD] [--root .] [--validate] [--force]
@@ -146,8 +146,8 @@ def write_triple(
         raise TripleError(
             f"invalid slug {slug!r}: must match [a-z0-9][a-z0-9-]* with no dots"
         )
-    if not 0 <= difficulty <= 5:
-        raise TripleError(f"difficulty {difficulty} out of range 0–5")
+    if not 0 <= difficulty <= 9:
+        raise TripleError(f"difficulty {difficulty} out of range 0–9")
     date = date or datetime.now(timezone.utc).strftime("%Y-%m-%d")
     if not re.match(r"^\d{4}-\d{2}-\d{2}$", date):
         raise TripleError(f"date {date!r} is not YYYY-MM-DD")

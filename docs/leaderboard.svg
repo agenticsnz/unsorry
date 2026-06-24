@@ -4,24 +4,24 @@
 <rect width="900" height="100%" rx="18" fill="#ffffff"/>
 <rect x="0.5" y="0.5" width="899" height="485" rx="18" fill="none" stroke="#e2e8f0"/>
 <text x="32" y="44" font-family="Inter, system-ui, sans-serif" font-size="28" font-weight="700" fill="#334155">unsorry — Leaderboard</text>
-<text x="32" y="72" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#64748b">3651 credited proofs · 3343 explicit · 308 inferred from git · 9 contributors</text>
+<text x="32" y="72" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#64748b">3757 credited proofs · 3449 explicit · 308 inferred from git · 9 contributors</text>
 <text x="34" y="148" font-family="Georgia, serif" font-size="24" font-style="italic" font-weight="700" fill="#fbbf24">1</text>
 <a href="https://github.com/ohdearquant">
 <text x="82" y="138" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="650" fill="#334155">@ohdearquant</text>
 </a>
-<text x="82" y="158" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">1877 proofs · 1880 difficulty · 1876 explicit · 1 inferred · 684 runs</text>
+<text x="82" y="158" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">1880 proofs · 1883 difficulty · 1879 explicit · 1 inferred · 687 runs</text>
 <rect x="320" y="127" width="420" height="26" rx="13" fill="#f1f5f9"/>
 <rect x="320" y="127" width="390" height="26" rx="13" fill="#e0f2fe"/>
-<text x="760" y="146" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">234925 pts</text>
+<text x="760" y="146" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">235300 pts</text>
 <text x="760" y="162" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#64748b">explicit + inferred</text>
 <text x="34" y="212" font-family="Georgia, serif" font-size="24" font-style="italic" font-weight="700" fill="#94a3b8">2</text>
 <a href="https://github.com/chat-bit-01">
 <text x="82" y="202" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="650" fill="#334155">@chat-bit-01</text>
 </a>
-<text x="82" y="222" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">1286 proofs · 1613 difficulty · 1039 explicit · 247 inferred · 0 runs</text>
+<text x="82" y="222" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">1389 proofs · 1716 difficulty · 1142 explicit · 247 inferred · 0 runs</text>
 <rect x="320" y="191" width="420" height="26" rx="13" fill="#f1f5f9"/>
-<rect x="320" y="191" width="321" height="26" rx="13" fill="#e0f2fe"/>
-<text x="760" y="210" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">193450 pts</text>
+<rect x="320" y="191" width="342" height="26" rx="13" fill="#e0f2fe"/>
+<text x="760" y="210" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">206595 pts</text>
 <text x="760" y="226" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#64748b">explicit + inferred</text>
 <text x="34" y="276" font-family="Georgia, serif" font-size="24" font-style="italic" font-weight="700" fill="#b45309">3</text>
 <a href="https://github.com/cgbarlow">
@@ -29,8 +29,8 @@
 </a>
 <text x="82" y="286" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">191 proofs · 287 difficulty · 144 explicit · 47 inferred · 332 runs</text>
 <rect x="320" y="255" width="420" height="26" rx="13" fill="#f1f5f9"/>
-<rect x="320" y="255" width="372" height="26" rx="13" fill="#e0f2fe"/>
-<text x="760" y="274" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">224365 pts</text>
+<rect x="320" y="255" width="387" height="26" rx="13" fill="#e0f2fe"/>
+<text x="760" y="274" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">233635 pts</text>
 <text x="760" y="290" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#64748b">explicit + inferred</text>
 <text x="34" y="340" font-family="Georgia, serif" font-size="24" font-style="italic" font-weight="700" fill="#cbd5e1">4</text>
 <a href="https://github.com/ruvnet">

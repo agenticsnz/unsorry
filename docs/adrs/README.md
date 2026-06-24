@@ -2,7 +2,7 @@
 
 # Architecture Decision Records
 
-Index of the 94 ADRs in this directory, generated from the `ADR-*.md` headers and kept in sync by the `adr-index` workflow. See [ADR-001](ADR-001-Adopt-Development-Protocols.md) and [the development protocols](../protocols.md) for the WH(Y) format and process.
+Index of the 95 ADRs in this directory, generated from the `ADR-*.md` headers and kept in sync by the `adr-index` workflow. See [ADR-001](ADR-001-Adopt-Development-Protocols.md) and [the development protocols](../protocols.md) for the WH(Y) format and process.
 
 | ADR | Title | Status | Date |
 |-----|-------|--------|------|
@@ -100,3 +100,4 @@ Index of the 94 ADRs in this directory, generated from the `ADR-*.md` headers an
 | [ADR-092](ADR-092-Segregated-Benchmark-Track.md) | Segregated Benchmark Track — Verified pass@k over Registered Suites | Accepted | 2026-06-24 |
 | [ADR-093](ADR-093-Lean4export-Nanoda-Independent-Checker-Pilot.md) | lean4export + nanoda Independent-Checker Pilot | Proposed | 2026-06-24 |
 | [ADR-094](ADR-094-Publish-Library-Oleans-On-PRs.md) | Publish Library Oleans on PRs (reliable per-shard env handoff) | Proposed | 2026-06-24 |
+| [ADR-095](ADR-095-Widen-Difficulty-Band-To-0-9.md) | Widen the goal `difficulty` band from 0–5 to 0–9 | Accepted | 2026-06-24 |
