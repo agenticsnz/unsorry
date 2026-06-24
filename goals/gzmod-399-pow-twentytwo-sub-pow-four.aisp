@@ -1,0 +1,20 @@
+𝔸5.1.goal.gzmod-399-pow-twentytwo-sub-pow-four@2026-06-24
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gzmod-399-pow-twentytwo-sub-pow-four
+  phase≜prove
+  status≜proved
+  difficulty≜5
+}
+⟦Σ:Source⟧{
+  src≜backlog/gzmod-399-pow-twentytwo-sub-pow-four.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/gzmod-399-pow-twentytwo-sub-pow-four.lean
+  sha≜c138144fa393889ff67b26eb23437a9b8c6cb5ed3fad0b3fccfc62d4d0a6b7e3
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
