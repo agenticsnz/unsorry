@@ -3,16 +3,16 @@
   "sourcers": [
     {
       "avatar_url": "https://github.com/cgbarlow.png?size=96",
-      "difficulty_points": 3118,
+      "difficulty_points": 3664,
       "display_name": "Chris Barlow",
       "earliest_sourced": "2026-06-10",
       "git_author": "Chris Barlow <cgbarlow@gmail.com>",
       "github": "cgbarlow",
-      "latest_sourced": "2026-06-23",
+      "latest_sourced": "2026-06-24",
       "open": 10,
       "profile_url": "https://github.com/cgbarlow",
-      "proved": 972,
-      "sourced_goals": 2331,
+      "proved": 1368,
+      "sourced_goals": 2885,
       "sourcer": "cgbarlow"
     },
     {
@@ -39,7 +39,7 @@
       "latest_sourced": "2026-06-22",
       "open": 1,
       "profile_url": "https://github.com/perttu",
-      "proved": 88,
+      "proved": 77,
       "sourced_goals": 246,
       "sourcer": "perttu"
     },
@@ -53,28 +53,42 @@
       "latest_sourced": "2026-06-23",
       "open": 0,
       "profile_url": null,
-      "proved": 137,
+      "proved": 102,
       "sourced_goals": 192,
       "sourcer": null
     },
     {
       "avatar_url": "https://github.com/chat-bit-01.png?size=96",
-      "difficulty_points": 21,
+      "difficulty_points": 28,
       "display_name": "chat-bit-01",
       "earliest_sourced": "2026-06-19",
       "git_author": "chat-bit-01 <chatuser55@gmail.com>",
       "github": "chat-bit-01",
-      "latest_sourced": "2026-06-19",
+      "latest_sourced": "2026-06-24",
       "open": 0,
       "profile_url": "https://github.com/chat-bit-01",
-      "proved": 0,
-      "sourced_goals": 21,
+      "proved": 7,
+      "sourced_goals": 28,
       "sourcer": "chat-bit-01"
+    },
+    {
+      "avatar_url": null,
+      "difficulty_points": 4,
+      "display_name": "Chris Barlow",
+      "earliest_sourced": "2026-06-24",
+      "git_author": "Chris Barlow <chris@idowork.co>",
+      "github": null,
+      "latest_sourced": "2026-06-24",
+      "open": 2,
+      "profile_url": null,
+      "proved": 2,
+      "sourced_goals": 4,
+      "sourcer": null
     }
   ],
   "totals": {
-    "difficulty_points": 4030,
-    "sourced_goals": 3234,
-    "sourcers": 5
+    "difficulty_points": 4587,
+    "sourced_goals": 3799,
+    "sourcers": 6
   }
 }
