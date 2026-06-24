@@ -2,7 +2,7 @@
 
 # Architecture Decision Records
 
-Index of the 92 ADRs in this directory, generated from the `ADR-*.md` headers and kept in sync by the `adr-index` workflow. See [ADR-001](ADR-001-Adopt-Development-Protocols.md) and [the development protocols](../protocols.md) for the WH(Y) format and process.
+Index of the 93 ADRs in this directory, generated from the `ADR-*.md` headers and kept in sync by the `adr-index` workflow. See [ADR-001](ADR-001-Adopt-Development-Protocols.md) and [the development protocols](../protocols.md) for the WH(Y) format and process.
 
 | ADR | Title | Status | Date |
 |-----|-------|--------|------|
@@ -97,4 +97,5 @@ Index of the 92 ADRs in this directory, generated from the `ADR-*.md` headers an
 | [ADR-089](ADR-089-Pages-Scheduled-Actions-Deploy.md) | Deploy GitHub Pages on a Schedule via Actions, Decoupled from the Push Firehose | Accepted | 2026-06-23 |
 | [ADR-090](ADR-090-Periodic-Housekeeping.md) | Periodic Housekeeping — Naming as a Recurring Operational Task | Proposed | 2026-06-23 |
 | [ADR-091](ADR-091-Sharded-Gate-A-Axiom-Audit.md) | Sharded Gate A Axiom Audit | Proposed | 2026-06-24 |
+| [ADR-092](ADR-092-Segregated-Benchmark-Track.md) | Segregated Benchmark Track — Verified pass@k over Registered Suites | Accepted | 2026-06-24 |
 | [ADR-093](ADR-093-Lean4export-Nanoda-Independent-Checker-Pilot.md) | lean4export + nanoda Independent-Checker Pilot | Proposed | 2026-06-24 |

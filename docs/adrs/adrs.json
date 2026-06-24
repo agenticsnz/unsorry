@@ -1,6 +1,6 @@
 {
   "generated_by": "python3 -m tools.adr_index --write",
-  "count": 92,
+  "count": 93,
   "adrs": [
     {
       "id": "ADR-001",
@@ -729,6 +729,14 @@
       "status": "Proposed",
       "date": "2026-06-24",
       "file": "ADR-091-Sharded-Gate-A-Axiom-Audit.md"
+    },
+    {
+      "id": "ADR-092",
+      "number": 92,
+      "title": "Segregated Benchmark Track — Verified pass@k over Registered Suites",
+      "status": "Accepted",
+      "date": "2026-06-24",
+      "file": "ADR-092-Segregated-Benchmark-Track.md"
     },
     {
       "id": "ADR-093",
