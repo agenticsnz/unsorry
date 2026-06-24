@@ -264,13 +264,58 @@ jobs:
             exit 1
           fi
 
-  gate_a_audit:
-    name: gate-a-audit
+  # ADR-091: plan the axiom audit into N disjoint shards. Reads source + the PR
+  # diff only (no build), like gate_a_replay_plan, so it's a fast ubuntu job that
+  # drives the audit matrix below. count==0 (no changed library/goal module) →
+  # empty matrix → the audit matrix is skipped and gate_a_audit_cover passes
+  # vacuously. Shard count N is `vars.UNSORRY_AUDIT_SHARDS` (operator capacity
+  # knob, default 8; separate from UNSORRY_REPLAY_SHARDS).
+  gate_a_audit_plan:
+    name: gate-a-audit-plan
     needs: [detect, gate_a_prepare]
     if: needs.detect.outputs.admitted == 'true' && needs.detect.outputs.active == 'true'
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+      count: ${{ steps.plan.outputs.count }}
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.12"
+      - name: Plan audit shards (ADR-091)
+        id: plan
+        env:
+          BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || (github.event_name == 'push' && github.event.before || '') }}
+          SHARDS: ${{ vars.UNSORRY_AUDIT_SHARDS || '8' }}
+        run: |
+          set -euo pipefail
+          if [ "$BASE_SHA" = "0000000000000000000000000000000000000000" ] || [ -z "$BASE_SHA" ]; then
+            out=$(python3 -m tools.gate_a.parallel_modules plan-audit --shards "$SHARDS")
+          else
+            out=$(python3 -m tools.gate_a.parallel_modules plan-audit --shards "$SHARDS" --base "$BASE_SHA")
+          fi
+          echo "plan: $out"
+          echo "matrix=$(printf '%s' "$out" | python3 -c 'import sys,json;print(json.dumps(json.load(sys.stdin)["shards"]))')" >> "$GITHUB_OUTPUT"
+          echo "count=$(printf '%s' "$out" | python3 -c 'import sys,json;print(json.load(sys.stdin)["count"])')" >> "$GITHUB_OUTPUT"
+
+  gate_a_audit:
+    name: gate-a-audit
+    needs: [detect, gate_a_prepare, gate_a_audit_plan]
+    # ADR-091: one matrix leg per audit shard. Skip when no library/goal module
+    # changed (count==0) — the empty matrix expands to zero legs; the cover job
+    # then passes vacuously. Each leg restores gate-a-prepare's oleans and audits
+    # its disjoint shard, so every module is still axiom-audited exactly once.
+    if: needs.detect.outputs.admitted == 'true' && needs.detect.outputs.active == 'true' && needs.gate_a_audit_plan.outputs.count != '0'
     runs-on: ${{ needs.detect.outputs.audit_profile }}
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: ${{ fromJSON(needs.gate_a_audit_plan.outputs.matrix) }}
     # 45 min, not 30: this job also does the cold library build (~21 min) before
-    # its incremental audit; the old 30-min cap killed it on a cold cache (#567).
+    # its audit shard; the old 30-min cap killed it on a cold cache (#567).
     # See gate-a-prepare and ADR-045.
     timeout-minutes: 45
     steps:
@@ -369,50 +414,73 @@ jobs:
       # merged change), pull_request.base.sha on a PR, empty otherwise. A zero-SHA
       # (first push / branch creation) or empty BASE_SHA runs the FULL audit as
       # the backstop; gate/tooling changes also fall back to full (forces_full_audit).
-      # Serialized (--jobs 1): each axiom_audit process holds a full mathlib
-      # image (~6-7 GB).
-      - name: Axiom audit (authoritative)
+      # ADR-091: this leg audits its DISJOINT shard of that scope, serially within
+      # the shard (one ~6-7 GB axiom_audit process at a time); cross-runner
+      # parallelism is the matrix. Each leg re-derives its slice from the shared
+      # SHA, so no module list crosses a job boundary (inputs stay locally-derived).
+      - name: Axiom audit shard ${{ matrix.shard }} (ADR-091)
         env:
           BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || (github.event_name == 'push' && github.event.before || '') }}
-        run: |
-          if [ "$BASE_SHA" = "0000000000000000000000000000000000000000" ] || [ -z "$BASE_SHA" ]; then
-            python3 -m tools.gate_a.parallel_modules audit --jobs 1 --output axiom-report.json
-          else
-            python3 -m tools.gate_a.parallel_modules audit --jobs 1 --output axiom-report.json --base "$BASE_SHA"
-          fi
-
-      - name: Upload axiom footprint artifact
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
-        with:
-          name: axiom-report
-          path: axiom-report.json
-
-      - name: Sticky footprint comment
-        if: github.event_name == 'pull_request'
-        # Informational only — posts the axiom report to the PR. A fork PR's token
-        # is read-only on the base repo, so the `gh api` comment POST 403s; that
-        # must NOT fail the soundness gate (the authoritative audit already ran and
-        # passed in the step above). Soft-fail so fork contributors aren't blocked.
-        continue-on-error: true
-        env:
-          GH_TOKEN: ${{ github.token }}
-          PR: ${{ github.event.pull_request.number }}
+          SHARDS: ${{ vars.UNSORRY_AUDIT_SHARDS || '8' }}
         run: |
           set -euo pipefail
-          {
-            echo '<!-- axiom-report -->'
-            echo '### Axiom footprint (Gate A)'
-            echo '```json'
-            cat axiom-report.json
-            echo '```'
-          } > comment.md
-          existing=$(gh api "repos/${{ github.repository }}/issues/$PR/comments" \
-            --jq '.[] | select(.body | startswith("<!-- axiom-report -->")) | .id' | head -1)
-          if [ -n "$existing" ]; then
-            gh api -X PATCH "repos/${{ github.repository }}/issues/comments/$existing" -F body=@comment.md >/dev/null
+          if [ "$BASE_SHA" = "0000000000000000000000000000000000000000" ] || [ -z "$BASE_SHA" ]; then
+            python3 -m tools.gate_a.parallel_modules audit-shard \
+              --shard-index ${{ matrix.shard }} --shard-total "$SHARDS" \
+              --output "axiom-report-shard-${{ matrix.shard }}.json"
           else
-            gh api "repos/${{ github.repository }}/issues/$PR/comments" -F body=@comment.md >/dev/null
+            python3 -m tools.gate_a.parallel_modules audit-shard \
+              --shard-index ${{ matrix.shard }} --shard-total "$SHARDS" \
+              --output "axiom-report-shard-${{ matrix.shard }}.json" --base "$BASE_SHA"
           fi
+
+      # Diagnostic only — the per-shard footprint fragment (an OUTPUT, never a
+      # trusted input; the authoritative audit already ran in the step above). The
+      # required gate deliberately never pulls these fragments back in (the
+      # SPEC-049-A §2 no-artifact-into-the-gate guard, enforced by the conformance
+      # suite); the combined footprint comment lives in the shard pilot instead.
+      - name: Upload axiom footprint fragment (shard ${{ matrix.shard }})
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        with:
+          name: axiom-report-shard-${{ matrix.shard }}
+          path: axiom-report-shard-${{ matrix.shard }}.json
+
+  # ADR-091: the audit matrix's coverage assert and the single signal the
+  # aggregator reads for the axiom audit. split_evenly partitions the target set
+  # disjoint+covering (unit-tested), so with fail-fast:false the matrix is
+  # 'success' only when every leg is green ⟺ every module audited exactly once.
+  # Fails closed on a planner failure or any non-green shard; passes vacuously
+  # when count==0 (no change → audit matrix skipped). It deliberately never pulls
+  # the per-shard footprints back in — that would breach the SPEC-049-A §2
+  # no-artifact-into-the-gate guard the conformance suite enforces; the fragments
+  # stay uploaded as diagnostics and the combined footprint comment lives in the
+  # non-required shard pilot.
+  gate_a_audit_cover:
+    name: gate-a-audit-cover
+    needs: [detect, gate_a_audit_plan, gate_a_audit]
+    if: always() && needs.detect.outputs.admitted == 'true' && needs.detect.outputs.active == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Assert every shard audited green
+        env:
+          COUNT: ${{ needs.gate_a_audit_plan.outputs.count }}
+          PLAN_RESULT: ${{ needs.gate_a_audit_plan.result }}
+          AUDIT_RESULT: ${{ needs.gate_a_audit.result }}
+        run: |
+          set -euo pipefail
+          if [ "$PLAN_RESULT" != "success" ]; then
+            echo "::error::gate-a-audit-plan concluded '$PLAN_RESULT' — cannot trust the shard plan"
+            exit 1
+          fi
+          if [ "$COUNT" = "0" ]; then
+            echo "no changed library or goal modules — nothing to audit (matrix skipped)"
+            exit 0
+          fi
+          if [ "$AUDIT_RESULT" != "success" ]; then
+            echo "::error::audit matrix result='$AUDIT_RESULT' — a shard failed or was skipped; coverage NOT proven"
+            exit 1
+          fi
+          echo "all $COUNT module(s) audited across the shards (every module audited exactly once)"
 
   # ADR-063: plan the kernel replay into N disjoint shards. Reads source + the PR
   # diff only (no build), so it's a fast ubuntu job that drives the replay matrix
@@ -705,7 +773,7 @@ jobs:
           fi
 
   gate-a:
-    needs: [detect, gate_a_prepare, gate_a_audit, gate_a_replay_plan, gate_a_replay, gate_a_replay_cover, gate_a_archive]
+    needs: [detect, gate_a_prepare, gate_a_audit_plan, gate_a_audit, gate_a_audit_cover, gate_a_replay_plan, gate_a_replay, gate_a_replay_cover, gate_a_archive]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -716,7 +784,9 @@ jobs:
           ACTIVE_RELEVANT: ${{ needs.detect.outputs.active }}
           ADMITTED: ${{ needs.detect.outputs.admitted }}
           PREPARE_RESULT: ${{ needs.gate_a_prepare.result }}
-          AUDIT_RESULT: ${{ needs.gate_a_audit.result }}
+          # ADR-091: the sharded audit's single signal is the cover job, which
+          # asserts the plan succeeded + every shard is green (or count==0).
+          AUDIT_RESULT: ${{ needs.gate_a_audit_cover.result }}
           # ADR-063: the sharded replay's single signal is the cover job, which
           # asserts the plan succeeded + every shard is green (or count==0).
           REPLAY_RESULT: ${{ needs.gate_a_replay_cover.result }}

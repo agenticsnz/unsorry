@@ -127,12 +127,22 @@ replay (SPEC-063-A §5):
   `audit-shard --shard-index ${{ matrix.shard }} --shard-total N --output
   axiom-report-shard-${{ matrix.shard }}.json [--base BASE_SHA]`, uploading the
   per-shard fragment.
-- **`gate_a_audit_cover`** (`if: always() && active`) — fails closed unless the
-  plan succeeded **and** (`count == 0`, audit skipped → vacuous) **or** the audit
-  matrix is `success`; downloads the fragments, runs `combine-audit` into
-  `axiom-report.json`, and posts the sticky footprint comment + uploads the unified
-  report (the work the single `gate_a_audit` did before). This is the single audit
-  signal.
+- **`gate_a_audit_cover`** (`if: always() && active`) — a **pure coverage assert**:
+  fails closed unless the plan succeeded **and** (`count == 0`, audit skipped →
+  vacuous) **or** the audit matrix is `success`. This is the single audit signal.
+
+> **Normative — no artifact into the required gate.** Unlike the pilot's cover
+> (§4), `gate_a_audit_cover` **must not** pull the per-shard fragments back in: the
+> SPEC-049-A §2 invariant forbids any artifact reaching the central gate, and the
+> conformance suite enforces it by asserting `gate-a.yml` contains no
+> artifact-download step (a blunt string guard — even the *phrase* must not
+> appear). The per-shard footprint fragments are therefore uploaded as **diagnostics
+> only** (downloadable from the Actions UI), and the combined per-PR footprint
+> *comment* is **dropped from the required gate** — it lives in the non-required
+> shard pilot, which may legitimately combine the fragments. The authoritative audit
+> is unaffected: each shard's `axiom_audit` fails closed on any whitelist violation,
+> turning the shard (and the cover) red. `combine_audit_reports` remains the tested
+> merge used by the pilot and available for local/backstop use.
 
 The aggregator `gate-a` adds the three jobs to `needs:` and reads
 `gate_a_audit_cover.result` for the audit outcome (replacing the direct
