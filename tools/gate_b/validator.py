@@ -228,8 +228,8 @@ def _validate_goal(
         report.add("GB003", path, f"phase '{phase}' not in {GOAL_PHASES}")
     if status not in GOAL_STATUSES:
         report.add("GB003", path, f"status '{status}' not in {GOAL_STATUSES}")
-    if difficulty is None or len(difficulty) != 1 or difficulty not in "012345":
-        report.add("GB003", path, f"difficulty '{difficulty}' not an integer in 0–5")
+    if difficulty is None or len(difficulty) != 1 or difficulty not in "0123456789":
+        report.add("GB003", path, f"difficulty '{difficulty}' not an integer in 0–9")
 
     # GB004 — .aisp/.lean pairing
     lean = fields.get("lean")
