@@ -27,8 +27,8 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import shlex
-import statistics
 import subprocess
 import time
 from dataclasses import asdict, dataclass
@@ -65,6 +65,7 @@ class ModuleResult:
     leanchecker_seconds: float | None
     ratio: float | None  # nanoda / leanchecker wall-clock
     pathology: bool  # ratio > PATHOLOGY_RATIO
+    nanoda_stderr: str = ""  # tail of nanoda's stderr (diagnostic for non-ok status)
 
 
 # --- pure helpers (unit-tested directly) ------------------------------------
@@ -197,6 +198,11 @@ def render_md(results: Sequence[ModuleResult], summary: dict) -> str:
             f"{r.nanoda_seconds} | {r.nanoda_status} | {r.leanchecker_seconds} | "
             f"{r.ratio} | {'yes' if r.pathology else ''} |"
         )
+    diagnostics = [r for r in results if r.nanoda_stderr]
+    if diagnostics:
+        lines += ["", "## nanoda diagnostics (stderr tail for non-ok modules)", ""]
+        for r in diagnostics:
+            lines.append(f"- **{r.module}** ({r.nanoda_status}): `{r.nanoda_stderr}`")
     return "\n".join(lines) + "\n"
 
 
@@ -224,18 +230,28 @@ def export_capture(module: str, lean4export_cmd: Sequence[str], runner: Runner) 
     return _stdout_bytes(res)
 
 
+def _tail(text: str, limit: int = 600) -> str:
+    """Last `limit` chars, single-lined, for a compact diagnostic in the report."""
+    flat = " ".join((text or "").split())
+    return flat[-limit:]
+
+
 def timed_checker(
     argv: Sequence[str], runner: Runner, clock: Clock, timeout: float
-) -> tuple[float | None, str]:
-    """Time a checker invocation. Returns (seconds, status). A TimeoutExpired →
-    (None, 'timeout'); otherwise status is classify_checker(rc, stderr)."""
+) -> tuple[float | None, str, str]:
+    """Time a checker invocation. Returns (seconds, status, stderr_tail). A
+    TimeoutExpired → (None, 'timeout', ''); otherwise status is
+    classify_checker(rc, stderr) and stderr_tail is a compact tail of stderr (kept
+    so a non-ok status is diagnosable — the run-1/2 nanoda errors were opaque
+    because stderr was discarded)."""
     start = clock()
     try:
         res = runner(tuple(argv), check=False, capture_output=True, timeout=timeout)
     except subprocess.TimeoutExpired:
-        return None, "timeout"
+        return None, "timeout", ""
     seconds = clock() - start
-    return seconds, classify_checker(res.returncode, _stderr_text(res))
+    stderr = _stderr_text(res)
+    return seconds, classify_checker(res.returncode, stderr), _tail(stderr)
 
 
 def run_module(
@@ -265,8 +281,8 @@ def run_module(
     config_path = export_dir / f"{module}.nanoda.json"
     config_path.write_text(json.dumps(nanoda_config(export_path)), encoding="utf-8")
 
-    nanoda_seconds, nanoda_status = timed_checker((*nanoda_cmd, str(config_path)), runner, clock, timeout)
-    leanchecker_seconds, _ = timed_checker((*leanchecker_cmd, module), runner, clock, timeout)
+    nanoda_seconds, nanoda_status, nanoda_stderr = timed_checker((*nanoda_cmd, str(config_path)), runner, clock, timeout)
+    leanchecker_seconds, _, _ = timed_checker((*leanchecker_cmd, module), runner, clock, timeout)
     ratio = compute_ratio(nanoda_seconds, leanchecker_seconds)
     return ModuleResult(
         module=module,
@@ -278,6 +294,7 @@ def run_module(
         leanchecker_seconds=leanchecker_seconds,
         ratio=ratio,
         pathology=bool(ratio and ratio > PATHOLOGY_RATIO),
+        nanoda_stderr=nanoda_stderr if nanoda_status not in ("ok", "skipped") else "",
     )
 
 
@@ -285,6 +302,29 @@ def select_modules(root: Path, modules: int, module_list: Sequence[str] | None) 
     if module_list:
         return list(module_list)
     return module_names(root, "library")[: max(0, modules)]
+
+
+def progress_line(index: int, total: int, r: ModuleResult) -> str:
+    """One-line live progress for a finished module."""
+    err = f" — {r.nanoda_stderr}" if r.nanoda_stderr else ""
+    return (
+        f"[{index}/{total}] {r.module}: determinism={r.determinism} "
+        f"nanoda={r.nanoda_status} ({r.nanoda_seconds}s) lc={r.leanchecker_seconds}s "
+        f"ratio={r.ratio}{err}"
+    )
+
+
+def emit_progress(index: int, total: int, r: ModuleResult) -> None:
+    """Default progress sink: a flushed stdout line AND an append to
+    GITHUB_STEP_SUMMARY, so a long CI run is observable per-module live (the report
+    is only readable after the step ends). Each module is one heavy unit of work, so
+    emitting on completion gives real-time progress without log spam."""
+    line = progress_line(index, total, r)
+    print(line, flush=True)
+    path = os.environ.get("GITHUB_STEP_SUMMARY")
+    if path:
+        with Path(path).open("a", encoding="utf-8") as handle:
+            handle.write(f"- {line}\n")
 
 
 def run_pilot(
@@ -298,12 +338,15 @@ def run_pilot(
     runner: Runner = subprocess.run,
     clock: Clock = time.perf_counter,
     timeout: float = 300.0,
+    on_progress: Callable[[int, int, ModuleResult], None] = emit_progress,
 ) -> tuple[list[ModuleResult], dict]:
     export_dir.mkdir(parents=True, exist_ok=True)
-    results = [
-        run_module(m, runs, lean4export_cmd, nanoda_cmd, leanchecker_cmd, export_dir, runner, clock, timeout)
-        for m in sample
-    ]
+    total = len(sample)
+    results: list[ModuleResult] = []
+    for index, m in enumerate(sample, 1):
+        r = run_module(m, runs, lean4export_cmd, nanoda_cmd, leanchecker_cmd, export_dir, runner, clock, timeout)
+        results.append(r)
+        on_progress(index, total, r)
     return results, aggregate(results)
 
 

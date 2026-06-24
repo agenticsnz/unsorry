@@ -13,9 +13,11 @@ from tools.pilot.export_checker_pilot import (
     classify_checker,
     compute_ratio,
     determinism_verdict,
+    emit_progress,
     nanoda_config,
     render_md,
     run_module,
+    run_pilot,
     select_modules,
     sha256_hex,
 )
@@ -198,6 +200,51 @@ def test_run_module_nanoda_incompatible(tmp_path):
     clock = clock_seq(0.0, 3.0, 0.0, 1.0)
     r = run_module("Unsorry.A", 2, ("lean4export",), ("nanoda",), ("leanchecker",), tmp_path, runner, clock, 300)
     assert r.nanoda_status == "incompatible"
+
+
+def test_run_module_captures_nanoda_stderr_on_error(tmp_path):
+    # The run-1/2 gap: when nanoda errors we MUST keep its stderr to diagnose why.
+    runner = make_runner([b"E", b"E"], nanoda=(101, "thread 'main' panicked at 'boom'"), leanchecker=(0, ""))
+    clock = clock_seq(0.0, 0.07, 0.0, 30.0)
+    r = run_module("Unsorry.A", 2, ("lean4export",), ("nanoda",), ("leanchecker",), tmp_path, runner, clock, 300)
+    assert r.nanoda_status == "error"
+    assert "panicked" in r.nanoda_stderr  # stderr preserved, not discarded
+    # and it surfaces in the report's diagnostics section
+    md = render_md([r], aggregate([r]))
+    assert "nanoda diagnostics" in md and "panicked" in md
+
+
+def test_run_module_no_stderr_kept_on_ok(tmp_path):
+    runner = make_runner([b"E", b"E"], nanoda=(0, "noise"), leanchecker=(0, ""))
+    clock = clock_seq(0.0, 4.0, 0.0, 30.0)
+    r = run_module("Unsorry.A", 2, ("lean4export",), ("nanoda",), ("leanchecker",), tmp_path, runner, clock, 300)
+    assert r.nanoda_status == "ok"
+    assert r.nanoda_stderr == ""  # clean runs don't carry noise
+
+
+def test_run_pilot_invokes_progress_per_module(tmp_path):
+    d = tmp_path / "library" / "Unsorry"
+    d.mkdir(parents=True)
+    for n in ("A", "B"):
+        (d / f"{n}.lean").write_text("")
+    runner = make_runner([b"E"] * 8, nanoda=(0, ""), leanchecker=(0, ""))
+    seen = []
+    run_pilot(
+        tmp_path, ["Unsorry.A", "Unsorry.B"], 1,
+        ("lean4export",), ("nanoda",), ("leanchecker",), tmp_path / "exp",
+        runner=runner, clock=lambda: 0.0, timeout=300,
+        on_progress=lambda i, total, r: seen.append((i, total, r.module)),
+    )
+    assert seen == [(1, 2, "Unsorry.A"), (2, 2, "Unsorry.B")]
+
+
+def test_emit_progress_appends_to_step_summary(tmp_path, monkeypatch):
+    summary = tmp_path / "summary.md"
+    monkeypatch.setenv("GITHUB_STEP_SUMMARY", str(summary))
+    r = ModuleResult("Unsorry.A", 100, "h", "stable", 4.0, "ok", 2.0, 2.0, False)
+    emit_progress(1, 3, r)
+    body = summary.read_text()
+    assert "[1/3] Unsorry.A" in body and "nanoda=ok" in body
 
 
 def test_select_modules(tmp_path):
