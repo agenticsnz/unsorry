@@ -36,6 +36,8 @@ import pytest
 
 from tools.gate_a.parallel_modules import (
     FULL_REPLAY_PATHS,
+    audit_shard,
+    compute_audit_targets,
     forces_full_replay,
     import_graph,
     module_names,
@@ -124,6 +126,41 @@ def test_leanchecker_receives_only_local_module_names_never_artifacts(tmp_path: 
         assert not t.endswith((".olean", ".lean")), f"artifact path reached leanchecker: {t!r}"
         assert "/" not in t and "\\" not in t, f"path-like target reached leanchecker: {t!r}"
         assert t in local_modules, f"target {t!r} is not a locally-derived library module"
+
+
+def test_audit_shard_feeds_only_local_module_names_never_artifacts(tmp_path: Path):
+    """SPEC-049-A §2 / SPEC-091-A §2.3 (ADR-091). A sharded audit leg must feed
+    ``axiom_audit`` only module names derived from the locally-rebuilt library/goal
+    tree — never a contributor-supplied artifact. No module list crosses a job
+    boundary; each shard re-derives its slice from source, so the auditor's inputs
+    stay locally-derived even under sharding."""
+    _write_lib(tmp_path, {"A": [], "B": ["A"], "ABinding": ["A"]})
+    local_modules = set(module_names(tmp_path, "library"))
+    audited: list[str] = []
+
+    def runner(argv, **_kwargs):
+        argv = tuple(argv)
+        if argv[0] == "git" and "diff" in argv:
+            return completed(argv, stdout="library/Unsorry/A.lean\n")
+        if argv[:3] == ("lake", "exe", "axiom_audit"):
+            audited.extend(a for a in argv[3:] if a != "--allow-sorry")
+        return completed(argv, stdout="[]")
+
+    assert audit_shard(tmp_path, 0, 1, tmp_path / "shard.json", runner, base="origin/main") == 0
+    assert audited, "a changed module must produce a non-empty audit set"
+    for target in audited:
+        assert not target.endswith((".olean", ".lean")), f"artifact reached the auditor: {target!r}"
+        assert "/" not in target and "\\" not in target, f"path-like audit target: {target!r}"
+        assert target in local_modules, f"target {target!r} is not a locally-derived module"
+
+
+def test_audit_shard_untrusted_diff_fails_closed_to_full(tmp_path: Path):
+    """SPEC-049-A §2 / SPEC-091-A §2.5. An untrusted diff (git unavailable) makes a
+    sharded audit fall back to the FULL scope — never an empty/partial accept."""
+    _write_lib(tmp_path, {"A": [], "B": ["A"]})
+    full = compute_audit_targets(tmp_path, "deadbeef", _diff_runner("", git_rc=128))
+    assert full.mode == "full"
+    assert set(full.library) == {"Unsorry.A", "Unsorry.B"}
 
 
 def test_untrusted_diff_fails_closed_to_full_recheck(tmp_path: Path):

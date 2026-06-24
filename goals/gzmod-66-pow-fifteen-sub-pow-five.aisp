@@ -1,0 +1,20 @@
+𝔸5.1.goal.gzmod-66-pow-fifteen-sub-pow-five@2026-06-18
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gzmod-66-pow-fifteen-sub-pow-five
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/gzmod-66-pow-fifteen-sub-pow-five.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/gzmod-66-pow-fifteen-sub-pow-five.lean
+  sha≜a5ec9e8f201ff2972bc21fdaa74624ac21d74948c455d562cd32dec5a404135a
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
