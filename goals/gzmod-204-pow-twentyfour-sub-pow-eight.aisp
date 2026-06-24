@@ -1,0 +1,20 @@
+𝔸5.1.goal.gzmod-204-pow-twentyfour-sub-pow-eight@2026-06-24
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gzmod-204-pow-twentyfour-sub-pow-eight
+  phase≜prove
+  status≜proved
+  difficulty≜5
+}
+⟦Σ:Source⟧{
+  src≜backlog/gzmod-204-pow-twentyfour-sub-pow-eight.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/gzmod-204-pow-twentyfour-sub-pow-eight.lean
+  sha≜e7a8c0f56da871d41d12755ab5cf1f586edd4d66f66c84e79c156f8d1aa05f20
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
