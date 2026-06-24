@@ -1,0 +1,105 @@
+name: export-checker-pilot
+
+# Phase-3 pilot (ADR-093 / SPEC-093-A): measure lean4export determinism (Q2) and
+# nanoda wall-clock / timeout (Q3) on real library closures. OBSERVE-ONLY,
+# NON-REQUIRED, manual-only. It admits NO content, gates nothing, and leaves the
+# authoritative leanchecker gate untouched — it builds the library, exports a
+# sample of modules, runs the independent checker, and uploads a data report.
+# A nanoda incompatibility is a recorded Q3 result, not a failure to force.
+on:
+  workflow_dispatch:
+    inputs:
+      modules:
+        description: "Number of library modules to sample"
+        required: false
+        default: "10"
+      runs:
+        description: "lean4export runs per module (>=2 measures cross-run determinism)"
+        required: false
+        default: "2"
+      timeout:
+        description: "Per-checker timeout (seconds)"
+        required: false
+        default: "300"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: export-checker-pilot
+  cancel-in-progress: false
+
+jobs:
+  pilot:
+    name: lean4export + nanoda pilot
+    runs-on: namespace-profile-unsorry-1
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.12"
+
+      # Warm the Namespace .lake volume (mathlib + library oleans), then build the
+      # library so lean4export/leanchecker run against a resident environment.
+      - name: Namespace .lake cache volume
+        id: ns_lake_cache
+        continue-on-error: true
+        uses: namespacelabs/nscloud-cache-action@15799a6b54e5765f85b2aac25b3f0df43ed571c0 # v1.4.3
+        with:
+          path: ${{ github.workspace }}/.lake
+      - name: Build (lean-action, mathlib binary cache)
+        uses: leanprover/lean-action@38fbc41a8c28c4cbaec22d7f7de508ec2e7c0dd9 # v1.5.0
+        with:
+          use-github-cache: ${{ steps.ns_lake_cache.outputs.cache-hit != 'true' }}
+          build-args: "UnsorryLibrary"
+
+      # lean4export, pinned to the tag matching lean-toolchain (v4.30.0, ADR-093).
+      # Built as a standalone Lean project and invoked via `lake env` so it sees
+      # the same toolchain; the unsorry library oleans are on LEAN_PATH from the
+      # build above.
+      - name: Build lean4export (pinned to the toolchain tag)
+        run: |
+          set -euo pipefail
+          TAG="$(tr -d '[:space:]' < lean-toolchain | sed 's#.*:##')"   # e.g. v4.30.0
+          echo "lean4export tag: $TAG"
+          git clone --depth 1 --branch "$TAG" https://github.com/leanprover/lean4export.git "$RUNNER_TEMP/lean4export"
+          ( cd "$RUNNER_TEMP/lean4export" && lake build )
+          echo "LEAN4EXPORT_BIN=$RUNNER_TEMP/lean4export/.lake/build/bin/lean4export" >> "$GITHUB_ENV"
+
+      # nanoda (independent Rust checker). Its compatibility with the export format
+      # is part of what Q3 measures — a build/parse failure is a recorded result.
+      - name: Build nanoda (independent checker)
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          git clone --depth 1 https://github.com/ammkrn/nanoda_lib.git "$RUNNER_TEMP/nanoda"
+          ( cd "$RUNNER_TEMP/nanoda" && cargo build --release )
+          BIN="$(find "$RUNNER_TEMP/nanoda/target/release" -maxdepth 1 -type f -perm -u+x ! -name '*.d' | head -1)"
+          echo "NANODA_BIN=${BIN:-nanoda}" >> "$GITHUB_ENV"
+
+      - name: Run the pilot (observe-only)
+        env:
+          MODULES: ${{ github.event.inputs.modules || '10' }}
+          RUNS: ${{ github.event.inputs.runs || '2' }}
+          TMO: ${{ github.event.inputs.timeout || '300' }}
+        run: |
+          set -euo pipefail
+          python3 -m tools.pilot.export_checker_pilot \
+            --modules "$MODULES" --runs "$RUNS" --timeout "$TMO" \
+            --lean4export-cmd "lake env ${LEAN4EXPORT_BIN:-lean4export}" \
+            --nanoda-cmd "${NANODA_BIN:-nanoda}" \
+            --leanchecker-cmd "lake env leanchecker" \
+            --output-json pilot-report.json --output-md pilot-report.md
+          echo '### Pilot summary' >> "$GITHUB_STEP_SUMMARY"
+          cat pilot-report.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload pilot report
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        with:
+          name: pilot-report
+          path: |
+            pilot-report.json
+            pilot-report.md
