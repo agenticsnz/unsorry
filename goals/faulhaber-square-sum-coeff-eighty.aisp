@@ -1,0 +1,20 @@
+𝔸5.1.goal.faulhaber-square-sum-coeff-eighty@2026-06-24
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜faulhaber-square-sum-coeff-eighty
+  phase≜prove
+  status≜proved
+  difficulty≜5
+}
+⟦Σ:Source⟧{
+  src≜backlog/faulhaber-square-sum-coeff-eighty.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/faulhaber-square-sum-coeff-eighty.lean
+  sha≜121742f3db95915dd2f119966bab6bd0e599987d389b5f89ab5eb08ba8eaa208
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.85;τ≜◊⁺⟩
