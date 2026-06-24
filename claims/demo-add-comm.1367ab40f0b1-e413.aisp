@@ -1,7 +1,0 @@
-𝔸5.1.claim.demo-add-comm.1367ab40f0b1-e413@2026-06-24
-γ≔unsorry.claim
-⟦Ω:Claim⟧{goal≜demo-add-comm; agent≜1367ab40f0b1-e413}
-⟦Σ:Times⟧{ts≜2026-06-24T11:37:12Z; ttl≜7200}
-⟦Γ:Expiry⟧{now>ts+ttl⇒expired}
-⟦Λ:Release⟧{release≜λ_.rm(self)}
-⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
