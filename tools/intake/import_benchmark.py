@@ -43,11 +43,39 @@ class ImportError_(Exception):
     """A benchmark statement could not be turned into a goal."""
 
 
+#: Companion declarations a benchmark theorem references (e.g. PutnamBench's
+#: ``abbrev putnam_X_solution : T := sorry``) precede the theorem. We bundle them into
+#: the goal so the statement elaborates — substituting an answer-blank ``:= sorry`` with
+#: the answer PutnamBench leaves in the adjacent ``-- <answer>`` comment, so the goal is
+#: a *fixed, provable* statement rather than an opaque blank.
+_BLOCK_COMMENT_RE = re.compile(r"/-.*?-/", re.DOTALL)
+_LINE_COMMENT_RE = re.compile(r"--[^\n]*")
+_ANSWER_RE = re.compile(r":=\s*sorry\s*\n\s*--\s*(?P<ans>[^\n]+)")
+
+
 @dataclass(frozen=True)
 class Problem:
     name: str          # the original theorem name, e.g. putnam_1988_b2
     signature: str     # binders + ": <type>" (everything between name and :=)
     source_ref: str
+    preamble: str = ""  # companion declarations bundled before the theorem
+
+
+def companion_preamble(text: str) -> str:
+    """The companion declarations preceding the first theorem (imports/comments removed),
+    with any answer-blank ``:= sorry`` substituted by the trailing ``-- <answer>`` comment.
+    Empty for a pure-proof statement (no companions)."""
+    match = re.search(r"\btheorem\b", text)
+    head = text[: match.start()] if match else text
+    head = _BLOCK_COMMENT_RE.sub("", head)                                # drop /- docstrings -/
+    head = _ANSWER_RE.sub(lambda m: ":= " + m.group("ans").strip(), head)  # fold answer in
+    head = _LINE_COMMENT_RE.sub("", head)                                 # drop remaining comments
+    decls = [
+        line.rstrip()
+        for line in head.splitlines()
+        if line.strip() and not line.lstrip().startswith("import")
+    ]
+    return "\n".join(decls).strip()
 
 
 def slugify(name: str) -> str:
@@ -60,11 +88,20 @@ def _subscript(i: int) -> str:
 
 
 def extract_putnambench(text: str, source_ref: str = "") -> list[Problem]:
-    """Extract every ``theorem`` statement from PutnamBench Lean source."""
+    """Extract every ``theorem`` statement plus its companion preamble from PutnamBench
+    Lean source (one file's text)."""
+    preamble = companion_preamble(text)
     problems = []
     for match in _THEOREM_RE.finditer(text):
         sig = re.sub(r"\s+", " ", match.group("sig")).strip()
-        problems.append(Problem(name=match.group("name"), signature=sig, source_ref=source_ref))
+        problems.append(
+            Problem(
+                name=match.group("name"),
+                signature=sig,
+                source_ref=source_ref,
+                preamble=preamble,
+            )
+        )
     return problems
 
 
@@ -146,6 +183,7 @@ def assemble_package(
             decomposition="flat benchmark obligation under the suite root",
             date=date,
             force=force,
+            preamble=problem.preamble,
         )
         # Content-addressed package copy (the registry copy; tied by statement_sha).
         for ext in ("lean", "aisp"):
@@ -238,7 +276,7 @@ def classify_problems(
     quarantined: list[tuple[str, str]] = []
     for problem in problems:
         slug = slugify(problem.name)
-        verdict = verdict_of(render_lean(slug, problem.signature))
+        verdict = verdict_of(render_lean(slug, problem.signature, problem.preamble))
         if verdict == "probe-error":
             quarantined.append((problem.name, "does not elaborate under the pinned mathlib"))
         else:

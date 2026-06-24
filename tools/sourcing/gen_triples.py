@@ -58,11 +58,14 @@ def valid_slug(slug: str) -> bool:
     return bool(_SLUG_RE.match(slug)) and "." not in slug
 
 
-def render_lean(slug: str, sig: str) -> str:
+def render_lean(slug: str, sig: str, preamble: str = "") -> str:
     """The canonical sorry-stub: `import Mathlib`, a blank line, the theorem, and
     a two-space `sorry`. `sig` is everything after the theorem name (binders +
-    `:` + proposition), e.g. ``(n : ℕ) : 0 < n + 1``."""
-    return f"import Mathlib\n\ntheorem {snake(slug)} {sig.strip()} := by\n  sorry\n"
+    `:` + proposition), e.g. ``(n : ℕ) : 0 < n + 1``. `preamble` is optional
+    companion declarations (e.g. an ``abbrev <name>_solution`` the theorem
+    references) inserted between the import and the theorem."""
+    pre = f"{preamble.strip()}\n\n" if preamble.strip() else ""
+    return f"import Mathlib\n\n{pre}theorem {snake(slug)} {sig.strip()} := by\n  sorry\n"
 
 
 def render_aisp(slug: str, difficulty: int, date: str, aff: int) -> str:
@@ -138,6 +141,7 @@ def write_triple(
     aff: int = -20,
     date: str | None = None,
     force: bool = False,
+    preamble: str = "",
 ) -> list[Path]:
     """Write the three files; return their paths. Refuses to clobber an existing
     goal unless ``force`` (ADR-018 immutability — a changed statement gets a new
@@ -165,7 +169,7 @@ def write_triple(
 
     lean_path.parent.mkdir(parents=True, exist_ok=True)
     backlog_path.parent.mkdir(parents=True, exist_ok=True)
-    lean_path.write_text(render_lean(slug, lean_sig), encoding="utf-8")
+    lean_path.write_text(render_lean(slug, lean_sig, preamble), encoding="utf-8")
     aisp_path.write_text(render_aisp(slug, difficulty, date, aff), encoding="utf-8")
     backlog_path.write_text(
         render_backlog(

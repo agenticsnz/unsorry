@@ -174,6 +174,56 @@ def test_build_flow_excludes_quarantined_and_tags_credit(tmp_path):
     }
 
 
+PUTNAM_ANSWER_SRC = """
+import Mathlib
+
+abbrev putnam_2017_a1_solution : Set ℤ := sorry
+-- {x : ℤ | x > 0 ∧ (x = 1 ∨ 5 ∣ x)}
+
+/--
+Find all values …
+-/
+theorem putnam_2017_a1
+(S : Set ℤ)
+: S = putnam_2017_a1_solution := by sorry
+"""
+
+ANSWER = "{x : ℤ | x > 0 ∧ (x = 1 ∨ 5 ∣ x)}"
+
+
+def test_companion_preamble_folds_answer_in():
+    from tools.intake.import_benchmark import companion_preamble
+
+    pre = companion_preamble(PUTNAM_ANSWER_SRC)
+    assert pre == f"abbrev putnam_2017_a1_solution : Set ℤ := {ANSWER}"
+    assert "sorry" not in pre  # the answer-blank was substituted, not left opaque
+
+
+def test_pure_proof_statement_has_no_preamble():
+    problems = extract_putnambench("import Mathlib\n\ntheorem foo : 1 = 1 := by sorry\n")
+    assert problems[0].preamble == ""
+
+
+def test_extract_attaches_preamble():
+    problems = extract_putnambench(PUTNAM_ANSWER_SRC, "PutnamBench")
+    assert len(problems) == 1
+    assert problems[0].preamble == f"abbrev putnam_2017_a1_solution : Set ℤ := {ANSWER}"
+
+
+def test_assemble_bundles_companion_into_goal(tmp_path):
+    problems = extract_putnambench(PUTNAM_ANSWER_SRC, "PutnamBench")
+    assemble_package(
+        tmp_path, "putnam-v1", problems,
+        supplier="trishul", domain="lean-math", mathlib="m", toolchain="t",
+        license="Apache-2.0",
+    )
+    goal = (tmp_path / "goals" / "putnam-2017-a1.lean").read_text("utf-8")
+    # the concrete answer is bundled (so the statement is fixed + provable, not opaque)
+    assert f"abbrev putnam_2017_a1_solution : Set ℤ := {ANSWER}" in goal
+    assert "theorem putnam_2017_a1" in goal
+    assert goal.rstrip().endswith("sorry")  # the obligation sorry is still the last token
+
+
 def test_batch_cap_enforced(tmp_path):
     problems = [Problem(f"putnam_p{i}", ": True", "P") for i in range(51)]
     with pytest.raises(ImportError_):
