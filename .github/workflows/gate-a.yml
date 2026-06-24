@@ -217,19 +217,24 @@ jobs:
         run: lake build UnsorryLibrary --wfail
 
       # Publish the freshly-built library oleans as a GitHub-cache fallback so the
-      # downstream audit/replay jobs can RESTORE them when they land on a cold
-      # Namespace runner. Measured 2026-06-22: in a single run gate-a-prepare
-      # mounted a warm 20 GB .lake while gate-a-audit got an empty 4 KB one and
-      # cold-rebuilt the whole library (~45 min, hit the timeout) — the .lake
-      # volume is per-runner and is NOT reliably shared to the downstream jobs.
+      # downstream audit/replay SHARDS (ADR-063/091) can RESTORE them when they land
+      # on a cold Namespace runner. Measured 2026-06-22: in a single run
+      # gate-a-prepare mounted a warm 20 GB .lake while gate-a-audit got an empty
+      # 4 KB one and cold-rebuilt the whole library (~45 min, hit the timeout) — the
+      # .lake volume is per-runner and is NOT reliably shared to the downstream jobs.
       # The library oleans compress to ~320 MB, so this restores in well under a
-      # minute. main-only + Namespace-only bounds the entry count (one per main
-      # commit, LRU-evicted; restore-keys gives the latest). Save-only here; the
-      # non-Namespace lane below still round-trips via actions/cache as before.
-      # Soundness unchanged — leanchecker re-checks every olean it loads against
-      # the kernel, and lake rebuilds any restored olean whose source changed.
-      - name: Publish library oleans to fallback cache (main, ADR-045)
-        if: needs.detect.outputs.active == 'true' && github.ref == 'refs/heads/main' && needs.detect.outputs.prepare_volume == 'true'
+      # minute. Published on PRs too (ADR-094, #5751), not just main: a PR's shards
+      # share this run's github.sha, so they get an EXACT-key restore hit on what
+      # prepare just built — `--wfail` becomes an incremental no-op instead of the
+      # cold rebuild that produced the 1077 s shard tail (#5678). Forks are skipped
+      # (read-only token cannot write the cache). Save-only here; continue-on-error
+      # keeps it non-gating, so a failed/evicted save degrades to the prefix
+      # restore-key (today's behaviour) — a strict superset. The non-Namespace lane
+      # below still round-trips via actions/cache as before. Soundness unchanged —
+      # leanchecker re-checks every olean it loads against the kernel, and lake
+      # rebuilds any restored olean whose source changed.
+      - name: Publish library oleans to fallback cache (ADR-045/094)
+        if: needs.detect.outputs.active == 'true' && needs.detect.outputs.prepare_volume == 'true' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork != true)
         continue-on-error: true
         uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
