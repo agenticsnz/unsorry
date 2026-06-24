@@ -67,6 +67,8 @@ class ModuleResult:
     ratio: float | None  # nanoda / leanchecker wall-clock
     pathology: bool  # ratio > PATHOLOGY_RATIO
     nanoda_stderr: str = ""  # tail of nanoda's stderr (diagnostic for non-ok status)
+    nanoda_declars_checked: int | None = None  # N from "Checked N declarations" — closure size proof
+    target_confirmed: bool | None = None  # the module's own theorem was in nanoda's checked env
 
 
 # --- pure helpers (unit-tested directly) ------------------------------------
@@ -96,7 +98,11 @@ def classify_checker(returncode: int, stderr: str) -> str:
     return "error"
 
 
-def nanoda_config(export_path: Path, permitted_axioms: Sequence[str] = NANODA_PERMITTED_AXIOMS) -> dict:
+def nanoda_config(
+    export_path: Path,
+    permitted_axioms: Sequence[str] = NANODA_PERMITTED_AXIOMS,
+    confirm_decls: Sequence[str] | None = None,
+) -> dict:
     """The JSON config nanoda_bin consumes (its only argument). Points at the
     export file and permits the audit whitelist; unpermitted axioms are skipped at
     load (not a hard error) but still rejected if a declaration uses one.
@@ -107,8 +113,14 @@ def nanoda_config(export_path: Path, permitted_axioms: Sequence[str] = NANODA_PE
     finding: `Nat lit extension disallowed by checker execution config, but export
     file contains a nat literal`). These are nanoda's native support for Lean's
     GMP-backed Nat and String — required to check any non-trivial export, and the
-    README's own example config sets both true."""
-    return {
+    README's own example config sets both true.
+
+    `confirm_decls` (the module's own theorem names) are passed as `pp_declars`
+    with `unknown_pp_declar_hard_error: true`, so nanoda **hard-errors unless the
+    target theorem is present in the checked environment** — guarding the
+    degenerate-pass risk (a scoped export that checked only dependencies, not the
+    proof). `proofs: false` keeps the pretty-print output small."""
+    config = {
         "export_file_path": str(export_path),
         "use_stdin": False,
         "permitted_axioms": list(permitted_axioms),
@@ -117,6 +129,21 @@ def nanoda_config(export_path: Path, permitted_axioms: Sequence[str] = NANODA_PE
         "string_extension": True,
         "print_success_message": True,
     }
+    if confirm_decls:
+        config["pp_declars"] = list(confirm_decls)
+        config["pp_to_stdout"] = True
+        config["unknown_pp_declar_hard_error"] = True
+        config["pp_options"] = {"proofs": False}
+    return config
+
+
+_CHECKED_RE = re.compile(r"Checked\s+(\d+)\s+declarations")
+
+
+def parse_declars_checked(stdout: str) -> int | None:
+    """N from nanoda's success message `Checked N declarations with no errors`."""
+    m = _CHECKED_RE.search(stdout or "")
+    return int(m.group(1)) if m else None
 
 
 def compute_ratio(nanoda_seconds: float | None, leanchecker_seconds: float | None) -> float | None:
@@ -200,14 +227,27 @@ def render_md(results: Sequence[ModuleResult], summary: dict) -> str:
         f"(pathologies > {int(PATHOLOGY_RATIO)}×: {summary['ratio']['pathology_count']})",
         f"  - export bytes p50/p95/max: {summary['export_bytes']['p50']}/{summary['export_bytes']['p95']}/{summary['export_bytes']['max']}",
         "",
-        "| module | determinism | export_bytes | nanoda_s | nanoda | leanchecker_s | ratio | pathology |",
-        "|---|---|---|---|---|---|---|---|",
+    ]
+    confirmable = [r for r in results if r.target_confirmed is not None]
+    if confirmable:
+        confirmed = sum(1 for r in confirmable if r.target_confirmed)
+        lines.append(
+            f"- **Soundness check — target theorem present in nanoda's checked env:** "
+            f"{confirmed}/{len(confirmable)} confirmed "
+            f"(via `pp_declars` + `unknown_pp_declar_hard_error`; a scoped export that "
+            f"checked only dependencies would have hard-errored)"
+        )
+        lines.append("")
+    lines += [
+        "| module | determinism | export_bytes | nanoda_s | nanoda | declars | target | leanchecker_s | ratio | pathology |",
+        "|---|---|---|---|---|---|---|---|---|---|",
     ]
     for r in results:
+        tgt = "" if r.target_confirmed is None else ("✓" if r.target_confirmed else "✗")
         lines.append(
             f"| {r.module} | {r.determinism} | {r.export_bytes} | "
-            f"{r.nanoda_seconds} | {r.nanoda_status} | {r.leanchecker_seconds} | "
-            f"{r.ratio} | {'yes' if r.pathology else ''} |"
+            f"{r.nanoda_seconds} | {r.nanoda_status} | {r.nanoda_declars_checked} | {tgt} | "
+            f"{r.leanchecker_seconds} | {r.ratio} | {'yes' if r.pathology else ''} |"
         )
     diagnostics = [r for r in results if r.nanoda_stderr]
     if diagnostics:
@@ -279,20 +319,22 @@ def _tail(text: str, limit: int = 600) -> str:
 
 def timed_checker(
     argv: Sequence[str], runner: Runner, clock: Clock, timeout: float
-) -> tuple[float | None, str, str]:
-    """Time a checker invocation. Returns (seconds, status, stderr_tail). A
-    TimeoutExpired → (None, 'timeout', ''); otherwise status is
-    classify_checker(rc, stderr) and stderr_tail is a compact tail of stderr (kept
-    so a non-ok status is diagnosable — the run-1/2 nanoda errors were opaque
-    because stderr was discarded)."""
+) -> tuple[float | None, str, str, str]:
+    """Time a checker invocation. Returns (seconds, status, stderr_tail, stdout).
+    A TimeoutExpired → (None, 'timeout', '', ''); otherwise status is
+    classify_checker(rc, stderr), stderr_tail is a compact tail of stderr, and
+    stdout is the full stdout (nanoda's success message carries the declaration
+    count, parsed for the soundness check)."""
     start = clock()
     try:
         res = runner(tuple(argv), check=False, capture_output=True, timeout=timeout)
     except subprocess.TimeoutExpired:
-        return None, "timeout", ""
+        return None, "timeout", "", ""
     seconds = clock() - start
     stderr = _stderr_text(res)
-    return seconds, classify_checker(res.returncode, stderr), _tail(stderr)
+    out = res.stdout
+    stdout = "" if out is None else (out if isinstance(out, str) else out.decode("utf-8", "replace"))
+    return seconds, classify_checker(res.returncode, stderr), _tail(stderr), stdout
 
 
 def run_module(
@@ -306,6 +348,7 @@ def run_module(
     clock: Clock = time.perf_counter,
     timeout: float = 300.0,
     scope_decls: Sequence[str] | None = None,
+    confirm_decls: Sequence[str] | None = None,
 ) -> ModuleResult:
     exports: list[bytes] = []
     for _ in range(max(1, runs)):
@@ -319,13 +362,19 @@ def run_module(
     export_path = export_dir / f"{module}.export"
     export_path.write_bytes(canonical)
     # nanoda_bin's only argument is a JSON config that points at the export and
-    # lists the permitted axioms — not the export file itself.
+    # lists the permitted axioms — not the export file itself. confirm_decls makes
+    # nanoda hard-error unless the module's own theorem is in the checked env.
     config_path = export_dir / f"{module}.nanoda.json"
-    config_path.write_text(json.dumps(nanoda_config(export_path)), encoding="utf-8")
+    config_path.write_text(json.dumps(nanoda_config(export_path, confirm_decls=confirm_decls)), encoding="utf-8")
 
-    nanoda_seconds, nanoda_status, nanoda_stderr = timed_checker((*nanoda_cmd, str(config_path)), runner, clock, timeout)
-    leanchecker_seconds, _, _ = timed_checker((*leanchecker_cmd, module), runner, clock, timeout)
+    nanoda_seconds, nanoda_status, nanoda_stderr, nanoda_stdout = timed_checker(
+        (*nanoda_cmd, str(config_path)), runner, clock, timeout)
+    leanchecker_seconds, _, _, _ = timed_checker((*leanchecker_cmd, module), runner, clock, timeout)
     ratio = compute_ratio(nanoda_seconds, leanchecker_seconds)
+    # target_confirmed: with pp_declars + unknown_pp_declar_hard_error, an 'ok' run
+    # means the target theorem was present in the checked environment (else nanoda
+    # would have errored). None when we didn't ask for confirmation.
+    target_confirmed = (nanoda_status == "ok") if confirm_decls else None
     return ModuleResult(
         module=module,
         export_bytes=len(canonical),
@@ -337,22 +386,39 @@ def run_module(
         ratio=ratio,
         pathology=bool(ratio and ratio > PATHOLOGY_RATIO),
         nanoda_stderr=nanoda_stderr if nanoda_status not in ("ok", "skipped") else "",
+        nanoda_declars_checked=parse_declars_checked(nanoda_stdout),
+        target_confirmed=target_confirmed,
     )
 
 
-def select_modules(root: Path, modules: int, module_list: Sequence[str] | None) -> list[str]:
+def select_modules(
+    root: Path, modules: int, module_list: Sequence[str] | None, spread: bool = False
+) -> list[str]:
     if module_list:
         return list(module_list)
-    return module_names(root, "library")[: max(0, modules)]
+    names = module_names(root, "library")
+    n = max(0, modules)
+    if not spread or n >= len(names) or n == 0:
+        return names[:n]
+    # Evenly-strided sample across the sorted module list — module names cluster by
+    # topic/family (e.g. AltGeometricRatio*), so the first-N sample is homogeneous;
+    # striding spreads the sample across families for difficulty/topic diversity.
+    step = len(names) / n
+    return [names[int(i * step)] for i in range(n)]
 
 
 def progress_line(index: int, total: int, r: ModuleResult) -> str:
     """One-line live progress for a finished module."""
     err = f" — {r.nanoda_stderr}" if r.nanoda_stderr else ""
+    extra = ""
+    if r.nanoda_declars_checked is not None:
+        extra += f" decls={r.nanoda_declars_checked}"
+    if r.target_confirmed is not None:
+        extra += f" target={'✓' if r.target_confirmed else '✗'}"
     return (
         f"[{index}/{total}] {r.module}: determinism={r.determinism} "
         f"nanoda={r.nanoda_status} ({r.nanoda_seconds}s) lc={r.leanchecker_seconds}s "
-        f"ratio={r.ratio}{err}"
+        f"ratio={r.ratio} bytes={r.export_bytes}{extra}{err}"
     )
 
 
@@ -387,8 +453,12 @@ def run_pilot(
     total = len(sample)
     results: list[ModuleResult] = []
     for index, m in enumerate(sample, 1):
-        decls = module_source_decls(root, m) if scope_decls else None
-        r = run_module(m, runs, lean4export_cmd, nanoda_cmd, leanchecker_cmd, export_dir, runner, clock, timeout, scope_decls=decls)
+        own_decls = module_source_decls(root, m)
+        r = run_module(
+            m, runs, lean4export_cmd, nanoda_cmd, leanchecker_cmd, export_dir, runner, clock, timeout,
+            scope_decls=(own_decls if scope_decls else None),
+            confirm_decls=(own_decls or None),
+        )
         results.append(r)
         on_progress(index, total, r)
     return results, aggregate(results)
@@ -414,10 +484,16 @@ def main(argv: list[str] | None = None) -> int:
         "their transitive declaration closure, not the whole module import closure. "
         "The experiment: does this shrink the ~5.9 GB full-mathlib export (Q4)?",
     )
+    p.add_argument(
+        "--spread",
+        action="store_true",
+        help="sample modules evenly across the sorted library (topic/difficulty "
+        "diversity) instead of the first N (which cluster by name family).",
+    )
     args = p.parse_args(argv)
 
     module_list = [m.strip() for m in args.module_list.split(",") if m.strip()] or None
-    sample = select_modules(args.root, args.modules, module_list)
+    sample = select_modules(args.root, args.modules, module_list, spread=args.spread)
     if not sample:
         print("no library modules to sample", flush=True)
         return 2

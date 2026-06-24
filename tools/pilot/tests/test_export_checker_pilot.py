@@ -17,6 +17,7 @@ from tools.pilot.export_checker_pilot import (
     export_capture,
     module_source_decls,
     nanoda_config,
+    parse_declars_checked,
     render_md,
     run_module,
     run_pilot,
@@ -37,10 +38,10 @@ def clock_seq(*vals):
     return lambda: next(it)
 
 
-def make_runner(export_outputs, nanoda=(0, ""), leanchecker=(0, ""), nanoda_args=None):
+def make_runner(export_outputs, nanoda=(0, ""), leanchecker=(0, ""), nanoda_args=None, nanoda_stdout=""):
     """Fake runner: lean4export returns successive bytes (None=failure); nanoda /
     leanchecker return (rc, stderr) — or nanoda='timeout' to raise. nanoda's argv
-    is appended to `nanoda_args` (if given) so a test can assert what it received."""
+    is appended to `nanoda_args` (if given); nanoda_stdout is its stdout."""
     state = {"i": 0}
 
     def runner(argv, check=False, capture_output=False, timeout=None):
@@ -55,7 +56,7 @@ def make_runner(export_outputs, nanoda=(0, ""), leanchecker=(0, ""), nanoda_args
                 nanoda_args.append(argv)
             if nanoda == "timeout":
                 raise subprocess.TimeoutExpired(argv, timeout)
-            return completed(argv, returncode=nanoda[0], stderr=nanoda[1])
+            return completed(argv, returncode=nanoda[0], stdout=nanoda_stdout, stderr=nanoda[1])
         if argv[0] == "leanchecker":
             return completed(argv, returncode=leanchecker[0], stderr=leanchecker[1])
         return completed(argv)
@@ -251,6 +252,65 @@ def test_emit_progress_appends_to_step_summary(tmp_path, monkeypatch):
     emit_progress(1, 3, r)
     body = summary.read_text()
     assert "[1/3] Unsorry.A" in body and "nanoda=ok" in body
+
+
+def test_parse_declars_checked():
+    assert parse_declars_checked("Checked 2317 declarations with no errors") == 2317
+    assert parse_declars_checked("Checked 1 declarations with no errors, skipping ...") == 1
+    assert parse_declars_checked("some other output") is None
+    assert parse_declars_checked("") is None
+
+
+def test_nanoda_config_confirm_decls_adds_pp_guard(tmp_path):
+    export = tmp_path / "A.export"
+    cfg = nanoda_config(export, confirm_decls=["alt_geometric_ratio_eight"])
+    assert cfg["pp_declars"] == ["alt_geometric_ratio_eight"]
+    assert cfg["unknown_pp_declar_hard_error"] is True  # missing target → hard error
+    assert cfg["pp_options"]["proofs"] is False
+    # without confirm_decls: no pp guard
+    assert "pp_declars" not in nanoda_config(export)
+
+
+def test_run_module_records_declars_and_confirms_target(tmp_path):
+    runner = make_runner(
+        [b"E", b"E"], nanoda=(0, ""), leanchecker=(0, ""),
+        nanoda_stdout="Checked 2317 declarations with no errors",
+    )
+    clock = clock_seq(0.0, 0.5, 0.0, 11.0)
+    r = run_module(
+        "Unsorry.A", 2, ("lean4export",), ("nanoda",), ("leanchecker",), tmp_path,
+        runner, clock, 300, confirm_decls=["thm_a"],
+    )
+    assert r.nanoda_status == "ok"
+    assert r.nanoda_declars_checked == 2317   # real closure size, not degenerate
+    assert r.target_confirmed is True         # pp guard passed ⇒ target present
+
+
+def test_run_module_target_not_confirmed_when_nanoda_errors(tmp_path):
+    # If the target theorem were absent, nanoda hard-errors (unknown_pp_declar) →
+    # status != ok → target_confirmed False (the degenerate-pass guard works).
+    runner = make_runner(
+        [b"E", b"E"], nanoda=(1, "unknown pp declar 'thm_a'"), leanchecker=(0, ""),
+    )
+    clock = clock_seq(0.0, 0.1, 0.0, 11.0)
+    r = run_module(
+        "Unsorry.A", 2, ("lean4export",), ("nanoda",), ("leanchecker",), tmp_path,
+        runner, clock, 300, confirm_decls=["thm_a"],
+    )
+    assert r.target_confirmed is False
+
+
+def test_select_modules_spread_is_diverse(tmp_path):
+    d = tmp_path / "library" / "Unsorry"
+    d.mkdir(parents=True)
+    for i in range(100):
+        (d / f"M{i:03d}.lean").write_text("")
+    first = select_modules(tmp_path, 4, None, spread=False)
+    spread = select_modules(tmp_path, 4, None, spread=True)
+    assert len(spread) == 4
+    assert spread != first          # not the first-4 cluster
+    assert spread[0] != spread[-1]  # spans the list
+    assert len(set(spread)) == 4    # distinct
 
 
 def test_module_source_decls_parses_theorem_names(tmp_path):

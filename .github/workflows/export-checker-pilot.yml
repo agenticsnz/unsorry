@@ -29,6 +29,14 @@ on:
         options:
           - "false"
           - "true"
+      spread:
+        description: "Sample modules evenly across the library (topic/difficulty diversity) vs first-N"
+        required: false
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
 
 permissions:
   contents: read
@@ -96,12 +104,15 @@ jobs:
           RUNS: ${{ github.event.inputs.runs || '2' }}
           TMO: ${{ github.event.inputs.timeout || '300' }}
           SCOPE_DECLS: ${{ github.event.inputs.scope_decls || 'false' }}
+          SPREAD: ${{ github.event.inputs.spread || 'false' }}
         run: |
           set -euo pipefail
           scope_flag=""
           if [ "$SCOPE_DECLS" = "true" ]; then scope_flag="--scope-decls"; fi
+          spread_flag=""
+          if [ "$SPREAD" = "true" ]; then spread_flag="--spread"; fi
           python3 -m tools.pilot.export_checker_pilot \
-            --modules "$MODULES" --runs "$RUNS" --timeout "$TMO" $scope_flag \
+            --modules "$MODULES" --runs "$RUNS" --timeout "$TMO" $scope_flag $spread_flag \
             --lean4export-cmd "lake env ${LEAN4EXPORT_BIN:-lean4export}" \
             --nanoda-cmd "${NANODA_BIN:-nanoda}" \
             --leanchecker-cmd "lake env leanchecker" \
