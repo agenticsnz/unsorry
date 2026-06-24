@@ -98,12 +98,22 @@ def classify_checker(returncode: int, stderr: str) -> str:
 def nanoda_config(export_path: Path, permitted_axioms: Sequence[str] = NANODA_PERMITTED_AXIOMS) -> dict:
     """The JSON config nanoda_bin consumes (its only argument). Points at the
     export file and permits the audit whitelist; unpermitted axioms are skipped at
-    load (not a hard error) but still rejected if a declaration uses one."""
+    load (not a hard error) but still rejected if a declaration uses one.
+
+    `nat_extension` / `string_extension` MUST be enabled: they default to false in
+    nanoda, but real Lean exports contain Nat/String literals, and nanoda
+    hard-errors on the first such literal when the extension is off (the run-3
+    finding: `Nat lit extension disallowed by checker execution config, but export
+    file contains a nat literal`). These are nanoda's native support for Lean's
+    GMP-backed Nat and String — required to check any non-trivial export, and the
+    README's own example config sets both true."""
     return {
         "export_file_path": str(export_path),
         "use_stdin": False,
         "permitted_axioms": list(permitted_axioms),
         "unpermitted_axiom_hard_error": False,
+        "nat_extension": True,
+        "string_extension": True,
         "print_success_message": True,
     }
 

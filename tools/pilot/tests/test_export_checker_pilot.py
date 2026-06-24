@@ -94,6 +94,10 @@ def test_nanoda_config_points_at_export_and_permits_whitelist(tmp_path):
     assert set(cfg["permitted_axioms"]) == set(NANODA_PERMITTED_AXIOMS)
     assert {"propext", "Classical.choice", "Quot.sound"} <= set(cfg["permitted_axioms"])
     assert cfg["unpermitted_axiom_hard_error"] is False
+    # Nat/String literal support — without these nanoda hard-errors on the first
+    # Nat literal in any real export (the run-3 finding).
+    assert cfg["nat_extension"] is True
+    assert cfg["string_extension"] is True
 
 
 def test_compute_ratio():
