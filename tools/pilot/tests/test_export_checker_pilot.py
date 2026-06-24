@@ -14,6 +14,8 @@ from tools.pilot.export_checker_pilot import (
     compute_ratio,
     determinism_verdict,
     emit_progress,
+    export_capture,
+    module_source_decls,
     nanoda_config,
     render_md,
     run_module,
@@ -249,6 +251,61 @@ def test_emit_progress_appends_to_step_summary(tmp_path, monkeypatch):
     emit_progress(1, 3, r)
     body = summary.read_text()
     assert "[1/3] Unsorry.A" in body and "nanoda=ok" in body
+
+
+def test_module_source_decls_parses_theorem_names(tmp_path):
+    d = tmp_path / "library" / "Unsorry"
+    d.mkdir(parents=True)
+    (d / "AltGeometricRatioEight.lean").write_text(
+        "import Mathlib\n"
+        "/-- doc -/\n"
+        "theorem alt_geometric_ratio_eight (n : ℕ) : True := by trivial\n"
+    )
+    assert module_source_decls(tmp_path, "Unsorry.AltGeometricRatioEight") == ["alt_geometric_ratio_eight"]
+    # nested module path + def/lemma kinds
+    (d / "Sub").mkdir()
+    (d / "Sub" / "Foo.lean").write_text("def my_def := 1\nlemma my_lemma : True := trivial\n")
+    assert module_source_decls(tmp_path, "Unsorry.Sub.Foo") == ["my_def", "my_lemma"]
+    assert module_source_decls(tmp_path, "Unsorry.Missing") == []
+
+
+def test_export_capture_scopes_to_decls(tmp_path):
+    seen = []
+
+    def runner(argv, check=False, capture_output=False, timeout=None):
+        argv = tuple(argv)
+        seen.append(argv)
+        return completed(argv, stdout=b"EXPORT")
+
+    # whole-module: no `--`
+    export_capture("Unsorry.A", ("lean4export",), runner)
+    assert seen[-1] == ("lean4export", "Unsorry.A")
+    # scoped: `Module -- d1 d2`
+    export_capture("Unsorry.A", ("lean4export",), runner, scope_decls=["a_thm", "b_thm"])
+    assert seen[-1] == ("lean4export", "Unsorry.A", "--", "a_thm", "b_thm")
+
+
+def test_run_pilot_scope_decls_passes_module_decls(tmp_path):
+    d = tmp_path / "library" / "Unsorry"
+    d.mkdir(parents=True)
+    (d / "A.lean").write_text("theorem thm_a : True := trivial\n")
+    export_calls = []
+
+    def runner(argv, check=False, capture_output=False, timeout=None):
+        argv = tuple(argv)
+        if argv[0] == "lean4export":
+            export_calls.append(argv)
+            return completed(argv, stdout=b"E")
+        return completed(argv, stdout="")  # nanoda/leanchecker
+
+    run_pilot(
+        tmp_path, ["Unsorry.A"], 1,
+        ("lean4export",), ("nanoda",), ("leanchecker",), tmp_path / "exp",
+        runner=runner, clock=lambda: 0.0, timeout=300,
+        on_progress=lambda *a: None, scope_decls=True,
+    )
+    # lean4export was scoped to the module's own theorem
+    assert export_calls and export_calls[0] == ("lean4export", "Unsorry.A", "--", "thm_a")
 
 
 def test_select_modules(tmp_path):

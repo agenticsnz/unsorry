@@ -28,6 +28,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import shlex
 import subprocess
 import time
@@ -232,9 +233,39 @@ def _stderr_text(res: subprocess.CompletedProcess) -> str:
     return err if isinstance(err, str) else err.decode("utf-8", "replace")
 
 
-def export_capture(module: str, lean4export_cmd: Sequence[str], runner: Runner) -> bytes | None:
-    """Run lean4export on one module; return the export bytes, or None on failure."""
-    res = runner((*lean4export_cmd, module), check=False, capture_output=True)
+_DECL_RE = re.compile(r"^\s*(?:noncomputable\s+)?(?:theorem|lemma|def)\s+([A-Za-z_][A-Za-z0-9_'.]*)", re.MULTILINE)
+
+
+def module_source_path(root: Path, module: str) -> Path:
+    """`Unsorry.AltGeometricRatioEight` -> `library/Unsorry/AltGeometricRatioEight.lean`."""
+    return root / "library" / Path(*module.split(".")).with_suffix(".lean")
+
+
+def module_source_decls(root: Path, module: str) -> list[str]:
+    """The declaration names a library module *defines* (its own theorems/defs),
+    parsed from source. Used to declaration-SCOPE a lean4export so it emits only
+    that proof's transitive *declaration* closure — not the module's whole import
+    closure (which is `import Mathlib` = all of mathlib). Root-namespace names; the
+    Unsorry library modules use no `namespace`, so the source name is the full name."""
+    path = module_source_path(root, module)
+    if not path.is_file():
+        return []
+    return _DECL_RE.findall(path.read_text(encoding="utf-8", errors="replace"))
+
+
+def export_capture(
+    module: str,
+    lean4export_cmd: Sequence[str],
+    runner: Runner,
+    scope_decls: Sequence[str] | None = None,
+) -> bytes | None:
+    """Run lean4export on one module; return the export bytes, or None on failure.
+    With `scope_decls`, exports only those declarations (`Module -- d1 d2 …`) and
+    their transitive declaration closure, rather than the whole module."""
+    argv = (*lean4export_cmd, module)
+    if scope_decls:
+        argv = (*argv, "--", *scope_decls)
+    res = runner(argv, check=False, capture_output=True)
     if res.returncode != 0:
         return None
     return _stdout_bytes(res)
@@ -274,10 +305,11 @@ def run_module(
     runner: Runner = subprocess.run,
     clock: Clock = time.perf_counter,
     timeout: float = 300.0,
+    scope_decls: Sequence[str] | None = None,
 ) -> ModuleResult:
     exports: list[bytes] = []
     for _ in range(max(1, runs)):
-        data = export_capture(module, lean4export_cmd, runner)
+        data = export_capture(module, lean4export_cmd, runner, scope_decls)
         if data is None:
             return ModuleResult(module, 0, "", "failed", None, "skipped", None, None, False)
         exports.append(data)
@@ -349,12 +381,14 @@ def run_pilot(
     clock: Clock = time.perf_counter,
     timeout: float = 300.0,
     on_progress: Callable[[int, int, ModuleResult], None] = emit_progress,
+    scope_decls: bool = False,
 ) -> tuple[list[ModuleResult], dict]:
     export_dir.mkdir(parents=True, exist_ok=True)
     total = len(sample)
     results: list[ModuleResult] = []
     for index, m in enumerate(sample, 1):
-        r = run_module(m, runs, lean4export_cmd, nanoda_cmd, leanchecker_cmd, export_dir, runner, clock, timeout)
+        decls = module_source_decls(root, m) if scope_decls else None
+        r = run_module(m, runs, lean4export_cmd, nanoda_cmd, leanchecker_cmd, export_dir, runner, clock, timeout, scope_decls=decls)
         results.append(r)
         on_progress(index, total, r)
     return results, aggregate(results)
@@ -373,6 +407,13 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--export-dir", type=Path, default=Path("pilot-exports"))
     p.add_argument("--output-json", type=Path, default=Path("pilot-report.json"))
     p.add_argument("--output-md", type=Path, default=Path("pilot-report.md"))
+    p.add_argument(
+        "--scope-decls",
+        action="store_true",
+        help="export only each module's own declarations (Module -- d1 d2 …) and "
+        "their transitive declaration closure, not the whole module import closure. "
+        "The experiment: does this shrink the ~5.9 GB full-mathlib export (Q4)?",
+    )
     args = p.parse_args(argv)
 
     module_list = [m.strip() for m in args.module_list.split(",") if m.strip()] or None
@@ -390,6 +431,7 @@ def main(argv: list[str] | None = None) -> int:
         shlex.split(args.leanchecker_cmd),
         args.export_dir,
         timeout=args.timeout,
+        scope_decls=args.scope_decls,
     )
     args.output_json.write_text(
         json.dumps({"summary": summary, "results": [asdict(r) for r in results]}, indent=2) + "\n",

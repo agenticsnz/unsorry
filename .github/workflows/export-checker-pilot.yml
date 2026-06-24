@@ -21,6 +21,14 @@ on:
         description: "Per-checker timeout (seconds)"
         required: false
         default: "300"
+      scope_decls:
+        description: "Export only each module's own declarations + their closure (Q4 size experiment)"
+        required: false
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
 
 permissions:
   contents: read
@@ -87,10 +95,13 @@ jobs:
           MODULES: ${{ github.event.inputs.modules || '10' }}
           RUNS: ${{ github.event.inputs.runs || '2' }}
           TMO: ${{ github.event.inputs.timeout || '300' }}
+          SCOPE_DECLS: ${{ github.event.inputs.scope_decls || 'false' }}
         run: |
           set -euo pipefail
+          scope_flag=""
+          if [ "$SCOPE_DECLS" = "true" ]; then scope_flag="--scope-decls"; fi
           python3 -m tools.pilot.export_checker_pilot \
-            --modules "$MODULES" --runs "$RUNS" --timeout "$TMO" \
+            --modules "$MODULES" --runs "$RUNS" --timeout "$TMO" $scope_flag \
             --lean4export-cmd "lake env ${LEAN4EXPORT_BIN:-lean4export}" \
             --nanoda-cmd "${NANODA_BIN:-nanoda}" \
             --leanchecker-cmd "lake env leanchecker" \
