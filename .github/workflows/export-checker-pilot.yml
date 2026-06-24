@@ -37,6 +37,14 @@ on:
         options:
           - "false"
           - "true"
+      negative_control:
+        description: "Also feed nanoda an ill-typed (swapped) export per module; require REJECT (soundness test)"
+        required: false
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
 
 permissions:
   contents: read
@@ -105,14 +113,17 @@ jobs:
           TMO: ${{ github.event.inputs.timeout || '300' }}
           SCOPE_DECLS: ${{ github.event.inputs.scope_decls || 'false' }}
           SPREAD: ${{ github.event.inputs.spread || 'false' }}
+          NEG_CTRL: ${{ github.event.inputs.negative_control || 'false' }}
         run: |
           set -euo pipefail
           scope_flag=""
           if [ "$SCOPE_DECLS" = "true" ]; then scope_flag="--scope-decls"; fi
           spread_flag=""
           if [ "$SPREAD" = "true" ]; then spread_flag="--spread"; fi
+          nc_flag=""
+          if [ "$NEG_CTRL" = "true" ]; then nc_flag="--negative-control"; fi
           python3 -m tools.pilot.export_checker_pilot \
-            --modules "$MODULES" --runs "$RUNS" --timeout "$TMO" $scope_flag $spread_flag \
+            --modules "$MODULES" --runs "$RUNS" --timeout "$TMO" $scope_flag $spread_flag $nc_flag \
             --lean4export-cmd "lake env ${LEAN4EXPORT_BIN:-lean4export}" \
             --nanoda-cmd "${NANODA_BIN:-nanoda}" \
             --leanchecker-cmd "lake env leanchecker" \

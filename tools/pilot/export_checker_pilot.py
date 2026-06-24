@@ -69,6 +69,7 @@ class ModuleResult:
     nanoda_stderr: str = ""  # tail of nanoda's stderr (diagnostic for non-ok status)
     nanoda_declars_checked: int | None = None  # N from "Checked N declarations" — closure size proof
     target_confirmed: bool | None = None  # the module's own theorem was in nanoda's checked env
+    nc_rejected: bool | None = None  # negative control: nanoda REJECTED a swapped (ill-typed) export
 
 
 # --- pure helpers (unit-tested directly) ------------------------------------
@@ -144,6 +145,41 @@ def parse_declars_checked(stdout: str) -> int | None:
     """N from nanoda's success message `Checked N declarations with no errors`."""
     m = _CHECKED_RE.search(stdout or "")
     return int(m.group(1)) if m else None
+
+
+def swap_two_theorem_values(ndjson_text: str) -> str | None:
+    """Produce a well-formed-but-ILL-TYPED export by swapping the proof `value` of
+    two theorems whose claimed `type` differs (NDJSON: `{"thm": {"type": <Expr>,
+    "value": <Expr>, …}}`). After the swap, a theorem claims statement τ_a but is
+    proved by a term of type τ_b ≠ τ_a — exactly the "claims X, proves Y" threat
+    (SPEC-049-A vacuity/weakened-statement class). A sound checker MUST reject it.
+    Returns the mutated NDJSON, or None if fewer than two differently-typed theorems
+    exist (can't construct the control). Only the two mutated lines are re-serialised;
+    every other line is byte-preserved. Differing `type` index ⇒ different statement
+    (the export shares structurally-equal Exprs), so the swap is genuinely ill-typed."""
+    lines = ndjson_text.split("\n")
+    thms: list[tuple[int, object]] = []  # (line_index, type_index)
+    for i, line in enumerate(lines):
+        s = line.strip()
+        if not s or '"thm"' not in s:
+            continue
+        try:
+            obj = json.loads(s)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(obj, dict) and isinstance(obj.get("thm"), dict) and "value" in obj["thm"]:
+            thms.append((i, obj["thm"].get("type")))
+    if len(thms) < 2:
+        return None
+    base_line, base_type = thms[0]
+    partner = next(((li, ty) for (li, ty) in thms[1:] if ty != base_type), None)
+    if partner is None:
+        return None  # all theorems share a type — cannot build an ill-typed swap
+    pa, pb = base_line, partner[0]
+    oa, ob = json.loads(lines[pa]), json.loads(lines[pb])
+    oa["thm"]["value"], ob["thm"]["value"] = ob["thm"]["value"], oa["thm"]["value"]
+    lines[pa], lines[pb] = json.dumps(oa), json.dumps(ob)
+    return "\n".join(lines)
 
 
 def compute_ratio(nanoda_seconds: float | None, leanchecker_seconds: float | None) -> float | None:
@@ -232,21 +268,33 @@ def render_md(results: Sequence[ModuleResult], summary: dict) -> str:
     if confirmable:
         confirmed = sum(1 for r in confirmable if r.target_confirmed)
         lines.append(
-            f"- **Soundness check — target theorem present in nanoda's checked env:** "
+            f"- **Positive control — target theorem present in nanoda's checked env:** "
             f"{confirmed}/{len(confirmable)} confirmed "
             f"(via `pp_declars` + `unknown_pp_declar_hard_error`; a scoped export that "
             f"checked only dependencies would have hard-errored)"
         )
+    nc = [r for r in results if r.nc_rejected is not None]
+    if nc:
+        rejected = sum(1 for r in nc if r.nc_rejected)
+        ok = "✅" if rejected == len(nc) else "❌ SOUNDNESS FAILURE"
+        lines.append(
+            f"- **Negative control — nanoda REJECTS an ill-typed (proof-value-swapped) export:** "
+            f"{rejected}/{len(nc)} rejected {ok} "
+            f"(a sound checker must reject a proof whose term no longer matches its statement; "
+            f"an *accept* here means nanoda is not actually type-checking)"
+        )
+    if confirmable or nc:
         lines.append("")
     lines += [
-        "| module | determinism | export_bytes | nanoda_s | nanoda | declars | target | leanchecker_s | ratio | pathology |",
-        "|---|---|---|---|---|---|---|---|---|---|",
+        "| module | determinism | export_bytes | nanoda_s | nanoda | declars | target | neg-ctrl | leanchecker_s | ratio | pathology |",
+        "|---|---|---|---|---|---|---|---|---|---|---|",
     ]
     for r in results:
         tgt = "" if r.target_confirmed is None else ("✓" if r.target_confirmed else "✗")
+        ncc = "" if r.nc_rejected is None else ("rejected✓" if r.nc_rejected else "ACCEPTED✗")
         lines.append(
             f"| {r.module} | {r.determinism} | {r.export_bytes} | "
-            f"{r.nanoda_seconds} | {r.nanoda_status} | {r.nanoda_declars_checked} | {tgt} | "
+            f"{r.nanoda_seconds} | {r.nanoda_status} | {r.nanoda_declars_checked} | {tgt} | {ncc} | "
             f"{r.leanchecker_seconds} | {r.ratio} | {'yes' if r.pathology else ''} |"
         )
     diagnostics = [r for r in results if r.nanoda_stderr]
@@ -349,6 +397,7 @@ def run_module(
     timeout: float = 300.0,
     scope_decls: Sequence[str] | None = None,
     confirm_decls: Sequence[str] | None = None,
+    negative_control: bool = False,
 ) -> ModuleResult:
     exports: list[bytes] = []
     for _ in range(max(1, runs)):
@@ -375,6 +424,24 @@ def run_module(
     # means the target theorem was present in the checked environment (else nanoda
     # would have errored). None when we didn't ask for confirmation.
     target_confirmed = (nanoda_status == "ok") if confirm_decls else None
+
+    # NEGATIVE CONTROL: feed nanoda a swapped (ill-typed) copy of THIS export and
+    # require it to REJECT — the soundness property that matters. nc_rejected is:
+    #   True  → nanoda rejected the ill-typed export (sound on this case);
+    #   False → nanoda ACCEPTED an ill-typed export (a soundness FAILURE);
+    #   None  → not requested, or the mutation couldn't be constructed.
+    nc_rejected: bool | None = None
+    if negative_control and nanoda_status == "ok":  # only meaningful if the valid one passed
+        mutated = swap_two_theorem_values(canonical.decode("utf-8", "replace"))
+        if mutated is not None:
+            bad_export = export_dir / f"{module}.bad.export"
+            bad_export.write_text(mutated, encoding="utf-8")
+            bad_config = export_dir / f"{module}.bad.nanoda.json"
+            # No pp_declars here — we want the type-check verdict, not a presence check.
+            bad_config.write_text(json.dumps(nanoda_config(bad_export)), encoding="utf-8")
+            _, bad_status, _, _ = timed_checker((*nanoda_cmd, str(bad_config)), runner, clock, timeout)
+            nc_rejected = bad_status != "ok"  # reject (any non-ok) = sound
+
     return ModuleResult(
         module=module,
         export_bytes=len(canonical),
@@ -388,6 +455,7 @@ def run_module(
         nanoda_stderr=nanoda_stderr if nanoda_status not in ("ok", "skipped") else "",
         nanoda_declars_checked=parse_declars_checked(nanoda_stdout),
         target_confirmed=target_confirmed,
+        nc_rejected=nc_rejected,
     )
 
 
@@ -415,6 +483,8 @@ def progress_line(index: int, total: int, r: ModuleResult) -> str:
         extra += f" decls={r.nanoda_declars_checked}"
     if r.target_confirmed is not None:
         extra += f" target={'✓' if r.target_confirmed else '✗'}"
+    if r.nc_rejected is not None:
+        extra += f" neg-ctrl={'rejected✓' if r.nc_rejected else 'ACCEPTED✗'}"
     return (
         f"[{index}/{total}] {r.module}: determinism={r.determinism} "
         f"nanoda={r.nanoda_status} ({r.nanoda_seconds}s) lc={r.leanchecker_seconds}s "
@@ -448,6 +518,7 @@ def run_pilot(
     timeout: float = 300.0,
     on_progress: Callable[[int, int, ModuleResult], None] = emit_progress,
     scope_decls: bool = False,
+    negative_control: bool = False,
 ) -> tuple[list[ModuleResult], dict]:
     export_dir.mkdir(parents=True, exist_ok=True)
     total = len(sample)
@@ -458,6 +529,7 @@ def run_pilot(
             m, runs, lean4export_cmd, nanoda_cmd, leanchecker_cmd, export_dir, runner, clock, timeout,
             scope_decls=(own_decls if scope_decls else None),
             confirm_decls=(own_decls or None),
+            negative_control=negative_control,
         )
         results.append(r)
         on_progress(index, total, r)
@@ -490,6 +562,13 @@ def main(argv: list[str] | None = None) -> int:
         help="sample modules evenly across the sorted library (topic/difficulty "
         "diversity) instead of the first N (which cluster by name family).",
     )
+    p.add_argument(
+        "--negative-control",
+        action="store_true",
+        help="for each accepted export, ALSO feed nanoda a swapped (ill-typed) copy "
+        "and require it to REJECT — the soundness test (does nanoda catch a proof "
+        "whose term no longer matches its statement?).",
+    )
     args = p.parse_args(argv)
 
     module_list = [m.strip() for m in args.module_list.split(",") if m.strip()] or None
@@ -508,6 +587,7 @@ def main(argv: list[str] | None = None) -> int:
         args.export_dir,
         timeout=args.timeout,
         scope_decls=args.scope_decls,
+        negative_control=args.negative_control,
     )
     args.output_json.write_text(
         json.dumps({"summary": summary, "results": [asdict(r) for r in results]}, indent=2) + "\n",

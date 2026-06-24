@@ -23,6 +23,7 @@ from tools.pilot.export_checker_pilot import (
     run_pilot,
     select_modules,
     sha256_hex,
+    swap_two_theorem_values,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
@@ -252,6 +253,94 @@ def test_emit_progress_appends_to_step_summary(tmp_path, monkeypatch):
     emit_progress(1, 3, r)
     body = summary.read_text()
     assert "[1/3] Unsorry.A" in body and "nanoda=ok" in body
+
+
+def _ndjson(*objs):
+    return "\n".join(json.dumps(o) for o in objs)
+
+
+def test_swap_two_theorem_values_makes_ill_typed_export():
+    # two theorems with DIFFERENT types (1 vs 2) and values (10 vs 20)
+    text = _ndjson(
+        {"meta": {}},
+        {"thm": {"name": 1, "type": 1, "value": 10, "all": []}},
+        {"thm": {"name": 2, "type": 2, "value": 20, "all": []}},
+        {"axiom": {"name": 3, "type": 5}},  # non-theorem untouched
+    )
+    out = swap_two_theorem_values(text)
+    assert out is not None
+    lines = [json.loads(l) for l in out.split("\n")]
+    # values swapped: thm(type 1) now has value 20, thm(type 2) now has value 10
+    thm1 = next(o["thm"] for o in lines if o.get("thm", {}).get("type") == 1)
+    thm2 = next(o["thm"] for o in lines if o.get("thm", {}).get("type") == 2)
+    assert thm1["value"] == 20 and thm2["value"] == 10
+    # the axiom line is byte-preserved
+    assert '{"axiom": {"name": 3, "type": 5}}' in out
+
+
+def test_swap_returns_none_when_no_two_distinct_typed_theorems():
+    # all theorems share type 1 → cannot construct an ill-typed swap
+    text = _ndjson(
+        {"thm": {"name": 1, "type": 1, "value": 10, "all": []}},
+        {"thm": {"name": 2, "type": 1, "value": 20, "all": []}},
+    )
+    assert swap_two_theorem_values(text) is None
+    # fewer than two theorems
+    assert swap_two_theorem_values(_ndjson({"thm": {"name": 1, "type": 1, "value": 10, "all": []}})) is None
+
+
+def test_run_module_negative_control_records_rejection(tmp_path):
+    # The export has two differently-typed theorems so a swap is constructable.
+    export = _ndjson(
+        {"meta": {}},
+        {"thm": {"name": 1, "type": 1, "value": 10, "all": []}},
+        {"thm": {"name": 2, "type": 2, "value": 20, "all": []}},
+    ).encode()
+    nanoda_calls = []
+
+    def runner(argv, check=False, capture_output=False, timeout=None):
+        argv = tuple(argv)
+        if argv[0] == "lean4export":
+            return completed(argv, stdout=export)
+        if argv[0] == "nanoda":
+            cfg_path = argv[-1]
+            nanoda_calls.append(cfg_path)
+            # The valid export's config → ok; the .bad config → reject (rc 1).
+            rc = 1 if cfg_path.endswith(".bad.nanoda.json") else 0
+            return completed(argv, returncode=rc, stdout="Checked 2 declarations with no errors" if rc == 0 else "", stderr="type mismatch" if rc else "")
+        return completed(argv, stdout="")  # leanchecker
+
+    r = run_module(
+        "Unsorry.A", 2, ("lean4export",), ("nanoda",), ("leanchecker",), tmp_path,
+        runner, clock_seq(0.0, 0.5, 0.0, 11.0, 0.0, 0.2), 300,
+        negative_control=True,
+    )
+    assert r.nanoda_status == "ok"      # valid export accepted
+    assert r.nc_rejected is True        # ill-typed swap rejected ⇒ sound on this case
+    assert any(c.endswith(".bad.nanoda.json") for c in nanoda_calls)  # the swap WAS fed to nanoda
+
+
+def test_run_module_negative_control_flags_soundness_failure(tmp_path):
+    # If nanoda ACCEPTS the ill-typed export, nc_rejected is False (a failure signal).
+    export = _ndjson(
+        {"thm": {"name": 1, "type": 1, "value": 10, "all": []}},
+        {"thm": {"name": 2, "type": 2, "value": 20, "all": []}},
+    ).encode()
+
+    def runner(argv, check=False, capture_output=False, timeout=None):
+        argv = tuple(argv)
+        if argv[0] == "lean4export":
+            return completed(argv, stdout=export)
+        if argv[0] == "nanoda":
+            return completed(argv, returncode=0, stdout="Checked 2 declarations with no errors")  # accepts EVERYTHING
+        return completed(argv, stdout="")
+
+    r = run_module(
+        "Unsorry.A", 2, ("lean4export",), ("nanoda",), ("leanchecker",), tmp_path,
+        runner, clock_seq(0.0, 0.5, 0.0, 11.0, 0.0, 0.2), 300,
+        negative_control=True,
+    )
+    assert r.nc_rejected is False  # accepted an ill-typed export → soundness failure flagged
 
 
 def test_parse_declars_checked():
