@@ -69,16 +69,18 @@ jobs:
           ( cd "$RUNNER_TEMP/lean4export" && lake build )
           echo "LEAN4EXPORT_BIN=$RUNNER_TEMP/lean4export/.lake/build/bin/lean4export" >> "$GITHUB_ENV"
 
-      # nanoda (independent Rust checker). Its compatibility with the export format
-      # is part of what Q3 measures — a build/parse failure is a recorded result.
+      # nanoda (independent Rust checker, crate nanoda_lib). The binary target is
+      # `nanoda_bin` and takes a single arg: a JSON config (the driver writes one
+      # per module pointing at the export + the axiom whitelist — there is no CLI).
+      # Its compatibility with the export format is part of what Q3 measures — a
+      # build/parse failure is a recorded result.
       - name: Build nanoda (independent checker)
         continue-on-error: true
         run: |
           set -euo pipefail
           git clone --depth 1 https://github.com/ammkrn/nanoda_lib.git "$RUNNER_TEMP/nanoda"
-          ( cd "$RUNNER_TEMP/nanoda" && cargo build --release )
-          BIN="$(find "$RUNNER_TEMP/nanoda/target/release" -maxdepth 1 -type f -perm -u+x ! -name '*.d' | head -1)"
-          echo "NANODA_BIN=${BIN:-nanoda}" >> "$GITHUB_ENV"
+          ( cd "$RUNNER_TEMP/nanoda" && cargo build --release --bin nanoda_bin )
+          echo "NANODA_BIN=$RUNNER_TEMP/nanoda/target/release/nanoda_bin" >> "$GITHUB_ENV"
 
       - name: Run the pilot (observe-only)
         env:

@@ -44,6 +44,15 @@ Clock = Callable[[], float]
 # flag as the gate on whether an independent checker could ever be a second anchor.
 PATHOLOGY_RATIO = 100.0
 
+# nanoda_bin takes a single arg: a path to a JSON config (there is no CLI). The
+# config names the export and the permitted axioms. We permit the project's audit
+# whitelist {propext, Classical.choice, Quot.sound} plus Lean.trustCompiler, which
+# lean4export emits; unpermitted_axiom_hard_error is false so a declared-but-unused
+# sorryAx in the prelude doesn't abort startup (per nanoda's README guidance) —
+# soundness is unaffected because nanoda still hard-errors if a checked declaration
+# actually *uses* a non-permitted axiom.
+NANODA_PERMITTED_AXIOMS = ("propext", "Classical.choice", "Quot.sound", "Lean.trustCompiler")
+
 
 @dataclass
 class ModuleResult:
@@ -83,6 +92,19 @@ def classify_checker(returncode: int, stderr: str) -> str:
     if any(tok in low for tok in ("parse", "unsupported", "unknown", "format", "unexpected")):
         return "incompatible"
     return "error"
+
+
+def nanoda_config(export_path: Path, permitted_axioms: Sequence[str] = NANODA_PERMITTED_AXIOMS) -> dict:
+    """The JSON config nanoda_bin consumes (its only argument). Points at the
+    export file and permits the audit whitelist; unpermitted axioms are skipped at
+    load (not a hard error) but still rejected if a declaration uses one."""
+    return {
+        "export_file_path": str(export_path),
+        "use_stdin": False,
+        "permitted_axioms": list(permitted_axioms),
+        "unpermitted_axiom_hard_error": False,
+        "print_success_message": True,
+    }
 
 
 def compute_ratio(nanoda_seconds: float | None, leanchecker_seconds: float | None) -> float | None:
@@ -238,8 +260,12 @@ def run_module(
     canonical = exports[0]
     export_path = export_dir / f"{module}.export"
     export_path.write_bytes(canonical)
+    # nanoda_bin's only argument is a JSON config that points at the export and
+    # lists the permitted axioms — not the export file itself.
+    config_path = export_dir / f"{module}.nanoda.json"
+    config_path.write_text(json.dumps(nanoda_config(export_path)), encoding="utf-8")
 
-    nanoda_seconds, nanoda_status = timed_checker((*nanoda_cmd, str(export_path)), runner, clock, timeout)
+    nanoda_seconds, nanoda_status = timed_checker((*nanoda_cmd, str(config_path)), runner, clock, timeout)
     leanchecker_seconds, _ = timed_checker((*leanchecker_cmd, module), runner, clock, timeout)
     ratio = compute_ratio(nanoda_seconds, leanchecker_seconds)
     return ModuleResult(

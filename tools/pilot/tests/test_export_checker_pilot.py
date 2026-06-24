@@ -3,13 +3,17 @@ from pathlib import Path
 
 import yaml
 
+import json
+
 from tools.pilot.export_checker_pilot import (
+    NANODA_PERMITTED_AXIOMS,
     PATHOLOGY_RATIO,
     ModuleResult,
     aggregate,
     classify_checker,
     compute_ratio,
     determinism_verdict,
+    nanoda_config,
     render_md,
     run_module,
     select_modules,
@@ -29,9 +33,10 @@ def clock_seq(*vals):
     return lambda: next(it)
 
 
-def make_runner(export_outputs, nanoda=(0, ""), leanchecker=(0, "")):
+def make_runner(export_outputs, nanoda=(0, ""), leanchecker=(0, ""), nanoda_args=None):
     """Fake runner: lean4export returns successive bytes (None=failure); nanoda /
-    leanchecker return (rc, stderr) — or nanoda='timeout' to raise."""
+    leanchecker return (rc, stderr) — or nanoda='timeout' to raise. nanoda's argv
+    is appended to `nanoda_args` (if given) so a test can assert what it received."""
     state = {"i": 0}
 
     def runner(argv, check=False, capture_output=False, timeout=None):
@@ -42,6 +47,8 @@ def make_runner(export_outputs, nanoda=(0, ""), leanchecker=(0, "")):
             out = export_outputs[i] if i < len(export_outputs) else export_outputs[-1]
             return completed(argv, returncode=1) if out is None else completed(argv, stdout=out)
         if argv[0] == "nanoda":
+            if nanoda_args is not None:
+                nanoda_args.append(argv)
             if nanoda == "timeout":
                 raise subprocess.TimeoutExpired(argv, timeout)
             return completed(argv, returncode=nanoda[0], stderr=nanoda[1])
@@ -74,6 +81,17 @@ def test_classify_checker():
     assert classify_checker(1, "unexpected token") == "incompatible"
     assert classify_checker(2, "segmentation fault") == "error"
     assert classify_checker(101, "") == "error"
+
+
+def test_nanoda_config_points_at_export_and_permits_whitelist(tmp_path):
+    export = tmp_path / "Unsorry.A.export"
+    cfg = nanoda_config(export)
+    assert cfg["export_file_path"] == str(export)
+    assert cfg["use_stdin"] is False
+    # the project audit whitelist + Lean.trustCompiler, skip (not hard-error) others
+    assert set(cfg["permitted_axioms"]) == set(NANODA_PERMITTED_AXIOMS)
+    assert {"propext", "Classical.choice", "Quot.sound"} <= set(cfg["permitted_axioms"])
+    assert cfg["unpermitted_axiom_hard_error"] is False
 
 
 def test_compute_ratio():
@@ -131,7 +149,8 @@ def test_render_md_has_verdict_and_rows():
 # --- orchestration ----------------------------------------------------------
 
 def test_run_module_stable_ratio(tmp_path):
-    runner = make_runner([b"EXPORT", b"EXPORT"], nanoda=(0, ""), leanchecker=(0, ""))
+    nanoda_args = []
+    runner = make_runner([b"EXPORT", b"EXPORT"], nanoda=(0, ""), leanchecker=(0, ""), nanoda_args=nanoda_args)
     clock = clock_seq(0.0, 5.0, 100.0, 102.0)  # nanoda=5s, leanchecker=2s
     r = run_module("Unsorry.A", 2, ("lean4export",), ("nanoda",), ("leanchecker",), tmp_path, runner, clock, 300)
     assert r.determinism == "stable"
@@ -140,6 +159,14 @@ def test_run_module_stable_ratio(tmp_path):
     assert r.nanoda_seconds == 5.0 and r.leanchecker_seconds == 2.0
     assert r.ratio == 2.5 and r.pathology is False
     assert (tmp_path / "Unsorry.A.export").read_bytes() == b"EXPORT"
+    # nanoda is invoked with the CONFIG json (not the raw export), and the config
+    # on disk points at the export + carries the whitelist (the run-1 bug fix).
+    assert len(nanoda_args) == 1
+    cfg_arg = nanoda_args[0][-1]
+    assert cfg_arg.endswith(".nanoda.json")
+    cfg = json.loads((tmp_path / "Unsorry.A.nanoda.json").read_text())
+    assert cfg["export_file_path"] == str(tmp_path / "Unsorry.A.export")
+    assert "Quot.sound" in cfg["permitted_axioms"]
 
 
 def test_run_module_divergent(tmp_path):
