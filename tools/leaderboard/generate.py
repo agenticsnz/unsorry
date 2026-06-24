@@ -22,6 +22,11 @@ from html import escape as html_escape
 from pathlib import Path
 
 from tools.gate_b.records import parse_record
+from tools.leaderboard.registered_targets import (
+    benchmark_goal_ids,
+    registered_targets_path,
+    render_registered_targets_json,
+)
 
 
 SCORE_POLICY = (
@@ -207,7 +212,15 @@ def runs(root: Path, known_goals: list[Goal] | None = None) -> list[Run]:
 
 def load_dataset(root: Path) -> Dataset:
     goal_data = goals(root)
-    return Dataset(goal_data, proofs(root, goal_data), runs(root, goal_data))
+    proof_data = proofs(root, goal_data)
+    # ADR-092 cohort segregation: a registered benchmark obligation is scored on its
+    # own surface (registered-targets.json), never the organic board. No-op until a
+    # suite is registered — benchmark_goal_ids is empty without targets/ — so organic
+    # stats stay byte-identical until a suite actually lands.
+    bench = benchmark_goal_ids(root)
+    if bench:
+        proof_data = [proof for proof in proof_data if proof.goal not in bench]
+    return Dataset(goal_data, proof_data, runs(root, goal_data))
 
 
 def _valid_github_handle(value: str | None) -> str | None:
@@ -1613,11 +1626,13 @@ def main(argv: list[str] | None = None) -> int:
     timeline_svg = render_timeline_svg(root)
     gaps_payload = render_attribution_gaps_json(root)
     sourcing_payload_json = render_sourcing_json(root)
+    registered_targets_payload = render_registered_targets_json(root)
     markdown_path = root / "docs" / "leaderboard.md"
     json_path = root / "docs" / "metrics" / "community-stats.json"
     ui_json_path = root / "docs" / "metrics" / "leaderboard-ui.json"
     gaps_json_path = root / "docs" / "metrics" / "attribution-gaps.json"
     sourcing_json_path = root / "docs" / "metrics" / "sourcing-leaderboard.json"
+    registered_targets_json_path = registered_targets_path(root)
     svg_path = root / "docs" / "leaderboard.svg"
     timeline_svg_path = root / "docs" / "proofs-over-time.svg"
     # Single source of truth for the generated artifacts so --check, --write and
@@ -1628,6 +1643,7 @@ def main(argv: list[str] | None = None) -> int:
         (ui_json_path, ui_payload_json),
         (gaps_json_path, gaps_payload),
         (sourcing_json_path, sourcing_payload_json),
+        (registered_targets_json_path, registered_targets_payload),
         (svg_path, svg),
         (timeline_svg_path, timeline_svg),
     )
