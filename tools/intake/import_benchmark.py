@@ -27,7 +27,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from tools.lean_sig import statement_sha
-from tools.sourcing.gen_triples import snake, valid_slug, write_triple
+from tools.sourcing.gen_triples import render_lean, snake, valid_slug, write_triple
 
 #: The unenforced sourcing batch cap — a 100-goal batch overran gate-a-prepare.
 DEFAULT_BATCH = 50
@@ -199,17 +199,52 @@ def assemble_package(
     }
 
 
-def _real_elaborate(lean_text: str, root: Path) -> bool:  # pragma: no cover - needs Lean
-    """A statement elaborates iff the triviality probe does not report ``probe-error``."""
-    from tools.sourcing import check_triviality
-
+def _probe_verdict(lean_text: str, root: Path) -> str:  # pragma: no cover - needs Lean
+    """Full-battery probe verdict for one candidate statement (the real ``--build``
+    classifier; needs Lean). ``probe-error`` ⇒ does not elaborate under the pin ⇒
+    quarantine; ``trivial`` ⇒ the ADR-078 full battery closes it ⇒ glue; anything else
+    ⇒ credited. Reuses ``tools.sourcing.check_triviality.probe``, which reads the .lean,
+    builds a probe module in a tempdir, and runs ``lake env lean`` under ``root``."""
+    import os
     import tempfile
 
-    with tempfile.NamedTemporaryFile("w", suffix=".lean", delete=False) as handle:
-        handle.write(lean_text)
-        path = Path(handle.name)
-    verdict = check_triviality.probe(path, root=root).get("verdict")
-    return verdict != "probe-error"
+    from tools.sourcing.check_triviality import TACTIC_BATTERY, probe
+
+    fd, name = tempfile.mkstemp(suffix=".lean")
+    os.close(fd)
+    path = Path(name)
+    try:
+        path.write_text(lean_text, encoding="utf-8")
+        return probe(path, battery=TACTIC_BATTERY + EXTRA_BATTERY, root=root).get(
+            "verdict", "probe-error"
+        )
+    finally:
+        path.unlink(missing_ok=True)
+
+
+def classify_problems(
+    problems: list[Problem], *, verdict_of: Callable[[str], str]
+) -> tuple[list[Problem], dict[str, str], list[tuple[str, str]]]:
+    """Partition extracted problems by their probe verdict — the ``--build`` step.
+
+    Returns ``(kept, credit_by_slug, quarantined)``. ``verdict_of(lean_text)`` is the
+    injectable seam: the real run wires it to :func:`_probe_verdict` (needs Lean);
+    tests inject canned verdicts. A statement that does not elaborate under the pin is
+    **quarantined** (reported, never imported); the rest are kept and tagged
+    ``glue`` (full battery closes it) or ``credited``.
+    """
+    kept: list[Problem] = []
+    credit: dict[str, str] = {}
+    quarantined: list[tuple[str, str]] = []
+    for problem in problems:
+        slug = slugify(problem.name)
+        verdict = verdict_of(render_lean(slug, problem.signature))
+        if verdict == "probe-error":
+            quarantined.append((problem.name, "does not elaborate under the pinned mathlib"))
+        else:
+            kept.append(problem)
+            credit[slug] = "glue" if verdict == "trivial" else "credited"
+    return kept, credit, quarantined
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -229,6 +264,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--reference", default="", help="suite source URL/citation")
     parser.add_argument("--root", default=".")
     parser.add_argument("--limit", type=int, default=DEFAULT_BATCH)
+    parser.add_argument(
+        "--build",
+        action="store_true",
+        help="elaborate each statement under the pinned mathlib: quarantine the ones "
+        "that don't, and classify credited/glue via the ADR-078 full battery (needs Lean)",
+    )
     args = parser.parse_args(argv)
 
     src = Path(args.source)
@@ -241,6 +282,19 @@ def main(argv: list[str] | None = None) -> int:
         return 2
 
     problems = problems[: args.limit]
+
+    quarantined: list[tuple[str, str]] = []
+    credit_map: dict[str, str] = {}
+    if args.build:
+        problems, credit_map, quarantined = classify_problems(
+            problems, verdict_of=lambda text: _probe_verdict(text, Path(args.root))
+        )
+        for name, reason in quarantined:
+            print(f"  quarantined {name}: {reason}", file=sys.stderr)
+        if not problems:
+            print("all candidate statements were quarantined — nothing to import", file=sys.stderr)
+            return 1
+
     summary = assemble_package(
         Path(args.root),
         args.suite_id,
@@ -252,11 +306,19 @@ def main(argv: list[str] | None = None) -> int:
         license=args.license,
         shape=args.shape,
         difficulty=args.difficulty,
+        credit_of=(lambda slug: credit_map.get(slug, "credited")) if credit_map else None,
     )
     print(
         f"imported {len(summary['obligations'])} obligation(s) into {summary['package']} "
-        f"({summary['credited']} credited, {summary['glue']} glue)"
+        f"({summary['credited']} credited, {summary['glue']} glue, "
+        f"{len(quarantined)} quarantined)"
     )
+    if args.build and summary["credited"] == 0:
+        print(
+            "warning: no credited obligations — the full battery closes every leaf; "
+            "skeleton-validate --build would reject this target (ADR-078)",
+            file=sys.stderr,
+        )
 
     # Self-validate: the assembled package must pass skeleton-validate (the suite must
     # already be registered in docs/governance/admitted-domains.json).

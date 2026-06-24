@@ -117,6 +117,63 @@ def test_credit_of_marks_glue(tmp_path):
     }
 
 
+def test_classify_problems_partitions():
+    from tools.intake.import_benchmark import classify_problems
+
+    problems = [
+        Problem("putnam_bad", ": Nonexistent", "P"),   # probe-error → quarantine
+        Problem("putnam_easy", ": True", "P"),          # trivial → glue
+        Problem("putnam_hard", ": 1 ≤ 2", "P"),         # non-trivial → credited
+    ]
+
+    def verdict_of(lean_text: str) -> str:  # the injected Lean seam
+        if "putnam_bad" in lean_text:
+            return "probe-error"
+        if "putnam_easy" in lean_text:
+            return "trivial"
+        return "non-trivial"
+
+    kept, credit, quarantined = classify_problems(problems, verdict_of=verdict_of)
+    assert [p.name for p in kept] == ["putnam_easy", "putnam_hard"]
+    assert credit == {"putnam-easy": "glue", "putnam-hard": "credited"}
+    assert [name for name, _ in quarantined] == ["putnam_bad"]
+
+
+def test_build_flow_excludes_quarantined_and_tags_credit(tmp_path):
+    from tools.gate_b.records import parse_fields, parse_record
+    from tools.intake.import_benchmark import classify_problems
+
+    problems = [
+        Problem("putnam_bad", ": Nonexistent", "P"),
+        Problem("putnam_easy", ": True", "P"),
+        Problem("putnam_hard", ": 1 ≤ 2", "P"),
+    ]
+
+    def verdict_of(lean_text: str) -> str:
+        if "putnam_bad" in lean_text:
+            return "probe-error"
+        if "putnam_easy" in lean_text:
+            return "trivial"
+        return "non-trivial"
+
+    kept, credit, _ = classify_problems(problems, verdict_of=verdict_of)
+    assemble_package(
+        tmp_path, "putnam-v1", kept,
+        supplier="trishul", domain="lean-math", mathlib="m", toolchain="tc",
+        license="Apache-2.0", credit_of=lambda slug: credit.get(slug, "credited"),
+    )
+    # the quarantined statement was never imported; the rest are
+    assert not (tmp_path / "goals" / "putnam-bad.lean").exists()
+    assert (tmp_path / "goals" / "putnam-easy.lean").exists()
+    assert (tmp_path / "goals" / "putnam-hard.lean").exists()
+    skeleton = parse_record(
+        (tmp_path / "targets" / "putnam-v1" / "skeleton.aisp").read_text("utf-8")
+    )
+    assert parse_fields(skeleton.block("Κ").body) == {
+        "putnam-easy": "glue", "putnam-hard": "credited",
+    }
+
+
 def test_batch_cap_enforced(tmp_path):
     problems = [Problem(f"putnam_p{i}", ": True", "P") for i in range(51)]
     with pytest.raises(ImportError_):
