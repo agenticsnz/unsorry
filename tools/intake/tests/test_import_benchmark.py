@@ -174,6 +174,27 @@ def test_build_flow_excludes_quarantined_and_tags_credit(tmp_path):
     }
 
 
+def test_probe_verdict_builds_full_battery(monkeypatch, tmp_path):
+    """Exercise the real `_probe_verdict` with a stubbed probe (no Lean) so the
+    `TACTIC_BATTERY + EXTRA_BATTERY` line is actually run — guards against the
+    NameError that `--build` would otherwise hit on the user's box."""
+    import tools.sourcing.check_triviality as ct
+
+    seen = {}
+
+    def fake_probe(path, *, battery, root, **kw):
+        seen["battery"] = battery
+        return {"verdict": "non-trivial"}
+
+    monkeypatch.setattr(ct, "probe", fake_probe)
+    from tools.intake.import_benchmark import _probe_verdict
+    from tools.intake.skeleton_validate import EXTRA_BATTERY
+
+    verdict = _probe_verdict("import Mathlib\n\ntheorem t : True := by sorry\n", tmp_path)
+    assert verdict == "non-trivial"
+    assert set(EXTRA_BATTERY) <= set(seen["battery"])  # the full ADR-078 battery is used
+
+
 PUTNAM_ANSWER_SRC = """
 import Mathlib
 

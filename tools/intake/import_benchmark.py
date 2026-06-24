@@ -246,6 +246,7 @@ def _probe_verdict(lean_text: str, root: Path) -> str:  # pragma: no cover - nee
     import os
     import tempfile
 
+    from tools.intake.skeleton_validate import EXTRA_BATTERY
     from tools.sourcing.check_triviality import TACTIC_BATTERY, probe
 
     fd, name = tempfile.mkstemp(suffix=".lean")
