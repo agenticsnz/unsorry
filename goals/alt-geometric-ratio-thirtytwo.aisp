@@ -1,0 +1,20 @@
+𝔸5.1.goal.alt-geometric-ratio-thirtytwo@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜alt-geometric-ratio-thirtytwo
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/alt-geometric-ratio-thirtytwo.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/alt-geometric-ratio-thirtytwo.lean
+  sha≜1941e26df71945d1aa5b83b7012595eccdfae7c40a80ec2e54303eb5b57a4199
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.85;τ≜◊⁺⟩

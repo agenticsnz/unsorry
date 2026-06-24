@@ -1,0 +1,8 @@
+𝔸5.1.lemma.f5616ec7ab8f@2026-06-23
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜f5616ec7ab8ffe6ba3bf3d6fd2896b5766ecc9fb92a46881d14e413045c7f7db; goal≜arith-series-sum-coeff-one; name≜arith_series_sum_coeff_one}
+⟦Σ:Source⟧{src≜goals/arith-series-sum-coeff-one.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜chat-bit-01; agent≜claude-web; provider≜lean; model≜ring; attempts≜1}
+⟦Ε⟧⟨δ≜0.55;τ≜◊⁺⟩
