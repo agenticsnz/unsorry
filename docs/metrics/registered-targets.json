@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "suites": [
+    {
+      "cohort": "benchmark",
+      "credited": 4,
+      "domain": "lean-math",
+      "glue": 0,
+      "goals": [
+        {
+          "credit": "credited",
+          "difficulty": 1,
+          "id": "demo-add-comm",
+          "run_snippet": "./swarm/run.sh --goal demo-add-comm",
+          "status": "open"
+        },
+        {
+          "credit": "credited",
+          "difficulty": 1,
+          "id": "demo-le-refl",
+          "run_snippet": "./swarm/run.sh --goal demo-le-refl",
+          "status": "open"
+        },
+        {
+          "credit": "credited",
+          "difficulty": 1,
+          "id": "demo-mul-comm",
+          "run_snippet": "./swarm/run.sh --goal demo-mul-comm",
+          "status": "open"
+        },
+        {
+          "credit": "credited",
+          "difficulty": 1,
+          "id": "demo-two-add-two",
+          "run_snippet": "./swarm/run.sh --goal demo-two-add-two",
+          "status": "open"
+        }
+      ],
+      "id": "demo-v1",
+      "license": "MIT",
+      "mathlib_pin": "c5ea00351c28e24afc9f0f84379aa41082b1188f",
+      "pass_at": {},
+      "proved": 0,
+      "supplier": "agenticsnz"
+    }
+  ]
+}
