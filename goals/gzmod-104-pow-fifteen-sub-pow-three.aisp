@@ -1,19 +1,19 @@
-𝔸5.1.goal.gzmod-104-pow-fifteen-sub-pow-three@2026-06-18
+𝔸5.1.goal.gzmod-104-pow-fifteen-sub-pow-three@2026-06-24
 γ≔unsorry.goal
 ⟦Ω:Goal⟧{
   id≜gzmod-104-pow-fifteen-sub-pow-three
   phase≜prove
-  status≜archived
-  difficulty≜1
+  status≜proved
+  difficulty≜4
 }
 ⟦Σ:Source⟧{
-  src≜packages/unsorry-archive-0034/backlog/gzmod-104-pow-fifteen-sub-pow-three.md
+  src≜backlog/gzmod-104-pow-fifteen-sub-pow-three.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜packages/unsorry-archive-0034/goals/gzmod-104-pow-fifteen-sub-pow-three.lean
+  lean≜goals/gzmod-104-pow-fifteen-sub-pow-three.lean
   sha≜13521a0780f3213df11a9ce1805cf4f88178da60508479bfc4e2ee06fd6aecf7
   aff≜0
 }
