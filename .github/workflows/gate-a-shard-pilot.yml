@@ -1,23 +1,34 @@
 name: gate-a-shard-pilot
 
-# Shadow pilot for ADR-063 (sharded kernel replay). NON-REQUIRED, manual-only.
+# Shadow pilot for ADR-063 (sharded kernel replay) and ADR-091 (sharded axiom
+# audit). NON-REQUIRED, manual-only.
 #
-# It validates the plan / replay-shard tooling on REAL runners before the matrix
-# is promoted into the required `gate-a.yml` replay job (ADR-058 requires a
-# non-required pilot before moving required-check routing). Nothing here gates a
-# PR: it is a manually-dispatched, observe-only run.
+# It validates the plan / shard tooling on REAL runners before the matrix is
+# promoted into the required `gate-a.yml` job (ADR-058 requires a non-required
+# pilot before moving required-check routing). Nothing here gates a PR: it is a
+# manually-dispatched, observe-only run. Pick the lane with `mode`:
+#   - mode=replay (default) — plan / replay-shard, the ADR-063 lane.
+#   - mode=audit            — plan-audit / audit-shard / combine-audit, ADR-091.
 #
-# Each matrix leg builds the library (Namespace .lake cache warm) and
-# kernel-replays its DISJOINT shard of the module set; the cover job asserts
-# every shard ran green. Because `tools.gate_a.parallel_modules` partitions the
-# targets with `split_evenly` (disjoint + covering, unit-tested), all shards
-# green ⟺ every olean kernel-replayed exactly once — the same guarantee a single
-# serial replay gives, at ~1/N the wall-clock.
+# Each matrix leg builds the library (Namespace .lake cache warm) and checks its
+# DISJOINT shard of the module set; the cover job asserts every shard ran green.
+# Because `tools.gate_a.parallel_modules` partitions the targets with
+# `split_evenly` (disjoint + covering, unit-tested), all shards green ⟺ every
+# module is checked exactly once — the same guarantee a single serial pass gives,
+# at ~1/N the wall-clock.
 on:
   workflow_dispatch:
     inputs:
+      mode:
+        description: "Which lane to pilot"
+        required: false
+        default: "replay"
+        type: choice
+        options:
+          - replay
+          - audit
       shards:
-        description: "Number of parallel replay shards"
+        description: "Number of parallel shards"
         required: false
         default: "8"
       base:
@@ -40,6 +51,7 @@ env:
 jobs:
   plan:
     name: plan shards
+    if: github.event.inputs.mode != 'audit'
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.plan.outputs.matrix }}
@@ -70,7 +82,7 @@ jobs:
   replay:
     name: replay shard
     needs: plan
-    if: needs.plan.outputs.count != '0'
+    if: github.event.inputs.mode != 'audit' && needs.plan.outputs.count != '0'
     runs-on: namespace-profile-unsorry-1
     timeout-minutes: 180
     strategy:
@@ -113,7 +125,7 @@ jobs:
   cover:
     name: coverage assert
     needs: [plan, replay]
-    if: always()
+    if: always() && github.event.inputs.mode != 'audit'
     runs-on: ubuntu-latest
     steps:
       - name: Assert every shard replayed green
@@ -132,3 +144,133 @@ jobs:
             exit 1
           fi
           echo "all ${{ needs.plan.outputs.count }} module(s) covered across the shards (every olean replayed exactly once)"
+
+  # --- ADR-091: sharded axiom audit lane (mode=audit) -------------------------
+
+  plan_audit:
+    name: plan audit shards
+    if: github.event.inputs.mode == 'audit'
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+      count: ${{ steps.plan.outputs.count }}
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          fetch-depth: 0 # a --base plan diffs against the base
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.12"
+      - name: Plan the audit shard partition (ADR-091)
+        id: plan
+        env:
+          SHARDS: ${{ github.event.inputs.shards || '8' }}
+          BASE: ${{ github.event.inputs.base }}
+        run: |
+          set -euo pipefail
+          if [ -n "$BASE" ]; then
+            out=$(python3 -m tools.gate_a.parallel_modules plan-audit --shards "$SHARDS" --base "$BASE")
+          else
+            out=$(python3 -m tools.gate_a.parallel_modules plan-audit --shards "$SHARDS")
+          fi
+          echo "plan: $out"
+          echo "matrix=$(printf '%s' "$out" | python3 -c 'import sys,json;print(json.dumps(json.load(sys.stdin)["shards"]))')" >> "$GITHUB_OUTPUT"
+          echo "count=$(printf '%s' "$out" | python3 -c 'import sys,json;print(json.load(sys.stdin)["count"])')" >> "$GITHUB_OUTPUT"
+
+  audit:
+    name: audit shard
+    needs: plan_audit
+    if: github.event.inputs.mode == 'audit' && needs.plan_audit.outputs.count != '0'
+    runs-on: namespace-profile-unsorry-1
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: ${{ fromJSON(needs.plan_audit.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          fetch-depth: 0
+      - name: Namespace .lake cache volume
+        id: ns_lake_cache
+        continue-on-error: true
+        uses: namespacelabs/nscloud-cache-action@15799a6b54e5765f85b2aac25b3f0df43ed571c0 # v1.4.3
+        with:
+          path: ${{ github.workspace }}/.lake
+      - name: Build (lean-action, mathlib binary cache)
+        uses: leanprover/lean-action@38fbc41a8c28c4cbaec22d7f7de508ec2e7c0dd9 # v1.5.0
+        with:
+          use-github-cache: ${{ steps.ns_lake_cache.outputs.cache-hit != 'true' }}
+          build-args: "UnsorryGoals"
+      - name: Generate statement-binding obligations
+        run: python3 -m tools.gate_a.check_statement_binding generate .
+      - name: Library build — zero-warning bar (--wfail)
+        run: lake build UnsorryLibrary --wfail
+      - name: Axiom audit shard ${{ matrix.shard }} (ADR-091)
+        env:
+          SHARDS: ${{ github.event.inputs.shards || '8' }}
+          BASE: ${{ github.event.inputs.base }}
+        run: |
+          set -euo pipefail
+          if [ -n "$BASE" ]; then
+            python3 -m tools.gate_a.parallel_modules audit-shard \
+              --shard-index ${{ matrix.shard }} --shard-total "$SHARDS" \
+              --output "axiom-report-shard-${{ matrix.shard }}.json" --base "$BASE"
+          else
+            python3 -m tools.gate_a.parallel_modules audit-shard \
+              --shard-index ${{ matrix.shard }} --shard-total "$SHARDS" \
+              --output "axiom-report-shard-${{ matrix.shard }}.json"
+          fi
+      - name: Upload audit fragment
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        with:
+          name: axiom-report-shard-${{ matrix.shard }}
+          path: axiom-report-shard-${{ matrix.shard }}.json
+
+  audit_cover:
+    name: audit coverage assert
+    needs: [plan_audit, audit]
+    if: always() && github.event.inputs.mode == 'audit'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.12"
+      - name: Assert every shard audited green
+        env:
+          COUNT: ${{ needs.plan_audit.outputs.count }}
+          PLAN_RESULT: ${{ needs.plan_audit.result }}
+          AUDIT_RESULT: ${{ needs.audit.result }}
+        run: |
+          set -euo pipefail
+          if [ "$PLAN_RESULT" != "success" ]; then
+            echo "::error::plan_audit concluded '$PLAN_RESULT' — cannot trust the shard plan"
+            exit 1
+          fi
+          if [ "$COUNT" = "0" ]; then
+            echo "empty plan — no modules to audit; nothing to cover"
+            exit 0
+          fi
+          if [ "$AUDIT_RESULT" != "success" ]; then
+            echo "::error::audit matrix result is '$AUDIT_RESULT' — a shard failed or was skipped; coverage NOT proven"
+            exit 1
+          fi
+          echo "all $COUNT module(s) audited across the shards (every module audited exactly once)"
+      # Pilot-only smoke test of combine_audit_reports (download-artifact is fine
+      # HERE — this is not gate-a.yml, so the SPEC-049-A §2 no-artifact guard, which
+      # the conformance suite enforces only on the required gate, does not apply).
+      - name: Download audit fragments
+        if: needs.plan_audit.outputs.count != '0'
+        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
+        with:
+          pattern: axiom-report-shard-*
+          path: audit-fragments
+          merge-multiple: true
+      - name: Combine fragments into the unified footprint
+        if: needs.plan_audit.outputs.count != '0'
+        run: |
+          set -euo pipefail
+          python3 -m tools.gate_a.parallel_modules combine-audit \
+            --reports-dir audit-fragments --output axiom-report.json
+          echo "combined footprint: $(python3 -c 'import json;print(len(json.load(open("axiom-report.json"))))') declaration(s)"
