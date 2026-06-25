@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-two-squares-zmod-sixteen-ne-six@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-two-squares-zmod-sixteen-ne-six
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-two-squares-zmod-sixteen-ne-six.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-two-squares-zmod-sixteen-ne-six.lean
+  sha≜86eb01ff2c5200f08edca38a5b912b889ee676e5208c4ec01b064427f55627e2
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.40;τ≜◊⁺⟩

@@ -47,7 +47,39 @@
     }
     .site-header__gh:hover { text-decoration: none; filter: brightness(1.12); }
     .site-header__gh small { display: block; font-weight: 400; font-size: 11px; color: var(--btn-sub); }
-    @media (max-width: 480px) { .site-header__logo img { height: 48px; } }
+    /* Centre "On this page" dropdown: a native <details> disclosure populated at
+       runtime from the rendered h2/h3 headings, so it stays in sync with the README. */
+    .site-header__toc { position: relative; }
+    .site-header__toc[hidden] { display: none; }
+    .site-header__toc > summary {
+      list-style: none; cursor: pointer; user-select: none; white-space: nowrap;
+      display: inline-flex; align-items: center; gap: .4em;
+      color: var(--fg); background: var(--code-bg);
+      border: 1px solid var(--border); border-radius: 8px;
+      padding: 9px 14px; font-weight: 600; font-size: .95rem;
+    }
+    .site-header__toc > summary::-webkit-details-marker { display: none; }
+    .site-header__toc > summary:hover { border-color: var(--muted); }
+    .site-header__caret { font-size: .7em; color: var(--muted); transition: transform .15s ease; }
+    .site-header__toc[open] .site-header__caret { transform: rotate(180deg); }
+    .site-header__menu {
+      position: absolute; top: calc(100% + 6px); left: 50%; transform: translateX(-50%);
+      z-index: 30; min-width: 220px; max-width: min(340px, 86vw);
+      max-height: min(70vh, 420px); overflow-y: auto;
+      background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.18); padding: .35rem;
+    }
+    .site-header__menu a {
+      display: block; color: var(--fg); border-radius: 6px;
+      padding: .35rem .6rem; font-size: .9rem; line-height: 1.35;
+    }
+    .site-header__menu a:hover { text-decoration: none; background: var(--code-bg); }
+    .site-header__menu a.lvl-3 { padding-left: 1.5rem; color: var(--muted); font-size: .85rem; }
+    @media (max-width: 480px) {
+      .site-header__logo img { height: 48px; }
+      .site-header__toc { order: 3; flex-basis: 100%; }
+      .site-header__menu { left: 0; transform: none; }
+    }
   </style>
 </head>
 <body>
@@ -56,12 +88,43 @@
       <img src="https://cdn.disco.co/media/agentics-logo-enhanced-removebg-preview_2949fb89-758d-4d9d-ae30-a51cea979427.png"
            alt="Agentics" width="400" height="400">
     </a>
+    <details class="site-header__toc" id="site-toc" hidden>
+      <summary aria-label="Jump to a section on this page">On this page <span class="site-header__caret" aria-hidden="true">▾</span></summary>
+      <nav class="site-header__menu" aria-label="On this page"></nav>
+    </details>
     <a class="site-header__gh" href="https://github.com/agenticsnz/unsorry">
       <small>View project on</small> GitHub
     </a>
   </header>
 
   {{ content }}
+
+  <script>
+    // Build the centre "On this page" dropdown from the rendered headings.
+    // kramdown auto-assigns an id to every heading, so we link straight to them.
+    (function buildToc() {
+      const toc = document.getElementById("site-toc");
+      if (!toc) return;
+      const menu = toc.querySelector(".site-header__menu");
+      const heads = Array.from(document.querySelectorAll("h2[id], h3[id]"))
+        .filter((h) => !h.closest(".site-header"));
+      if (!heads.length) return; // nothing to navigate — leave the dropdown hidden
+
+      for (const h of heads) {
+        const a = document.createElement("a");
+        a.href = "#" + h.id;
+        a.textContent = h.textContent.trim();
+        a.className = h.tagName === "H3" ? "lvl-3" : "lvl-2";
+        menu.appendChild(a);
+      }
+      toc.hidden = false;
+
+      // Close after picking a destination, on Escape, or on an outside click.
+      menu.addEventListener("click", (e) => { if (e.target.closest("a")) toc.open = false; });
+      document.addEventListener("keydown", (e) => { if (e.key === "Escape") toc.open = false; });
+      document.addEventListener("click", (e) => { if (toc.open && !toc.contains(e.target)) toc.open = false; });
+    })();
+  </script>
 
   <script type="module">
     import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";

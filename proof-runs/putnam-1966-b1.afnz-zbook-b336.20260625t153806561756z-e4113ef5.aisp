@@ -1,0 +1,9 @@
+𝔸5.1.run.putnam-1966-b1.afnz-zbook-b336.20260625t153806561756z-e4113ef5@2026-06-25
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260625t153806561756z-e4113ef5; goal≜putnam-1966-b1; agent≜afnz-zbook-b336; outcome≜decomposed}
+⟦Π:Provenance⟧{solver≜cgbarlow; provider≜claude; model≜opus; effort≜max}
+⟦Γ:Goal⟧{goal≜putnam-1966-b1}
+⟦Λ:Metrics⟧{attempts≜3; solve_s≜3308; ended≜2026-06-25T15:38:06Z; lessons≜0}
+⟦Σ:Artifact⟧{sha≜∅}
+⟦Δ:Lesson⟧{sig≜(claude call failed or timed out)}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
