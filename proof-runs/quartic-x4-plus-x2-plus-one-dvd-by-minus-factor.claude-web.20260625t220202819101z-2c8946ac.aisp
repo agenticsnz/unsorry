@@ -1,0 +1,8 @@
+𝔸5.1.run.quartic-x4-plus-x2-plus-one-dvd-by-minus-factor.claude-web.20260625t220202819101z-2c8946ac@2026-06-25
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260625t220202819101z-2c8946ac; goal≜quartic-x4-plus-x2-plus-one-dvd-by-minus-factor; agent≜claude-web; outcome≜proved}
+⟦Π:Provenance⟧{solver≜chat-bit-01; provider≜claude; model≜opus; effort≜high}
+⟦Γ:Goal⟧{goal≜quartic-x4-plus-x2-plus-one-dvd-by-minus-factor}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜60; ended≜2026-06-25T22:02:02Z}
+⟦Σ:Artifact⟧{sha≜3ea7a5961b3c5a4d5fb5ebd4f676dab4600d94442073b754ae565633f0d11dc3}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

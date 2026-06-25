@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜quartic-x4-plus-x2-plus-one-dvd-by-minus-factor
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/quartic-x4-plus-x2-plus-one-dvd-by-minus-factor.lean
-  sha≜∅
-  aff≜-20
+  sha≜3ea7a5961b3c5a4d5fb5ebd4f676dab4600d94442073b754ae565633f0d11dc3
+  aff≜-19
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
