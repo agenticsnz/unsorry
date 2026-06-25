@@ -1,0 +1,8 @@
+𝔸5.1.lemma.fcd9ac66c3ee@2026-06-24
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜fcd9ac66c3ee32c98a0a445e561b02a400888c79fe8eda9d7487c51fa2e98632; goal≜sum-two-cubes-zmod-fourteen-ne-ten; name≜sum_two_cubes_zmod_fourteen_ne_ten}
+⟦Σ:Source⟧{src≜goals/sum-two-cubes-zmod-fourteen-ne-ten.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜chat-bit-01; agent≜claude-web; provider≜lean; model≜decide; attempts≜1}
+⟦Ε⟧⟨δ≜0.40;τ≜◊⁺⟩

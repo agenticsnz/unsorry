@@ -4,34 +4,34 @@
 <rect width="900" height="100%" rx="18" fill="#ffffff"/>
 <rect x="0.5" y="0.5" width="899" height="393" rx="18" fill="none" stroke="#e2e8f0"/>
 <text x="32" y="44" font-family="Inter, system-ui, sans-serif" font-size="28" font-weight="700" fill="#334155">Unsorry Proof Graph</text>
-<text x="32" y="72" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#64748b">3103 goals · 1119 proved · 5 decomposition families</text>
+<text x="32" y="72" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#64748b">4202 goals · 1940 proved · 5 decomposition families</text>
 <rect x="32" y="123" width="15" height="15" rx="3" fill="#edf2f7" stroke="#94a3b8"/>
 <text x="58" y="136" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="650" fill="#334155">archived</text>
-<text x="58" y="154" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">1961 of 3103 goals · 63%</text>
+<text x="58" y="154" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">2199 of 4202 goals · 52%</text>
 <rect x="300" y="125" width="420" height="24" rx="12" fill="#f1f5f9"/>
 <rect x="300" y="125" width="420" height="24" rx="12" fill="#edf2f7"/>
-<text x="740" y="143" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">1961</text>
+<text x="740" y="143" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">2199</text>
 <rect x="32" y="175" width="15" height="15" rx="3" fill="#c6f6d5" stroke="#94a3b8"/>
 <text x="58" y="188" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="650" fill="#334155">proved</text>
-<text x="58" y="206" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">1119 of 3103 goals · 36%</text>
+<text x="58" y="206" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">1940 of 4202 goals · 46%</text>
 <rect x="300" y="177" width="420" height="24" rx="12" fill="#f1f5f9"/>
-<rect x="300" y="177" width="239" height="24" rx="12" fill="#c6f6d5"/>
-<text x="740" y="195" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">1119</text>
+<rect x="300" y="177" width="370" height="24" rx="12" fill="#c6f6d5"/>
+<text x="740" y="195" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">1940</text>
 <rect x="32" y="227" width="15" height="15" rx="3" fill="#e2e8f0" stroke="#94a3b8"/>
 <text x="58" y="240" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="650" fill="#334155">open</text>
-<text x="58" y="258" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">11 of 3103 goals · 0%</text>
+<text x="58" y="258" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">51 of 4202 goals · 1%</text>
 <rect x="300" y="229" width="420" height="24" rx="12" fill="#f1f5f9"/>
-<rect x="300" y="229" width="6" height="24" rx="12" fill="#e2e8f0"/>
-<text x="740" y="247" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">11</text>
+<rect x="300" y="229" width="9" height="24" rx="12" fill="#e2e8f0"/>
+<text x="740" y="247" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">51</text>
 <rect x="32" y="279" width="15" height="15" rx="3" fill="#bee3f8" stroke="#94a3b8"/>
 <text x="58" y="292" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="650" fill="#334155">translated</text>
-<text x="58" y="310" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">9 of 3103 goals · 0%</text>
+<text x="58" y="310" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">9 of 4202 goals · 0%</text>
 <rect x="300" y="281" width="420" height="24" rx="12" fill="#f1f5f9"/>
 <rect x="300" y="281" width="6" height="24" rx="12" fill="#bee3f8"/>
 <text x="740" y="299" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">9</text>
 <rect x="32" y="331" width="15" height="15" rx="3" fill="#feebc8" stroke="#94a3b8"/>
 <text x="58" y="344" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="650" fill="#334155">blocked</text>
-<text x="58" y="362" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">3 of 3103 goals · 0%</text>
+<text x="58" y="362" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">3 of 4202 goals · 0%</text>
 <rect x="300" y="333" width="420" height="24" rx="12" fill="#f1f5f9"/>
 <rect x="300" y="333" width="6" height="24" rx="12" fill="#feebc8"/>
 <text x="740" y="351" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">3</text>
