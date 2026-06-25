@@ -1,1 +1,0 @@
-Registered the **PutnamBench** suite as an admitted ADR-078 target (`putnam-v1`, supplier `trishullab`, domain `lean-math`) in `docs/governance/admitted-domains.json`, so it can be ingested via `tools.intake.import_benchmark putnam-v1 <PutnamBench/lean4/src> --build`. PutnamBench Lean 4 is Apache-2.0 (672 problems). (#5643.)

@@ -1,1 +1,0 @@
-Imported the first **PutnamBench** batch (Putnam 1962–1966) as the `putnam-v1` benchmark target: 45 kernel-pin-validated obligations the swarm proves for verified pass@k, with each "determine the answer" problem's answer folded in from PutnamBench's comment (ADR-092). 5 statements that don't elaborate under the v4.30.0 mathlib pin were quarantined (not imported). (#5643.)

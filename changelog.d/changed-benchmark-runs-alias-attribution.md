@@ -1,1 +1,0 @@
-The benchmark runs table now routes each run's `solver` through `contributor-aliases.json` (the same `git_authors` → canonical github consolidation the leaderboard uses), so a run's contributor always matches the leaderboard's attribution — e.g. a consolidated identity like `OceanLi` resolves to `ohdearquant`. Unmapped handles (the common case) pass through unchanged. (#5643.)

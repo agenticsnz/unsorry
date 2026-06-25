@@ -1,1 +1,0 @@
-Refreshed `docs/metrics/registered-targets.json` to reflect the first kernel-verified benchmark proof: `demo-add-comm` (demo-v1) is now `proved`. Bumped manually because the post-merge `leaderboard.yml` refresh is currently backlogged under the merge-queue stall; deterministic, so the refresh converges to the same content once it recovers. (#5643.)

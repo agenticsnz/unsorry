@@ -1,1 +1,0 @@
-Extended the ADR-019 CODEOWNERS trust surfaces to cover the new benchmark/target intake and scoring paths — `/targets/`, `/tools/intake/`, `/tools/governance/`, `/docs/governance/`, `/tools/leaderboard/` — so a target registration, intake-validator (`skeleton-validate`), domain-admission, or credit-function change cannot auto-merge on gate-green without code-owner review (#5643).
