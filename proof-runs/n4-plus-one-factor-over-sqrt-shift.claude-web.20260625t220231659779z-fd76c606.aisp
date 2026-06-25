@@ -1,0 +1,8 @@
+𝔸5.1.run.n4-plus-one-factor-over-sqrt-shift.claude-web.20260625t220231659779z-fd76c606@2026-06-25
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260625t220231659779z-fd76c606; goal≜n4-plus-one-factor-over-sqrt-shift; agent≜claude-web; outcome≜proved}
+⟦Π:Provenance⟧{solver≜chat-bit-01; provider≜claude; model≜opus; effort≜high}
+⟦Γ:Goal⟧{goal≜n4-plus-one-factor-over-sqrt-shift}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜60; ended≜2026-06-25T22:02:31Z}
+⟦Σ:Artifact⟧{sha≜cb1a907cbef8ad253e2442f3609c807dd88feb96fc89dd1cf4f8f3569976515c}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
