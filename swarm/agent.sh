@@ -1813,7 +1813,19 @@ submit_pr_tree() {
     return 1
   fi
   git -C "$prwt" add "$@" || return 1
-  git -C "$prwt" commit -q -m "$title" || return 1
+  # ADR-096: same independent-check verdict carry as queue_pr_tree — as a commit
+  # trailer (audit) and, since this path opens the PR in-process, appended to the
+  # PR body directly.
+  local -a ic_trailer=()
+  case "$title" in
+    prove\(*)
+      if [ -n "${INDEPENDENT_CHECK_VERDICT:-}" ]; then
+        ic_trailer=(-m "Independent-Check: $INDEPENDENT_CHECK_VERDICT")
+        body="$body"$'\n\n'"_Independent check (advisory, ADR-096): ${INDEPENDENT_CHECK_VERDICT}_"
+      fi
+      ;;
+  esac
+  git -C "$prwt" commit -q -m "$title" "${ic_trailer[@]}" || return 1
   # The proof branch is pushed to `origin` in both modes — origin is the canonical
   # repo on the write-access path, and the contributor's own fork in fork mode.
   git -C "$prwt" push -q origin "$branch" || return 1
@@ -1845,9 +1857,25 @@ queue_pr_tree() {
     return 1
   fi
   git -C "$prwt" add "$@" || return 1
-  git -C "$prwt" commit -q -m "$title" || return 1
+  # ADR-096: carry the advisory independent-check verdict to the dispatcher as a
+  # commit trailer (only on a prove commit, only when the check ran). The
+  # dispatcher reads it back from the branch and surfaces it on the PR. The title
+  # (commit subject) is unchanged, so the prove-title contract still holds.
+  local -a ic_trailer=()
+  case "$title" in
+    prove\(*) [ -n "${INDEPENDENT_CHECK_VERDICT:-}" ] && ic_trailer=(-m "Independent-Check: $INDEPENDENT_CHECK_VERDICT") ;;
+  esac
+  git -C "$prwt" commit -q -m "$title" "${ic_trailer[@]}" || return 1
   git -C "$prwt" push -q origin "$branch" || return 1
   return 0
+}
+
+# ADR-096: extract the advisory independent-check verdict trailer (if any) from a
+# branch's tip commit, as a one-line PR-body addendum. Empty when absent.
+independent_check_pr_note() {
+  local ref="$1" v
+  v="$(git log -1 --format=%b "$ref" 2>/dev/null | sed -n 's/^Independent-Check: //p' | head -1)"
+  [ -n "$v" ] && printf '\n\n_Independent check (advisory, ADR-096): %s_' "$v"
 }
 
 fetch_queued_prove_branches() {
@@ -1874,6 +1902,7 @@ dispatch_queued_proof_branch() {
   name="${title#*: }"
   name="${name% by *}"
   body="Queued proof dispatch (ADR-058, SPEC-007-A): branch \`$branch\` was produced by coordinated \`--prove\` in \`UNSORRY_SUBMIT_MODE=queue\` after local verification passed. The dispatcher opened this PR only after the submission governor admitted more verifier work. New library proof: \`$name\` for goal \`$goal\`."
+  body="$body$(independent_check_pr_note "$remote_ref")"
   if [ "$DRY_RUN" -eq 1 ]; then
     printf 'dry-run: would dispatch queued branch %s as "%s"\n' "$branch" "$title"
     return 0
@@ -2910,6 +2939,7 @@ run_proof() {
   PROOF_SOLVE_SECONDS=""
   PROOF_LAST_ERROR=""
   PROOF_LESSONS_USED=""
+  INDEPENDENT_CHECK_VERDICT=""
   proof_started="$(date +%s)"
   name="$(py_helper lean-name "$prwt/goals/$goal.lean")" || return 1
   stmt="$(py_helper lean-stmt "$prwt/goals/$goal.lean")" || return 1
@@ -3097,6 +3127,34 @@ independent_check_advisory() {
             --module "Unsorry.$camel" \
             --lean4export-cmd "lake env $l4e" --nanoda-cmd "$nan" ) 2>&1 )" || true
   [ -n "$out" ] && log "$out"
+  # Capture the one-line verdict (drop the "independent-check: <module> " prefix
+  # and any ::warning:: noise) so the proof commit can carry it to the PR.
+  local verdict
+  verdict="$(printf '%s\n' "$out" | sed -n 's/^independent-check: [^ ]* //p' | head -1)"
+  [ -n "$verdict" ] && INDEPENDENT_CHECK_VERDICT="$verdict"
+  return 0
+}
+
+# ADR-096: the verdict rides the proof commit as an `Independent-Check:` trailer
+# and the dispatcher surfaces it on the PR via independent_check_pr_note. A commit
+# WITHOUT the trailer yields an empty note (a normal proof shows nothing extra).
+test_independent_check_pr_note_roundtrip() {
+  local d; d="$(mktemp -d)" || return 1
+  ( git -C "$d" init -q \
+    && git -C "$d" -c user.email=t@t -c user.name=t commit -q --allow-empty \
+         -m "prove(g): foo by a" -m "Independent-Check: nanoda=ok decls=3965 target=✓ 0.4s" ) \
+    || { rm -rf "$d"; log "  setup failed"; return 1; }
+  local note
+  note="$(cd "$d" && independent_check_pr_note HEAD)"
+  case "$note" in
+    *"advisory, ADR-096"*"nanoda=ok decls=3965 target=✓"*) ;;
+    *) rm -rf "$d"; log "  trailer not surfaced: [$note]"; return 1 ;;
+  esac
+  # a plain prove commit (no trailer) → empty note
+  ( git -C "$d" -c user.email=t@t -c user.name=t commit -q --allow-empty -m "prove(g2): bar by a" )
+  note="$(cd "$d" && independent_check_pr_note HEAD)"
+  rm -rf "$d"
+  [ -z "$note" ] || { log "  expected empty note for a plain proof, got [$note]"; return 1; }
   return 0
 }
 
@@ -6003,6 +6061,7 @@ run_self_tests() {
     test_floored_recompose_noop_records_telemetry_only
     test_render_decomp_gateb
     test_independent_check_advisory_opt_in
+    test_independent_check_pr_note_roundtrip
   )
   local failures=0 t
   for t in "${tests[@]}"; do
@@ -6038,6 +6097,10 @@ PROOF_MODEL_USED=""
 PROOF_EFFORT_USED=""
 PROOF_ATTEMPTS_USED=""
 PROOF_SOLVE_SECONDS=""
+# ADR-096: the advisory independent-check verdict for the current proof (empty
+# when the check did not run). Set by independent_check_advisory, attached as a
+# commit trailer on the proof commit so the dispatcher can surface it on the PR.
+INDEPENDENT_CHECK_VERDICT=""
 
 # ADR-068 fork-native contribution mode. A contributor with no write access to
 # the canonical upstream runs the prover from a fork: it proves CLAIMLESS (no
