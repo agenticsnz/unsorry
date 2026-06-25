@@ -41,6 +41,26 @@ EMPTY_STATS: dict = {
 }
 
 
+def _alias_map(root: Path) -> dict[str, str]:
+    """A solver/handle → canonical github map, derived from contributor-aliases.json,
+    so the runs table reflects the SAME consolidated attribution as the leaderboard
+    (e.g. ``OceanLi`` → ``ohdearquant``). Keys are lower-cased git-author name,
+    display_name, and github handle; unmapped handles pass through unchanged."""
+    from tools.leaderboard.generate import contributor_aliases  # lazy: import cycle
+
+    mapping: dict[str, str] = {}
+    for key, value in contributor_aliases(root).items():
+        github = value.get("github")
+        if not github:
+            continue
+        mapping[key.split(" <")[0].strip().lower()] = github  # git-author name
+        display = value.get("display_name")
+        if display:
+            mapping[display.lower()] = github
+        mapping[github.lower()] = github
+    return mapping
+
+
 def _goal_to_suite(root: Path) -> dict[str, str]:
     """Map each benchmark goal id (the ``top`` sentinel + every obligation) to its
     suite — retired suites included, since their runs still belong to the suite."""
@@ -63,11 +83,11 @@ def _model_label(run) -> str:
     return "/".join(parts) if parts else (run.provider or "")
 
 
-def _row(run) -> dict:
+def _row(run, aliases: dict[str, str]) -> dict:
     return {
         "run_id": run.id,
         "goal": run.goal,
-        "contributor": run.solver,
+        "contributor": aliases.get(run.solver.lower(), run.solver),
         "model": _model_label(run),
         "ended": run.ended,
         "solve_s": run.solve_s,
@@ -82,11 +102,12 @@ def suite_runs(root: Path) -> dict[str, list[dict]]:
     from tools.leaderboard.generate import runs as _runs  # lazy: breaks the import cycle
 
     mapping = _goal_to_suite(root)
+    aliases = _alias_map(root)
     by_suite: dict[str, list[dict]] = {}
     for run in _runs(root):
         suite = mapping.get(run.goal)
         if suite is not None:
-            by_suite.setdefault(suite, []).append(_row(run))
+            by_suite.setdefault(suite, []).append(_row(run, aliases))
     for rows in by_suite.values():
         rows.sort(key=lambda r: (r["ended"], r["run_id"]))
     return by_suite

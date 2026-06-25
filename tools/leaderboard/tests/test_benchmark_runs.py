@@ -90,6 +90,35 @@ def test_suite_run_stats_best_worst_and_rate(tmp_path):
     assert s["median_solve_s"] == 50 and s["contributors"] == 2
 
 
+def test_contributor_routed_through_aliases(tmp_path):
+    """A run's solver is remapped to the canonical github via contributor-aliases.json,
+    so the runs table matches the leaderboard's consolidated attribution."""
+    _register_suite(tmp_path, "putnam-v1", "putnam-v1-suite", [("g1", SHA_A)])
+    metrics = tmp_path / "docs" / "metrics"
+    metrics.mkdir(parents=True, exist_ok=True)
+    (metrics / "contributor-aliases.json").write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "git_authors": {
+                    "OceanLi <quantocean.li@gmail.com>": {
+                        "display_name": "ohdearquant",
+                        "github": "ohdearquant",
+                    },
+                },
+            }
+        ),
+        "utf-8",
+    )
+    _proof_run(tmp_path, "g1", run_id="r1", solver="OceanLi", provider="x", model="y",
+               outcome="proved", solve_s=10, ended="2026-06-14T10:00:00Z")
+    _proof_run(tmp_path, "g1", run_id="r2", solver="Rauxon", provider="claude", model="opus",
+               outcome="proved", solve_s=20, ended="2026-06-14T11:00:00Z")
+    rows = {r["run_id"]: r["contributor"] for r in suite_runs(tmp_path)["putnam-v1"]}
+    assert rows["r1"] == "ohdearquant"  # OceanLi consolidated onto the canonical handle
+    assert rows["r2"] == "Rauxon"  # not aliased → passes through unchanged
+
+
 def test_stats_flow_into_registered_targets(tmp_path):
     _register_suite(tmp_path, "putnam-v1", "putnam-v1-suite", [("putnam-1988-b2", SHA_A)])
     _proof_run(tmp_path, "putnam-1988-b2", run_id="r1", solver="ada", provider="claude",
