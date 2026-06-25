@@ -1,1 +1,0 @@
-Moved `_config.yml` from `_layouts/` to the repository root, where Jekyll actually reads it. Previously it was silently ignored, so its `exclude` list (which keeps the Lean/tooling tree out of the Pages build) and layout defaults had no effect.

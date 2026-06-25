@@ -1,0 +1,20 @@
+𝔸5.1.goal.gzmod-136-pow-twentysix-sub-pow-ten@2026-06-24
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gzmod-136-pow-twentysix-sub-pow-ten
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/gzmod-136-pow-twentysix-sub-pow-ten.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/gzmod-136-pow-twentysix-sub-pow-ten.lean
+  sha≜a1e429f9d989e7b4387386143044f5684c1f20e78d23cde9318f9ec5be381c18
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
