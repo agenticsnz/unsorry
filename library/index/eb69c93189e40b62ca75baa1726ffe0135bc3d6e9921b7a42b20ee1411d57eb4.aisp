@@ -1,0 +1,8 @@
+𝔸5.1.lemma.eb69c93189e4@2026-06-23
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜eb69c93189e40b62ca75baa1726ffe0135bc3d6e9921b7a42b20ee1411d57eb4; goal≜faulhaber-square-sum-coeff-thirtynine; name≜faulhaber_square_sum_coeff_thirtynine}
+⟦Σ:Source⟧{src≜goals/faulhaber-square-sum-coeff-thirtynine.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜chat-bit-01; agent≜claude-web; provider≜lean; model≜ring; attempts≜1}
+⟦Ε⟧⟨δ≜0.85;τ≜◊⁺⟩
