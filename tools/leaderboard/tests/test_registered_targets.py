@@ -126,6 +126,26 @@ def test_status_from_library_index(tmp_path):
     assert suite["proved"] == 1
 
 
+def test_proved_at_suite_pin_counts_from_verify_index(tmp_path):
+    """A benchmark obligation proved at a non-repo pin lands in the suite's
+    _verify/library/index (ADR-099 §2), not the repo library — it must still count as
+    proved on the benchmark surface."""
+    _goal(tmp_path, "minif2f-a", 4)
+    _goal(tmp_path, "minif2f-b", 4)
+    # minif2f-a proved at the suite pin; minif2f-b still open
+    verify_index = tmp_path / "targets" / "minif2f-v1" / "_verify" / "library" / "index"
+    verify_index.mkdir(parents=True, exist_ok=True)
+    (verify_index / f"{SHA_A}.aisp").write_text(
+        f"⟦Ω:Lemma⟧{{sha≜{SHA_A}; goal≜minif2f-a; name≜minif2f-a}}\n", "utf-8"
+    )
+    _register_suite(tmp_path, "minif2f-v1", "minif2f-top",
+                    [("minif2f-a", SHA_A), ("minif2f-b", SHA_B)])
+    suite = registered_targets(tmp_path)["suites"][0]
+    by_id = {g["id"]: g["status"] for g in suite["goals"]}
+    assert by_id == {"minif2f-a": "proved", "minif2f-b": "open"}
+    assert suite["proved"] == 1
+
+
 def test_credit_from_skeleton(tmp_path):
     _register_suite(tmp_path, "putnam", "putnam-top",
                     [("hard", SHA_A), ("easy", SHA_B)], credit={"easy": "glue"})

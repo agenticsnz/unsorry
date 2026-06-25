@@ -92,6 +92,12 @@ def _proved_goal_ids(root: Path) -> set[str]:
     packages = Path(root) / "packages"
     if packages.is_dir():
         indices.extend(sorted(packages.glob("unsorry-archive-*/library/index")))
+    # Benchmark obligations proved at a non-repo pin land in the suite's verification
+    # package, not the repo library (ADR-099 / SPEC-099-A §2): count those as proved too,
+    # so a suite's proved-at-pin tally surfaces in registered-targets.json.
+    targets = Path(root) / "targets"
+    if targets.is_dir():
+        indices.extend(sorted(targets.glob("*/_verify/library/index")))
     for index in indices:
         if index.is_dir():
             for entry in index.glob("*.aisp"):

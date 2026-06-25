@@ -29,6 +29,7 @@ jobs:
       lean: ${{ steps.filter.outputs.lean }}
       active: ${{ steps.filter.outputs.active }}
       archive: ${{ steps.filter.outputs.archive }}
+      benchmark: ${{ steps.filter.outputs.benchmark }}
       admitted: ${{ steps.admission.outputs.admitted }}
       prepare_profile: ${{ steps.profiles.outputs.prepare }}
       audit_profile: ${{ steps.profiles.outputs.audit }}
@@ -48,6 +49,7 @@ jobs:
               - 'library/**'
               - 'goals/**/*.lean'
               - 'packages/unsorry-archive-*/**'
+              - 'targets/*/_verify/**'
               - 'lakefile.toml'
               - 'lake-manifest.json'
               - 'lean-toolchain'
@@ -67,6 +69,8 @@ jobs:
               - '.github/workflows/gate-a.yml'
             archive:
               - 'packages/unsorry-archive-*/**'
+            benchmark:
+              - 'targets/*/_verify/**'
       - id: admission
         env:
           CREATED_AT: ${{ github.event.pull_request.created_at }}
@@ -890,8 +894,56 @@ jobs:
             python3 -m tools.gate_a.archive_packages validate-changed --base "$BASE_SHA"
           fi
 
+  gate_a_benchmark:
+    name: gate-a-benchmark
+    needs: [detect]
+    if: needs.detect.outputs.admitted == 'true' && needs.detect.outputs.benchmark == 'true'
+    runs-on: ${{ needs.detect.outputs.archive_profile }}
+    # Kernel-verifies a benchmark suite's discharged obligations at the SUITE's own
+    # mathlib pin (ADR-099 / SPEC-099-A §2). Each suite verification package
+    # (targets/<suite>/_verify) is a self-contained Lake project pinned to the suite's
+    # (toolchain, mathlib rev); these proofs were never active in the repo library, so
+    # — unlike archive packages — each must be kernel-built here: `lake build --wfail`
+    # at the suite pin. Reuses the cheap build lane + the .lake cache volume (the
+    # suite's `lake exe cache get` warms the suite pin's mathlib into MATHLIB_CACHE_DIR).
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          fetch-depth: 0
+
+      - name: Namespace .lake cache volume
+        if: needs.detect.outputs.archive_volume == 'true'
+        id: ns_lake_cache
+        continue-on-error: true
+        uses: namespacelabs/nscloud-cache-action@15799a6b54e5765f85b2aac25b3f0df43ed571c0 # v1.4.3
+        with:
+          path: ${{ github.workspace }}/.lake
+
+      # Suite packages build their own (per-pin) mathlib, so just install the toolchain.
+      - name: Set up Lean toolchain
+        uses: leanprover/lean-action@38fbc41a8c28c4cbaec22d7f7de508ec2e7c0dd9 # v1.5.0
+        with:
+          build: "false"
+          test: "false"
+          lint: "false"
+          use-mathlib-cache: "false"
+          use-github-cache: "false"
+
+      # BASE_SHA mirrors the archive job; an empty/zero base validates ALL benchmark
+      # verification packages (never relies on implicit git-diff-of-zero-sha behaviour).
+      - name: Validate changed benchmark suites (ADR-099)
+        env:
+          BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || (github.event_name == 'push' && github.event.before || '') }}
+        run: |
+          if [ "$BASE_SHA" = "0000000000000000000000000000000000000000" ] || [ -z "$BASE_SHA" ]; then
+            python3 -m tools.gate_a.benchmark_packages validate-changed
+          else
+            python3 -m tools.gate_a.benchmark_packages validate-changed --base "$BASE_SHA"
+          fi
+
   gate-a:
-    needs: [detect, gate_a_prepare, gate_a_nanoda, gate_a_audit_plan, gate_a_audit, gate_a_audit_cover, gate_a_replay_plan, gate_a_replay, gate_a_replay_cover, gate_a_archive]
+    needs: [detect, gate_a_prepare, gate_a_nanoda, gate_a_audit_plan, gate_a_audit, gate_a_audit_cover, gate_a_replay_plan, gate_a_replay, gate_a_replay_cover, gate_a_archive, gate_a_benchmark]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -915,6 +967,9 @@ jobs:
           REPLAY_RESULT: ${{ needs.gate_a_replay_cover.result }}
           ARCHIVE_RELEVANT: ${{ needs.detect.outputs.archive }}
           ARCHIVE_RESULT: ${{ needs.gate_a_archive.result }}
+          # ADR-099: benchmark suite verification at the suite's own mathlib pin.
+          BENCHMARK_RELEVANT: ${{ needs.detect.outputs.benchmark }}
+          BENCHMARK_RESULT: ${{ needs.gate_a_benchmark.result }}
         run: |
           set -euo pipefail
           if [ "$ADMITTED" != "true" ]; then
@@ -942,6 +997,9 @@ jobs:
           fi
           if [ "$ARCHIVE_RELEVANT" = "true" ]; then
             pairs="$pairs gate-a-archive:$ARCHIVE_RESULT"
+          fi
+          if [ "$BENCHMARK_RELEVANT" = "true" ]; then
+            pairs="$pairs gate-a-benchmark:$BENCHMARK_RESULT"
           fi
 
           for pair in $pairs; do
