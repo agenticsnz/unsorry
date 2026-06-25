@@ -30,6 +30,28 @@ if [ "${1:-}" = "--print-env" ]; then
   exit 0
 fi
 
+# `run.sh --independent-check` must be fully self-contained — so if Rust/cargo
+# (needed to build nanoda) is missing, install it via rustup non-interactively.
+# Idempotent: a prior rustup install just gets re-PATH'd. The PATH export is
+# local to this setup process — cargo is only needed to BUILD nanoda; the built
+# nanoda_bin runs standalone, so run.sh's environment is unaffected.
+ensure_cargo() {
+  command -v cargo >/dev/null 2>&1 && return 0
+  if [ -x "$HOME/.cargo/bin/cargo" ]; then
+    export PATH="$HOME/.cargo/bin:$PATH"
+    return 0
+  fi
+  echo "[setup] cargo not found — installing Rust via rustup (non-interactive)…" >&2
+  if ! command -v curl >/dev/null 2>&1; then
+    echo "[setup] need curl to install Rust automatically — install curl or Rust manually" >&2
+    return 1
+  fi
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \
+    | sh -s -- -y --no-modify-path --profile minimal >&2 || return 1
+  export PATH="$HOME/.cargo/bin:$PATH"
+  command -v cargo >/dev/null 2>&1
+}
+
 TAG="$(tr -d '[:space:]' < "$ROOT/lean-toolchain" | sed 's#.*:##')"   # e.g. v4.30.0
 echo "[setup] toolchain tag: $TAG  prefix: $PREFIX" >&2
 mkdir -p "$PREFIX"
@@ -43,6 +65,7 @@ fi
 
 if [ ! -x "$NAN_BIN" ]; then
   echo "[setup] building nanoda (nanoda_bin) ..." >&2
+  ensure_cargo || { echo "[setup] Rust unavailable — cannot build nanoda" >&2; exit 1; }
   rm -rf "$NAN_DIR"
   git clone --depth 1 https://github.com/ammkrn/nanoda_lib.git "$NAN_DIR"
   ( cd "$NAN_DIR" && cargo build --release --bin nanoda_bin )
