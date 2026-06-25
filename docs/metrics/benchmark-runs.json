@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "suites": {
+    "putnam-v1": [
+      {
+        "contributor": "Rauxon",
+        "ended": "2026-06-25T02:33:20Z",
+        "goal": "putnam-1963-b1",
+        "model": "claude/opus",
+        "outcome": "proved",
+        "passed": true,
+        "run_id": "20260625t023320340718z-92a9f89f",
+        "solve_s": 1719,
+        "verification": "kernel"
+      },
+      {
+        "contributor": "Rauxon",
+        "ended": "2026-06-25T03:17:30Z",
+        "goal": "putnam-1964-a4",
+        "model": "claude/opus",
+        "outcome": "proved",
+        "passed": true,
+        "run_id": "20260625t031730417265z-fb1be3cc",
+        "solve_s": 1965,
+        "verification": "kernel"
+      },
+      {
+        "contributor": "Rauxon",
+        "ended": "2026-06-25T04:31:58Z",
+        "goal": "putnam-1965-a1",
+        "model": "claude/opus",
+        "outcome": "proved",
+        "passed": true,
+        "run_id": "20260625t043158129565z-14441c74",
+        "solve_s": 3429,
+        "verification": "kernel"
+      }
+    ]
+  }
+}

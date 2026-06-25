@@ -103,7 +103,7 @@
           "difficulty": 4,
           "id": "putnam-1963-b1",
           "run_snippet": "./swarm/run.sh --goal putnam-1963-b1",
-          "status": "open"
+          "status": "proved"
         },
         {
           "credit": "credited",
@@ -152,7 +152,7 @@
           "difficulty": 4,
           "id": "putnam-1964-a4",
           "run_snippet": "./swarm/run.sh --goal putnam-1964-a4",
-          "status": "open"
+          "status": "proved"
         },
         {
           "credit": "credited",
@@ -208,7 +208,7 @@
           "difficulty": 4,
           "id": "putnam-1965-a1",
           "run_snippet": "./swarm/run.sh --goal putnam-1965-a1",
-          "status": "open"
+          "status": "proved"
         },
         {
           "credit": "credited",
@@ -327,8 +327,20 @@
       "license": "Apache-2.0",
       "mathlib_pin": "c5ea00351c28e24afc9f0f84379aa41082b1188f",
       "pass_at": {},
-      "proved": 0,
-      "supplier": "trishullab"
+      "proved": 3,
+      "run_snippet": "./swarm/run.sh --goal putnam-v1-suite",
+      "stats": {
+        "best_solve_s": 1719,
+        "contributors": 1,
+        "failed_runs": 0,
+        "median_solve_s": 1965,
+        "success_rate": 1.0,
+        "successful_runs": 3,
+        "total_runs": 3,
+        "worst_solve_s": 3429
+      },
+      "supplier": "trishullab",
+      "top": "putnam-v1-suite"
     }
   ]
 }
