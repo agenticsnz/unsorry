@@ -190,6 +190,24 @@ main() {
   fi
   [ -f swarm/agent.sh ] || { log "run from the repository root"; exit 2; }
 
+  # ADR-096: the advisory kernel-diverse independent check is ON BY DEFAULT.
+  # run.sh sets UNSORRY_INDEPENDENT_CHECK (0/1) before calling us, so we only act
+  # when it is genuinely UNSET — i.e. supervise.sh was invoked standalone. Opt out
+  # with UNSORRY_INDEPENDENT_CHECK set falsey. NON-GATING: a failed bootstrap
+  # degrades to a logged skip; proving is never blocked.
+  if [ -z "${UNSORRY_INDEPENDENT_CHECK+x}" ] && [ -f tools/independent_check/setup.sh ]; then
+    log "independent check (ADR-096, default on): ensuring lean4export + nanoda (builds on first use)…"
+    local _ic_env
+    if _ic_env="$(./tools/independent_check/setup.sh)"; then
+      eval "$_ic_env"
+      export LEAN4EXPORT_BIN NANODA_BIN UNSORRY_INDEPENDENT_CHECK
+      log "independent check: ENABLED — nanoda re-checks each proof (advisory, non-gating)"
+    else
+      export UNSORRY_INDEPENDENT_CHECK=0
+      log "independent check: dependency setup failed (needs lake + cargo) — proceeding WITHOUT it"
+    fi
+  fi
+
   local max_runs="${UNSORRY_SUP_MAX_RUNS:-50}"
   local base="${UNSORRY_SUP_BASE_BACKOFF:-300}"
   local cap="${UNSORRY_SUP_MAX_BACKOFF:-3600}"

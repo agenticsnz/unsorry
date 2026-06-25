@@ -53,7 +53,7 @@ files and Gate-B-validates them. No network; no git.
 python3 -m tools.sourcing.gen_triples --slug <kebab-id> \
     --lean-sig '<lean signature after the theorem name>' \
     --statement '<one-line English statement>' \
-    --difficulty <0-5> \
+    --difficulty <0-9> \
     --source '<source line>' --reference '<reference line>' \
     --absence '<gate-1 verdict + rev + date>' \
     --triviality '<gate-2 verdict + battery + rev + date>' \

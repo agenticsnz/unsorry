@@ -39,7 +39,7 @@ A goal record is the unit of claimable work. Every open target is a pair: `goals
 | `id` | `Id` | Must equal the `<id>` in the filename and in the `𝔸` header |
 | `phase` | `translate` \| `prove` | `translate` = Phase-0/1 formalisation target; `prove` = Lean proof target |
 | `status` | `open` \| `flagged` \| `translated` \| `blocked` \| `proved` | See transitions below |
-| `difficulty` | integer 0–5 | 0 trivial … 5 research-grade |
+| `difficulty` | integer 0–9 | 0 trivial … 5 research-grade … 9 frontier/open-problem-adjacent. The 0–5 anchors are unchanged; 6–9 were added by ADR-095 for goals beyond the prior ceiling (6 exceptional, 7–8 frontier, 9 open-problem-adjacent). A single digit. |
 | `src` | path | Must exist in the repo: a `backlog/*.md` file or a `decompositions/*.aisp` record |
 | `deps` | `⟨⟩` or `⟨id,…⟩` | Every id must be an existing goal id; semantics `Post(dep) ⊆ Pre(this)` |
 | `lean` | path or `∅` | Required (and must exist) iff `phase ≡ prove`; must be `∅` when `phase ≡ translate` |

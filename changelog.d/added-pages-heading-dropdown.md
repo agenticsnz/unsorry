@@ -1,1 +1,0 @@
-The GitHub Pages site header now carries a centre **On this page** dropdown listing the document's sections — built at runtime from the rendered `h2`/`h3` headings, so it always tracks the README (and any doc/ADR page) without manual upkeep.
