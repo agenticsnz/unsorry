@@ -442,6 +442,35 @@
         ],
         "assigned_at": "2026-06-24T03:41:43Z"
       }
+    },
+    {
+      "provider_model": "seedkit / template-induction-ring",
+      "slug": "seedkit-template-induction-ring",
+      "pokemon": {
+        "name": "Exeggcute",
+        "dex_id": 102,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/102.png",
+        "description": "Using telepathy only they can receive, they always form a cluster of six EXEGGCUTE."
+      },
+      "research": {
+        "classification": "n/a",
+        "publisher": "agenticsnz/unsorry (contrib. chat-bit-01)",
+        "country": "New Zealand",
+        "parameter_size": "n/a (zero-LLM, deterministic)",
+        "license": "Apache-2.0",
+        "canonical_url": "https://github.com/agenticsnz/unsorry/tree/main/tools/seedkit"
+      },
+      "profile": "template-induction-ring is seedkit's zero-LLM path that batch-mints near-identical fixture lemmas closed by `induction; ring` — and Exeggcute is a cluster that looks like eggs but is actually a kit of identical seeds, a perfect pun on \"seedkit.\" Its six clustered, deterministic units mirror a parametric template farm churning out reusable proofs in batches.",
+      "provenance": {
+        "assigned_by": "housekeeping",
+        "assigned_with": "claude / opus",
+        "contributor": "cgbarlow",
+        "sources": [
+          "https://github.com/agenticsnz/unsorry/tree/main/tools/seedkit",
+          "https://github.com/agenticsnz/unsorry/blob/main/docs/adrs/ADR-086-Seedkit-Fixture-Generation-Path.md"
+        ],
+        "assigned_at": "2026-06-25T04:31:13Z"
+      }
     }
   ]
 }
