@@ -1,0 +1,8 @@
+𝔸5.1.lemma.dfc056f72842@2026-06-23
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜dfc056f72842701563bd1d6782aa2a9939c821faeac22a93b24955d67b46a6ff; goal≜sum-two-cubes-zmod-fourteen-ne-three; name≜sum_two_cubes_zmod_fourteen_ne_three}
+⟦Σ:Source⟧{src≜goals/sum-two-cubes-zmod-fourteen-ne-three.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜chat-bit-01; agent≜claude-web; provider≜lean; model≜decide; attempts≜1}
+⟦Ε⟧⟨δ≜0.40;τ≜◊⁺⟩

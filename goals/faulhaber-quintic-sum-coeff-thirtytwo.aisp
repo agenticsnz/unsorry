@@ -1,0 +1,20 @@
+𝔸5.1.goal.faulhaber-quintic-sum-coeff-thirtytwo@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜faulhaber-quintic-sum-coeff-thirtytwo
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/faulhaber-quintic-sum-coeff-thirtytwo.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/faulhaber-quintic-sum-coeff-thirtytwo.lean
+  sha≜7fd30ab18df952a909ff646dd580d1f7bebef540a0e1495c484fb06732d0ff8a
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.85;τ≜◊⁺⟩
