@@ -25,6 +25,27 @@
       "supplier": "trishullab",
       "ratified": "2026-06-24",
       "note": "PutnamBench Lean 4 (Apache-2.0, 672 problems) — github.com/trishullab/PutnamBench (Tsoukalas et al.)"
+    },
+    {
+      "package": "imo-v1",
+      "domain": "lean-math",
+      "supplier": "jsm28",
+      "ratified": "2026-06-25",
+      "note": "IMOLean (Apache-2.0) — IMO problem statements incl. 2024/2025; github.com/jsm28/IMOLean"
+    },
+    {
+      "package": "minif2f-v1",
+      "domain": "lean-math",
+      "supplier": "yangky11",
+      "ratified": "2026-06-25",
+      "note": "miniF2F-lean4 (MIT) — competition-math pass@k yardstick; github.com/yangky11/miniF2F-lean4"
+    },
+    {
+      "package": "combibench-v1",
+      "domain": "lean-math",
+      "supplier": "MoonshotAI",
+      "ratified": "2026-06-25",
+      "note": "CombiBench (MIT) — 100 Lean 4 combinatorics; github.com/MoonshotAI/CombiBench"
     }
   ]
 }
