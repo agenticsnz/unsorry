@@ -122,7 +122,7 @@ def pass_at_k(n: int, c: int, k: int) -> float:
     return 1.0 - comb(n - c, k) / comb(n, k)
 
 
-def suite_payload(root: Path, suite: Path, proved: set[str]) -> dict:
+def suite_payload(root: Path, suite: Path, proved: set[str], stats: dict | None = None) -> dict:
     skeleton = parse_record((suite / "skeleton.aisp").read_text("utf-8"))
     meta: dict[str, str] = {}
     target = suite / "target.aisp"
@@ -153,8 +153,11 @@ def suite_payload(root: Path, suite: Path, proved: set[str]) -> dict:
             }
         )
 
+    top = skeleton.fields.get("top", "")
     return {
         "id": suite.name,
+        "top": top,  # the suite sentinel — run the WHOLE suite with one goal id
+        "run_snippet": f"./swarm/run.sh --goal {top}" if top else "",
         "domain": meta.get("domain") or skeleton.fields.get("domain", ""),
         "supplier": skeleton.fields.get("supplier", ""),
         "mathlib_pin": skeleton.fields.get("mathlib", ""),
@@ -164,6 +167,7 @@ def suite_payload(root: Path, suite: Path, proved: set[str]) -> dict:
         "glue": n_glue,
         "proved": n_proved,
         "pass_at": {},  # populated once per-attempt sampling lands (SPEC-092-A §2)
+        "stats": stats if stats is not None else {},  # run summary (best/worst/pass-rate)
         "goals": sorted(goals, key=lambda g: g["id"]),
     }
 
@@ -183,10 +187,13 @@ def retired_packages(root: Path) -> set[str]:
 
 
 def registered_targets(root: Path) -> dict:
+    from tools.leaderboard.benchmark_runs import EMPTY_STATS, suite_run_stats  # lazy
+
     proved = _proved_goal_ids(root)
     retired = retired_packages(root)
+    all_stats = suite_run_stats(root)
     suites = [
-        suite_payload(root, suite, proved)
+        suite_payload(root, suite, proved, all_stats.get(suite.name, EMPTY_STATS))
         for suite in suite_dirs(root)
         if suite.name not in retired
     ]

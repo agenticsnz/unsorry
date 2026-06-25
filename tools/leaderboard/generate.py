@@ -27,6 +27,10 @@ from tools.leaderboard.registered_targets import (
     registered_targets_path,
     render_registered_targets_json,
 )
+from tools.leaderboard.benchmark_runs import (
+    benchmark_runs_path,
+    render_benchmark_runs_json,
+)
 
 
 SCORE_POLICY = (
@@ -1627,12 +1631,14 @@ def main(argv: list[str] | None = None) -> int:
     gaps_payload = render_attribution_gaps_json(root)
     sourcing_payload_json = render_sourcing_json(root)
     registered_targets_payload = render_registered_targets_json(root)
+    benchmark_runs_payload = render_benchmark_runs_json(root)
     markdown_path = root / "docs" / "leaderboard.md"
     json_path = root / "docs" / "metrics" / "community-stats.json"
     ui_json_path = root / "docs" / "metrics" / "leaderboard-ui.json"
     gaps_json_path = root / "docs" / "metrics" / "attribution-gaps.json"
     sourcing_json_path = root / "docs" / "metrics" / "sourcing-leaderboard.json"
     registered_targets_json_path = registered_targets_path(root)
+    benchmark_runs_json_path = benchmark_runs_path(root)
     svg_path = root / "docs" / "leaderboard.svg"
     timeline_svg_path = root / "docs" / "proofs-over-time.svg"
     # Single source of truth for the generated artifacts so --check, --write and
@@ -1644,6 +1650,7 @@ def main(argv: list[str] | None = None) -> int:
         (gaps_json_path, gaps_payload),
         (sourcing_json_path, sourcing_payload_json),
         (registered_targets_json_path, registered_targets_payload),
+        (benchmark_runs_json_path, benchmark_runs_payload),
         (svg_path, svg),
         (timeline_svg_path, timeline_svg),
     )

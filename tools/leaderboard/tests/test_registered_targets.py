@@ -99,12 +99,15 @@ def test_render_schema_shape(tmp_path):
     assert payload["schema_version"] == 1
     suite = payload["suites"][0]
     assert set(suite) == {
-        "id", "domain", "supplier", "mathlib_pin", "license", "cohort",
-        "credited", "glue", "proved", "pass_at", "goals",
+        "id", "top", "run_snippet", "domain", "supplier", "mathlib_pin", "license",
+        "cohort", "credited", "glue", "proved", "pass_at", "stats", "goals",
     }
     assert suite["id"] == "putnam"
     assert suite["mathlib_pin"] == "abc123"
     assert suite["cohort"] == "benchmark"
+    assert suite["top"] == "putnam-top"
+    assert suite["run_snippet"] == "./swarm/run.sh --goal putnam-top"  # runs the whole suite
+    assert suite["stats"]["total_runs"] == 0  # no proof-runs in this fixture
     goal = suite["goals"][0]
     assert set(goal) == {"id", "difficulty", "status", "credit", "run_snippet"}
     assert goal["difficulty"] == 4

@@ -125,7 +125,7 @@ jobs:
           # half-merged tree. Trade-off (unchanged): the pushed snapshot reflects
           # `main` as of regen start, so a handful of proofs merged during the
           # regen land on the next push or tick — acceptable for a human board.
-          paths="docs/leaderboard.md docs/leaderboard.svg docs/proofs-over-time.svg docs/metrics/community-stats.json docs/metrics/leaderboard-ui.json docs/metrics/attribution-gaps.json docs/metrics/sourcing-leaderboard.json docs/metrics/registered-targets.json"
+          paths="docs/leaderboard.md docs/leaderboard.svg docs/proofs-over-time.svg docs/metrics/community-stats.json docs/metrics/leaderboard-ui.json docs/metrics/attribution-gaps.json docs/metrics/sourcing-leaderboard.json docs/metrics/registered-targets.json docs/metrics/benchmark-runs.json"
           git fetch --quiet origin main
           git reset --hard --quiet origin/main
           if python3 -m tools.leaderboard --write-if-stale .; then
