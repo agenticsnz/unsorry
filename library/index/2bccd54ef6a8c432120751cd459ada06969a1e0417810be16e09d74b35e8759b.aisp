@@ -1,0 +1,8 @@
+𝔸5.1.lemma.2bccd54ef6a8@2026-06-23
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜2bccd54ef6a8c432120751cd459ada06969a1e0417810be16e09d74b35e8759b; goal≜telescoping-quartic-sum-coeff-ten; name≜telescoping_quartic_sum_coeff_ten}
+⟦Σ:Source⟧{src≜goals/telescoping-quartic-sum-coeff-ten.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜chat-bit-01; agent≜claude-web; provider≜lean; model≜ring; attempts≜1}
+⟦Ε⟧⟨δ≜0.75;τ≜◊⁺⟩

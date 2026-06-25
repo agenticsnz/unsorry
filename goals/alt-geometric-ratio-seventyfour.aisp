@@ -1,0 +1,20 @@
+𝔸5.1.goal.alt-geometric-ratio-seventyfour@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜alt-geometric-ratio-seventyfour
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/alt-geometric-ratio-seventyfour.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/alt-geometric-ratio-seventyfour.lean
+  sha≜fdd5c1dc72526ac4666d23a178b72734e4b9466a1ecd3c8359eb7c7f3022bb9b
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.85;τ≜◊⁺⟩

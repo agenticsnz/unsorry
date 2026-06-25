@@ -1,0 +1,20 @@
+𝔸5.1.goal.bxmo-2017-p2@2026-06-24
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜bxmo-2017-p2
+  phase≜prove
+  status≜open
+  difficulty≜4
+}
+⟦Σ:Source⟧{
+  src≜backlog/bxmo-2017-p2.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/bxmo-2017-p2.lean
+  sha≜∅
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
