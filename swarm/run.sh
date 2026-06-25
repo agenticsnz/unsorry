@@ -336,9 +336,12 @@ guard_solver_credit
 # first use; idempotent — a no-op once built) and enables the advisory nanoda
 # re-check after each proof (via UNSORRY_INDEPENDENT_CHECK, which agent.sh reads).
 # Consumed HERE and stripped from the args so it is not passed to agent.sh, which
-# has no such flag. Absent → normal run, zero overhead. NON-GATING: setup failure
-# (no lake/cargo) downgrades to a warning and proceeds without it — proving is
-# never blocked. The env exports survive the fork `exec` and the prover subprocess.
+# has no such flag. Absent → normal run, zero overhead. setup.sh self-bootstraps
+# its toolchains — lake via ensure_lake/elan (ADR-097), cargo via rustup — so a
+# bare machine builds the tools rather than skipping. NON-GATING: if a toolchain
+# genuinely cannot be installed (e.g. no curl), setup failure downgrades to a
+# warning and proceeds without it — proving is never blocked. The env exports
+# survive the fork `exec` and the prover subprocess.
 # Default ON (ADR-096): nanoda re-checks each proof unless explicitly opted out
 # with --no-independent-check or UNSORRY_INDEPENDENT_CHECK set falsey (the latter
 # lets infra/CI disable it without changing args). --independent-check is still

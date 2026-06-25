@@ -34,6 +34,12 @@ PROTOCOL_FILE="swarm/protocol.aisp"
 TRANSLATE_PROMPT_FILE="swarm/prompts/translate.md"
 EVIDENCE_LINE="⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩"
 
+# Shared bootstrap for the Lean build tool: `ensure_lake` puts elan on PATH and
+# installs it if `lake` is missing (ADR-097, SPEC-097-A). Sourced relative to this
+# script so it resolves regardless of the caller's cwd.
+# shellcheck source=swarm/lib/ensure_lake.sh
+. "$(dirname "${BASH_SOURCE[0]}")/lib/ensure_lake.sh"
+
 # ------------------------------------------------------------------- logging
 
 log() {
@@ -6413,7 +6419,7 @@ main() {
     # launching a provider; retain the caller's remaining PATH entries.
     PATH="/opt/homebrew/bin:/usr/local/bin:$HOME/.elan/bin:$PATH"
     export PATH
-    require_cmd lake
+    ensure_lake || die_config "the Lean build tool 'lake' is required and could not be installed automatically"
     case "$UNSORRY_PROVIDER" in
       claude) require_cmd claude ;;
       codex) require_cmd codex ;;
@@ -6529,7 +6535,8 @@ main() {
     [ "$PROVE" -eq 1 ] && resolve_solver
     [ "$PROVE" -eq 1 ] && guard_solver_credit
     [ "$PROVE" -eq 1 ] && resolve_git_identity
-    [ "$PROVE" -eq 1 ] && require_cmd lake  # prove verify builds locally
+    # prove verify builds locally — install lake (elan) if it is missing
+    [ "$PROVE" -eq 1 ] && { ensure_lake || die_config "the Lean build tool 'lake' is required and could not be installed automatically"; }
   fi
 
   local effort_disp="${UNSORRY_EFFORT:-default}"

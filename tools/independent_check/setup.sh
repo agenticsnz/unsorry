@@ -6,13 +6,18 @@
 #   tools/independent_check/setup.sh            # build into ~/.unsorry/independent-check
 #   eval "$(tools/independent_check/setup.sh --print-env)"   # re-print exports (no rebuild)
 #
-# Requires: a Lean toolchain (elan/lake, already present for proving) + Rust (cargo).
-# lean4export is pinned to the repo's lean-toolchain tag (ADR-002); nanoda is built
-# from its master HEAD (pin a reviewed commit before this becomes load-bearing —
-# ADR-096 acceptance gate 2).
+# Requires a Lean toolchain (elan/lake) + Rust (cargo); BOTH are installed
+# automatically if missing — lake via `ensure_lake` (ADR-097), cargo via
+# `ensure_cargo` below. lean4export is pinned to the repo's lean-toolchain tag
+# (ADR-002); nanoda is built from its master HEAD (pin a reviewed commit before
+# this becomes load-bearing — ADR-096 acceptance gate 2).
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+
+# Shared Lean-build-tool bootstrap (ADR-097): installs elan if `lake` is missing.
+# shellcheck source=swarm/lib/ensure_lake.sh
+. "$ROOT/swarm/lib/ensure_lake.sh"
 PREFIX="${UNSORRY_INDEPENDENT_CHECK_DIR:-$HOME/.unsorry/independent-check}"
 L4E_DIR="$PREFIX/lean4export"
 NAN_DIR="$PREFIX/nanoda"
@@ -68,6 +73,7 @@ ensure_cargo() {
 
   if [ ! -x "$L4E_BIN" ]; then
     echo "[setup] building lean4export@$TAG ..."
+    ensure_lake || { echo "[setup] Lean toolchain (lake) unavailable — cannot build lean4export"; exit 1; }
     rm -rf "$L4E_DIR"
     git clone --depth 1 --branch "$TAG" https://github.com/leanprover/lean4export.git "$L4E_DIR"
     ( cd "$L4E_DIR" && lake build )
