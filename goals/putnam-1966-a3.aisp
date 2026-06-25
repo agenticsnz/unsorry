@@ -1,0 +1,20 @@
+𝔸5.1.goal.putnam-1966-a3@2026-06-24
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜putnam-1966-a3
+  phase≜prove
+  status≜proved
+  difficulty≜4
+}
+⟦Σ:Source⟧{
+  src≜backlog/putnam-1966-a3.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/putnam-1966-a3.lean
+  sha≜b9d1e7a5a4a6b59d5460210953e7fcadd8b6fce34dc587b245f43db4252cd917
+  aff≜-19
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
