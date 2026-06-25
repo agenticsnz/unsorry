@@ -41,12 +41,17 @@ def check_proof(
     clock: Callable[[], float] = time.perf_counter,
     timeout: float = 300.0,
     negative_control: bool = False,
+    enforce_axioms: bool = False,
 ) -> dict:
     """Independently re-check one proved module's own theorem(s). Returns a verdict
     dict: status (`ok`/`error`/`incompatible`/`timeout`/`export-failed`/`no-decls`),
     seconds, export_bytes, export_sha256, declars, target_confirmed, and (if
     requested) nc_rejected. `ok` + target_confirmed ⇒ the independent kernel agrees
-    the proof checks and the theorem is genuinely present (not a deps-only export)."""
+    the proof checks and the theorem is genuinely present (not a deps-only export).
+
+    `enforce_axioms=True` sets `unpermitted_axiom_hard_error` so the mere presence of
+    a non-whitelisted axiom (incl. `sorryAx`) fails — the strict mode the Gate A audit
+    replacement (ADR-097) uses, equivalent to the axiom audit's footprint check."""
     export_dir.mkdir(parents=True, exist_ok=True)
     decls = module_source_decls(root, module)
     if not decls:
@@ -58,7 +63,8 @@ def check_proof(
     export_path = export_dir / f"{module}.export"
     export_path.write_bytes(data)
     config_path = export_dir / f"{module}.nanoda.json"
-    config_path.write_text(json.dumps(nanoda_config(export_path, confirm_decls=decls)), encoding="utf-8")
+    config_path.write_text(json.dumps(nanoda_config(
+        export_path, confirm_decls=decls, unpermitted_axiom_hard_error=enforce_axioms)), encoding="utf-8")
 
     seconds, status, stderr, stdout = timed_checker((*nanoda_cmd, str(config_path)), runner, clock, timeout)
     verdict = {
