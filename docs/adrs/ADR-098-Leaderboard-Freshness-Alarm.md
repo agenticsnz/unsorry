@@ -10,7 +10,7 @@
 
 ## Context
 
-ADR-097 cut the leaderboard regen from ~64 min to ~10 s, so the published board
+ADR-101 cut the leaderboard regen from ~64 min to ~10 s, so the published board
 (`docs/metrics/leaderboard-ui.json`, read live by `agenticsnz/unsorry-guild`) now tracks `main`
 within minutes under the normal merge flood. That fixes the *root cause* of issue #6317, but the
 issue also asked for **defence in depth** (its proposals #2/#3): even with a fast regen, the board
@@ -71,7 +71,7 @@ high-frequency monitor that would close even the quiescent gap is the deferred p
   30 min. The serialized worker / self-rescheduling backstop that would guarantee the bound in all
   conditions is deferred (proposal #2). The 30-min threshold is a heuristic; if it proves noisy or
   slack it is a one-line change.
-- **Builds on** ADR-097 (fast regen) and refines the ADR-036/082 post-merge model; does not change
+- **Builds on** ADR-101 (fast regen) and refines the ADR-036/082 post-merge model; does not change
   the trigger, push model, or the artifacts produced.
 
 ## References
@@ -79,7 +79,7 @@ high-frequency monitor that would close even the quiescent gap is the deferred p
 | Reference ID | Title | Type | Location |
 |--------------|-------|------|----------|
 | REF-1 | Freshness-alarm spec | Specification | specs/SPEC-098-A-Leaderboard-Freshness-Alarm.md |
-| REF-2 | Fast regen this hardens | Decision | ADR-097-Incremental-Leaderboard-Regen.md |
+| REF-2 | Fast regen this hardens | Decision | ADR-101-Incremental-Leaderboard-Regen.md |
 | REF-3 | `generated_at` definition reused as the freshness source-of-truth | Spec | specs/SPEC-023-A-Proof-Provenance-Leaderboard.md |
 | REF-4 | Single-pass refresh + push-retry loop | Decision/CI | ADR-082-Single-Pass-Leaderboard-Refresh.md · `.github/workflows/leaderboard.yml` |
 | REF-5 | Diagnosis + acceptance criteria (defence-in-depth proposals) | Issue | https://github.com/agenticsnz/unsorry/issues/6317 |

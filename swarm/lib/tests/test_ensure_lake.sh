@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Hermetic acceptance tests for swarm/lib/ensure_lake.sh (SPEC-097-A).
+# Hermetic acceptance tests for swarm/lib/ensure_lake.sh (SPEC-100-A).
 # No network: the elan install step is stubbed by redefining
 # `_ensure_lake_install_elan`. Run from anywhere.
 #

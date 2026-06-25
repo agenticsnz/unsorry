@@ -1,6 +1,6 @@
 """Leaderboard freshness gate — defence-in-depth for issue #6317 (ADR-098).
 
-The regen itself is fast now (ADR-097), so the published board normally tracks
+The regen itself is fast now (ADR-101), so the published board normally tracks
 ``main`` within minutes. This module is the *visible alarm* for when it does not
 — a stuck/queued runner, a lost push race, or a future regression — so the board
 can never go **silently** stale (the failure mode issue #6317 called out): it

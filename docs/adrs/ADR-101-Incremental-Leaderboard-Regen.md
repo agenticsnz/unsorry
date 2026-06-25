@@ -1,8 +1,8 @@
-# ADR-097: Per-Generation Leaderboard Regen (directory-scoped attribution + memoised loaders)
+# ADR-101: Per-Generation Leaderboard Regen (directory-scoped attribution + memoised loaders)
 
 | Field | Value |
 |-------|-------|
-| **Decision ID** | ADR-097 |
+| **Decision ID** | ADR-101 |
 | **Initiative** | unsorry — leaderboard regen runtime under a high merge cadence |
 | **Proposed By** | unsorry maintainers |
 | **Date** | 2026-06-25 |
@@ -96,7 +96,7 @@ through a fresh top-level call (it always does: the CLI is one-shot, the workflo
 
 | Reference ID | Title | Type | Location |
 |--------------|-------|------|----------|
-| REF-1 | Per-generation regen spec | Specification | specs/SPEC-097-A-Incremental-Leaderboard-Regen.md |
+| REF-1 | Per-generation regen spec | Specification | specs/SPEC-101-A-Incremental-Leaderboard-Regen.md |
 | REF-2 | Single-pass refresh this follows up (deferred the regen-speed fix) | Decision | ADR-082-Single-Pass-Leaderboard-Refresh.md |
 | REF-3 | Post-merge generated-artifact model | Decision | ADR-036-Targets-Board-Post-Merge-Refresh.md |
 | REF-4 | Leaderboard data model + determinism (`generated_at`, golden output) | Decision/Spec | ADR-023-Proof-Provenance-Leaderboard.md · specs/SPEC-023-A-Proof-Provenance-Leaderboard.md |

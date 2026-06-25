@@ -33,12 +33,12 @@
 # contents:write). When the secret is unset the workflow degrades to a
 # report-only notice instead of failing red. See issue #417.
 
-# Regen runtime (ADR-097, issue #6317): a single `tools.leaderboard` recompute
+# Regen runtime (ADR-101, issue #6317): a single `tools.leaderboard` recompute
 # over the live corpus is ~10 s — the directory-scoped git attribution + per-
 # generation memoised loaders replaced the old O(history × corpus) attribution
 # walk and the ~4–9× re-parse that had pushed one regen to ~64 min and starved
 # this refresh for hours. The "~2-min" / "~10-min" runtimes in the comments
-# below are pre-ADR-097 history, kept for the #426/#3735/ADR-082 narrative.
+# below are pre-ADR-101 history, kept for the #426/#3735/ADR-082 narrative.
 
 name: leaderboard
 
@@ -81,7 +81,7 @@ permissions:
 jobs:
   refresh:
     runs-on: ubuntu-latest
-    # Defence-in-depth (ADR-098, #6317): the regen is ~10 s (ADR-097), so a job
+    # Defence-in-depth (ADR-098, #6317): the regen is ~10 s (ADR-101), so a job
     # still executing after 15 min is hung/pathological, not slow — fail it loudly
     # rather than let it silently produce nothing. Counts execution time only (not
     # the runner-queue wait), so it never false-kills a normal refresh.
@@ -117,7 +117,7 @@ jobs:
           # The leaderboard regen is the heaviest of the three post-merge
           # refreshers — a CPU-bound recompute of contributor/rate/attribution
           # stats over the whole active+archive corpus (ADR-041). It is ~10 s
-          # since ADR-097 (#6317) made attribution directory-scoped and memoised
+          # since ADR-101 (#6317) made attribution directory-scoped and memoised
           # the loaders; it had grown to ~64 min before that. The previous shape
           # (pre-ADR-082) recomputed it TWICE per refresh:
           # once for a standalone `--check` drift probe, then again for `--write`.

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # swarm/lib/ensure_lake.sh — make `lake` available, installing the Lean toolchain
-# manager (elan) non-interactively if it is missing (ADR-097, SPEC-097-A).
+# manager (elan) non-interactively if it is missing (ADR-100, SPEC-100-A).
 #
 # Source this file and call `ensure_lake` before any `lake` invocation in a
 # client-side swarm script. It is the single authoritative bootstrap for the Lean

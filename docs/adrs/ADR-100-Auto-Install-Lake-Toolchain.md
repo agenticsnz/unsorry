@@ -1,8 +1,8 @@
-# ADR-097: Client-Side Swarm Scripts Auto-Install the Lean Build Tool (`lake`)
+# ADR-100: Client-Side Swarm Scripts Auto-Install the Lean Build Tool (`lake`)
 
 | Field | Value |
 |-------|-------|
-| **Decision ID** | ADR-097 |
+| **Decision ID** | ADR-100 |
 | **Initiative** | contributor onboarding / swarm self-sufficiency |
 | **Proposed By** | unsorry maintainers |
 | **Date** | 2026-06-25 |
@@ -102,7 +102,7 @@ allows a private mirror).
 
 | Reference ID | Title | Type | Location |
 |--------------|-------|------|----------|
-| REF-1 | `ensure_lake` bootstrap spec | Specification | specs/SPEC-097-A-Auto-Install-Lake-Toolchain.md |
+| REF-1 | `ensure_lake` bootstrap spec | Specification | specs/SPEC-100-A-Auto-Install-Lake-Toolchain.md |
 | REF-2 | mathlib pinned to release tags; toolchain via elan from `lean-toolchain` | Decision | ADR-002-Lean4-Mathlib-Pinned-Release-Tags.md |
 | REF-3 | Phase 3 scoped-export + independent checker (the `setup.sh` that failed) | Decision | ADR-096-Phase3-Scoped-Export-Independent-Checker.md |
 | REF-4 | Runner-pool segmentation & verification capacity (`run.sh` flow) | Decision | ADR-058-Runner-Pool-Segmentation-And-Verification-Capacity.md |

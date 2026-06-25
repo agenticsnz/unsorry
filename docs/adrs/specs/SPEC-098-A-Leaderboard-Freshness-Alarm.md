@@ -1,6 +1,6 @@
 # SPEC-098-A: Leaderboard Freshness Alarm + Refresh Timeout
 
-Implements: [ADR-098](../ADR-098-Leaderboard-Freshness-Alarm.md) · Builds on [ADR-097](../ADR-097-Incremental-Leaderboard-Regen.md) (fast regen) · Reuses [SPEC-023-A](SPEC-023-A-Proof-Provenance-Leaderboard.md) (`generated_at` definition) · Status: Living · Updated: 2026-06-25
+Implements: [ADR-098](../ADR-098-Leaderboard-Freshness-Alarm.md) · Builds on [ADR-101](../ADR-101-Incremental-Leaderboard-Regen.md) (fast regen) · Reuses [SPEC-023-A](SPEC-023-A-Proof-Provenance-Leaderboard.md) (`generated_at` definition) · Status: Living · Updated: 2026-06-25
 
 ## What changed
 
@@ -34,7 +34,7 @@ integer (`--threshold-minutes N` or `=N`); anything else → exit 2 (usage error
 
 ## Workflow wiring (`leaderboard.yml`)
 
-- **`timeout-minutes: 15`** on the `refresh` job. The regen is ~10 s (ADR-097), so a job still
+- **`timeout-minutes: 15`** on the `refresh` job. The regen is ~10 s (ADR-101), so a job still
   *executing* after 15 min is hung, not slow. Counts execution time only — not the runner-queue
   wait — so it never false-kills a normal refresh.
 - **Freshness step** (`if: always()`, after both the refresh and the no-token report-only paths):

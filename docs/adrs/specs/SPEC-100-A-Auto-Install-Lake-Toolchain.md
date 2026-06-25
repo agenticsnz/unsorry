@@ -1,12 +1,12 @@
-# SPEC-097-A: `ensure_lake` — Auto-Install the Lean Build Tool
+# SPEC-100-A: `ensure_lake` — Auto-Install the Lean Build Tool
 
-**Implements:** [ADR-097](../ADR-097-Auto-Install-Lake-Toolchain.md)
+**Implements:** [ADR-100](../ADR-100-Auto-Install-Lake-Toolchain.md)
 **Related:** [ADR-002](../ADR-002-Lean4-Mathlib-Pinned-Release-Tags.md) (toolchain
 pin via `lean-toolchain`), [ADR-096](../ADR-096-Phase3-Scoped-Export-Independent-Checker.md)
 (the `setup.sh` flow), [ADR-019](../ADR-019-CI-Supply-Chain-Protection.md)
 (CODEOWNERS trust surface)
 
-This spec is the living "how" for ADR-097. It defines the shared `ensure_lake`
+This spec is the living "how" for ADR-100. It defines the shared `ensure_lake`
 bootstrap, the call sites that route through it, and the acceptance tests.
 
 ## 1. The shared bootstrap (`swarm/lib/ensure_lake.sh`)

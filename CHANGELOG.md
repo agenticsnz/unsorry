@@ -91,14 +91,14 @@ bare machine that previously failed with `lake: command not found` (and silently
 disabled the independent check) now bootstraps the toolchain and proceeds. Mirrors
 the existing `ensure_cargo` Rust bootstrap; idempotent, non-invasive
 (`--no-modify-path`), and `ELAN_INIT_URL`-overridable for mirrors
-([ADR-097](docs/adrs/ADR-097-Auto-Install-Lake-Toolchain.md),
-[SPEC-097-A](docs/adrs/specs/SPEC-097-A-Auto-Install-Lake-Toolchain.md)).
+([ADR-100](docs/adrs/ADR-100-Auto-Install-Lake-Toolchain.md),
+[SPEC-100-A](docs/adrs/specs/SPEC-100-A-Auto-Install-Lake-Toolchain.md)).
 - Fixed a `NameError` that crashed `import_benchmark --build`: `_probe_verdict` referenced `EXTRA_BATTERY` (the ADR-078 battery extension) without importing it. The function is `# pragma: no cover` (needs Lean) and the unit tests inject a stubbed verdict, so it never ran in CI — it would have crashed on the first real `--build` run. Imported it from `skeleton_validate` and added a regression test that exercises `_probe_verdict` with a stubbed probe (no Lean). (#5643.)
 - Fixed two `import_benchmark` extraction bugs that produced malformed goals (`lake build` failed on PutnamBench's `putnam_1965_b4`): (1) the theorem-signature regex stopped at the *first* `:=`, truncating any statement with an internal `:=` such as `let ⟨p, q⟩ := solution` — it now cuts only at the proof `:= by|sorry`; (2) signature whitespace was collapsed, which re-parsed structurally-significant newlines (a `let … := v` value ran into its body as function application) — the original statement formatting is now preserved verbatim. Added regression tests; the fixed goal builds under real Lean. (#5643.)
 - Fixed `tools/independent_check/setup.sh` leaking build-tool output onto stdout, which broke `./swarm/run.sh --independent-check` on a first run with `eval: syntax error near unexpected token '('` (ADR-096). The flow does `eval "$(setup.sh)"`, so stdout must carry *only* the env exports — but `git clone` / `lake build` / `cargo build` (e.g. cargo's `Compiling nanoda_lib (…(path))`) wrote to stdout and got eval'd. The build section is now wrapped in `{ … } >&2` so all tool output goes to stderr and stdout is exactly the three `export` lines. (Subsequent runs were unaffected — the build is skipped once the binaries are cached.)
 - The leaderboard regen no longer stalls the board for hours under a merge flood
 ([#6317](https://github.com/agenticsnz/unsorry/issues/6317),
-[ADR-097](docs/adrs/ADR-097-Incremental-Leaderboard-Regen.md)). A single
+[ADR-101](docs/adrs/ADR-101-Incremental-Leaderboard-Regen.md)). A single
 `tools.leaderboard` recompute over the live corpus dropped from **~64 min to
 ~10 s** — restoring the push-on-merge model so `docs/metrics/leaderboard-ui.json`
 tracks `main` within minutes instead of going hours stale. Two fixes, both

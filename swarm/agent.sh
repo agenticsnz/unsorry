@@ -35,7 +35,7 @@ TRANSLATE_PROMPT_FILE="swarm/prompts/translate.md"
 EVIDENCE_LINE="⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩"
 
 # Shared bootstrap for the Lean build tool: `ensure_lake` puts elan on PATH and
-# installs it if `lake` is missing (ADR-097, SPEC-097-A). Sourced relative to this
+# installs it if `lake` is missing (ADR-100, SPEC-100-A). Sourced relative to this
 # script so it resolves regardless of the caller's cwd.
 # shellcheck source=swarm/lib/ensure_lake.sh
 . "$(dirname "${BASH_SOURCE[0]}")/lib/ensure_lake.sh"

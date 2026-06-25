@@ -1,6 +1,6 @@
-# SPEC-097-A: Per-Generation Leaderboard Regen
+# SPEC-101-A: Per-Generation Leaderboard Regen
 
-Implements: [ADR-097](../ADR-097-Incremental-Leaderboard-Regen.md) · Follows up [SPEC-082-A](SPEC-082-A-Single-Pass-Leaderboard-Refresh.md) (single-pass refresh) · Preserves [SPEC-023-A](SPEC-023-A-Proof-Provenance-Leaderboard.md) (data model + determinism) · Status: Living · Updated: 2026-06-25
+Implements: [ADR-101](../ADR-101-Incremental-Leaderboard-Regen.md) · Follows up [SPEC-082-A](SPEC-082-A-Single-Pass-Leaderboard-Refresh.md) (single-pass refresh) · Preserves [SPEC-023-A](SPEC-023-A-Proof-Provenance-Leaderboard.md) (data model + determinism) · Status: Living · Updated: 2026-06-25
 
 ## What changed
 

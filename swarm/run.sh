@@ -337,7 +337,7 @@ guard_solver_credit
 # re-check after each proof (via UNSORRY_INDEPENDENT_CHECK, which agent.sh reads).
 # Consumed HERE and stripped from the args so it is not passed to agent.sh, which
 # has no such flag. Absent → normal run, zero overhead. setup.sh self-bootstraps
-# its toolchains — lake via ensure_lake/elan (ADR-097), cargo via rustup — so a
+# its toolchains — lake via ensure_lake/elan (ADR-100), cargo via rustup — so a
 # bare machine builds the tools rather than skipping. NON-GATING: if a toolchain
 # genuinely cannot be installed (e.g. no curl), setup failure downgrades to a
 # warning and proceeds without it — proving is never blocked. The env exports

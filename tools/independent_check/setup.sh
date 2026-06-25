@@ -7,7 +7,7 @@
 #   eval "$(tools/independent_check/setup.sh --print-env)"   # re-print exports (no rebuild)
 #
 # Requires a Lean toolchain (elan/lake) + Rust (cargo); BOTH are installed
-# automatically if missing — lake via `ensure_lake` (ADR-097), cargo via
+# automatically if missing — lake via `ensure_lake` (ADR-100), cargo via
 # `ensure_cargo` below. lean4export is pinned to the repo's lean-toolchain tag
 # (ADR-002); nanoda is built from its master HEAD (pin a reviewed commit before
 # this becomes load-bearing — ADR-096 acceptance gate 2).
@@ -15,7 +15,7 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 
-# Shared Lean-build-tool bootstrap (ADR-097): installs elan if `lake` is missing.
+# Shared Lean-build-tool bootstrap (ADR-100): installs elan if `lake` is missing.
 # shellcheck source=swarm/lib/ensure_lake.sh
 . "$ROOT/swarm/lib/ensure_lake.sh"
 PREFIX="${UNSORRY_INDEPENDENT_CHECK_DIR:-$HOME/.unsorry/independent-check}"

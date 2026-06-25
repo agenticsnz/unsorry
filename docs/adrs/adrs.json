@@ -773,22 +773,6 @@
     {
       "id": "ADR-097",
       "number": 97,
-      "title": "Client-Side Swarm Scripts Auto-Install the Lean Build Tool (`lake`)",
-      "status": "Proposed",
-      "date": "2026-06-25",
-      "file": "ADR-097-Auto-Install-Lake-Toolchain.md"
-    },
-    {
-      "id": "ADR-097",
-      "number": 97,
-      "title": "Per-Generation Leaderboard Regen (directory-scoped attribution + memoised loaders)",
-      "status": "Accepted",
-      "date": "2026-06-25",
-      "file": "ADR-097-Incremental-Leaderboard-Regen.md"
-    },
-    {
-      "id": "ADR-097",
-      "number": 97,
       "title": "Phase 3b — Replace the Gate A Axiom Audit with the nanoda Scoped-Export Check (p=1 preserved)",
       "status": "Proposed",
       "date": "2026-06-25",
@@ -801,6 +785,22 @@
       "status": "Accepted",
       "date": "2026-06-25",
       "file": "ADR-098-Leaderboard-Freshness-Alarm.md"
+    },
+    {
+      "id": "ADR-100",
+      "number": 100,
+      "title": "Client-Side Swarm Scripts Auto-Install the Lean Build Tool (`lake`)",
+      "status": "Proposed",
+      "date": "2026-06-25",
+      "file": "ADR-100-Auto-Install-Lake-Toolchain.md"
+    },
+    {
+      "id": "ADR-101",
+      "number": 101,
+      "title": "Per-Generation Leaderboard Regen (directory-scoped attribution + memoised loaders)",
+      "status": "Accepted",
+      "date": "2026-06-25",
+      "file": "ADR-101-Incremental-Leaderboard-Regen.md"
     }
   ]
 }
