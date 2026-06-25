@@ -69,6 +69,36 @@ the controls; the anchor reuses them:
 - **Pin discipline** — `lean4export` and the checker are pinned to the `lean-toolchain` tag
   (ADR-002); a toolchain bump updates both in a dedicated PR.
 
+## 5a. Contributor-side entry — the `run.sh` switch (shipped)
+
+The first production placement is **contributor-side and advisory**, the lowest-risk way
+to run the anchor on real swarm proofs at scale (ADR-096 Phase 3a). It is **untrusted**
+(ADR-049) and therefore can never be load-bearing — which is exactly what makes it safe and
+additive.
+
+- **Switch:** `UNSORRY_INDEPENDENT_CHECK` (default **off**; `env_truthy`). Documented in
+  `swarm/run.sh`.
+- **Hook:** `swarm/agent.sh::independent_check_advisory` runs **after** a proof passes
+  `prove_local_verify` (and after ADR-074 import minimisation), mirroring
+  `minimize_proof_imports`'s best-effort pattern. It is **non-gating and never fails the
+  prove loop**: if `LEAN4EXPORT_BIN`/`NANODA_BIN` are absent or the check errors, it logs and
+  returns 0.
+- **Check:** `python3 -m tools.independent_check --module Unsorry.<Camel>` →
+  `tools.independent_check.check_proof`, which reuses the pilot primitives (§3) for a single
+  proof: declaration-scoped export → nanoda with the `pp_declars` positive-control guard →
+  verdict line. A nanoda **disagreement** (it rejects a locally-accepted proof) is surfaced
+  as a `::warning::`, **never a block** — soundness rests on ADR-049's `p = 1` Lean gate in
+  CI, unchanged.
+- **Tools:** built once via `tools/independent_check/setup.sh` (lean4export pinned to the
+  `lean-toolchain` tag; nanoda from source — pin a reviewed commit before §4 gate 2). The
+  dependency is the only real friction; the switch degrades to a logged skip without it.
+- **Tests:** `tools/independent_check/tests/` (Python, hermetic) + an `agent.sh --self-test`
+  case asserting the switch is opt-in and never invokes the tools when off or absent.
+
+This entry gates nothing and admits nothing; it generates the agreement data and exercises
+the path that the trusted-side placements (§1, and the future Phase 3b backstop) and the §4
+acceptance gates build on.
+
 ## 6. Out of scope
 
 - Making the independent checker merge-gating (needs §4 + Phase 3b).

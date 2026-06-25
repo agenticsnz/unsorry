@@ -52,6 +52,14 @@
 #                            0/false/no/off omits it — e.g. a deployment whose
 #                            backlog is topped up by a scheduled sourcing job)
 #   UNSORRY_SOURCING_WAIT    sourcer re-poll interval seconds (default 300)
+#   UNSORRY_INDEPENDENT_CHECK  opt-in (default off) advisory kernel-diverse check
+#                            (ADR-096 Phase 3a): after a proof verifies locally,
+#                            re-check it with an independent Lean kernel (nanoda)
+#                            over a declaration-scoped lean4export. NON-GATING —
+#                            admits nothing, never blocks proving; ADR-049's p=1
+#                            Lean gate in CI is unchanged. Needs LEAN4EXPORT_BIN +
+#                            an executable NANODA_BIN (build once via
+#                            tools/independent_check/setup.sh); absent → skipped.
 set -euo pipefail
 
 usage() {

@@ -3027,6 +3027,7 @@ Fix the module so both pass. Write the corrected $target."
     write_binding_module "$prwt" "$goal" "$camel" || { err="(could not emit binding obligation)"; continue; }
     if prove_local_verify "$prwt" "$camel"; then
       minimize_proof_imports "$prwt" "$camel"   # ADR-074: best-effort, never fails the proof
+      independent_check_advisory "$prwt" "$camel"  # ADR-096: best-effort kernel-diverse confirm, never fails the proof
       PROOF_SOLVE_SECONDS=$(( $(date +%s) - proof_started ))
       log "proof of $goal verified locally — statement bound (attempt $attempt)"
       return 0
@@ -3071,6 +3072,47 @@ minimize_proof_imports() {
     log "narrowed imports for $camel did not build — kept import Mathlib (ADR-074)"
   fi
   rm -f "$narrowed" "$bak"
+  return 0
+}
+
+# ADR-096 Phase 3a: advisory kernel-diverse independent check. Opt-in via
+# UNSORRY_INDEPENDENT_CHECK (default off), NON-GATING. After a proof verifies
+# locally, re-check it with an independent Lean kernel (nanoda) over a
+# declaration-scoped lean4export of the proved theorem — a second-kernel
+# confirmation. ADVISORY ONLY: it admits nothing and is strictly subordinate to
+# ADR-049's p=1 Lean gate (which still runs in CI regardless). It NEVER fails the
+# prove loop — if the tools (LEAN4EXPORT_BIN / NANODA_BIN) are absent or the check
+# errors, it logs and returns 0. A nanoda disagreement is surfaced as a warning,
+# never a block. Mirrors minimize_proof_imports's best-effort pattern.
+independent_check_advisory() {
+  env_truthy "${UNSORRY_INDEPENDENT_CHECK:-}" || return 0
+  local prwt="$1" camel="$2"
+  local l4e="${LEAN4EXPORT_BIN:-}" nan="${NANODA_BIN:-}"
+  if [ -z "$l4e" ] || [ -z "$nan" ] || [ ! -x "$nan" ]; then
+    log "independent-check: requested but lean4export/nanoda unavailable (set LEAN4EXPORT_BIN and an executable NANODA_BIN) — skipping (ADR-096)"
+    return 0
+  fi
+  local out
+  out="$( ( cd "$prwt" && python3 -m tools.independent_check \
+            --module "Unsorry.$camel" \
+            --lean4export-cmd "lake env $l4e" --nanoda-cmd "$nan" ) 2>&1 )" || true
+  [ -n "$out" ] && log "$out"
+  return 0
+}
+
+# ADR-096: the independent check is opt-in and never breaks proving. Off by
+# default → no-op exit 0; on but tools absent → skip (no python invoked) exit 0.
+test_independent_check_advisory_opt_in() {
+  local ran=0
+  python3() { ran=1; return 0; }  # tripwire: must NOT be invoked in either case
+  # default (unset) → no-op, returns 0, python untouched
+  ( unset UNSORRY_INDEPENDENT_CHECK; independent_check_advisory /tmp/x Foo ) \
+    || { log "  default-off should return 0"; unset -f python3; return 1; }
+  # on, but NANODA_BIN absent → skips gracefully, returns 0, python untouched
+  ( UNSORRY_INDEPENDENT_CHECK=1 LEAN4EXPORT_BIN= NANODA_BIN= independent_check_advisory /tmp/x Foo ) \
+    || { log "  on-but-tools-absent should return 0"; unset -f python3; return 1; }
+  [ "$ran" = 0 ] || { log "  python must not run without the tools present"; unset -f python3; return 1; }
+  unset -f python3
   return 0
 }
 
@@ -5960,6 +6002,7 @@ run_self_tests() {
     test_demote_open_prove_records_telemetry_only
     test_floored_recompose_noop_records_telemetry_only
     test_render_decomp_gateb
+    test_independent_check_advisory_opt_in
   )
   local failures=0 t
   for t in "${tests[@]}"; do
