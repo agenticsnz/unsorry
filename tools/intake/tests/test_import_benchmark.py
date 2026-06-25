@@ -266,6 +266,26 @@ def test_assemble_bundles_companion_into_goal(tmp_path):
     assert goal.rstrip().endswith("sorry")  # the obligation sorry is still the last token
 
 
+def test_extract_imolean_names_from_filename_and_strips_namespace():
+    from tools.intake.import_benchmark import extract_imolean
+
+    src = (
+        "/- copyright -/\n"
+        "import Mathlib\n\n"
+        "open scoped Finset\n\n"
+        "namespace IMO2020P2\n\n"
+        "theorem result {a : ℝ} (h : 0 < a) : a + 0 = a := by\n  sorry\n\n"
+        "end IMO2020P2\n"
+    )
+    problems = extract_imolean(src, "IMOLean", "IMO2020P2")
+    assert len(problems) == 1
+    p = problems[0]
+    assert p.name == "IMO2020P2"  # goal name from the FILE, not the theorem ("result")
+    assert "namespace" not in p.preamble and "end" not in p.preamble  # wrapper dropped
+    assert "open scoped Finset" in p.preamble  # real companions kept
+    assert p.signature.endswith("a + 0 = a")
+
+
 def test_assemble_accumulates_across_batches(tmp_path):
     common = dict(supplier="acme", domain="lean-math", mathlib="m", toolchain="t", license="L")
     assemble_package(tmp_path, "putnam-v1", [Problem("putnam_a", ": 1 = 1", "P")], **common)

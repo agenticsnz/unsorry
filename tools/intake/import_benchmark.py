@@ -90,9 +90,12 @@ def _subscript(i: int) -> str:
     return "".join(chr(0x2080 + int(d)) for d in str(i))
 
 
-def extract_putnambench(text: str, source_ref: str = "") -> list[Problem]:
-    """Extract every ``theorem`` statement plus its companion preamble from PutnamBench
-    Lean source (one file's text)."""
+def extract_putnambench(
+    text: str, source_ref: str = "", filename: str | None = None
+) -> list[Problem]:
+    """Extract every ``theorem`` statement plus its companion preamble from a Lean source
+    file where the theorem name *is* the goal name (PutnamBench, miniF2F, CombiBench).
+    ``filename`` is accepted for a uniform extractor signature but unused here."""
     preamble = companion_preamble(text)
     problems = []
     for match in _THEOREM_RE.finditer(text):
@@ -110,6 +113,38 @@ def extract_putnambench(text: str, source_ref: str = "") -> list[Problem]:
             )
         )
     return problems
+
+
+_NAMESPACE_RE = re.compile(r"^\s*(namespace|end)\b")
+
+
+def extract_imolean(
+    text: str, source_ref: str = "", filename: str | None = None
+) -> list[Problem]:
+    """IMOLean source: every file's theorem is named ``result`` inside a per-problem
+    ``namespace`` (e.g. ``IMO2020P2``), so the goal name comes from the **filename**, and
+    the namespace wrapper is dropped (the statement is self-contained over Mathlib)."""
+    match = _THEOREM_RE.search(text)
+    if match is None or not filename:
+        return []
+    preamble = "\n".join(
+        line for line in companion_preamble(text).splitlines() if not _NAMESPACE_RE.match(line)
+    ).strip()
+    return [
+        Problem(
+            name=filename,
+            signature=match.group("sig").strip(),
+            source_ref=source_ref,
+            preamble=preamble,
+        )
+    ]
+
+
+#: Per-suite extractors (uniform ``(text, source_ref, filename) -> [Problem]`` signature).
+EXTRACTORS: dict[str, Callable[[str, str, str | None], list[Problem]]] = {
+    "theorem-named": extract_putnambench,  # PutnamBench / miniF2F / CombiBench
+    "imolean": extract_imolean,            # filename-named, namespace-wrapped
+}
 
 
 def batches(items: list, size: int = DEFAULT_BATCH) -> Iterator[list]:
@@ -336,6 +371,14 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--root", default=".")
     parser.add_argument("--limit", type=int, default=DEFAULT_BATCH)
     parser.add_argument(
+        "--extractor", default="theorem-named", choices=sorted(EXTRACTORS),
+        help="per-suite extractor: theorem-named (PutnamBench/miniF2F/CombiBench) or imolean",
+    )
+    parser.add_argument(
+        "--exclude", default="",
+        help="comma-separated theorem/goal names to skip (e.g. a benchmark's errata list)",
+    )
+    parser.add_argument(
         "--build",
         action="store_true",
         help="elaborate each statement under the pinned mathlib: quarantine the ones "
@@ -343,11 +386,15 @@ def main(argv: list[str] | None = None) -> int:
     )
     args = parser.parse_args(argv)
 
+    extract = EXTRACTORS[args.extractor]
+    excluded = {name.strip() for name in args.exclude.split(",") if name.strip()}
     src = Path(args.source)
     files = sorted(src.rglob("*.lean")) if src.is_dir() else [src]
     problems: list[Problem] = []
     for file in files:
-        problems.extend(extract_putnambench(file.read_text("utf-8"), args.reference))
+        problems.extend(extract(file.read_text("utf-8"), args.reference, file.stem))
+    if excluded:
+        problems = [p for p in problems if p.name not in excluded]
     if not problems:
         print("no theorems found", file=sys.stderr)
         return 2
