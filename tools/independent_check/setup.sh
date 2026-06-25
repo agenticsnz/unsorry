@@ -18,6 +18,10 @@ L4E_DIR="$PREFIX/lean4export"
 NAN_DIR="$PREFIX/nanoda"
 L4E_BIN="$L4E_DIR/.lake/build/bin/lean4export"
 NAN_BIN="$NAN_DIR/target/release/nanoda_bin"
+# nanoda is PINNED to a reviewed commit (0.4.10-beta), not master HEAD — ADR-096
+# §4 gate 2 (soundness review: docs/adrs/reviews/nanoda-soundness-review.md).
+# Bump only in a dedicated PR after re-reviewing the diff.
+NANODA_COMMIT="f58f2f6d535e189a40fcb02ede8eb95f97a92d37"
 
 print_env() {
   printf 'export LEAN4EXPORT_BIN=%q\n' "$L4E_BIN"
@@ -73,7 +77,11 @@ ensure_cargo() {
     echo "[setup] building nanoda (nanoda_bin) ..."
     ensure_cargo || { echo "[setup] Rust unavailable — cannot build nanoda"; exit 1; }
     rm -rf "$NAN_DIR"
-    git clone --depth 1 https://github.com/ammkrn/nanoda_lib.git "$NAN_DIR"
+    # Shallow-fetch the PINNED commit (reachable on master, so GitHub allows it),
+    # not master HEAD — reproducible + matches the reviewed artifact (§4 gate 2).
+    git init -q "$NAN_DIR"
+    git -C "$NAN_DIR" fetch -q --depth 1 https://github.com/ammkrn/nanoda_lib.git "$NANODA_COMMIT"
+    git -C "$NAN_DIR" checkout -q FETCH_HEAD
     ( cd "$NAN_DIR" && cargo build --release --bin nanoda_bin )
   fi
 

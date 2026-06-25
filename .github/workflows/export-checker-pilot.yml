@@ -108,9 +108,15 @@ jobs:
       # build/parse failure is a recorded result.
       - name: Build nanoda (independent checker)
         continue-on-error: true
+        env:
+          # PINNED to the reviewed commit (0.4.10-beta; ADR-096 §4 gate 2), not
+          # master HEAD — reproducible + matches what setup.sh builds.
+          NANODA_COMMIT: f58f2f6d535e189a40fcb02ede8eb95f97a92d37
         run: |
           set -euo pipefail
-          git clone --depth 1 https://github.com/ammkrn/nanoda_lib.git "$RUNNER_TEMP/nanoda"
+          git init -q "$RUNNER_TEMP/nanoda"
+          git -C "$RUNNER_TEMP/nanoda" fetch -q --depth 1 https://github.com/ammkrn/nanoda_lib.git "$NANODA_COMMIT"
+          git -C "$RUNNER_TEMP/nanoda" checkout -q FETCH_HEAD
           ( cd "$RUNNER_TEMP/nanoda" && cargo build --release --bin nanoda_bin )
           echo "NANODA_BIN=$RUNNER_TEMP/nanoda/target/release/nanoda_bin" >> "$GITHUB_ENV"
 

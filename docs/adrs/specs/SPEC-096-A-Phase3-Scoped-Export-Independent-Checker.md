@@ -68,9 +68,18 @@ the controls; the anchor reuses them:
    Phase 3b. `type-swap` exercises the kernel's type-matching, but is not a substitute for the
    binding gate on true vacuity. So the binding gate is a **non-negotiable companion** to any
    nanoda-as-gate placement (§ Phase 3b), not something nanoda replaces.
-2. **Checker code/soundness review** — a review of the independent checker itself
-   (`nanoda 0.4.10-beta`), pinned to a reviewed commit; if it ever becomes load-bearing it
-   enters the ADR-019 CODEOWNERS trust surface.
+2. **Checker code/soundness review** *(addressed for co-gate use —
+   [docs/adrs/reviews/nanoda-soundness-review.md](reviews/nanoda-soundness-review.md))*. nanoda
+   is **pinned** to the reviewed commit `f58f2f6` (0.4.10-beta) in `setup.sh` + the pilot
+   workflow (no longer master HEAD). Verdict: a **genuine independent type-checker** (infers
+   value-type, checks def-eq vs declared type — `tc.rs:92-93`; enforces the axiom whitelist —
+   `parser.rs:445-448,752-755`; reconstructs recursors), **qualified yes for a co-gate**. The
+   review's three operational requirements are honoured: our wrapper treats any non-zero exit
+   as a rejected verdict (`classify_checker`); we never set `unsafe_permit_all_axioms`; and the
+   `nat`/`string` extensions we enable are covered by the companion `leanchecker` (the real
+   Lean kernel). Residual items (inductive-checker depth, export-format TCB, fuzz corpus) are
+   the audit backlog that gates any *sole-oracle* use — they do **not** block co-gating.
+   If/when nanoda becomes load-bearing it enters the ADR-019 CODEOWNERS trust surface.
 3. **Cross-machine determinism** — same module exported on two distinct runners hashes
    identically (required only if export-hash is used as a cross-machine oracle).
 4. **Hardest-proof stress** — scoped-export size + checker wall-clock stay tractable on the
