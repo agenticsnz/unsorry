@@ -266,3 +266,39 @@ def test_phase1_restored_dependency_olean_has_explicit_provenance_check():
 )
 def test_phase1_unchanged_module_olean_rebuilds_byte_identically():
     raise AssertionError("determinism is a Lean-layer property; see skip reason")
+
+
+# --- ADR-097 / SPEC-097-A §6: nanoda audit-replacement cutover is wired sound ---
+
+def test_gate_a_aggregator_requires_nanoda_and_keeps_replay_p1():
+    """The required `gate-a` aggregator must require gate-a-nanoda AND gate-a-replay
+    on the active path (replay keeps p=1 — ADR-097 does NOT amend the kernel oracle)."""
+    text = _workflow_text()
+    assert "gate-a-nanoda:$NANODA_RESULT" in text, "aggregator must require the nanoda check"
+    assert "gate-a-replay:$REPLAY_RESULT" in text, "aggregator must still require the leanchecker replay (p=1)"
+
+
+def test_gate_a_audit_runs_only_as_nanoda_fallback():
+    """The real axiom_audit must be GATED on nanoda not covering — i.e. it runs only
+    on the non-leaf fallback, and the aggregator requires it only then (fail-closed:
+    a covered leaf is gated by nanoda; anything else falls back to the audit)."""
+    text = _workflow_text()
+    assert "needs.gate_a_nanoda.outputs.covered != 'true'" in text, \
+        "audit jobs must be conditional on nanoda NOT covering"
+    # the aggregator requires the audit only when nanoda did not cover
+    assert 'if [ "$NANODA_COVERED" != "true" ]; then' in text, \
+        "aggregator must require the audit only on the nanoda-not-covered fallback"
+
+
+def test_nanoda_is_pinned_not_master_head():
+    """nanoda must be built from a PINNED commit, never master HEAD (ADR-096 gate 2):
+    no `git clone … nanoda_lib.git` without a pinned SHA in setup.sh or the workflows."""
+    import re
+    setup = (REPO_ROOT / "tools" / "independent_check" / "setup.sh").read_text(encoding="utf-8")
+    assert "NANODA_COMMIT=" in setup, "setup.sh must pin a NANODA_COMMIT"
+    # a shallow clone of nanoda_lib WITHOUT a pinned checkout is forbidden
+    for path in (REPO_ROOT / "tools" / "independent_check" / "setup.sh",
+                 REPO_ROOT / ".github" / "workflows" / "export-checker-pilot.yml"):
+        t = path.read_text(encoding="utf-8")
+        assert not re.search(r"clone --depth 1 https://github\.com/ammkrn/nanoda_lib\.git", t), \
+            f"{path.name}: nanoda must be fetched at a pinned commit, not cloned at HEAD"
