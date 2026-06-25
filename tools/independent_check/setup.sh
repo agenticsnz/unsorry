@@ -52,24 +52,31 @@ ensure_cargo() {
   command -v cargo >/dev/null 2>&1
 }
 
-TAG="$(tr -d '[:space:]' < "$ROOT/lean-toolchain" | sed 's#.*:##')"   # e.g. v4.30.0
-echo "[setup] toolchain tag: $TAG  prefix: $PREFIX" >&2
-mkdir -p "$PREFIX"
+# ALL build output goes to stderr — STDOUT must carry ONLY print_env's exports,
+# because the run.sh --independent-check flow does `eval "$(setup.sh)"`. A build
+# tool writing to stdout (e.g. cargo's `Compiling nanoda_lib (… (path))`) would
+# otherwise be eval'd and crash with a syntax error. `{ … } >&2` is a group, not a
+# subshell, so ensure_cargo's PATH export persists for the cargo build below.
+{
+  TAG="$(tr -d '[:space:]' < "$ROOT/lean-toolchain" | sed 's#.*:##')"   # e.g. v4.30.0
+  echo "[setup] toolchain tag: $TAG  prefix: $PREFIX"
+  mkdir -p "$PREFIX"
 
-if [ ! -x "$L4E_BIN" ]; then
-  echo "[setup] building lean4export@$TAG ..." >&2
-  rm -rf "$L4E_DIR"
-  git clone --depth 1 --branch "$TAG" https://github.com/leanprover/lean4export.git "$L4E_DIR"
-  ( cd "$L4E_DIR" && lake build )
-fi
+  if [ ! -x "$L4E_BIN" ]; then
+    echo "[setup] building lean4export@$TAG ..."
+    rm -rf "$L4E_DIR"
+    git clone --depth 1 --branch "$TAG" https://github.com/leanprover/lean4export.git "$L4E_DIR"
+    ( cd "$L4E_DIR" && lake build )
+  fi
 
-if [ ! -x "$NAN_BIN" ]; then
-  echo "[setup] building nanoda (nanoda_bin) ..." >&2
-  ensure_cargo || { echo "[setup] Rust unavailable — cannot build nanoda" >&2; exit 1; }
-  rm -rf "$NAN_DIR"
-  git clone --depth 1 https://github.com/ammkrn/nanoda_lib.git "$NAN_DIR"
-  ( cd "$NAN_DIR" && cargo build --release --bin nanoda_bin )
-fi
+  if [ ! -x "$NAN_BIN" ]; then
+    echo "[setup] building nanoda (nanoda_bin) ..."
+    ensure_cargo || { echo "[setup] Rust unavailable — cannot build nanoda"; exit 1; }
+    rm -rf "$NAN_DIR"
+    git clone --depth 1 https://github.com/ammkrn/nanoda_lib.git "$NAN_DIR"
+    ( cd "$NAN_DIR" && cargo build --release --bin nanoda_bin )
+  fi
 
-echo "[setup] done. Add these to your environment:" >&2
+  echo "[setup] done. Add these to your environment:"
+} >&2
 print_env
