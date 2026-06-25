@@ -52,14 +52,12 @@
 #                            0/false/no/off omits it — e.g. a deployment whose
 #                            backlog is topped up by a scheduled sourcing job)
 #   UNSORRY_SOURCING_WAIT    sourcer re-poll interval seconds (default 300)
-#   UNSORRY_INDEPENDENT_CHECK  opt-in (default off) advisory kernel-diverse check
-#                            (ADR-096 Phase 3a): after a proof verifies locally,
-#                            re-check it with an independent Lean kernel (nanoda)
-#                            over a declaration-scoped lean4export. NON-GATING —
-#                            admits nothing, never blocks proving; ADR-049's p=1
-#                            Lean gate in CI is unchanged. Needs LEAN4EXPORT_BIN +
-#                            an executable NANODA_BIN (build once via
-#                            tools/independent_check/setup.sh); absent → skipped.
+#   UNSORRY_INDEPENDENT_CHECK  the env-var form of --independent-check (ADR-096
+#                            Phase 3a). Prefer the flag, which also bootstraps the
+#                            tools; set this directly only if you manage
+#                            LEAN4EXPORT_BIN + an executable NANODA_BIN yourself.
+#                            NON-GATING — admits nothing, never blocks proving;
+#                            ADR-049's p=1 Lean gate in CI is unchanged.
 set -euo pipefail
 
 usage() {
@@ -86,6 +84,14 @@ proves claimlessly and submits each proof as a cross-repo PR the upstream
 re-verifies and auto-merges. No dispatcher or sourcer (a fork cannot open the
 upstream's queued branches).
 
+  --independent-check   Enable the advisory kernel-diverse independent check
+                        (ADR-096 Phase 3a): after each proof verifies locally,
+                        re-check it with an independent Lean kernel (nanoda) over
+                        a declaration-scoped lean4export. Bootstraps the tools on
+                        first use (builds lean4export + nanoda — needs lake +
+                        cargo). NON-GATING: admits nothing, never blocks proving;
+                        ADR-049's p=1 Lean gate in CI is unchanged. Omit for a
+                        normal run with zero overhead.
   --self-test   Run hermetic self-tests and exit (0 green / 1 red).
   -h, --help    Show this help.
 EOF
@@ -323,6 +329,34 @@ self_update_to_latest "$@"
 # Credit-integrity guard: refuse to silently run proofs that would be credited to
 # someone else (covers fork mode too — it runs before the fork branch below).
 guard_solver_credit
+
+# ADR-096 Phase 3a: --independent-check bootstraps lean4export + nanoda (builds on
+# first use; idempotent — a no-op once built) and enables the advisory nanoda
+# re-check after each proof (via UNSORRY_INDEPENDENT_CHECK, which agent.sh reads).
+# Consumed HERE and stripped from the args so it is not passed to agent.sh, which
+# has no such flag. Absent → normal run, zero overhead. NON-GATING: setup failure
+# (no lake/cargo) downgrades to a warning and proceeds without it — proving is
+# never blocked. The env exports survive the fork `exec` and the prover subprocess.
+want_independent_check=0
+ic_filtered=()
+for _arg in "$@"; do
+  if [ "$_arg" = "--independent-check" ]; then
+    want_independent_check=1
+  else
+    ic_filtered+=("$_arg")
+  fi
+done
+set -- "${ic_filtered[@]}"
+if [ "$want_independent_check" = 1 ]; then
+  log "independent check (ADR-096): ensuring lean4export + nanoda (builds on first use)…"
+  if _ic_env="$(./tools/independent_check/setup.sh)"; then
+    eval "$_ic_env"
+    export LEAN4EXPORT_BIN NANODA_BIN UNSORRY_INDEPENDENT_CHECK
+    log "independent check: ENABLED — nanoda re-checks each proof (advisory, non-gating)"
+  else
+    log "independent check: dependency setup failed (needs lake + cargo) — proceeding WITHOUT it"
+  fi
+fi
 
 # ADR-068: in fork mode, run the prover only (cross-repo PRs); a fork cannot run
 # the dispatcher or sourcer against the upstream. --fork reaches agent.sh through
