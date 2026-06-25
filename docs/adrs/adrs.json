@@ -317,14 +317,6 @@
     {
       "id": "ADR-041",
       "number": 41,
-      "title": "OpenAI `--prove` Text-Extraction Fallback",
-      "status": "Accepted",
-      "date": "2026-06-14",
-      "file": "ADR-041-OpenAI-Prove-Text-Extraction-Fallback.md"
-    },
-    {
-      "id": "ADR-041",
-      "number": 41,
       "title": "Proof Archive Blocks",
       "status": "Accepted",
       "date": "2026-06-14",
@@ -683,14 +675,6 @@
       "file": "ADR-086-Seedkit-Fixture-Generation-Path.md"
     },
     {
-      "id": "ADR-086",
-      "number": 86,
-      "title": "Validator Role — Creditable, Distributed, Reproducible Verification",
-      "status": "Proposed",
-      "date": "2026-06-22",
-      "file": "ADR-086-Validator-Role-Creditable-Distributed-Verification.md"
-    },
-    {
       "id": "ADR-087",
       "number": 87,
       "title": "Backfill Historical seedkit Records to Honest Provenance & Difficulty",
@@ -801,6 +785,22 @@
       "status": "Accepted",
       "date": "2026-06-25",
       "file": "ADR-101-Incremental-Leaderboard-Regen.md"
+    },
+    {
+      "id": "ADR-102",
+      "number": 102,
+      "title": "OpenAI `--prove` Text-Extraction Fallback",
+      "status": "Accepted",
+      "date": "2026-06-14",
+      "file": "ADR-102-OpenAI-Prove-Text-Extraction-Fallback.md"
+    },
+    {
+      "id": "ADR-103",
+      "number": 103,
+      "title": "Validator Role — Creditable, Distributed, Reproducible Verification",
+      "status": "Proposed",
+      "date": "2026-06-22",
+      "file": "ADR-103-Validator-Role-Creditable-Distributed-Verification.md"
     }
   ]
 }

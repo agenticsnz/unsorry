@@ -1,8 +1,8 @@
-# ADR-041: OpenAI `--prove` Text-Extraction Fallback
+# ADR-102: OpenAI `--prove` Text-Extraction Fallback
 
 | Field | Value |
 |-------|-------|
-| **Decision ID** | ADR-041 |
+| **Decision ID** | ADR-102 |
 | **Initiative** | unsorry swarm provider portability |
 | **Proposed By** | unsorry maintainers |
 | **Date** | 2026-06-14 |
@@ -19,12 +19,12 @@
 
 **to achieve** `--prove` that works on proof-specialised models which speak Lean-as-text rather than as function calls — the exact models `-pi` exists to serve — against the **same** Gate A kernel-verification bar, and an honest exit code that lets ADR-016 see real infra failures,
 
-**accepting that** extraction is a best-effort parse (a model that emits no usable text still writes nothing and fails the existing missing-target check); the target is recovered by matching a stable prompt line when `--target` is absent (a coupling documented in SPEC-041-A and localised to one regex); and that trust still rests solely on Gate A re-checking every proof — a bad extraction fails `lake build UnsorryLibrary --wfail` + `axiom_audit` identically to a bad tool-written proof, so admitting text-emitted proofs introduces **no** soundness regression (ADR-006).
+**accepting that** extraction is a best-effort parse (a model that emits no usable text still writes nothing and fails the existing missing-target check); the target is recovered by matching a stable prompt line when `--target` is absent (a coupling documented in SPEC-102-A and localised to one regex); and that trust still rests solely on Gate A re-checking every proof — a bad extraction fails `lake build UnsorryLibrary --wfail` + `axiom_audit` identically to a bad tool-written proof, so admitting text-emitted proofs introduces **no** soundness regression (ADR-006).
 
 ## References
 | Reference ID | Title | Type | Location |
 |--------------|-------|------|----------|
-| REF-1 | OpenAI prove text-extraction fallback | Specification | specs/SPEC-041-A-OpenAI-Prove-Text-Extraction-Fallback.md |
+| REF-1 | OpenAI prove text-extraction fallback | Specification | specs/SPEC-102-A-OpenAI-Prove-Text-Extraction-Fallback.md |
 | REF-2 | OpenAI-compatible endpoints and pi-config (the constraint this lifts) | ADR | ADR-025-OpenAI-Compatible-Endpoints-and-Pi-Config.md |
 | REF-3 | Gate A soundness enforcement (why text-extracted proofs stay sound) | ADR | ADR-006-Gate-A-Soundness-Enforcement.md |
 | REF-4 | Infrastructure-failure guard (the classifier the non-zero exit feeds) | ADR | ADR-016-Infrastructure-Failure-Guard.md |

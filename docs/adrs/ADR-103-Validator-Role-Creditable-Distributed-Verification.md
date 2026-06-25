@@ -1,8 +1,8 @@
-# ADR-086: Validator Role — Creditable, Distributed, Reproducible Verification
+# ADR-103: Validator Role — Creditable, Distributed, Reproducible Verification
 
 | Field | Value |
 |-------|-------|
-| **Decision ID** | ADR-086 |
+| **Decision ID** | ADR-103 |
 | **Initiative** | unsorry — decentralised swarm infrastructure (verification as a first-class role) |
 | **Proposed By** | unsorry maintainers |
 | **Date** | 2026-06-22 |
@@ -79,4 +79,4 @@ A candidate is **promoted into the protected library** only when a deterministic
 
 **Negative / accepted.** Validators need capable machines — the mathlib image is heavy (ADR-049; `lean4export` softens this). N-way peer validation multiplies *total* compute; it is volunteer-borne, so it scales audit/pre-filtering but — on its own — **does not reduce the required central paid compute**: the central re-check stays p = 1 at promotion (ADR-049), so **central cost falls only when the promotion gate itself becomes cheaper or narrower** (e.g. `lean4export`), which is a separate change. Honeypots spend some real verification capacity to police honesty.
 
-**Deferred.** A draft implementation contract — roles wire format, attestation schema, honeypot rate, reputation math, challenge-window mechanics — is in [SPEC-086-A](specs/SPEC-086-A-Validator-Role-And-Attestations.md) (Draft, pre-acceptance); its numeric constants are pilot-calibrated at acceptance, phased like SPEC-049-A.
+**Deferred.** A draft implementation contract — roles wire format, attestation schema, honeypot rate, reputation math, challenge-window mechanics — is in [SPEC-103-A](specs/SPEC-103-A-Validator-Role-And-Attestations.md) (Draft, pre-acceptance); its numeric constants are pilot-calibrated at acceptance, phased like SPEC-049-A.

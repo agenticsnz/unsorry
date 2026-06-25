@@ -45,7 +45,6 @@ Index of the 100 ADRs in this directory, generated from the `ADR-*.md` headers a
 | [ADR-038](ADR-038-Shared-Web-Surface-Design-Language.md) | Shared Web-Surface Design Language | Accepted | 2026-06-14 |
 | [ADR-039](ADR-039-Self-Updating-Harness.md) | Re-exec the Agent When the Harness Updates | Accepted | 2026-06-14 |
 | [ADR-040](ADR-040-Changelog-Fragments.md) | Changelog Fragments (one file per change) | Accepted | 2026-06-14 |
-| [ADR-041](ADR-041-OpenAI-Prove-Text-Extraction-Fallback.md) | OpenAI `--prove` Text-Extraction Fallback | Accepted | 2026-06-14 |
 | [ADR-041](ADR-041-Proof-Archive-Blocks.md) | Proof Archive Blocks | Accepted | 2026-06-14 |
 | [ADR-042](ADR-042-Isolated-Agent-Worktree.md) | Run the Agent in an Isolated Per-Agent Worktree | Accepted | 2026-06-14 |
 | [ADR-043](ADR-043-Identity-Engine.md) | The Identity Engine — mass-source mathlib-absent elementary identities at scale | Accepted | 2026-06-14 |
@@ -91,7 +90,6 @@ Index of the 100 ADRs in this directory, generated from the `ADR-*.md` headers a
 | [ADR-084](ADR-084-Demand-Driven-Sourcing-Dedup.md) | Demand-Driven Sourcing Dedup — Skip When a Sourcing PR Is In Flight | Accepted | 2026-06-22 |
 | [ADR-085](ADR-085-Sourcer-Worktree-Isolation.md) | Isolate the Sourcer in a Per-Sourcer Worktree (ADR-042 parity) | Proposed | 2026-06-22 |
 | [ADR-086](ADR-086-Seedkit-Fixture-Generation-Path.md) | seedkit as a Documented Fixture-Generation Path Aligned to the Sourcing Paradigm | Accepted | 2026-06-23 |
-| [ADR-086](ADR-086-Validator-Role-Creditable-Distributed-Verification.md) | Validator Role — Creditable, Distributed, Reproducible Verification | Proposed | 2026-06-22 |
 | [ADR-087](ADR-087-Backfill-Historical-Seedkit-Records.md) | Backfill Historical seedkit Records to Honest Provenance & Difficulty | Accepted | 2026-06-23 |
 | [ADR-088](ADR-088-Extend-Difficulty-Backfill-To-Mac158f.md) | Extend the Honest-Difficulty Backfill to mac-158f Template Goals | Accepted | 2026-06-23 |
 | [ADR-089](ADR-089-Pages-Scheduled-Actions-Deploy.md) | Deploy GitHub Pages on a Schedule via Actions, Decoupled from the Push Firehose | Accepted | 2026-06-23 |
@@ -106,3 +104,5 @@ Index of the 100 ADRs in this directory, generated from the `ADR-*.md` headers a
 | [ADR-098](ADR-098-Leaderboard-Freshness-Alarm.md) | Leaderboard Freshness Alarm + Refresh Timeout (defence-in-depth) | Accepted | 2026-06-25 |
 | [ADR-100](ADR-100-Auto-Install-Lake-Toolchain.md) | Client-Side Swarm Scripts Auto-Install the Lean Build Tool (`lake`) | Proposed | 2026-06-25 |
 | [ADR-101](ADR-101-Incremental-Leaderboard-Regen.md) | Per-Generation Leaderboard Regen (directory-scoped attribution + memoised loaders) | Accepted | 2026-06-25 |
+| [ADR-102](ADR-102-OpenAI-Prove-Text-Extraction-Fallback.md) | OpenAI `--prove` Text-Extraction Fallback | Accepted | 2026-06-14 |
+| [ADR-103](ADR-103-Validator-Role-Creditable-Distributed-Verification.md) | Validator Role — Creditable, Distributed, Reproducible Verification | Proposed | 2026-06-22 |

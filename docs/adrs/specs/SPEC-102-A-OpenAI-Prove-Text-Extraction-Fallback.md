@@ -1,6 +1,6 @@
-# SPEC-041-A: OpenAI `--prove` Text-Extraction Fallback
+# SPEC-102-A: OpenAI `--prove` Text-Extraction Fallback
 
-Implements: [ADR-041](../ADR-041-OpenAI-Prove-Text-Extraction-Fallback.md) · Relates to: [ADR-025](../ADR-025-OpenAI-Compatible-Endpoints-and-Pi-Config.md), [ADR-006](../ADR-006-Gate-A-Soundness-Enforcement.md), [ADR-016](../ADR-016-Infrastructure-Failure-Guard.md) · Status: Living · Updated: 2026-06-14
+Implements: [ADR-102](../ADR-102-OpenAI-Prove-Text-Extraction-Fallback.md) · Relates to: [ADR-025](../ADR-025-OpenAI-Compatible-Endpoints-and-Pi-Config.md), [ADR-006](../ADR-006-Gate-A-Soundness-Enforcement.md), [ADR-016](../ADR-016-Infrastructure-Failure-Guard.md) · Status: Living · Updated: 2026-06-14
 
 Lets a model that answers `--prove` in **text** (Lean as a fenced block or bare
 source) instead of an OpenAI `Write` tool call still produce the target module.

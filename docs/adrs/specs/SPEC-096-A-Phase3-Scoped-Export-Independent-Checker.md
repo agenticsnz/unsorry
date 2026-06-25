@@ -172,5 +172,5 @@ false alarms; the §4 red-team (gate 1) follows once that is confirmed.
 - Making the independent checker merge-gating (needs §4 + Phase 3b).
 - Lowering central `p < 1` / sampling the promotion gate (Phase 3c — separate ADR amending
   ADR-049).
-- The P2P / volunteer distribution of the anchor (ADR-053 substrate; ADR-086 validator role
+- The P2P / volunteer distribution of the anchor (ADR-053 substrate; ADR-103 validator role
   credit) — downstream once the anchor is real.

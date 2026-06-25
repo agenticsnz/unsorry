@@ -1,8 +1,8 @@
-# SPEC-086-A: Validator Role — Attestations, Credit, and Anti-Foul-Play
+# SPEC-103-A: Validator Role — Attestations, Credit, and Anti-Foul-Play
 
-Implements: [ADR-086](../ADR-086-Validator-Role-Creditable-Distributed-Verification.md) · Status: Draft (pre-acceptance) · Updated: 2026-06-22
+Implements: [ADR-103](../ADR-103-Validator-Role-Creditable-Distributed-Verification.md) · Status: Draft (pre-acceptance) · Updated: 2026-06-22
 
-This spec defines the **contract** for the validator role: a first-class, creditable, distributed verifier that publishes signed reproducible attestations, governed so that those attestations earn credit and penalise foul play **without ever becoming load-bearing for soundness**. It builds on [SPEC-049-A](SPEC-049-A-Decentralised-CI-Runner-Architecture.md) (tiered split + mandatory trusted central re-check) and is intentionally implementation-light: the decision and rationale are in [ADR-086](../ADR-086-Validator-Role-Creditable-Distributed-Verification.md). It is a **draft** because ADR-086 is Proposed; constants marked *tunable* are placeholders pending pilot data.
+This spec defines the **contract** for the validator role: a first-class, creditable, distributed verifier that publishes signed reproducible attestations, governed so that those attestations earn credit and penalise foul play **without ever becoming load-bearing for soundness**. It builds on [SPEC-049-A](SPEC-049-A-Decentralised-CI-Runner-Architecture.md) (tiered split + mandatory trusted central re-check) and is intentionally implementation-light: the decision and rationale are in [ADR-103](../ADR-103-Validator-Role-Creditable-Distributed-Verification.md). It is a **draft** because ADR-103 is Proposed; constants marked *tunable* are placeholders pending pilot data.
 
 ## 1. Roles
 
@@ -58,7 +58,7 @@ Credit is **never** granted for agreeing with the majority per se — only for m
 
 ## 5. Honeypot discipline (anti-rubber-stamping — normative)
 
-Proof-of-execution is unattainable for deterministic public computation (ADR-086): a node can emit a correct §3 record without running anything. The defence is statistical.
+Proof-of-execution is unattainable for deterministic public computation (ADR-103): a node can emit a correct §3 record without running anything. The defence is statistical.
 
 - The dispatcher injects **honeypots of both kinds** — candidates known (by the trusted gate) to be **invalid** (catch the lazy "valid" stamp) **and** candidates known to be **valid** (catch the lazy/malicious "invalid" stamp) — into validator assignment streams, indistinguishable from real work. Both kinds are essential: invalid honeypots police false *accepts*, valid honeypots police false *rejects* (the proof-suppression / censorship attack).
 - A validator whose attestation contradicts a honeypot's known verdict has produced a **provable false attestation** → §6 penalty.
@@ -77,7 +77,7 @@ Per-validator signals: `correct_attestations`, `false_attestation_count`, `timeo
 - **Standing thresholds (tunable):** a validator must hold `score ≥ θ_quorum` for its attestations to *gate* (Phase 2+); below `θ_demote` it is dropped to the bootstrap tier (central-rechecked, attestations measured-only); a confirmed false attestation triggers an immediate score hit **and** a temporary suspension (`susp_window`, tunable) — the "slash" (reputation, not funds; ADR-007: identity/reputation are never load-bearing for *correctness*, only for *credit and assignment*).
 - All inputs to the score are **trusted outcomes** (central re-check / resolved challenge / honeypot), never peer-majority — consistent with §4.
 
-## 7. Promotion rule (phased — mirrors ADR-086)
+## 7. Promotion rule (phased — mirrors ADR-103)
 
 - **Phase 1 — bootstrap.** Calculators produce; ≥3 validators attest (≥1 `independent`); **central CI re-checks 100% (p = 1)**; reputation built from attestation-vs-trusted agreement; honeypots live; quorum is **measured, not gating**.
 - **Phase 2 — pre-promotion offload (not a promotion gate, never a discard).** A **quorum** (e.g. 2-of-3, ≥1 `independent`, dispatcher unweighted) of `score ≥ θ_quorum` validators **prioritises** candidates — accepted ones fast-tracked to the central gate — but **never discards**. The central re-check stays **p = 1 at promotion** (SPEC-049-A unchanged) for accepted candidates. A **rejected candidate is not dropped**; it routes to a lower-priority **appeal/sample lane** that still reaches the central gate, by three independent paths so a false reject can never silently suppress a valid proof: (a) the **producer may appeal**, forcing a full central re-check → a trusted outcome; (b) a configurable **sample fraction `s_reject` (tunable, > 0)** of rejected candidates is centrally re-checked regardless; (c) **valid honeypots (§5)** independently catch quorums that reject good proofs. Any rejected candidate the central gate then passes is **promoted normally**, and the validators that rejected it are scored a **false reject** (§4/§6). (Because the central gate is still p = 1 here, the quorum buys *prioritisation/credit/audit*, not central-compute reduction — that arrives only with a cheaper gate or a future p < 1 amendment, §7 Phase 3 / ADR-049.) An open **challenge window** of duration `W` (tunable) additionally lets any node overturn a *peer* verdict **in either direction** with a reproducible counter-result; the **kernel adjudicates** by re-running on the trusted gate; a successful challenge re-routes the candidate, penalises the false attesters (§6), and credits the challenger.
