@@ -81,6 +81,11 @@ permissions:
 jobs:
   refresh:
     runs-on: ubuntu-latest
+    # Defence-in-depth (ADR-098, #6317): the regen is ~10 s (ADR-097), so a job
+    # still executing after 15 min is hung/pathological, not slow — fail it loudly
+    # rather than let it silently produce nothing. Counts execution time only (not
+    # the runner-queue wait), so it never false-kills a normal refresh.
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
@@ -168,3 +173,18 @@ jobs:
           if ! python3 -m tools.leaderboard --check .; then
             echo "::warning::leaderboard drifted but the REFRESH_TOKEN secret is unset — skipping the push to main (issue #417). Add an admin PAT/App token as the REFRESH_TOKEN secret to enable the post-merge refresh."
           fi
+      - name: Freshness gate — alarm if the published board is stale (ADR-098, #6317)
+        if: always()
+        run: |
+          set -euo pipefail
+          # Defence-in-depth: assert the board the guild actually reads is fresh.
+          # Measure the PUBLISHED state (origin/main), not this run's local regen —
+          # so a lost push race (#426) or a starved/queued pipeline that left main
+          # stale trips a visible red alarm instead of silently serving old
+          # standings. Threshold 30 min matches the issue #6317 acceptance bound;
+          # a healthy board sits well under it (regen is seconds), so this only
+          # fires on a genuine publish stall. An indeterminate state (no artifact
+          # yet, shallow clone) exits 0 — it never invents a false alarm.
+          git fetch --quiet origin main
+          git reset --hard --quiet origin/main
+          python3 -m tools.leaderboard.freshness . --threshold-minutes 30
