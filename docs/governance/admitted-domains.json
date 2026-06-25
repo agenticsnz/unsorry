@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "domains": [
+    {
+      "id": "lean-math",
+      "verifier": "lean-kernel",
+      "tier": "VERIFIED",
+      "ratified": "2026-06-24",
+      "adr": "ADR-080 (#5643)",
+      "note": "Formal mathematics in Lean 4, re-checked by the Lean kernel at Gate A. The founding in-scope domain."
+    }
+  ],
+  "targets": [
+    {
+      "package": "demo-v1",
+      "domain": "lean-math",
+      "supplier": "agenticsnz",
+      "ratified": "2026-06-24",
+      "note": "Demo smoke-test suite (#5643) — retired now that PutnamBench (putnam-v1) is live. Goals are immutable (ADR-018) and stay benchmark-segregated, but the suite is excluded from the published registered-targets.json / guild page.",
+      "retired": true
+    },
+    {
+      "package": "putnam-v1",
+      "domain": "lean-math",
+      "supplier": "trishullab",
+      "ratified": "2026-06-24",
+      "note": "PutnamBench Lean 4 (Apache-2.0, 672 problems) — github.com/trishullab/PutnamBench (Tsoukalas et al.)"
+    }
+  ]
+}

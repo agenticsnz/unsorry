@@ -1,0 +1,20 @@
+𝔸5.1.goal.faulhaber-quartic-sum-coeff-seventyone@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜faulhaber-quartic-sum-coeff-seventyone
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/faulhaber-quartic-sum-coeff-seventyone.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/faulhaber-quartic-sum-coeff-seventyone.lean
+  sha≜72e162f1fce384fd9b4a56a6eb44a4e14f8b1f232e858244f1ee1beb5ea92085
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.85;τ≜◊⁺⟩

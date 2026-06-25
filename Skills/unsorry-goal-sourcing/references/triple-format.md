@@ -30,7 +30,7 @@ theorem <snake_name> <signature> := by
   id≜<slug>
   phase≜prove
   status≜open
-  difficulty≜<0-5>
+  difficulty≜<0-9>
 }
 ⟦Σ:Source⟧{
   src≜backlog/<slug>.md
@@ -51,7 +51,7 @@ Gate B rules a fresh goal must satisfy:
 - Header `𝔸5.1.goal.<id>@<date>` with `<date>` = `YYYY-MM-DD`; the filename stem,
   the header name, and the `id` field must all be the same kebab slug
   (`[a-z0-9][a-z0-9-]*`, **no dots**).
-- `phase≜prove`; `status≜open`; `difficulty` a single digit 0–5.
+- `phase≜prove`; `status≜open`; `difficulty` a single digit 0–9.
 - `status≜open` **requires `sha≜∅`** (a real 64-hex sha is only for proved/archived).
   This is the *sourcing* contract; the seedkit fixture path
   ([ADR-086](../../../docs/adrs/ADR-086-Seedkit-Fixture-Generation-Path.md))
@@ -74,7 +74,7 @@ Gate B rules a fresh goal must satisfy:
 - **Reference:** <the claim restated, or "Not a named mathlib lemma in this form.">
 - **Absence:** <gate-1 verdict + grep scope + mathlib rev + date>
 - **Triviality:** <gate-3 verdict + "battery v1" + rev + date>
-- **Difficulty:** <0-5>
+- **Difficulty:** <0-9>
 - **Decomposition sketch:** <the intended proof; the hint a prover starts from>
 ```
 

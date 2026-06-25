@@ -60,13 +60,13 @@ def write_artifacts(
 
     ``goal_lean`` is the statement file verbatim (``import``…``sorry``); its
     content address (`tools.lean_sig.statement_sha`) is the index key and is
-    embedded in both AISP records. ``difficulty`` must lie in ``0..5`` — Gate B
+    embedded in both AISP records. ``difficulty`` must lie in ``0..9`` — Gate B
     rejects anything outside that band (GB003), so an out-of-range value is a
     generator bug and is raised here rather than written out to fail later.
     """
-    if not 0 <= difficulty <= 5:
+    if not 0 <= difficulty <= 9:
         raise ValueError(
-            f"difficulty {difficulty} out of range 0..5 for goal {gid!r} "
+            f"difficulty {difficulty} out of range 0..9 for goal {gid!r} "
             f"(Gate B GB003 would reject it)"
         )
 

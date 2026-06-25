@@ -1,0 +1,4 @@
+import Mathlib
+
+theorem sum_two_squares_zmod_twenty_ne_seven (a b : ℤ) : (((a ^ 2 + b ^ 2 : ℤ)) : ZMod 20) ≠ 7 := by
+  sorry
