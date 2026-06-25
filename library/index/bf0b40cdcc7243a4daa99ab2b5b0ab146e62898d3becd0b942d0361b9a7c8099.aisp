@@ -1,0 +1,8 @@
+𝔸5.1.lemma.bf0b40cdcc72@2026-06-23
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜bf0b40cdcc7243a4daa99ab2b5b0ab146e62898d3becd0b942d0361b9a7c8099; goal≜geometric-series-ratio-twentyone; name≜geometric_series_ratio_twentyone}
+⟦Σ:Source⟧{src≜goals/geometric-series-ratio-twentyone.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜chat-bit-01; agent≜claude-web; provider≜lean; model≜ring; attempts≜1}
+⟦Ε⟧⟨δ≜0.85;τ≜◊⁺⟩

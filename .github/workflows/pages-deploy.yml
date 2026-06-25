@@ -1,0 +1,70 @@
+# Scheduled GitHub Pages deploy (ADR-089).
+#
+# WHY this exists: the site's Pages "Source" is moved off the built-in *legacy*
+# build (which auto-rebuilds on every push to `main` and CANCELS any in-flight
+# build) onto **GitHub Actions**. Under the swarm's push firehose (a commit to
+# `main` every ~10-60s) the legacy build was preempted before it could ever
+# finish — observed as 200+ consecutive `pages-build-deployment` runs all
+# `cancelled`, every `github-pages` deployment `error`, and the live site frozen
+# for hours. A livelock, not slowness.
+#
+# The fix is to DECOUPLE deploys from the push firehose: this workflow is the
+# ONLY thing that deploys Pages, and it is triggered on a fixed cadence (cron) +
+# manual dispatch — never on push. So swarm commits can neither trigger nor
+# preempt a deploy; each scheduled build runs to completion and the site lags by
+# at most the cron interval. See ADR-089 / SPEC-089-A.
+
+name: pages-deploy
+
+on:
+  schedule:
+    # Every 10 minutes — a deploy cadence the build comfortably beats, so each
+    # run finishes. Deliberately NOT `on: push`: that is the firehose we are
+    # escaping. Use the manual trigger below for an immediate "deploy now".
+    - cron: "*/10 * * * *"
+  workflow_dispatch: {}
+
+# Least privilege for the official Pages deploy actions.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never preempt an in-flight deploy. With a 10-minute cadence and a sub-minute
+# build, runs do not realistically overlap; if one ever does, the later run
+# queues behind it rather than cancelling it (the legacy behaviour we are fixing).
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      # Builds with the github-pages gem — same engine as the legacy build, so
+      # _config.yml (root) and its exclude/defaults apply identically.
+      - name: Build with Jekyll
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./
+          destination: ./_site
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,20 @@
+𝔸5.1.goal.demo-two-add-two@2026-06-24
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜demo-two-add-two
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/demo-two-add-two.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/demo-two-add-two.lean
+  sha≜63c0493265cda616baf086dcf2b22bd33e6266d6f7f22275ffc5c32e1f9bee05
+  aff≜-19
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
