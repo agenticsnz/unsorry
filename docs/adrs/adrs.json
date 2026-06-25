@@ -1,6 +1,6 @@
 {
   "generated_by": "python3 -m tools.adr_index --write",
-  "count": 84,
+  "count": 101,
   "adrs": [
     {
       "id": "ADR-001",
@@ -317,14 +317,6 @@
     {
       "id": "ADR-041",
       "number": 41,
-      "title": "OpenAI `--prove` Text-Extraction Fallback",
-      "status": "Accepted",
-      "date": "2026-06-14",
-      "file": "ADR-041-OpenAI-Prove-Text-Extraction-Fallback.md"
-    },
-    {
-      "id": "ADR-041",
-      "number": 41,
       "title": "Proof Archive Blocks",
       "status": "Accepted",
       "date": "2026-06-14",
@@ -614,7 +606,7 @@
       "id": "ADR-078",
       "number": 78,
       "title": "Sponsor-Registered Targets and Obligation-Discharge Credit",
-      "status": "Proposed",
+      "status": "Accepted",
       "date": "2026-06-20",
       "file": "ADR-078-Sponsor-Registered-Targets-And-Obligation-Discharge-Credit.md"
     },
@@ -630,7 +622,7 @@
       "id": "ADR-080",
       "number": 80,
       "title": "Platform Generalisation and the Self-Verification Gating Invariant",
-      "status": "Draft",
+      "status": "Accepted",
       "date": "2026-06-20",
       "file": "ADR-080-Platform-Generalisation-And-Domain-Neutrality.md"
     },
@@ -638,7 +630,7 @@
       "id": "ADR-081",
       "number": 81,
       "title": "Problem Admission and the Skeleton Intake Pipeline",
-      "status": "Draft",
+      "status": "Accepted",
       "date": "2026-06-20",
       "file": "ADR-081-Problem-Admission-And-Intake-Pipeline.md"
     },
@@ -673,6 +665,150 @@
       "status": "Proposed",
       "date": "2026-06-22",
       "file": "ADR-085-Sourcer-Worktree-Isolation.md"
+    },
+    {
+      "id": "ADR-086",
+      "number": 86,
+      "title": "seedkit as a Documented Fixture-Generation Path Aligned to the Sourcing Paradigm",
+      "status": "Accepted",
+      "date": "2026-06-23",
+      "file": "ADR-086-Seedkit-Fixture-Generation-Path.md"
+    },
+    {
+      "id": "ADR-087",
+      "number": 87,
+      "title": "Backfill Historical seedkit Records to Honest Provenance & Difficulty",
+      "status": "Accepted",
+      "date": "2026-06-23",
+      "file": "ADR-087-Backfill-Historical-Seedkit-Records.md"
+    },
+    {
+      "id": "ADR-088",
+      "number": 88,
+      "title": "Extend the Honest-Difficulty Backfill to mac-158f Template Goals",
+      "status": "Accepted",
+      "date": "2026-06-23",
+      "file": "ADR-088-Extend-Difficulty-Backfill-To-Mac158f.md"
+    },
+    {
+      "id": "ADR-089",
+      "number": 89,
+      "title": "Deploy GitHub Pages on a Schedule via Actions, Decoupled from the Push Firehose",
+      "status": "Accepted",
+      "date": "2026-06-23",
+      "file": "ADR-089-Pages-Scheduled-Actions-Deploy.md"
+    },
+    {
+      "id": "ADR-090",
+      "number": 90,
+      "title": "Periodic Housekeeping — Naming as a Recurring Operational Task",
+      "status": "Proposed",
+      "date": "2026-06-23",
+      "file": "ADR-090-Periodic-Housekeeping.md"
+    },
+    {
+      "id": "ADR-091",
+      "number": 91,
+      "title": "Sharded Gate A Axiom Audit",
+      "status": "Proposed",
+      "date": "2026-06-24",
+      "file": "ADR-091-Sharded-Gate-A-Axiom-Audit.md"
+    },
+    {
+      "id": "ADR-092",
+      "number": 92,
+      "title": "Segregated Benchmark Track — Verified pass@k over Registered Suites",
+      "status": "Accepted",
+      "date": "2026-06-24",
+      "file": "ADR-092-Segregated-Benchmark-Track.md"
+    },
+    {
+      "id": "ADR-093",
+      "number": 93,
+      "title": "lean4export + nanoda Independent-Checker Pilot",
+      "status": "Proposed",
+      "date": "2026-06-24",
+      "file": "ADR-093-Lean4export-Nanoda-Independent-Checker-Pilot.md"
+    },
+    {
+      "id": "ADR-094",
+      "number": 94,
+      "title": "Publish Library Oleans on PRs (reliable per-shard env handoff)",
+      "status": "Proposed",
+      "date": "2026-06-24",
+      "file": "ADR-094-Publish-Library-Oleans-On-PRs.md"
+    },
+    {
+      "id": "ADR-095",
+      "number": 95,
+      "title": "Widen the goal `difficulty` band from 0–5 to 0–9",
+      "status": "Accepted",
+      "date": "2026-06-24",
+      "file": "ADR-095-Widen-Difficulty-Band-To-0-9.md"
+    },
+    {
+      "id": "ADR-096",
+      "number": 96,
+      "title": "Phase 3 — Declaration-Scoped Export + Independent Checker as a Kernel-Diverse Anchor",
+      "status": "Proposed",
+      "date": "2026-06-25",
+      "file": "ADR-096-Phase3-Scoped-Export-Independent-Checker.md"
+    },
+    {
+      "id": "ADR-097",
+      "number": 97,
+      "title": "Phase 3b — Replace the Gate A Axiom Audit with the nanoda Scoped-Export Check (p=1 preserved)",
+      "status": "Proposed",
+      "date": "2026-06-25",
+      "file": "ADR-097-Phase3b-Nanoda-Replaces-Gate-A-Axiom-Audit.md"
+    },
+    {
+      "id": "ADR-098",
+      "number": 98,
+      "title": "Leaderboard Freshness Alarm + Refresh Timeout (defence-in-depth)",
+      "status": "Accepted",
+      "date": "2026-06-25",
+      "file": "ADR-098-Leaderboard-Freshness-Alarm.md"
+    },
+    {
+      "id": "ADR-099",
+      "number": 99,
+      "title": "Per-Suite Mathlib Pin for Benchmark Suite Ingestion & Verification",
+      "status": "Proposed",
+      "date": "2026-06-25",
+      "file": "ADR-099-Per-Suite-Mathlib-Pin-For-Benchmark-Ingestion.md"
+    },
+    {
+      "id": "ADR-100",
+      "number": 100,
+      "title": "Client-Side Swarm Scripts Auto-Install the Lean Build Tool (`lake`)",
+      "status": "Proposed",
+      "date": "2026-06-25",
+      "file": "ADR-100-Auto-Install-Lake-Toolchain.md"
+    },
+    {
+      "id": "ADR-101",
+      "number": 101,
+      "title": "Per-Generation Leaderboard Regen (directory-scoped attribution + memoised loaders)",
+      "status": "Accepted",
+      "date": "2026-06-25",
+      "file": "ADR-101-Incremental-Leaderboard-Regen.md"
+    },
+    {
+      "id": "ADR-102",
+      "number": 102,
+      "title": "OpenAI `--prove` Text-Extraction Fallback",
+      "status": "Accepted",
+      "date": "2026-06-14",
+      "file": "ADR-102-OpenAI-Prove-Text-Extraction-Fallback.md"
+    },
+    {
+      "id": "ADR-103",
+      "number": 103,
+      "title": "Validator Role — Creditable, Distributed, Reproducible Verification",
+      "status": "Proposed",
+      "date": "2026-06-22",
+      "file": "ADR-103-Validator-Role-Creditable-Distributed-Verification.md"
     }
   ]
 }

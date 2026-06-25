@@ -1,0 +1,20 @@
+𝔸5.1.goal.geometric-series-ratio-twentyone@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜geometric-series-ratio-twentyone
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/geometric-series-ratio-twentyone.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/geometric-series-ratio-twentyone.lean
+  sha≜bf0b40cdcc7243a4daa99ab2b5b0ab146e62898d3becd0b942d0361b9a7c8099
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.85;τ≜◊⁺⟩

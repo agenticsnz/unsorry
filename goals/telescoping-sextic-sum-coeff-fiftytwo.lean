@@ -1,0 +1,4 @@
+import Mathlib
+
+theorem telescoping_sextic_sum_coeff_fiftytwo (n : ℕ) : ∑ k ∈ Finset.range n, (52 * (6 * (k : ℤ) ^ 5 + 15 * (k : ℤ) ^ 4 + 20 * (k : ℤ) ^ 3 + 15 * (k : ℤ) ^ 2 + 6 * (k : ℤ) + 1)) = 52 * (n : ℤ) ^ 6 := by
+  sorry

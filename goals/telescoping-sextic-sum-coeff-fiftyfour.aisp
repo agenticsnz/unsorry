@@ -1,0 +1,20 @@
+𝔸5.1.goal.telescoping-sextic-sum-coeff-fiftyfour@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜telescoping-sextic-sum-coeff-fiftyfour
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/telescoping-sextic-sum-coeff-fiftyfour.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/telescoping-sextic-sum-coeff-fiftyfour.lean
+  sha≜8d21a18b218d3ea2d8773b9a9c1576d98ad14993772c84b89688296547958e7a
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.75;τ≜◊⁺⟩

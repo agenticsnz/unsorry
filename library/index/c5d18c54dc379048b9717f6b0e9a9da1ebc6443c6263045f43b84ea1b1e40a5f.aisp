@@ -1,0 +1,8 @@
+𝔸5.1.lemma.c5d18c54dc37@2026-06-23
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜c5d18c54dc379048b9717f6b0e9a9da1ebc6443c6263045f43b84ea1b1e40a5f; goal≜factorial-dvd-consec-six; name≜factorial_dvd_consec_six}
+⟦Σ:Source⟧{src≜goals/factorial-dvd-consec-six.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜chat-bit-01; agent≜claude-web; provider≜lean; model≜decide; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

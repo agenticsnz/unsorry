@@ -1,0 +1,20 @@
+𝔸5.1.goal.geometric-series-ratio-seventy@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜geometric-series-ratio-seventy
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/geometric-series-ratio-seventy.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/geometric-series-ratio-seventy.lean
+  sha≜f81d3b48506498ad7833ac34751f81579c0e1a72bd712123d2fb088b5c52817f
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.85;τ≜◊⁺⟩

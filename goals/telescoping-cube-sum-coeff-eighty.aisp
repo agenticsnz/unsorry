@@ -1,0 +1,20 @@
+𝔸5.1.goal.telescoping-cube-sum-coeff-eighty@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜telescoping-cube-sum-coeff-eighty
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/telescoping-cube-sum-coeff-eighty.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/telescoping-cube-sum-coeff-eighty.lean
+  sha≜f06e0a69963d0ce47a0d20763c8e3c6bf717067f0ccd3d4fd430a564572c0f01
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.75;τ≜◊⁺⟩
