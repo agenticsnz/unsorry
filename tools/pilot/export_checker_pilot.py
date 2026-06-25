@@ -70,6 +70,7 @@ class ModuleResult:
     nanoda_declars_checked: int | None = None  # N from "Checked N declarations" — closure size proof
     target_confirmed: bool | None = None  # the module's own theorem was in nanoda's checked env
     nc_rejected: bool | None = None  # negative control: nanoda REJECTED a swapped (ill-typed) export
+    red_team: dict[str, str] | None = None  # broader red-team (§4.1): {class: rejected|ACCEPTED|n/a}
 
 
 # --- pure helpers (unit-tested directly) ------------------------------------
@@ -103,10 +104,15 @@ def nanoda_config(
     export_path: Path,
     permitted_axioms: Sequence[str] = NANODA_PERMITTED_AXIOMS,
     confirm_decls: Sequence[str] | None = None,
+    unpermitted_axiom_hard_error: bool = False,
 ) -> dict:
     """The JSON config nanoda_bin consumes (its only argument). Points at the
     export file and permits the audit whitelist; unpermitted axioms are skipped at
-    load (not a hard error) but still rejected if a declaration uses one.
+    load (not a hard error) but still rejected if a declaration uses one. Set
+    `unpermitted_axiom_hard_error=True` to make the mere PRESENCE of an unpermitted
+    axiom fatal — the red-team `axiom-restrict` control uses this with an empty
+    whitelist to confirm nanoda actually enforces the axiom set (the same path that
+    rejects a sneaked `sorryAx`).
 
     `nat_extension` / `string_extension` MUST be enabled: they default to false in
     nanoda, but real Lean exports contain Nat/String literals, and nanoda
@@ -125,7 +131,7 @@ def nanoda_config(
         "export_file_path": str(export_path),
         "use_stdin": False,
         "permitted_axioms": list(permitted_axioms),
-        "unpermitted_axiom_hard_error": False,
+        "unpermitted_axiom_hard_error": unpermitted_axiom_hard_error,
         "nat_extension": True,
         "string_extension": True,
         "print_success_message": True,
@@ -182,6 +188,139 @@ def swap_two_theorem_values(ndjson_text: str) -> str | None:
     return "\n".join(lines)
 
 
+def swap_two_theorem_types(ndjson_text: str) -> str | None:
+    """The TYPE-side analogue of `swap_two_theorem_values`: swap the claimed `type`
+    of two differently-typed theorems while KEEPING each proof `value`. After the
+    swap a theorem claims statement τ_b but is proved by a term of type τ_a ≠ τ_b —
+    the "altered/weakened statement" direction (the export now asserts a statement
+    the proof does not prove). A sound checker MUST reject it.
+
+    NB this exercises the kernel's TYPE-MATCHING from the statement side; it is NOT
+    a test of genuine *vacuity* — a VALID proof of a genuinely weaker statement is
+    well-typed and nanoda will (correctly) ACCEPT it. Catching "valid proof of the
+    wrong/weaker goal" is the ADR-011 `*Binding` gate's job (statement == goal),
+    not a kernel checker's. See SPEC-096-A §4.1.
+
+    Returns the mutated NDJSON, or None if fewer than two differently-typed theorems
+    exist. Only the two mutated lines are re-serialised; all others byte-preserved."""
+    lines = ndjson_text.split("\n")
+    thms: list[tuple[int, object]] = []  # (line_index, type_index)
+    for i, line in enumerate(lines):
+        s = line.strip()
+        if not s or '"thm"' not in s:
+            continue
+        try:
+            obj = json.loads(s)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(obj, dict) and isinstance(obj.get("thm"), dict) and "type" in obj["thm"]:
+            thms.append((i, obj["thm"].get("type")))
+    if len(thms) < 2:
+        return None
+    base_line, base_type = thms[0]
+    partner = next(((li, ty) for (li, ty) in thms[1:] if ty != base_type), None)
+    if partner is None:
+        return None  # all theorems share a type — swapping types is a no-op
+    pa, pb = base_line, partner[0]
+    oa, ob = json.loads(lines[pa]), json.loads(lines[pb])
+    oa["thm"]["type"], ob["thm"]["type"] = ob["thm"]["type"], oa["thm"]["type"]
+    lines[pa], lines[pb] = json.dumps(oa), json.dumps(ob)
+    return "\n".join(lines)
+
+
+# A sentinel Expr index far beyond any real export's table — a value reference to
+# it cannot resolve, so the export is structurally corrupt.
+_DANGLING_INDEX = 2_000_000_000
+
+
+def corrupt_dangling_reference(ndjson_text: str) -> str | None:
+    """Produce a STRUCTURALLY-CORRUPT export: repoint one theorem's proof `value`
+    at an out-of-range Expr index (`_DANGLING_INDEX`) that no entry defines. A
+    checker that genuinely resolves and type-checks the proof term MUST fail to
+    resolve the reference and reject; one that rubber-stamps would pass it.
+
+    Returns the mutated NDJSON, or None if no theorem with a `value` exists. Only
+    the one mutated line is re-serialised; all others are byte-preserved."""
+    lines = ndjson_text.split("\n")
+    for i, line in enumerate(lines):
+        s = line.strip()
+        if not s or '"thm"' not in s:
+            continue
+        try:
+            obj = json.loads(s)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(obj, dict) and isinstance(obj.get("thm"), dict) and "value" in obj["thm"]:
+            obj["thm"]["value"] = _DANGLING_INDEX
+            lines[i] = json.dumps(obj)
+            return "\n".join(lines)
+    return None
+
+
+# The red-team mutation classes (SPEC-096-A §4.1). Each maps a VALID export to an
+# INVALID one that a sound checker MUST reject. `axiom-restrict` is not a mutation
+# but a config restriction (empty whitelist), handled separately in red_team_suite.
+RED_TEAM_MUTATIONS: dict[str, Callable[[str], "str | None"]] = {
+    "value-swap": swap_two_theorem_values,   # proof term ≠ claimed type (value side)
+    "type-swap": swap_two_theorem_types,     # claimed type ≠ proof term (statement side)
+    "dangling-ref": corrupt_dangling_reference,  # structurally-corrupt export
+}
+
+
+def red_team_verdict(class_name: str, constructable: bool, nanoda_status: str | None) -> str:
+    """Pure: classify one red-team case.
+      'rejected' → nanoda returned non-ok on the invalid input (SOUND);
+      'ACCEPTED' → nanoda returned ok on the invalid input (a soundness FAILURE);
+      'n/a'      → the case couldn't be constructed (e.g. <2 theorems, or an
+                   axiom-free proof for axiom-restrict) — not a pass and not a fail."""
+    if not constructable:
+        return "n/a"
+    if nanoda_status is None:
+        return "n/a"
+    return "rejected" if nanoda_status != "ok" else "ACCEPTED"
+
+
+def red_team_suite(
+    canonical_text: str,
+    export_dir: Path,
+    module: str,
+    nanoda_cmd: Sequence[str],
+    runner: Runner = subprocess.run,
+    clock: Clock = time.perf_counter,
+    timeout: float = 300.0,
+) -> dict[str, str]:
+    """Run every red-team class against THIS export and return {class: verdict}.
+    For each NDJSON mutation: write the corrupted export + a plain config (no
+    pp_declars — we want the type-check verdict) and require nanoda to reject. Plus
+    the config-only `axiom-restrict`: run nanoda on the VALID export with an empty
+    permitted-axiom set and `unpermitted_axiom_hard_error` — if the proof uses any
+    axiom, nanoda must reject (the enforcement path that also stops a sneaked
+    `sorryAx`); an axiom-free proof yields 'n/a'. All-`rejected`/`n/a` = sound."""
+    verdicts: dict[str, str] = {}
+    for name, mutate in RED_TEAM_MUTATIONS.items():
+        mutated = mutate(canonical_text)
+        status: str | None = None
+        if mutated is not None:
+            bad_export = export_dir / f"{module}.{name}.export"
+            bad_export.write_text(mutated, encoding="utf-8")
+            bad_config = export_dir / f"{module}.{name}.nanoda.json"
+            bad_config.write_text(json.dumps(nanoda_config(bad_export)), encoding="utf-8")
+            _, status, _, _ = timed_checker((*nanoda_cmd, str(bad_config)), runner, clock, timeout)
+        verdicts[name] = red_team_verdict(name, mutated is not None, status)
+
+    # axiom-restrict: VALID export, empty whitelist, presence of any axiom is fatal.
+    valid_export = export_dir / f"{module}.axiomvalid.export"
+    valid_export.write_text(canonical_text, encoding="utf-8")
+    ax_config = export_dir / f"{module}.axiom-restrict.nanoda.json"
+    ax_config.write_text(json.dumps(nanoda_config(
+        valid_export, permitted_axioms=(), unpermitted_axiom_hard_error=True)), encoding="utf-8")
+    _, ax_status, _, _ = timed_checker((*nanoda_cmd, str(ax_config)), runner, clock, timeout)
+    # 'rejected' = enforcement confirmed; 'ACCEPTED' here means the proof is
+    # axiom-FREE (nothing to enforce) — inconclusive, not a failure → 'n/a'.
+    verdicts["axiom-restrict"] = "rejected" if ax_status != "ok" else "n/a"
+    return verdicts
+
+
 def compute_ratio(nanoda_seconds: float | None, leanchecker_seconds: float | None) -> float | None:
     if not nanoda_seconds or not leanchecker_seconds:
         return None
@@ -217,6 +356,24 @@ def aggregate(results: Sequence[ModuleResult]) -> dict:
     # no pathology, and no timeouts.
     q3_bounded = (nstat["ok"] > 0 and pathologies == 0 and nstat["timeout"] == 0) if n_secs else None
 
+    # Red-team (§4.1): per-class {rejected,ACCEPTED,n/a} tallies + an overall
+    # soundness flag (no class ACCEPTED an invalid input on any module). None when
+    # the red-team wasn't run.
+    rt_rows = [r.red_team for r in results if r.red_team]
+    red_team_summary = None
+    if rt_rows:
+        classes = ["value-swap", "type-swap", "dangling-ref", "axiom-restrict"]
+        per_class = {}
+        any_accepted = False
+        for c in classes:
+            verds = [row.get(c) for row in rt_rows if c in row]
+            rej = sum(1 for v in verds if v == "rejected")
+            acc = sum(1 for v in verds if v == "ACCEPTED")
+            na = sum(1 for v in verds if v == "n/a")
+            any_accepted = any_accepted or acc > 0
+            per_class[c] = {"rejected": rej, "ACCEPTED": acc, "n/a": na, "total": len(verds)}
+        red_team_summary = {"modules": len(rt_rows), "per_class": per_class, "sound": not any_accepted}
+
     return {
         "modules": n,
         "determinism": {**det, "cross_run_stable_rate": q2},
@@ -234,9 +391,11 @@ def aggregate(results: Sequence[ModuleResult]) -> dict:
             "pathology_count": pathologies,
             "pathology_threshold": PATHOLOGY_RATIO,
         },
+        "red_team": red_team_summary,
         "verdict": {
             "Q2_export_deterministic": (q2 == 1.0) if q2 is not None else None,
             "Q3_wall_clock_bounded": q3_bounded,
+            "red_team_sound": (red_team_summary["sound"] if red_team_summary else None),
         },
     }
 
@@ -283,7 +442,35 @@ def render_md(results: Sequence[ModuleResult], summary: dict) -> str:
             f"(a sound checker must reject a proof whose term no longer matches its statement; "
             f"an *accept* here means nanoda is not actually type-checking)"
         )
-    if confirmable or nc:
+    rt = summary.get("red_team")
+    if rt:
+        ok = "✅" if rt["sound"] else "❌ SOUNDNESS FAILURE"
+        lines.append(
+            f"- **Broader red-team (§4.1, acceptance gate 1) — nanoda REJECTS every invalid class:** "
+            f"{ok} over {rt['modules']} module(s)"
+        )
+        labels = {
+            "value-swap": "value-swap (proof term ≠ claimed type)",
+            "type-swap": "type-swap (claimed type ≠ proof term)",
+            "dangling-ref": "dangling-ref (structurally-corrupt export)",
+            "axiom-restrict": "axiom-restrict (empty whitelist → unpermitted axiom rejected)",
+        }
+        for c, lab in labels.items():
+            pc = rt["per_class"].get(c)
+            if not pc:
+                continue
+            parts = [f"{pc['rejected']}/{pc['total']} rejected"]
+            if pc["n/a"]:
+                parts.append(f"{pc['n/a']} n/a")
+            if pc["ACCEPTED"]:
+                parts.append(f"{pc['ACCEPTED']} ACCEPTED ❌")
+            lines.append(f"  - {lab}: " + ", ".join(parts))
+        lines.append(
+            "  - NB genuine *vacuity* (a VALID proof of a weaker statement matching the wrong "
+            "goal) is well-typed and correctly ACCEPTED by a kernel checker — catching it is the "
+            "ADR-011 `*Binding` gate's job (statement == goal), not nanoda's. See SPEC-096-A §4.1."
+        )
+    if confirmable or nc or rt:
         lines.append("")
     lines += [
         "| module | determinism | export_bytes | nanoda_s | nanoda | declars | target | neg-ctrl | leanchecker_s | ratio | pathology |",
@@ -398,6 +585,7 @@ def run_module(
     scope_decls: Sequence[str] | None = None,
     confirm_decls: Sequence[str] | None = None,
     negative_control: bool = False,
+    red_team: bool = False,
 ) -> ModuleResult:
     exports: list[bytes] = []
     for _ in range(max(1, runs)):
@@ -442,6 +630,18 @@ def run_module(
             _, bad_status, _, _ = timed_checker((*nanoda_cmd, str(bad_config)), runner, clock, timeout)
             nc_rejected = bad_status != "ok"  # reject (any non-ok) = sound
 
+    # BROADER RED-TEAM (§4.1, acceptance gate 1): run the full mutation suite —
+    # value-swap, type-swap, dangling-ref, axiom-restrict — and require nanoda to
+    # reject (or 'n/a') every class. Only meaningful when the valid export passed.
+    red_team_results: dict[str, str] | None = None
+    if red_team and nanoda_status == "ok":
+        red_team_results = red_team_suite(
+            canonical.decode("utf-8", "replace"), export_dir, module,
+            nanoda_cmd, runner, clock, timeout)
+        # Keep nc_rejected coherent with the value-swap class for back-compat.
+        if nc_rejected is None and "value-swap" in red_team_results:
+            nc_rejected = red_team_results["value-swap"] == "rejected"
+
     return ModuleResult(
         module=module,
         export_bytes=len(canonical),
@@ -456,6 +656,7 @@ def run_module(
         nanoda_declars_checked=parse_declars_checked(nanoda_stdout),
         target_confirmed=target_confirmed,
         nc_rejected=nc_rejected,
+        red_team=red_team_results,
     )
 
 
@@ -485,6 +686,10 @@ def progress_line(index: int, total: int, r: ModuleResult) -> str:
         extra += f" target={'✓' if r.target_confirmed else '✗'}"
     if r.nc_rejected is not None:
         extra += f" neg-ctrl={'rejected✓' if r.nc_rejected else 'ACCEPTED✗'}"
+    if r.red_team:
+        marks = {"rejected": "✓", "n/a": "·", "ACCEPTED": "✗"}
+        extra += " red-team=[" + " ".join(
+            f"{k}:{marks.get(v, v)}" for k, v in r.red_team.items()) + "]"
     return (
         f"[{index}/{total}] {r.module}: determinism={r.determinism} "
         f"nanoda={r.nanoda_status} ({r.nanoda_seconds}s) lc={r.leanchecker_seconds}s "
@@ -519,6 +724,7 @@ def run_pilot(
     on_progress: Callable[[int, int, ModuleResult], None] = emit_progress,
     scope_decls: bool = False,
     negative_control: bool = False,
+    red_team: bool = False,
 ) -> tuple[list[ModuleResult], dict]:
     export_dir.mkdir(parents=True, exist_ok=True)
     total = len(sample)
@@ -530,6 +736,7 @@ def run_pilot(
             scope_decls=(own_decls if scope_decls else None),
             confirm_decls=(own_decls or None),
             negative_control=negative_control,
+            red_team=red_team,
         )
         results.append(r)
         on_progress(index, total, r)
@@ -569,6 +776,14 @@ def main(argv: list[str] | None = None) -> int:
         "and require it to REJECT — the soundness test (does nanoda catch a proof "
         "whose term no longer matches its statement?).",
     )
+    p.add_argument(
+        "--red-team",
+        action="store_true",
+        help="for each accepted export, run the full red-team mutation suite "
+        "(value-swap, type-swap, dangling-ref, axiom-restrict; SPEC-096-A §4.1, "
+        "acceptance gate 1) and require nanoda to reject every constructable class. "
+        "Implies --negative-control's value-swap class.",
+    )
     args = p.parse_args(argv)
 
     module_list = [m.strip() for m in args.module_list.split(",") if m.strip()] or None
@@ -588,6 +803,7 @@ def main(argv: list[str] | None = None) -> int:
         timeout=args.timeout,
         scope_decls=args.scope_decls,
         negative_control=args.negative_control,
+        red_team=args.red_team,
     )
     args.output_json.write_text(
         json.dumps({"summary": summary, "results": [asdict(r) for r in results]}, indent=2) + "\n",

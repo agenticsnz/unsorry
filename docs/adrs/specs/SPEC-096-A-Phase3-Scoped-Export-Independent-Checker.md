@@ -48,10 +48,26 @@ the controls; the anchor reuses them:
 
 ## 4. Acceptance gates (Phase 3a is disabled until all green)
 
-1. **Broader red-team** — the checker rejects, in addition to value-swap: structurally-
-   corrupt exports; the same-name **weakened-statement** vacuity (ADR-011 / PR-#64 class);
-   and **axiom-sneaking** (a `sorryAx`-bearing export with `sorryAx` not permitted is
-   rejected). Add each as a negative-control mutation in the pilot harness.
+1. **Broader red-team** *(implemented — `tools/pilot` `red_team_suite`, `--red-team`; hermetic
+   tests in `tools/pilot/tests`; live confirmation via the pilot workflow `red_team=true`)*.
+   Beyond the value-swap, the checker must REJECT each class:
+   - **`type-swap`** — swap two theorems' claimed `type` (keep proofs): the export asserts a
+     statement the proof doesn't prove (the *altered-statement* direction).
+   - **`dangling-ref`** — repoint a proof `value` at an out-of-range Expr index: a
+     **structurally-corrupt** export a rubber-stamp checker would pass.
+   - **`axiom-restrict`** — run the VALID export with an **empty** permitted-axiom set and
+     `unpermitted_axiom_hard_error`: any axiom use is rejected. This is the enforcement path
+     that also stops **axiom-sneaking** (a sneaked `sorryAx` not in the whitelist); an
+     axiom-free proof yields `n/a`, not a pass/fail.
+
+   **Honest boundary (normative).** Genuine **weakened-statement *vacuity*** — a *well-typed*
+   proof of a genuinely weaker statement that is passed off as the goal — is **NOT** catchable
+   by a kernel checker: the export's `type` *is* that weaker statement and the proof *is* valid
+   for it, so nanoda correctly ACCEPTS. Catching "valid proof of the wrong/weaker goal" is the
+   **ADR-011 `*Binding` gate's** job (it checks statement == goal), and remains so under
+   Phase 3b. `type-swap` exercises the kernel's type-matching, but is not a substitute for the
+   binding gate on true vacuity. So the binding gate is a **non-negotiable companion** to any
+   nanoda-as-gate placement (§ Phase 3b), not something nanoda replaces.
 2. **Checker code/soundness review** — a review of the independent checker itself
    (`nanoda 0.4.10-beta`), pinned to a reviewed commit; if it ever becomes load-bearing it
    enters the ADR-019 CODEOWNERS trust surface.

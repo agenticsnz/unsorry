@@ -45,6 +45,14 @@ on:
         options:
           - "false"
           - "true"
+      red_team:
+        description: "Run the full red-team suite (value-swap, type-swap, dangling-ref, axiom-restrict; gate 1) — require REJECT of every class"
+        required: false
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
 
 permissions:
   contents: read
@@ -114,6 +122,7 @@ jobs:
           SCOPE_DECLS: ${{ github.event.inputs.scope_decls || 'false' }}
           SPREAD: ${{ github.event.inputs.spread || 'false' }}
           NEG_CTRL: ${{ github.event.inputs.negative_control || 'false' }}
+          RED_TEAM: ${{ github.event.inputs.red_team || 'false' }}
         run: |
           set -euo pipefail
           scope_flag=""
@@ -122,8 +131,10 @@ jobs:
           if [ "$SPREAD" = "true" ]; then spread_flag="--spread"; fi
           nc_flag=""
           if [ "$NEG_CTRL" = "true" ]; then nc_flag="--negative-control"; fi
+          rt_flag=""
+          if [ "$RED_TEAM" = "true" ]; then rt_flag="--red-team"; fi
           python3 -m tools.pilot.export_checker_pilot \
-            --modules "$MODULES" --runs "$RUNS" --timeout "$TMO" $scope_flag $spread_flag $nc_flag \
+            --modules "$MODULES" --runs "$RUNS" --timeout "$TMO" $scope_flag $spread_flag $nc_flag $rt_flag \
             --lean4export-cmd "lake env ${LEAN4EXPORT_BIN:-lean4export}" \
             --nanoda-cmd "${NANODA_BIN:-nanoda}" \
             --leanchecker-cmd "lake env leanchecker" \

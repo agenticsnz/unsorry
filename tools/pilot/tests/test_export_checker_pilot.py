@@ -24,6 +24,11 @@ from tools.pilot.export_checker_pilot import (
     select_modules,
     sha256_hex,
     swap_two_theorem_values,
+    swap_two_theorem_types,
+    corrupt_dangling_reference,
+    red_team_verdict,
+    red_team_suite,
+    _DANGLING_INDEX,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
@@ -341,6 +346,130 @@ def test_run_module_negative_control_flags_soundness_failure(tmp_path):
         negative_control=True,
     )
     assert r.nc_rejected is False  # accepted an ill-typed export → soundness failure flagged
+
+
+# --- broader red-team (SPEC-096-A §4.1, acceptance gate 1) -------------------
+
+def _two_typed_thms():
+    return _ndjson(
+        {"meta": {}},
+        {"thm": {"name": 1, "type": 1, "value": 10, "all": []}},
+        {"thm": {"name": 2, "type": 2, "value": 20, "all": []}},
+    )
+
+
+def test_swap_two_theorem_types_alters_statement():
+    out = swap_two_theorem_types(_two_typed_thms())
+    assert out is not None
+    lines = [json.loads(l) for l in out.split("\n")]
+    thms = [o["thm"] for o in lines if "thm" in o]
+    # types swapped, values preserved → each theorem now claims the OTHER statement
+    by_val = {t["value"]: t for t in thms}
+    assert by_val[10]["type"] == 2 and by_val[20]["type"] == 1
+    # all-same-type or single-theorem → cannot construct
+    assert swap_two_theorem_types(_ndjson(
+        {"thm": {"name": 1, "type": 1, "value": 10, "all": []}},
+        {"thm": {"name": 2, "type": 1, "value": 20, "all": []}})) is None
+    assert swap_two_theorem_types(_ndjson({"thm": {"name": 1, "type": 1, "value": 10}})) is None
+
+
+def test_corrupt_dangling_reference_points_value_out_of_range():
+    out = corrupt_dangling_reference(_two_typed_thms())
+    assert out is not None
+    thms = [json.loads(l)["thm"] for l in out.split("\n") if '"thm"' in l]
+    # exactly one theorem's value now points at the dangling sentinel; the rest intact
+    dangling = [t for t in thms if t["value"] == _DANGLING_INDEX]
+    assert len(dangling) == 1
+    # no theorems → None
+    assert corrupt_dangling_reference(_ndjson({"axiom": {"name": 1, "type": 2}})) is None
+
+
+def test_nanoda_config_axiom_hard_error_and_empty_whitelist(tmp_path):
+    export = tmp_path / "A.export"
+    cfg = nanoda_config(export, permitted_axioms=(), unpermitted_axiom_hard_error=True)
+    assert cfg["permitted_axioms"] == []
+    assert cfg["unpermitted_axiom_hard_error"] is True
+    # default stays lenient
+    assert nanoda_config(export)["unpermitted_axiom_hard_error"] is False
+
+
+def test_red_team_verdict_classifies():
+    assert red_team_verdict("c", False, None) == "n/a"          # not constructable
+    assert red_team_verdict("c", True, None) == "n/a"           # constructable but not run
+    assert red_team_verdict("c", True, "error") == "rejected"   # any non-ok = sound
+    assert red_team_verdict("c", True, "timeout") == "rejected"
+    assert red_team_verdict("c", True, "ok") == "ACCEPTED"      # accepted invalid = failure
+
+
+def _redteam_runner(export_bytes, *, accept_classes=(), axiom_free=False):
+    """Config-aware faker. nanoda reads the config JSON it's handed and decides:
+    a mutated-export config (path tag) → reject unless its class is in accept_classes;
+    the axiom-restrict config (empty permitted_axioms) → reject unless axiom_free;
+    the valid check → ok."""
+    def runner(argv, check=False, capture_output=False, timeout=None):
+        argv = tuple(argv)
+        if argv[0] == "lean4export":
+            return completed(argv, stdout=export_bytes)
+        if argv[0] == "nanoda":
+            cfg = json.loads(Path(argv[-1]).read_text())
+            exp = cfg["export_file_path"]
+            if cfg["permitted_axioms"] == []:                       # axiom-restrict
+                return completed(argv, returncode=0) if axiom_free else completed(argv, returncode=1, stderr="unpermitted axiom")
+            for cls in ("value-swap", "type-swap", "dangling-ref"):
+                if f".{cls}.export" in exp:
+                    return completed(argv, returncode=0) if cls in accept_classes else completed(argv, returncode=1, stderr="reject")
+            return completed(argv, returncode=0, stdout="Checked 2 declarations with no errors")  # valid
+        return completed(argv, stdout="")  # leanchecker
+    return runner
+
+
+def test_red_team_suite_all_rejected_is_sound(tmp_path):
+    suite = red_team_suite(_two_typed_thms(), tmp_path, "Unsorry.A",
+                           ("nanoda",), _redteam_runner(_two_typed_thms().encode()), lambda: 0.0, 300)
+    assert suite == {"value-swap": "rejected", "type-swap": "rejected",
+                     "dangling-ref": "rejected", "axiom-restrict": "rejected"}
+
+
+def test_red_team_suite_accept_flags_soundness_failure(tmp_path):
+    suite = red_team_suite(_two_typed_thms(), tmp_path, "Unsorry.A", ("nanoda",),
+                           _redteam_runner(_two_typed_thms().encode(), accept_classes=("type-swap",)),
+                           lambda: 0.0, 300)
+    assert suite["type-swap"] == "ACCEPTED"        # nanoda accepted an altered statement → failure
+    assert suite["value-swap"] == "rejected"
+
+
+def test_red_team_suite_axiom_free_is_na(tmp_path):
+    suite = red_team_suite(_two_typed_thms(), tmp_path, "Unsorry.A", ("nanoda",),
+                           _redteam_runner(_two_typed_thms().encode(), axiom_free=True), lambda: 0.0, 300)
+    assert suite["axiom-restrict"] == "n/a"         # nothing to enforce, not a failure
+
+
+def test_run_module_red_team_populates_result_and_nc(tmp_path):
+    r = run_module("Unsorry.A", 1, ("lean4export",), ("nanoda",), ("leanchecker",), tmp_path,
+                   _redteam_runner(_two_typed_thms().encode()), lambda: 0.0, 300, red_team=True)
+    assert r.nanoda_status == "ok"
+    assert r.red_team == {"value-swap": "rejected", "type-swap": "rejected",
+                          "dangling-ref": "rejected", "axiom-restrict": "rejected"}
+    assert r.nc_rejected is True   # back-compat: value-swap class mirrors nc_rejected
+
+
+def test_aggregate_and_render_red_team_summary():
+    sound = ModuleResult("Unsorry.A", 100, "h", "single", 0.4, "ok", 9.0, None, False,
+                         red_team={"value-swap": "rejected", "type-swap": "rejected",
+                                   "dangling-ref": "rejected", "axiom-restrict": "n/a"})
+    s = aggregate([sound])
+    assert s["red_team"]["sound"] is True
+    assert s["red_team"]["per_class"]["axiom-restrict"]["n/a"] == 1
+    assert s["verdict"]["red_team_sound"] is True
+    md = render_md([sound], s)
+    assert "Broader red-team" in md and "vacuity" in md   # the honest boundary note is present
+    # a soundness failure flips the verdict
+    bad = ModuleResult("Unsorry.B", 100, "h", "single", 0.4, "ok", 9.0, None, False,
+                       red_team={"value-swap": "ACCEPTED", "type-swap": "rejected",
+                                 "dangling-ref": "rejected", "axiom-restrict": "rejected"})
+    sbad = aggregate([bad])
+    assert sbad["red_team"]["sound"] is False
+    assert "SOUNDNESS FAILURE" in render_md([bad], sbad)
 
 
 def test_parse_declars_checked():
