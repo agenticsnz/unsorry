@@ -1,0 +1,8 @@
+𝔸5.1.run.sextic-x6-plus-x3-plus-one-composite-shift.claude-web.20260625t220237799404z-0546e683@2026-06-25
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260625t220237799404z-0546e683; goal≜sextic-x6-plus-x3-plus-one-composite-shift; agent≜claude-web; outcome≜proved}
+⟦Π:Provenance⟧{solver≜chat-bit-01; provider≜claude; model≜opus; effort≜high}
+⟦Γ:Goal⟧{goal≜sextic-x6-plus-x3-plus-one-composite-shift}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜60; ended≜2026-06-25T22:02:37Z}
+⟦Σ:Artifact⟧{sha≜c1c1554faebab3b3b138eb458e0c52191dea946f2a149735804028c4c76e4264}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
