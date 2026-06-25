@@ -2921,11 +2921,23 @@ seed_library_cache() {
 #   1. lake build UnsorryLibrary --wfail   (zero-sorry, zero-warning bar)
 #   2. lake exe axiom_audit Unsorry.<camel> (whitelist only, NO --allow-sorry)
 #   3. python3 -m tools.gate_a.check_library_options <root>/library
+# ADR-099 / SPEC-099-A §3: the suite verifier context for a goal, as the tab-separated
+# line `toolchain<TAB>mathlib<TAB>verify_dir<TAB>build_target`, or empty when the goal is
+# not a registered benchmark obligation. A benchmark goal proves at its SUITE's pin in
+# the suite's _verify lake project (already in this checkout), not the repo-wide pin.
+suite_context_for_goal() {
+  python3 -m tools.intake.suite_context "$1" --root "$2" 2>/dev/null
+}
+
 prove_local_verify() {
-  local root="$1" camel="$2"
+  local root="$1" camel="$2" lib_target="${3:-UnsorryLibrary}" do_audit="${4:-1}"
+  # ``library`` is relative to <root>: the repo root for an organic goal, the suite
+  # _verify project for a benchmark goal. The repo axiom_audit exe is absent in a suite
+  # package, so do_audit=0 there — Gate A's gate-a-benchmark leg (--wfail + forbidden
+  # tokens) verifies at the suite pin instead (ADR-099 §2).
   ( cd "$root" \
-    && lake build UnsorryLibrary --wfail \
-    && lake exe axiom_audit "Unsorry.$camel" \
+    && lake build "$lib_target" --wfail \
+    && { [ "$do_audit" != 1 ] || lake exe axiom_audit "Unsorry.$camel"; } \
     && python3 -m tools.gate_a.check_library_options library ) >/dev/null 2>&1
 }
 
@@ -2949,15 +2961,31 @@ run_proof() {
   proof_started="$(date +%s)"
   name="$(py_helper lean-name "$prwt/goals/$goal.lean")" || return 1
   stmt="$(py_helper lean-stmt "$prwt/goals/$goal.lean")" || return 1
-  target="library/Unsorry/$camel.lean"
-  binding="library/Unsorry/${camel}Binding.lean"
+  # ADR-099 / SPEC-099-A §3: a benchmark goal proves at its SUITE's pin in the suite
+  # verifier context (targets/<suite>/_verify — a lake project pinned to the suite's
+  # toolchain+mathlib, already committed in this checkout), not the repo-wide pin.
+  # Organic goals leave every variable at its repo default (empty context), so their
+  # path below is byte-identical to before.
+  local lib_rel="library" lib_target="UnsorryLibrary" do_audit=1 build_dir="$prwt" sctx vdir
+  sctx="$(suite_context_for_goal "$goal" "$prwt")"
+  if [ -n "$sctx" ]; then
+    vdir="$(printf '%s' "$sctx" | cut -f3)"
+    lib_rel="$vdir/library"
+    lib_target="$(printf '%s' "$sctx" | cut -f4)"
+    do_audit=0
+    build_dir="$prwt/$vdir"
+    log "benchmark goal $goal → proving at the suite pin in $vdir (target $lib_target); repo axiom_audit skipped — Gate A's gate-a-benchmark leg verifies at the suite pin (ADR-099)"
+  fi
+  target="$lib_rel/Unsorry/$camel.lean"
+  binding="$lib_rel/Unsorry/${camel}Binding.lean"
   # The PR worktree is a fresh checkout with no .lake (it is gitignored), so
-  # the mathlib oleans are absent and `lake build UnsorryLibrary --wfail` would
-  # otherwise recompile all of mathlib from source and blow the attempt budget
-  # (observed in phase1-run-001). Restore the prebuilt cache once, up front.
+  # the mathlib oleans are absent and `lake build … --wfail` would otherwise
+  # recompile all of mathlib from source and blow the attempt budget (observed in
+  # phase1-run-001). Restore the prebuilt cache once, up front, in the build dir
+  # (the suite _verify project for a benchmark goal — its own pin's cache).
   # Best-effort: a warm global cache makes this a ~20s no-op; on failure the
   # build still works, just slowly, so we warn rather than abort.
-  if ! ( cd "$prwt" && lake exe cache get ) >/dev/null 2>&1; then
+  if ! ( cd "$build_dir" && lake exe cache get ) >/dev/null 2>&1; then
     log "warning: 'lake exe cache get' failed in the prove worktree for $goal — verification may be slow"
   fi
   # cache get restores only *mathlib* oleans; the project's own UnsorryLibrary
@@ -3060,17 +3088,22 @@ Fix the module so both pass. Write the corrected $target."
     # theorem inhabits the GOAL's exact type. Built by prove_local_verify's
     # --wfail build below (and by Gate A in CI), so a proof of a weakened or
     # vacuous statement under the goal's name fails here, not just in review.
-    write_binding_module "$prwt" "$goal" "$camel" || { err="(could not emit binding obligation)"; continue; }
-    if prove_local_verify "$prwt" "$camel"; then
-      minimize_proof_imports "$prwt" "$camel"   # ADR-074: best-effort, never fails the proof
-      independent_check_advisory "$prwt" "$camel"  # ADR-096: best-effort kernel-diverse confirm, never fails the proof
+    write_binding_module "$prwt" "$goal" "$camel" "$lib_rel" || { err="(could not emit binding obligation)"; continue; }
+    if prove_local_verify "$build_dir" "$camel" "$lib_target" "$do_audit"; then
+      # ADR-074/096 import-narrowing + kernel-diverse confirm are repo-pin-only
+      # best-effort/advisory passes; skip them for a benchmark goal (its module
+      # lives in the suite package, at the suite pin) — they never gate the proof.
+      if [ -z "$sctx" ]; then
+        minimize_proof_imports "$prwt" "$camel"   # ADR-074: best-effort, never fails the proof
+        independent_check_advisory "$prwt" "$camel"  # ADR-096: best-effort kernel-diverse confirm, never fails the proof
+      fi
       PROOF_SOLVE_SECONDS=$(( $(date +%s) - proof_started ))
       log "proof of $goal verified locally — statement bound (attempt $attempt)"
       return 0
     fi
     log "local verification of $goal failed (attempt $attempt)"
-    err="$( ( cd "$prwt" && lake build UnsorryLibrary --wfail \
-      && lake exe axiom_audit "Unsorry.$camel" ) 2>&1 | tail -n 40 )"
+    err="$( ( cd "$build_dir" && lake build "$lib_target" --wfail \
+      && { [ "$do_audit" != 1 ] || lake exe axiom_audit "Unsorry.$camel"; } ) 2>&1 | tail -n 40 )"
   done
   PROOF_SOLVE_SECONDS=$(( $(date +%s) - proof_started ))
   # ADR-024: the final attempt's verifier output becomes this run's lesson,
@@ -3187,7 +3220,7 @@ test_independent_check_advisory_opt_in() {
 # insertion; a weaker/vacuous one does not). Built under --wfail, so the kernel
 # itself performs the defeq binding — no metaprogram, no name clash.
 write_binding_module() {
-  local prwt="$1" goal="$2" camel="$3" name ftype opens
+  local prwt="$1" goal="$2" camel="$3" lib_rel="${4:-library}" name ftype opens
   name="$(py_helper lean-name "$prwt/goals/$goal.lean")" || return 1
   ftype="$(py_helper lean-foralltype "$prwt/goals/$goal.lean")" || return 1
   # The goal's own `open` commands travel with the type (a statement written
@@ -3206,7 +3239,7 @@ write_binding_module() {
     # type-checking, not lints.
     printf 'set_option linter.unusedVariables false in\n'
     printf 'theorem %s_binding_check : %s := %s\n' "$name" "$ftype" "$name"
-  } > "$prwt/library/Unsorry/${camel}Binding.lean"
+  } > "$prwt/$lib_rel/Unsorry/${camel}Binding.lean"
 }
 
 # Persist one terminal proof-run fact in the same PR as its durable outcome.
@@ -3275,9 +3308,20 @@ check_in_proof() {
   name="$(py_helper lean-name "$prwt/goals/$goal.lean")" || return 1
   sha="$(py_helper lean-sha "$prwt/goals/$goal.lean")" || return 1
 
-  mkdir -p "$prwt/library/index" || return 1
+  # ADR-099 / SPEC-099-A §3: a benchmark proof lives in its suite's _verify package
+  # (kernel-verified at the suite pin), not the repo library — route the index +
+  # binding + staged tree accordingly. Organic goals stay byte-identical (empty sctx).
+  local lib_rel="library" stage_root="library" sctx vdir
+  sctx="$(suite_context_for_goal "$goal" "$prwt")"
+  if [ -n "$sctx" ]; then
+    vdir="$(printf '%s' "$sctx" | cut -f3)"
+    lib_rel="$vdir/library"
+    stage_root="$(printf '%s' "$vdir" | cut -d/ -f1)"  # "targets"
+  fi
+
+  mkdir -p "$prwt/$lib_rel/index" || return 1
   py_helper render-index "$sha" "$goal" "$name" "${provenance[@]}" \
-    > "$prwt/library/index/$sha.aisp" || return 1
+    > "$prwt/$lib_rel/index/$sha.aisp" || return 1
   write_proof_run_record "$prwt" "$goal" proved "$sha" || return 1
   py_helper rewrite-goal "$prwt/goals/$goal.aisp" proved "$sha" || return 1
   # ⊕ a merge reinforces the goal's pattern (+1 affinity, ADR-010); folds
@@ -3286,20 +3330,20 @@ check_in_proof() {
   # The self-check binding (run_proof) is not committed: Gate A REGENERATES the
   # binding obligation from the goal so a contributor cannot weaken or omit it
   # (ADR-011, SPEC-011-A). Remove it from the PR tree.
-  rm -f "$prwt/library/Unsorry/${camel}Binding.lean"
+  rm -f "$prwt/$lib_rel/Unsorry/${camel}Binding.lean"
 
   branch="$(git -C "$prwt" rev-parse --abbrev-ref HEAD)" || return 1
   title="prove($goal): $name by $AGENT_ID"
-  body="Automated Phase-1 proof of goal \`$goal\` by agent \`$AGENT_ID\` (ADR-006, ADR-007, SPEC-007-A). New library module \`library/Unsorry/$camel.lean\` re-states and proves \`$name\`; built with \`lake build UnsorryLibrary --wfail\` and audited with \`lake exe axiom_audit Unsorry.$camel\` (whitelist only). Index entry keyed by the content address of the goal's Lean statement."
+  body="Automated Phase-1 proof of goal \`$goal\` by agent \`$AGENT_ID\` (ADR-006, ADR-007, SPEC-007-A). New library module \`$lib_rel/Unsorry/$camel.lean\` re-states and proves \`$name\`; built with \`lake build --wfail\` at the suite/repo pin. Index entry keyed by the content address of the goal's Lean statement."
   if [ "$UNSORRY_SUBMIT_MODE" = queue ]; then
-    queue_pr_tree "$prwt" "$branch" "$title" library goals proof-runs || return 1
+    queue_pr_tree "$prwt" "$branch" "$title" "$stage_root" goals proof-runs || return 1
     emit_event proved "$goal"
     emit_event queued "$goal"
     log "queued verified proof branch $branch for $goal (sha ${sha:0:12})"
     return 0
   fi
 
-  submit_pr_tree "$prwt" "$branch" "$title" "$body" library goals proof-runs || return 1
+  submit_pr_tree "$prwt" "$branch" "$title" "$body" "$stage_root" goals proof-runs || return 1
   emit_event proved "$goal"
   emit_event pr-opened "$goal"
   log "opened auto-merge prove PR for $goal (sha ${sha:0:12})"
@@ -5546,6 +5590,32 @@ test_seed_library_cache() {
   return "$rc"
 }
 
+# ADR-099 / SPEC-099-A §3: a benchmark goal resolves to its suite's verifier context
+# (toolchain/mathlib/_verify/target); an organic goal resolves to empty so the prove
+# path keeps the repo pin. Exercises the run_proof / check_in_proof routing seam.
+test_suite_context_for_goal() {
+  local root rc=0 out
+  root="$(mktemp -d)"
+  mkdir -p "$root/targets/minif2f-v1"
+  {
+    printf '𝔸5.1.skeleton.minif2f-v1@2026-06-25\n'
+    printf 'γ≔unsorry.skeleton\n'
+    printf '⟦Μ:Manifest⟧{top≜minif2f-v1-suite;supplier≜acme;domain≜math;toolchain≜leanprover/lean4:v4.24.0;mathlib≜rev24}\n'
+    printf '⟦Σ:Subs⟧{sub₁≜⟨id≜minif2f-a,sha≜%s⟩}\n' "$(printf 'a%.0s' $(seq 64))"
+    printf '⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩\n'
+  } > "$root/targets/minif2f-v1/skeleton.aisp"
+  # a registered obligation → resolves to the suite verifier context
+  out="$(suite_context_for_goal "minif2f-a" "$root")"
+  case "$out" in
+    "leanprover/lean4:v4.24.0"$'\t'"rev24"$'\t'"targets/minif2f-v1/_verify"$'\t'"Minif2fV1") ;;
+    *) log "  benchmark goal context wrong: [$out]"; rc=1 ;;
+  esac
+  # an organic goal → empty (keeps the repo pin path)
+  [ -z "$(suite_context_for_goal "some-organic-goal" "$root")" ] || { log "  organic goal not empty"; rc=1; }
+  rm -rf "$root"
+  return "$rc"
+}
+
 test_open_pr_claim_guard() {
   local rc
   # ADR-017: an open prove PR for exactly this goal → skip it (rc 0). gh is
@@ -5993,6 +6063,7 @@ run_self_tests() {
     test_sweep_detection
     test_goal_rewrite
     test_seed_library_cache
+    test_suite_context_for_goal
     test_convergence_rewrite
     test_record_validation
     test_require_main_checkout
