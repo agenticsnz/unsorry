@@ -12,6 +12,101 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 `python3 -m tools.changelog --preview`; a release folds them in here with
 `python3 -m tools.changelog --release <version> <date>`. -->
 
+## [1.33.0] - 2026-06-24
+
+### Added
+
+- Proposed **ADR-086 (Validator Role — Creditable, Distributed, Reproducible Verification)**: makes verification a first-class swarm role alongside calculator (prover) and dispatcher, so the nodes that check proofs are independently auditable and credited — *without validation becoming a rubber-stamp farm*. Validators publish signed attestations ("I ran the kernel on proof-hash H under toolchain T and got verdict R") that are claims about execution, never the source of truth: the Lean kernel stays the only truth oracle and ADR-049's mandatory trusted re-check stays the load-bearing gate at the promotion boundary (kept because accepted proofs become imported dependencies, so a false one can't be cleanly rolled back). Since proof-of-execution is unattainable for a deterministic public computation, foul play (false attestations — in **either** direction, false accept *or* false reject) is **penalised** via reputation loss/slashing, and rubber-stamping is made −EV by honeypots of **both kinds** (known-invalid to catch false accepts, known-valid to catch proof-suppression) at a calibrated rate plus peer-vs-central agreement reputation. Peer rejection never discards a candidate — it routes to an appeal/sample lane that still reaches the p=1 gate, so a false reject is caught like a false accept. Composes ADR-049/052/053/054 and stays strictly subordinate to ADR-049: the central trusted re-check stays **p=1 at the promotion boundary** — validators gate only a *pre-promotion* lane (prioritisation/credit/pre-filtering), never promotion; lowering central below p=1 is explicitly a separate future ADR. So validators scale audit/pre-filtering, but central cost falls only when the promotion gate itself becomes cheaper/portable (lean4export). A draft contract is in SPEC-086-A. Status: Proposed.
+- The GitHub Pages site header now carries a centre **On this page** dropdown listing the document's sections — built at runtime from the rendered `h2`/`h3` headings, so it always tracks the README (and any doc/ADR page) without manual upkeep.
+
+### Changed
+
+- The honest-difficulty backfill now also covers ohdearquant's `mac-158f`
+deterministic Python/sympy templates, not only seedkit
+([ADR-088](docs/adrs/ADR-088-Extend-Difficulty-Backfill-To-Mac158f.md)). ADR-087
+left a cross-prover inconsistency — two identical-triviality `gzmod` goals could
+sit at difficulty `1` (proved by seedkit) versus `3` (proved by mac-158f),
+differing only by who proved them. The attribution sweep's difficulty pass now
+identifies *any* deterministic-template fixture (`index_is_template_fixture` =
+seedkit ∪ mac-158f) and corrects ~493 further `mac-158f` goal records
+(`gzmod`/`sum`/`dvd`/`gbinom`/`sq`/…) from the inflated 3–5 self-tag to the honest
+`1`. mac-158f provenance is unchanged (already `provider≜python; model≜sympy` via
+the ADR-079 rule); `solver≜` credit is unchanged; the sweep stays idempotent and
+self-healing. ohdearquant's difficulty-weighted leaderboard points drop to reflect
+honest difficulty — a deliberate, ADR-088-approved standings correction.
+- The attribution-relabel sweep (`tools/repo/relabel_attribution.py`) now backfills
+historical seedkit fixtures to the honest labels ADR-086 made standard going
+forward ([ADR-087](docs/adrs/ADR-087-Backfill-Historical-Seedkit-Records.md)). Its
+provenance rules gain `template-induction-ring → lean/ring` and now process
+`provider≜seedkit` records (not only the `claude`-mislabelled ones), across active
+and archived index records — so seedkit's Lean `decide` / `induction; ring`
+fixtures are recorded as `provider≜lean; model≜decide`/`ring` instead of a bespoke
+`seedkit` engine. The sweep additionally corrects the difficulty of every
+seedkit-origin goal record from the inflated 3–5 self-tag to the honest `1` a
+one-tactic template earns under the sourcing rubric, identifying those goals by
+their own proof provenance (no fragile goal-id prefix list). It stays idempotent
+and self-healing, and `mac-158f`'s genuine Python/sympy templates and any real LLM
+proof are untouched. `solver≜` credit and credited-proof counts are unchanged;
+only difficulty-weighted leaderboard points move — so fixture contributors'
+`difficulty_points` and score drop to reflect honest difficulty. This is a
+deliberate, ADR-087-approved standings correction, not a regression.
+- Gate A's **axiom audit now shards across N parallel runners** (ADR-091 / SPEC-091-A), the same way ADR-063 sharded the kernel replay. The axiom audit had become the dominant Gate A cost (~55–65% of per-PR verifier minutes) and the binding constraint on verification throughput, because each `axiom_audit` process holds the full mathlib image (~6–7 GB) resident and so ran serially (`--jobs 1`) on one runner. It is now planned into disjoint shards (`gate-a-audit-plan`), audited one shard per matrix leg (`gate-a-audit`, `fail-fast: false`), and covered by a single `gate-a-audit-cover` signal — cutting the audit wall-clock to ~1/N. The partition reuses the proven `split_evenly` machinery (disjoint + covering, unit-tested) and each leg re-derives its slice from the shared commit SHA, so every module is still axiom-audited exactly once, from a locally-derived build, with no contributor artifact trusted (the SPEC-049-A §2 invariant is preserved). The required `gate-a` context name is unchanged (ADR-058). Shard count is the operator knob `vars.UNSORRY_AUDIT_SHARDS` (default 8). Validated on real runners via the non-required `gate-a-shard-pilot` (`mode=audit`) before promotion.
+
+### Fixed
+
+- Moved `_config.yml` from `_layouts/` to the repository root, where Jekyll actually reads it. Previously it was silently ignored, so its `exclude` list (which keeps the Lean/tooling tree out of the Pages build) and layout defaults had no effect.
+- Fixed the GitHub Pages deploy livelock that froze the public site. Pages was on the legacy push-triggered build, which cancels any in-flight build on a new push; under the swarm's commit-every-~10–60s firehose to `main` every build was preempted before it could deploy (200+ consecutive builds cancelled, site stale for hours). Pages now deploys via a scheduled GitHub Actions workflow (`pages-deploy.yml`, every 10 min + manual dispatch, no push trigger, never cancels in-flight), so deploys are decoupled from the firehose and the site stays at most ~10 minutes behind `main` (ADR-089).
+
+## [1.32.0] - 2026-06-23
+
+### Added
+
+- The seedkit gains five more theorem families — arithmetic series, shifted-square
+sums, scaled odd-square sums, alternating geometric series, and consecutive-product
+divisibility (`k! ∣ n·(n+1)·…·(n+k−1)`) — each with a one-line `run_batch_<family>.sh`
+wrapper. The shared number-word table now spans 1..80. `run_batch_family.sh` also
+clears `.lake/build` after each batch (`SEEDKIT_CLEAN_BUILD`, default on) so a long
+pool run cannot exhaust the disk with accumulated per-module build output.
+
+### Changed
+
+- Gate A's audit and replay jobs no longer cold-rebuild the whole library (~21–45 min) when they land on a cold Namespace runner. The `.lake` cache volume is per-runner and isn't reliably shared to the downstream jobs — measured 2026-06-22, a single run had `gate-a-prepare` on a warm 20 GB volume while `gate-a-audit` got an empty 4 KB one and rebuilt from scratch, hitting the 45-min timeout. mathlib was unaffected (its own binary cache), but the ~320 MB library oleans (`.lake/build`) had no cross-runner fallback. Now `gate-a-prepare` publishes them to a GitHub `actions/cache` entry on `main` (one bounded, LRU-evicted entry per commit), and `gate-a-audit`/`gate-a-replay` restore it (restore-only, no per-PR churn) only when the Namespace volume missed — turning the cold rebuild into a sub-minute restore plus a cheap incremental. Timeouts are unchanged; soundness is unchanged (leanchecker still kernel-replays every olean, and lake rebuilds any whose source changed). See SPEC-045-A.
+- Rewrote the README's "The goal, honestly" section: tightened it ~45%, marked the decompose→recompose chain and dependency reuse as demonstrated (Phase 3 complete) rather than open, and reframed "what's next" around directing the swarm at sponsor-architected *packages* ([ADR-078](docs/adrs/ADR-078-Sponsor-Registered-Targets-And-Obligation-Discharge-Credit.md)) and generalising the engine beyond Lean maths ([ADR-080](docs/adrs/ADR-080-Platform-Generalisation-And-Domain-Neutrality.md)).
+- Restructured the README's heading navigation from a flat list of ~18 top-level sections into a two-level outline (grouped under **The big picture**, **How it works**, and **Get involved**) for an easier GitHub table of contents, and refreshed the Roadmap's Phase 6 to reflect the newest platform-generalisation work — *architected packages* / sponsor-registered targets ([ADR-078](docs/adrs/ADR-078-Sponsor-Registered-Targets-And-Obligation-Discharge-Credit.md)), the domain-neutrality decision ([ADR-080](docs/adrs/ADR-080-Platform-Generalisation-And-Domain-Neutrality.md)), the problem-intake pipeline ([ADR-081](docs/adrs/ADR-081-Problem-Admission-And-Intake-Pipeline.md)), and a first non-maths target inbound.
+- The seedkit number-word table (`tools/seedkit/_words.py`) now spans 1..60 instead
+of 1..30, and the telescoping/Faulhaber generators default to the full table, so
+their coefficient/value sweeps can continue past 30 once the lower range is
+exhausted by earlier batches. Additive only — existing goal ids are unchanged.
+- The `tools/seedkit` batch generator now produces three further theorem families
+besides divisibility — ZMod residue non-membership (sums of two/three squares,
+two cubes), telescoping power-sum closed forms, and geometric/Faulhaber closed
+forms — each behind a one-line `run_batch_<family>.sh` wrapper sharing the
+generator/writer/gate pipeline. Generators and writers are now import-safe (CLI
+guarded behind `__main__`), and batch validation builds only the new modules and
+their bindings (`lake build Unsorry.<Mod> Unsorry.<Mod>Binding --wfail`) instead
+of the whole library, so a batch no longer times out on a cold runner.
+- `tools/seedkit` is now documented as a first-class **fixture / library-growth**
+path, distinct from sourcing, with its attribution and difficulty conformed to
+the sourcing paradigm ([ADR-086](docs/adrs/ADR-086-Seedkit-Fixture-Generation-Path.md)).
+seedkit mints goals *born proved* straight into the library — a path previously
+undocumented in the README, CONTRIBUTING, and the `unsorry-goal-sourcing` skill,
+and stamped with a bespoke provenance/difficulty scheme. The generator now
+records honest, identity-bearing provenance at write time: an authenticated
+`solver` resolved from `UNSORRY_SOLVER`/`SEEDKIT_SOLVER` (it now **refuses to
+write anonymous fixtures**, replacing the silent `anon` default), `provider≜lean`,
+and the real engine `model≜decide`/`ring` (no more `provider≜seedkit` /
+`model≜template-*`, so no post-hoc relabel is needed). Every template family is
+rated at the honest **difficulty 1** the sourcing skeptic's "no short one-tactic
+proof" bar assigns, replacing the inflated 3–5 self-tags. The README "the path is
+the same" invariant, CONTRIBUTING's ways-to-contribute, and the sourcing skill's
+`status≜open`/`sha≜∅` invariants are amended to admit the fixture exception, with
+cross-references both ways so an agent asked to batch-generate a parametric family
+reaches for seedkit rather than the four-gate sourcer.
+
+### Fixed
+
+- The stuck-PR janitors now clear stranded PRs reliably instead of needing a manual sweep. Two gaps were letting PRs sit red for hours: (1) the dropped-gate janitor only acted on PRs in `BLOCKED` state, but a PR whose required checks never dispatched usually sits in `UNKNOWN` (GitHub never computed its mergeability) — so #3987 was skipped every run for 6 h; it now acts on `BLOCKED` **or** `UNKNOWN` (the gate-absence signal is what proves a dropped dispatch). (2) Both janitors depended on an hourly `schedule` cron, which GitHub silently drops under load — the stale-failed janitor logged only one run in its first nine hours — so the auto-drain never happened exactly when the backlog was worst. Both now trigger on **`workflow_run` after every `gate-a` completion** (dozens an hour in the swarm; each run rescans all open PRs, so any completion catches the stuck ones), with the cron kept only as a backstop and `cancel-in-progress: false` so the frequent triggers coalesce rather than starving the in-flight sweep. Pure detection predicates unit-tested.
+
 ## [1.31.0] - 2026-06-22
 
 ### Added

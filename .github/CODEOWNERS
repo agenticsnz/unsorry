@@ -11,3 +11,13 @@
 /swarm/          @cgbarlow
 /lakefile.toml   @cgbarlow
 /lean-toolchain  @cgbarlow
+
+# ADR-078/080/081 (#5643): the benchmark/target intake + scoring trust surfaces.
+# The target registry, the intake validator, the domain-admission registry/predicate,
+# and the credit/scoring generator must not auto-merge on gate-green alone — they
+# decide what is admitted to the commons and what earns board credit.
+/targets/           @cgbarlow
+/tools/intake/      @cgbarlow
+/tools/governance/  @cgbarlow
+/docs/governance/   @cgbarlow
+/tools/leaderboard/ @cgbarlow
