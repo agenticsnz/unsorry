@@ -27,6 +27,7 @@ on:
         options:
           - replay
           - audit
+          - nanoda
       shards:
         description: "Number of parallel shards"
         required: false
@@ -273,4 +274,64 @@ jobs:
           set -euo pipefail
           python3 -m tools.gate_a.parallel_modules combine-audit \
             --reports-dir audit-fragments --output axiom-report.json
+
+  # --- ADR-097: nanoda audit-replacement lane (mode=nanoda) -------------------
+  # The mandatory ADR-058 pilot for Phase 3b: run tools.gate_a.nanoda_gate on a
+  # real runner against a real incremental base, BEFORE it is allowed to gate. It
+  # runs the SAME check the required gate_a_nanoda job will run; here it is
+  # OBSERVE-ONLY — the exit code is reported, never blocks. Pass base=<sha> (e.g.
+  # the PR/merge to diff) for a realistic leaf-proof scope; blank base ⇒ 'full' ⇒
+  # not-covered (the driver correctly defers to the real audit).
+  nanoda:
+    name: nanoda audit-replacement (observe-only)
+    if: github.event.inputs.mode == 'nanoda'
+    runs-on: namespace-profile-unsorry-1
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.12"
+      - name: Namespace .lake cache volume
+        id: ns_lake_cache
+        continue-on-error: true
+        uses: namespacelabs/nscloud-cache-action@15799a6b54e5765f85b2aac25b3f0df43ed571c0 # v1.4.3
+        with:
+          path: ${{ github.workspace }}/.lake
+      - name: Build (lean-action, mathlib binary cache)
+        uses: leanprover/lean-action@38fbc41a8c28c4cbaec22d7f7de508ec2e7c0dd9 # v1.5.0
+        with:
+          use-github-cache: ${{ steps.ns_lake_cache.outputs.cache-hit != 'true' }}
+          build-args: "UnsorryGoals"
+      - name: Generate statement-binding obligations
+        run: python3 -m tools.gate_a.check_statement_binding generate .
+      - name: Library build — zero-warning bar (--wfail)
+        run: lake build UnsorryLibrary --wfail
+      - name: Build independent-check tools (pinned lean4export + nanoda)
+        run: |
+          set -euo pipefail
+          eval "$(./tools/independent_check/setup.sh)"
+          { echo "LEAN4EXPORT_BIN=$LEAN4EXPORT_BIN"; echo "NANODA_BIN=$NANODA_BIN"; } >> "$GITHUB_ENV"
+      - name: Run nanoda_gate (observe-only)
+        continue-on-error: true
+        env:
+          BASE: ${{ github.event.inputs.base }}
+        run: |
+          set -euo pipefail
+          base_arg=()
+          if [ -n "$BASE" ]; then base_arg=(--base "$BASE"); fi
+          python3 -m tools.gate_a.nanoda_gate "${base_arg[@]}" \
+            --lean4export-cmd "lake env ${LEAN4EXPORT_BIN}" \
+            --nanoda-cmd "${NANODA_BIN}" \
+            --output-json nanoda-gate-report.json
+          echo "exit code: $? (0 pass / 1 fail / 2 not-covered)"
+      - name: Upload nanoda-gate report
+        if: always()
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        with:
+          name: nanoda-gate-report
+          path: nanoda-gate-report.json
+          if-no-files-found: ignore
           echo "combined footprint: $(python3 -c 'import json;print(len(json.load(open("axiom-report.json"))))') declaration(s)"
