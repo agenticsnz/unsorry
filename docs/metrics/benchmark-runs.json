@@ -34,6 +34,28 @@
         "run_id": "20260625t043158129565z-14441c74",
         "solve_s": 3429,
         "verification": "kernel"
+      },
+      {
+        "contributor": "Rauxon",
+        "ended": "2026-06-25T05:45:54Z",
+        "goal": "putnam-1965-b5",
+        "model": "claude/opus",
+        "outcome": "proved",
+        "passed": true,
+        "run_id": "20260625t054554175694z-bc4f7eea",
+        "solve_s": 4056,
+        "verification": "kernel"
+      },
+      {
+        "contributor": "Rauxon",
+        "ended": "2026-06-25T06:19:26Z",
+        "goal": "putnam-1966-a3",
+        "model": "claude/opus",
+        "outcome": "proved",
+        "passed": true,
+        "run_id": "20260625t061926212811z-468eb768",
+        "solve_s": 1419,
+        "verification": "kernel"
       }
     ]
   }

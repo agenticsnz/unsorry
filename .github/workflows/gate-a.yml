@@ -277,8 +277,11 @@ jobs:
   # knob, default 8; separate from UNSORRY_REPLAY_SHARDS).
   gate_a_audit_plan:
     name: gate-a-audit-plan
-    needs: [detect, gate_a_prepare]
-    if: needs.detect.outputs.admitted == 'true' && needs.detect.outputs.active == 'true'
+    # ADR-097: the real axiom_audit now runs ONLY as the fallback — when
+    # gate_a_nanoda did NOT cover this PR (non-leaf / global-impact / untrusted
+    # diff). On the common leaf path nanoda covers it and these jobs skip.
+    needs: [detect, gate_a_prepare, gate_a_nanoda]
+    if: needs.detect.outputs.admitted == 'true' && needs.detect.outputs.active == 'true' && needs.gate_a_nanoda.outputs.covered != 'true'
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.plan.outputs.matrix }}
@@ -308,12 +311,12 @@ jobs:
 
   gate_a_audit:
     name: gate-a-audit
-    needs: [detect, gate_a_prepare, gate_a_audit_plan]
+    needs: [detect, gate_a_prepare, gate_a_nanoda, gate_a_audit_plan]
     # ADR-091: one matrix leg per audit shard. Skip when no library/goal module
     # changed (count==0) — the empty matrix expands to zero legs; the cover job
     # then passes vacuously. Each leg restores gate-a-prepare's oleans and audits
     # its disjoint shard, so every module is still axiom-audited exactly once.
-    if: needs.detect.outputs.admitted == 'true' && needs.detect.outputs.active == 'true' && needs.gate_a_audit_plan.outputs.count != '0'
+    if: needs.detect.outputs.admitted == 'true' && needs.detect.outputs.active == 'true' && needs.gate_a_nanoda.outputs.covered != 'true' && needs.gate_a_audit_plan.outputs.count != '0'
     runs-on: ${{ needs.detect.outputs.audit_profile }}
     strategy:
       fail-fast: false
@@ -462,8 +465,9 @@ jobs:
   # non-required shard pilot.
   gate_a_audit_cover:
     name: gate-a-audit-cover
-    needs: [detect, gate_a_audit_plan, gate_a_audit]
-    if: always() && needs.detect.outputs.admitted == 'true' && needs.detect.outputs.active == 'true'
+    needs: [detect, gate_a_nanoda, gate_a_audit_plan, gate_a_audit]
+    # Runs only on the fallback path (nanoda did not cover); skips on the leaf path.
+    if: always() && needs.detect.outputs.admitted == 'true' && needs.detect.outputs.active == 'true' && needs.gate_a_nanoda.outputs.covered != 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Assert every shard audited green
@@ -486,6 +490,115 @@ jobs:
             exit 1
           fi
           echo "all $COUNT module(s) audited across the shards (every module audited exactly once)"
+
+  # ADR-097 (Phase 3b): the nanoda audit-replacement. For a leaf-proof PR
+  # (compute_audit_targets mode != 'full') this REPLACES the 8-shard axiom_audit
+  # above — one runner runs a declaration-scoped lean4export + nanoda over the
+  # changed library closure with the axiom whitelist HARD-enforced (a sneaked
+  # sorryAx fails) + the pp_declars positive control, in ~seconds. It outputs
+  # `covered`; the audit jobs above run ONLY when this is 'false' (the non-leaf /
+  # global-impact fallback), so on the common leaf path the 8 audit shards are
+  # skipped (the throughput win). leanchecker replay stays p=1 (untouched); the
+  # daily full axiom_audit backstop (ADR-048) still catches any nanoda miss.
+  # FAIL-CLOSED: coverage is decided cheaply (no build) first; the heavy check
+  # runs only when covered; a covered proof that fails nanoda fails this job.
+  gate_a_nanoda:
+    name: gate-a-nanoda
+    needs: [detect, gate_a_prepare]
+    if: needs.detect.outputs.admitted == 'true' && needs.detect.outputs.active == 'true'
+    runs-on: ${{ needs.detect.outputs.audit_profile }}
+    timeout-minutes: 45
+    outputs:
+      covered: ${{ steps.plan.outputs.covered }}
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.12"
+
+      # Decide coverage CHEAPLY (git diff only, no build): leaf proof ⇒ covered,
+      # nanoda handles it; non-leaf / global-impact / untrusted ⇒ not covered, the
+      # real axiom_audit runs instead. An empty/zero base ⇒ full ⇒ not covered.
+      - name: Decide nanoda coverage (no build)
+        id: plan
+        env:
+          BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || (github.event_name == 'push' && github.event.before || '') }}
+        run: |
+          set -euo pipefail
+          covered=$(BASE_SHA="$BASE_SHA" python3 - <<'PY'
+          import os
+          from pathlib import Path
+          from tools.gate_a.parallel_modules import compute_audit_targets
+          base = os.environ.get("BASE_SHA") or None
+          if base == "0000000000000000000000000000000000000000":
+              base = None
+          print("true" if compute_audit_targets(Path("."), base).mode != "full" else "false")
+          PY
+          )
+          echo "covered=$covered" >> "$GITHUB_OUTPUT"
+          echo "nanoda coverage: covered=$covered (false ⇒ real axiom_audit runs instead)"
+
+      # --- heavy steps: only when nanoda covers this PR (leaf proof) ---
+      - name: Namespace .lake cache volume
+        if: steps.plan.outputs.covered == 'true' && needs.detect.outputs.audit_volume == 'true'
+        id: ns_lake_cache
+        continue-on-error: true
+        uses: namespacelabs/nscloud-cache-action@15799a6b54e5765f85b2aac25b3f0df43ed571c0 # v1.4.3
+        with:
+          path: ${{ github.workspace }}/.lake
+      - name: Fallback restore of library oleans on a cold volume (ADR-045)
+        if: steps.plan.outputs.covered == 'true' && needs.detect.outputs.audit_volume == 'true' && steps.ns_lake_cache.outputs.cache-hit != 'true'
+        continue-on-error: true
+        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: .lake/build
+          key: lake-build-${{ runner.os }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json', 'lakefile.toml') }}-${{ github.sha }}
+          restore-keys: |
+            lake-build-${{ runner.os }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json', 'lakefile.toml') }}-
+      - name: Cache local Lake build (.lake/build) — incremental library (ADR-045)
+        if: steps.plan.outputs.covered == 'true' && needs.detect.outputs.audit_volume != 'true'
+        id: lake_build_cache
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: .lake/build
+          key: lake-build-${{ runner.os }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json', 'lakefile.toml') }}-${{ github.sha }}
+          restore-keys: |
+            lake-build-${{ runner.os }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json', 'lakefile.toml') }}-
+      - name: Build (lean-action, mathlib binary cache)
+        if: steps.plan.outputs.covered == 'true'
+        uses: leanprover/lean-action@38fbc41a8c28c4cbaec22d7f7de508ec2e7c0dd9 # v1.5.0
+        with:
+          use-github-cache: ${{ needs.detect.outputs.audit_volume != 'true' || steps.ns_lake_cache.outputs.cache-hit != 'true' }}
+          build-args: "UnsorryGoals"
+      - name: Generate statement-binding obligations
+        if: steps.plan.outputs.covered == 'true'
+        run: python3 -m tools.gate_a.check_statement_binding generate .
+      - name: Library build — zero-warning bar (--wfail)
+        if: steps.plan.outputs.covered == 'true' && steps.lake_build_cache.outputs.cache-hit != 'true'
+        run: lake build UnsorryLibrary --wfail
+      - name: Build independent-check tools (pinned lean4export + nanoda)
+        if: steps.plan.outputs.covered == 'true'
+        run: |
+          set -euo pipefail
+          eval "$(./tools/independent_check/setup.sh)"
+          { echo "LEAN4EXPORT_BIN=$LEAN4EXPORT_BIN"; echo "NANODA_BIN=$NANODA_BIN"; } >> "$GITHUB_ENV"
+      - name: nanoda audit-replacement check (ADR-097)
+        if: steps.plan.outputs.covered == 'true'
+        env:
+          BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || (github.event_name == 'push' && github.event.before || '') }}
+        run: |
+          set -euo pipefail
+          base_arg=()
+          if [ -n "$BASE_SHA" ] && [ "$BASE_SHA" != "0000000000000000000000000000000000000000" ]; then base_arg=(--base "$BASE_SHA"); fi
+          # nanoda_gate exits 0 (covered+pass) / 1 (covered+FAIL) / 2 (not-covered).
+          # We only reach here when covered, so 2 should not occur; treat anything
+          # non-zero as a gate failure (fail-closed).
+          python3 -m tools.gate_a.nanoda_gate "${base_arg[@]}" \
+            --lean4export-cmd "lake env ${LEAN4EXPORT_BIN}" \
+            --nanoda-cmd "${NANODA_BIN}" \
+            --output-json nanoda-gate-report.json
 
   # ADR-063: plan the kernel replay into N disjoint shards. Reads source + the PR
   # diff only (no build), so it's a fast ubuntu job that drives the replay matrix
@@ -778,7 +891,7 @@ jobs:
           fi
 
   gate-a:
-    needs: [detect, gate_a_prepare, gate_a_audit_plan, gate_a_audit, gate_a_audit_cover, gate_a_replay_plan, gate_a_replay, gate_a_replay_cover, gate_a_archive]
+    needs: [detect, gate_a_prepare, gate_a_nanoda, gate_a_audit_plan, gate_a_audit, gate_a_audit_cover, gate_a_replay_plan, gate_a_replay, gate_a_replay_cover, gate_a_archive]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -789,6 +902,11 @@ jobs:
           ACTIVE_RELEVANT: ${{ needs.detect.outputs.active }}
           ADMITTED: ${{ needs.detect.outputs.admitted }}
           PREPARE_RESULT: ${{ needs.gate_a_prepare.result }}
+          # ADR-097: nanoda is the leaf-proof audit-replacement (the result is the
+          # job itself; `covered` says whether it handled this PR). The real audit
+          # below ran only as the fallback when nanoda did NOT cover.
+          NANODA_RESULT: ${{ needs.gate_a_nanoda.result }}
+          NANODA_COVERED: ${{ needs.gate_a_nanoda.outputs.covered }}
           # ADR-091: the sharded audit's single signal is the cover job, which
           # asserts the plan succeeded + every shard is green (or count==0).
           AUDIT_RESULT: ${{ needs.gate_a_audit_cover.result }}
@@ -812,7 +930,15 @@ jobs:
           failed=0
           pairs="gate-a-prepare:$PREPARE_RESULT"
           if [ "$ACTIVE_RELEVANT" = "true" ]; then
-            pairs="$pairs gate-a-audit:$AUDIT_RESULT gate-a-replay:$REPLAY_RESULT"
+            # ADR-097: nanoda + replay are ALWAYS required (replay keeps p=1). The
+            # real audit is required ONLY when nanoda did not cover this PR — the
+            # fallback. Fail-closed: NANODA_COVERED is 'true' only when nanoda
+            # actually handled it; anything else (incl. a dead nanoda job → empty)
+            # requires the audit, and a dead nanoda job also fails NANODA_RESULT.
+            pairs="$pairs gate-a-nanoda:$NANODA_RESULT gate-a-replay:$REPLAY_RESULT"
+            if [ "$NANODA_COVERED" != "true" ]; then
+              pairs="$pairs gate-a-audit:$AUDIT_RESULT"
+            fi
           fi
           if [ "$ARCHIVE_RELEVANT" = "true" ]; then
             pairs="$pairs gate-a-archive:$ARCHIVE_RESULT"
