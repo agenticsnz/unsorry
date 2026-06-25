@@ -16,7 +16,8 @@
       "domain": "lean-math",
       "supplier": "agenticsnz",
       "ratified": "2026-06-24",
-      "note": "Demo benchmark suite (#5643) — small true Lean statements to exercise the benchmark track end-to-end; safe to remove."
+      "note": "Demo smoke-test suite (#5643) — retired now that PutnamBench (putnam-v1) is live. Goals are immutable (ADR-018) and stay benchmark-segregated, but the suite is excluded from the published registered-targets.json / guild page.",
+      "retired": true
     },
     {
       "package": "putnam-v1",

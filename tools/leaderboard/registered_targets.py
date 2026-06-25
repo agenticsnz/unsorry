@@ -70,8 +70,10 @@ def _credit_map(skeleton) -> dict[str, str]:
 
 def benchmark_goal_ids(root: Path) -> set[str]:
     """All goal ids that belong to a registered benchmark target (the ``top``
-    sentinel and every obligation). The leaderboard excludes these from organic
-    credit. Empty when no suite is registered."""
+    sentinel and every obligation), including suites marked ``retired`` — their
+    immutable goals must stay segregated, never re-counted as organic. The
+    leaderboard excludes these from organic credit. Empty when no suite is
+    registered."""
     ids: set[str] = set()
     for suite in suite_dirs(root):
         skeleton = parse_record((suite / "skeleton.aisp").read_text("utf-8"))
@@ -166,9 +168,28 @@ def suite_payload(root: Path, suite: Path, proved: set[str]) -> dict:
     }
 
 
+def retired_packages(root: Path) -> set[str]:
+    """Packages marked ``retired`` in the governance registry
+    (``docs/governance/admitted-domains.json``). A retired suite has served its
+    purpose (e.g. the demo smoke test): its goals are **immutable** (ADR-018) and
+    stay benchmark-cohort — so ``benchmark_goal_ids`` still counts them and they
+    never leak into the organic board — but it is dropped from the published intent
+    surface so the guild stops listing it. Empty when the registry is absent."""
+    registry = Path(root) / "docs" / "governance" / "admitted-domains.json"
+    if not registry.is_file():
+        return set()
+    data = json.loads(registry.read_text(encoding="utf-8"))
+    return {t["package"] for t in data.get("targets", []) if t.get("retired")}
+
+
 def registered_targets(root: Path) -> dict:
     proved = _proved_goal_ids(root)
-    suites = [suite_payload(root, suite, proved) for suite in suite_dirs(root)]
+    retired = retired_packages(root)
+    suites = [
+        suite_payload(root, suite, proved)
+        for suite in suite_dirs(root)
+        if suite.name not in retired
+    ]
     return {"schema_version": SCHEMA_VERSION, "suites": suites}
 
 

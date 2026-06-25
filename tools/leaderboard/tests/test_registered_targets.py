@@ -174,3 +174,31 @@ def test_benchmark_proofs_stay_off_the_organic_board(tmp_path):
 
     # …and it appears on the benchmark surface instead
     assert registered_targets(tmp_path)["suites"][0]["proved"] == 1
+
+
+def test_retired_suite_hidden_from_publish_but_still_segregated(tmp_path):
+    """A suite marked ``retired`` in the registry drops off the published intent
+    surface (the guild stops listing it) but its immutable goals stay benchmark —
+    never re-counted as organic (ADR-018)."""
+    _register_suite(tmp_path, "putnam-v1", "putnam-top", [("putnam-1988-b2", SHA_A)])
+    _register_suite(tmp_path, "demo-v1", "demo-top", [("demo-add-comm", SHA_B)])
+    reg = tmp_path / "docs" / "governance"
+    reg.mkdir(parents=True, exist_ok=True)
+    (reg / "admitted-domains.json").write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "domains": [],
+                "targets": [
+                    {"package": "putnam-v1", "domain": "lean-math", "supplier": "trishullab"},
+                    {"package": "demo-v1", "domain": "lean-math", "supplier": "agenticsnz",
+                     "retired": True},
+                ],
+            }
+        ),
+        "utf-8",
+    )
+    # retired demo-v1 is excluded from the published surface…
+    assert [s["id"] for s in registered_targets(tmp_path)["suites"]] == ["putnam-v1"]
+    # …but its goals stay benchmark (kept out of the organic board)
+    assert {"demo-top", "demo-add-comm"} <= benchmark_goal_ids(tmp_path)
