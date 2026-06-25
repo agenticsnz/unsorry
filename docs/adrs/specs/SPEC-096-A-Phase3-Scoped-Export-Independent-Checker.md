@@ -76,8 +76,18 @@ to run the anchor on real swarm proofs at scale (ADR-096 Phase 3a). It is **untr
 (ADR-049) and therefore can never be load-bearing — which is exactly what makes it safe and
 additive.
 
-- **Switch:** `UNSORRY_INDEPENDENT_CHECK` (default **off**; `env_truthy`). Documented in
-  `swarm/run.sh`.
+- **Default & switch:** the check is **ON BY DEFAULT** in the client entry scripts
+  (`swarm/run.sh` and a standalone `swarm/supervise.sh`). Opt out with
+  `--no-independent-check` (alias `--no-nanoda`) or by setting
+  `UNSORRY_INDEPENDENT_CHECK` to a falsey value (the latter lets infra/CI disable it without
+  changing args). The entry scripts bootstrap the tools on first use (build lean4export +
+  nanoda; Rust auto-installs via rustup if absent), then export
+  `UNSORRY_INDEPENDENT_CHECK`/`LEAN4EXPORT_BIN`/`NANODA_BIN` so the decision propagates to
+  `agent.sh` (which reads `UNSORRY_INDEPENDENT_CHECK` via `env_truthy`). run.sh sets the var
+  to `0`/`1` explicitly so supervise.sh never re-enables an opt-out. Default-on stays
+  **non-gating** — a failed bootstrap or any error degrades to a logged skip; proving is
+  never blocked. (It was opt-in in the first cut; flipped to default-on once the mechanism
+  was demonstrated end-to-end.)
 - **Hook:** `swarm/agent.sh::independent_check_advisory` runs **after** a proof passes
   `prove_local_verify` (and after ADR-074 import minimisation), mirroring
   `minimize_proof_imports`'s best-effort pattern. It is **non-gating and never fails the

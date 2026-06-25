@@ -84,14 +84,16 @@ proves claimlessly and submits each proof as a cross-repo PR the upstream
 re-verifies and auto-merges. No dispatcher or sourcer (a fork cannot open the
 upstream's queued branches).
 
-  --independent-check   Enable the advisory kernel-diverse independent check
-                        (ADR-096 Phase 3a): after each proof verifies locally,
-                        re-check it with an independent Lean kernel (nanoda) over
-                        a declaration-scoped lean4export. Bootstraps the tools on
-                        first use (builds lean4export + nanoda — needs lake +
-                        cargo). NON-GATING: admits nothing, never blocks proving;
-                        ADR-049's p=1 Lean gate in CI is unchanged. Omit for a
-                        normal run with zero overhead.
+The advisory kernel-diverse independent check (ADR-096 Phase 3a) is ON BY
+DEFAULT: after each proof verifies locally, it is re-checked with an independent
+Lean kernel (nanoda) over a declaration-scoped lean4export. The tools build on
+first use (lean4export + nanoda; Rust auto-installs if missing). NON-GATING —
+admits nothing, never blocks proving; ADR-049's p=1 Lean gate in CI is unchanged.
+
+  --no-independent-check  Opt out — legacy proving with no nanoda re-check (alias
+                        --no-nanoda; or set UNSORRY_INDEPENDENT_CHECK to a falsey
+                        value, which infra/CI can use to disable without args).
+  --independent-check   Explicit opt-in (now redundant — it is the default).
   --self-test   Run hermetic self-tests and exit (0 green / 1 red).
   -h, --help    Show this help.
 EOF
@@ -337,18 +339,26 @@ guard_solver_credit
 # has no such flag. Absent → normal run, zero overhead. NON-GATING: setup failure
 # (no lake/cargo) downgrades to a warning and proceeds without it — proving is
 # never blocked. The env exports survive the fork `exec` and the prover subprocess.
-want_independent_check=0
+# Default ON (ADR-096): nanoda re-checks each proof unless explicitly opted out
+# with --no-independent-check or UNSORRY_INDEPENDENT_CHECK set falsey (the latter
+# lets infra/CI disable it without changing args). --independent-check is still
+# accepted as a (now redundant) explicit opt-in. The check is advisory and
+# non-gating either way, and degrades to a logged skip if the tools can't build.
+want_independent_check=1
+case "${UNSORRY_INDEPENDENT_CHECK:-}" in
+  0|false|FALSE|no|NO|off|OFF) want_independent_check=0 ;;
+esac
 ic_filtered=()
 for _arg in "$@"; do
-  if [ "$_arg" = "--independent-check" ]; then
-    want_independent_check=1
-  else
-    ic_filtered+=("$_arg")
-  fi
+  case "$_arg" in
+    --no-independent-check|--no-nanoda) want_independent_check=0 ;;
+    --independent-check) want_independent_check=1 ;;
+    *) ic_filtered+=("$_arg") ;;
+  esac
 done
 set -- "${ic_filtered[@]}"
 if [ "$want_independent_check" = 1 ]; then
-  log "independent check (ADR-096): ensuring lean4export + nanoda (builds on first use)…"
+  log "independent check (ADR-096, default on): ensuring lean4export + nanoda (builds on first use)…"
   if _ic_env="$(./tools/independent_check/setup.sh)"; then
     eval "$_ic_env"
     export LEAN4EXPORT_BIN NANODA_BIN UNSORRY_INDEPENDENT_CHECK
@@ -356,6 +366,11 @@ if [ "$want_independent_check" = 1 ]; then
   else
     log "independent check: dependency setup failed (needs lake + cargo) — proceeding WITHOUT it"
   fi
+else
+  # Explicit opt-out → set 0 (not unset) so the decision propagates to
+  # supervise.sh/agent.sh and they don't re-enable it as a standalone default.
+  export UNSORRY_INDEPENDENT_CHECK=0
+  log "independent check: disabled (opt-out) — legacy proving, no nanoda re-check"
 fi
 
 # ADR-068: in fork mode, run the prover only (cross-repo PRs); a fork cannot run
