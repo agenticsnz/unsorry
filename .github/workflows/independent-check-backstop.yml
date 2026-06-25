@@ -90,15 +90,17 @@ jobs:
           MAXN: ${{ github.event.inputs.max_modules || '30' }}
         run: |
           set -euo pipefail
-          # `|| true`: `head -n N` closes the pipe after N lines, so when there are
-          # more matches `sort` gets SIGPIPE (write error) and pipefail would abort
-          # this step. Tolerate it — an empty result legitimately falls through to
-          # the spread sample below.
+          # `shuf -n N` takes a RANDOM N of the recent proofs (not the alphabetical
+          # first N — `sort | head` sampled 8 near-identical AltGeometricRatio*),
+          # so a run covers a diverse slice and successive daily runs rotate over the
+          # whole window. `shuf -n` reads all then emits N and exits cleanly (no
+          # head-induced SIGPIPE). `|| true` keeps an empty window (grep no-match)
+          # from aborting under pipefail — it falls through to the spread sample.
           modules="$( { git log --since="$SINCE" --diff-filter=A --name-only --pretty=format: -- 'library/Unsorry/*.lean' 2>/dev/null \
             | grep -E '^library/Unsorry/[A-Za-z0-9]+\.lean$' \
             | grep -vE 'Binding\.lean$' \
             | sed -E 's#^library/Unsorry/##; s#\.lean$##; s#^#Unsorry.#' \
-            | sort -u | head -n "$MAXN" | paste -sd, - ; } || true )"
+            | sort -u | shuf -n "$MAXN" | paste -sd, - ; } || true )"
           if [ -n "$modules" ]; then
             echo "mode=recent" >> "$GITHUB_OUTPUT"
             echo "list=$modules" >> "$GITHUB_OUTPUT"
