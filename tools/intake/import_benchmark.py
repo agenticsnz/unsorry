@@ -132,6 +132,20 @@ def _open_goal_aisp(goal_id: str, difficulty: int, date: str) -> str:
     )
 
 
+def _existing_credit(pkg: Path) -> dict[str, str]:
+    """The credit map from an existing suite skeleton, so re-importing into a suite
+    **accumulates** obligations across batches instead of replacing them. Empty for a
+    fresh suite."""
+    skeleton = pkg / "skeleton.aisp"
+    if not skeleton.is_file():
+        return {}
+    from tools.gate_b.records import parse_fields, parse_record
+
+    record = parse_record(skeleton.read_text("utf-8"))
+    block = record.block("Κ")
+    return dict(parse_fields(block.body)) if block else {}
+
+
 def assemble_package(
     root: Path,
     suite_id: str,
@@ -171,7 +185,8 @@ def assemble_package(
     (pkg_goals / f"{top}.lean").write_text(sentinel, "utf-8")
     (pkg_goals / f"{top}.aisp").write_text(_open_goal_aisp(top, 0, date), "utf-8")
 
-    subs: list[tuple[str, str, str]] = []  # (slug, statement_sha, credit)
+    # Accumulate across batches: keep prior obligations' credit, then add this batch.
+    credit_by_slug = _existing_credit(pkg)
     for problem in problems:
         slug = slugify(problem.name)
         if not valid_slug(slug):
@@ -195,8 +210,18 @@ def assemble_package(
         # Content-addressed package copy (the registry copy; tied by statement_sha).
         for ext in ("lean", "aisp"):
             shutil.copyfile(root / "goals" / f"{slug}.{ext}", pkg_goals / f"{slug}.{ext}")
-        sha = statement_sha((root / "goals" / f"{slug}.lean").read_text("utf-8"))
-        subs.append((slug, sha, credit_of(slug)))
+        credit_by_slug[slug] = credit_of(slug)
+
+    # The skeleton lists EVERY obligation in the package (prior batches + this one), so a
+    # suite > 50 accumulates into one target across PRs rather than each batch clobbering it.
+    subs: list[tuple[str, str, str]] = [
+        (
+            slug,
+            statement_sha((pkg_goals / f"{slug}.lean").read_text("utf-8")),
+            credit_by_slug.get(slug, "credited"),
+        )
+        for slug in sorted(p.stem for p in pkg_goals.glob("*.lean") if p.stem != top)
+    ]
 
     sub_lines = ";".join(
         f"sub{_subscript(i)}≜⟨id≜{slug},sha≜{sha}⟩"
@@ -326,6 +351,19 @@ def main(argv: list[str] | None = None) -> int:
     if not problems:
         print("no theorems found", file=sys.stderr)
         return 2
+
+    # Idempotent batching: skip statements already imported, so a re-run picks up the
+    # NEXT <=--limit obligations — a suite > 50 spans multiple PRs into one target.
+    root_path = Path(args.root)
+    extracted = len(problems)
+    problems = [
+        p for p in problems
+        if not (root_path / "goals" / f"{slugify(p.name)}.lean").is_file()
+    ]
+    if not problems:
+        print(f"all {extracted} extracted statement(s) already imported — nothing new",
+              file=sys.stderr)
+        return 0
 
     problems = problems[: args.limit]
 

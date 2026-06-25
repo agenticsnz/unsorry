@@ -12,6 +12,7 @@ from tools.intake.import_benchmark import (
     assemble_package,
     batches,
     extract_putnambench,
+    main,
     slugify,
 )
 
@@ -263,6 +264,36 @@ def test_assemble_bundles_companion_into_goal(tmp_path):
     assert f"abbrev putnam_2017_a1_solution : Set ℤ := {ANSWER}" in goal
     assert "theorem putnam_2017_a1" in goal
     assert goal.rstrip().endswith("sorry")  # the obligation sorry is still the last token
+
+
+def test_assemble_accumulates_across_batches(tmp_path):
+    common = dict(supplier="acme", domain="lean-math", mathlib="m", toolchain="t", license="L")
+    assemble_package(tmp_path, "putnam-v1", [Problem("putnam_a", ": 1 = 1", "P")], **common)
+    summary = assemble_package(tmp_path, "putnam-v1", [Problem("putnam_b", ": 2 = 2", "P")], **common)
+    # the skeleton now lists BOTH obligations (accumulated, not replaced by batch 2)
+    assert set(summary["obligations"]) == {"putnam-a", "putnam-b"}
+    skeleton = (tmp_path / "targets" / "putnam-v1" / "skeleton.aisp").read_text("utf-8")
+    assert "id≜putnam-a" in skeleton and "id≜putnam-b" in skeleton
+
+
+def test_main_skips_already_imported_and_accumulates(tmp_path):
+    src = tmp_path / "src"
+    src.mkdir()
+    (src / "p1.lean").write_text("import Mathlib\n\ntheorem putnam_a : 1 = 1 := by sorry\n", "utf-8")
+    (src / "p2.lean").write_text("import Mathlib\n\ntheorem putnam_b : 2 = 2 := by sorry\n", "utf-8")
+    argv = ["putnam-v1", str(src), "--supplier", "acme", "--license", "L", "--mathlib", "m",
+            "--root", str(tmp_path), "--limit", "1"]
+
+    assert main(argv) == 0  # batch 1 → first obligation only (limit 1)
+    assert (tmp_path / "goals" / "putnam-a.lean").is_file()
+    assert not (tmp_path / "goals" / "putnam-b.lean").is_file()
+
+    assert main(argv) == 0  # batch 2 → skips putnam_a, picks up putnam_b
+    assert (tmp_path / "goals" / "putnam-b.lean").is_file()
+    skeleton = (tmp_path / "targets" / "putnam-v1" / "skeleton.aisp").read_text("utf-8")
+    assert "id≜putnam-a" in skeleton and "id≜putnam-b" in skeleton  # accumulated
+
+    assert main(argv) == 0  # batch 3 → everything already imported, nothing new
 
 
 def test_batch_cap_enforced(tmp_path):
