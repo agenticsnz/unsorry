@@ -1,6 +1,6 @@
 {
   "generated_by": "python3 -m tools.adr_index --write",
-  "count": 88,
+  "count": 96,
   "adrs": [
     {
       "id": "ADR-001",
@@ -614,7 +614,7 @@
       "id": "ADR-078",
       "number": 78,
       "title": "Sponsor-Registered Targets and Obligation-Discharge Credit",
-      "status": "Proposed",
+      "status": "Accepted",
       "date": "2026-06-20",
       "file": "ADR-078-Sponsor-Registered-Targets-And-Obligation-Discharge-Credit.md"
     },
@@ -630,7 +630,7 @@
       "id": "ADR-080",
       "number": 80,
       "title": "Platform Generalisation and the Self-Verification Gating Invariant",
-      "status": "Draft",
+      "status": "Accepted",
       "date": "2026-06-20",
       "file": "ADR-080-Platform-Generalisation-And-Domain-Neutrality.md"
     },
@@ -638,7 +638,7 @@
       "id": "ADR-081",
       "number": 81,
       "title": "Problem Admission and the Skeleton Intake Pipeline",
-      "status": "Draft",
+      "status": "Accepted",
       "date": "2026-06-20",
       "file": "ADR-081-Problem-Admission-And-Intake-Pipeline.md"
     },
@@ -683,6 +683,14 @@
       "file": "ADR-086-Seedkit-Fixture-Generation-Path.md"
     },
     {
+      "id": "ADR-086",
+      "number": 86,
+      "title": "Validator Role — Creditable, Distributed, Reproducible Verification",
+      "status": "Proposed",
+      "date": "2026-06-22",
+      "file": "ADR-086-Validator-Role-Creditable-Distributed-Verification.md"
+    },
+    {
       "id": "ADR-087",
       "number": 87,
       "title": "Backfill Historical seedkit Records to Honest Provenance & Difficulty",
@@ -705,6 +713,62 @@
       "status": "Accepted",
       "date": "2026-06-23",
       "file": "ADR-089-Pages-Scheduled-Actions-Deploy.md"
+    },
+    {
+      "id": "ADR-090",
+      "number": 90,
+      "title": "Periodic Housekeeping — Naming as a Recurring Operational Task",
+      "status": "Proposed",
+      "date": "2026-06-23",
+      "file": "ADR-090-Periodic-Housekeeping.md"
+    },
+    {
+      "id": "ADR-091",
+      "number": 91,
+      "title": "Sharded Gate A Axiom Audit",
+      "status": "Proposed",
+      "date": "2026-06-24",
+      "file": "ADR-091-Sharded-Gate-A-Axiom-Audit.md"
+    },
+    {
+      "id": "ADR-092",
+      "number": 92,
+      "title": "Segregated Benchmark Track — Verified pass@k over Registered Suites",
+      "status": "Accepted",
+      "date": "2026-06-24",
+      "file": "ADR-092-Segregated-Benchmark-Track.md"
+    },
+    {
+      "id": "ADR-093",
+      "number": 93,
+      "title": "lean4export + nanoda Independent-Checker Pilot",
+      "status": "Proposed",
+      "date": "2026-06-24",
+      "file": "ADR-093-Lean4export-Nanoda-Independent-Checker-Pilot.md"
+    },
+    {
+      "id": "ADR-094",
+      "number": 94,
+      "title": "Publish Library Oleans on PRs (reliable per-shard env handoff)",
+      "status": "Proposed",
+      "date": "2026-06-24",
+      "file": "ADR-094-Publish-Library-Oleans-On-PRs.md"
+    },
+    {
+      "id": "ADR-095",
+      "number": 95,
+      "title": "Widen the goal `difficulty` band from 0–5 to 0–9",
+      "status": "Accepted",
+      "date": "2026-06-24",
+      "file": "ADR-095-Widen-Difficulty-Band-To-0-9.md"
+    },
+    {
+      "id": "ADR-096",
+      "number": 96,
+      "title": "Phase 3 — Declaration-Scoped Export + Independent Checker as a Kernel-Diverse Anchor",
+      "status": "Proposed",
+      "date": "2026-06-25",
+      "file": "ADR-096-Phase3-Scoped-Export-Independent-Checker.md"
     }
   ]
 }

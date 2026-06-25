@@ -1,0 +1,20 @@
+𝔸5.1.goal.telescoping-cube-sum-coeff-seventyfour@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜telescoping-cube-sum-coeff-seventyfour
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/telescoping-cube-sum-coeff-seventyfour.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/telescoping-cube-sum-coeff-seventyfour.lean
+  sha≜b1d5527c9376e01223ffd6ee6a7b258ff77597048c5229eda1f64fe46975717e
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.75;τ≜◊⁺⟩
