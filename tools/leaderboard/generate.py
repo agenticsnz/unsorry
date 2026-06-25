@@ -9,6 +9,7 @@ Usage:
 from __future__ import annotations
 
 import datetime
+import functools
 import json
 import math
 import os
@@ -22,6 +23,15 @@ from html import escape as html_escape
 from pathlib import Path
 
 from tools.gate_b.records import parse_record
+from tools.leaderboard.registered_targets import (
+    benchmark_goal_ids,
+    registered_targets_path,
+    render_registered_targets_json,
+)
+from tools.leaderboard.benchmark_runs import (
+    benchmark_runs_path,
+    render_benchmark_runs_json,
+)
 
 
 SCORE_POLICY = (
@@ -104,6 +114,82 @@ class GitAuthor:
         return f"{self.name} <{self.email}>"
 
 
+# --- Per-generation memoisation (issue #6317) --------------------------------
+#
+# The board's source corpus (goals/ + library/index + proof-runs/ + archive
+# blocks + contributor-aliases + git add-author history) is read MANY times per
+# refresh: `base_stats` alone runs ~4× across the markdown / community-stats /
+# leaderboard-ui / svg renderers, each one re-parsing every AISP record and
+# re-walking git attribution. As the corpus grew to ~4k proofs / ~1.2k runs that
+# *repetition* — not the per-record work — is what pushed a single regen to the
+# ~64 min that starved the push-on-merge refresh (issue #6317).
+#
+# The two pieces below memoise each loader so a single generation parses every
+# record and walks git attribution exactly ONCE, then reuses it across every
+# renderer:
+#
+#   * `@_memo_by_root` caches a `fn(root, …)` loader on the resolved repo root.
+#     Invariant: every memoised loader is a pure function of `root` (its other
+#     parameters are themselves derived from `root` — `known_goals` is always
+#     `goals(root)`, `proof_data` is always `load_dataset(root).proofs`), so
+#     keying on `root` alone is sound.
+#
+#   * `@_scoped` bounds a cache's lifetime to ONE outermost call. Re-entering at
+#     depth 0 (a fresh top-level generation) clears every cache first, so each
+#     generation re-reads the working tree; nested calls (a renderer asking for
+#     the dataset main already loaded) run at depth > 0 and hit the warm cache.
+#     This is what keeps the memo from going stale when the corpus changes
+#     between two in-process generations — e.g. a test that registers a benchmark
+#     suite then recomputes, or the workflow's rebase-and-regen push retry.
+_ROOT_CACHES: list[dict] = []
+_SCOPE_DEPTH = 0
+
+
+def reset_caches() -> None:
+    """Drop every per-root loader cache."""
+    for cache in _ROOT_CACHES:
+        cache.clear()
+
+
+def _memo_by_root(fn):
+    """Memoise a ``fn(root, …)`` loader on the resolved repo root."""
+    cache: dict[str, object] = {}
+    _ROOT_CACHES.append(cache)
+
+    @functools.wraps(fn)
+    def wrapper(root: Path, *args, **kwargs):
+        key = str(Path(root).resolve())
+        if key not in cache:
+            cache[key] = fn(root, *args, **kwargs)
+        return cache[key]
+
+    return wrapper
+
+
+def _scoped(fn):
+    """Bound the loader caches to one outermost call (see the block comment).
+
+    A fresh top-level call (``_SCOPE_DEPTH == 0``) clears the caches on entry and
+    exit, so it always re-reads the working tree; nested calls reuse the warm
+    cache. Wraps a memoised loader OUTSIDE ``@_memo_by_root``.
+    """
+
+    @functools.wraps(fn)
+    def wrapper(*args, **kwargs):
+        global _SCOPE_DEPTH
+        if _SCOPE_DEPTH == 0:
+            reset_caches()
+        _SCOPE_DEPTH += 1
+        try:
+            return fn(*args, **kwargs)
+        finally:
+            _SCOPE_DEPTH -= 1
+            if _SCOPE_DEPTH == 0:
+                reset_caches()
+
+    return wrapper
+
+
 _GITHUB_HANDLE = re.compile(r"^[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?$")
 
 
@@ -115,6 +201,8 @@ def _integer(value: str | None) -> int | None:
     return int(value) if value and value.isdigit() else None
 
 
+@_scoped
+@_memo_by_root
 def goals(root: Path) -> list[Goal]:
     result = []
     for path in sorted((root / "goals").glob("*.aisp")):
@@ -149,6 +237,8 @@ def proof_index_paths(root: Path) -> list[Path]:
     return sorted(paths)
 
 
+@_scoped
+@_memo_by_root
 def proofs(root: Path, known_goals: list[Goal] | None = None) -> list[Proof]:
     known_goals = goals(root) if known_goals is None else known_goals
     difficulty = {goal.id: goal.difficulty for goal in known_goals}
@@ -175,6 +265,8 @@ def proofs(root: Path, known_goals: list[Goal] | None = None) -> list[Proof]:
     return result
 
 
+@_scoped
+@_memo_by_root
 def runs(root: Path, known_goals: list[Goal] | None = None) -> list[Run]:
     known_goals = goals(root) if known_goals is None else known_goals
     difficulty = {goal.id: goal.difficulty for goal in known_goals}
@@ -205,9 +297,19 @@ def runs(root: Path, known_goals: list[Goal] | None = None) -> list[Run]:
     return result
 
 
+@_scoped
+@_memo_by_root
 def load_dataset(root: Path) -> Dataset:
     goal_data = goals(root)
-    return Dataset(goal_data, proofs(root, goal_data), runs(root, goal_data))
+    proof_data = proofs(root, goal_data)
+    # ADR-092 cohort segregation: a registered benchmark obligation is scored on its
+    # own surface (registered-targets.json), never the organic board. No-op until a
+    # suite is registered — benchmark_goal_ids is empty without targets/ — so organic
+    # stats stay byte-identical until a suite actually lands.
+    bench = benchmark_goal_ids(root)
+    if bench:
+        proof_data = [proof for proof in proof_data if proof.goal not in bench]
+    return Dataset(goal_data, proof_data, runs(root, goal_data))
 
 
 def _valid_github_handle(value: str | None) -> str | None:
@@ -256,6 +358,8 @@ def _git_attribution_path(path: str) -> str:
     return path
 
 
+@_scoped
+@_memo_by_root
 def git_add_authors(root: Path, proof_data: list[Proof]) -> dict[str, GitAuthor]:
     lookup_by_proof = {
         proof.path: _git_attribution_path(proof.path) for proof in proof_data
@@ -263,6 +367,15 @@ def git_add_authors(root: Path, proof_data: list[Proof]) -> dict[str, GitAuthor]
     lookup_paths = sorted(set(lookup_by_proof.values()))
     if not lookup_paths:
         return {}
+    # Walk the add-history of the `library/index` DIRECTORY, not each of the
+    # thousands of individual index files. Every attribution path is under
+    # `library/index/` (active records sit there; archived records remap to it via
+    # `_git_attribution_path`), so one directory pathspec yields exactly the same
+    # add-commits while we filter to `wanted` below. Passing ~4k literal pathspecs
+    # instead made `git log` O(history × pathspecs) — ~86 s per call on the current
+    # corpus, ×~9 calls per refresh — which was the dominant term in the ~64 min
+    # regen (issue #6317). The directory walk does the same work in well under a
+    # second; the streamed result is filtered in Python, so the output is identical.
     command = [
         "git",
         "-C",
@@ -272,7 +385,7 @@ def git_add_authors(root: Path, proof_data: list[Proof]) -> dict[str, GitAuthor]
         "--name-only",
         "--format=\x1e%H\x1f%an\x1f%ae\x1f%cs",
         "--",
-        *lookup_paths,
+        "library/index",
     ]
     result = subprocess.run(
         command,
@@ -1056,6 +1169,8 @@ def parse_merge_log(text: str) -> dict[str, str]:
     return result
 
 
+@_scoped
+@_memo_by_root
 def merge_times(root: Path) -> dict[str, str]:
     """Resolve goal → UTC merge-hour timestamp from the ``prove(...)`` commits.
 
@@ -1458,6 +1573,8 @@ def render_attribution_gaps_json(root: Path) -> str:
     ) + "\n"
 
 
+@_scoped
+@_memo_by_root
 def goal_add_authors(root: Path, goal_ids: list[str]) -> dict[str, GitAuthor]:
     """git add-author for each ``goals/<id>.aisp`` — who **sourced** the goal
     (the earliest commit that added the record). Mirrors ``git_add_authors`` but
@@ -1466,10 +1583,14 @@ def goal_add_authors(root: Path, goal_ids: list[str]) -> dict[str, GitAuthor]:
     lookup = {goal_id: f"goals/{goal_id}.aisp" for goal_id in goal_ids}
     if not lookup:
         return {}
+    # As in `git_add_authors`, walk the `goals` directory's add-history once
+    # rather than passing one pathspec per goal (O(history × goals); issue #6317),
+    # then filter the stream to `wanted`. Identical output, sub-second instead of
+    # tens of seconds on the grown corpus.
     result = subprocess.run(
         [
             "git", "-C", str(root), "log", "--diff-filter=A", "--name-only",
-            "--format=\x1e%H\x1f%an\x1f%ae\x1f%cs", "--", *sorted(lookup.values()),
+            "--format=\x1e%H\x1f%an\x1f%ae\x1f%cs", "--", "goals",
         ],
         check=False, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True,
     )
@@ -1580,7 +1701,12 @@ def render_sourcing(root: Path) -> str:
     return "\n".join(lines) + "\n"
 
 
+@_scoped
 def main(argv: list[str] | None = None) -> int:
+    # @_scoped makes this the outermost generation: the whole run shares one warm
+    # cache (each record parsed once, each git attribution walked once across all
+    # renderers), and the cache is cleared on entry/exit so a second in-process
+    # invocation — the workflow's rebase-and-regen push retry — re-reads the tree.
     argv = sys.argv[1:] if argv is None else argv
     if "--audit-provenance" in argv:
         rest = [arg for arg in argv if arg != "--audit-provenance"]
@@ -1613,11 +1739,15 @@ def main(argv: list[str] | None = None) -> int:
     timeline_svg = render_timeline_svg(root)
     gaps_payload = render_attribution_gaps_json(root)
     sourcing_payload_json = render_sourcing_json(root)
+    registered_targets_payload = render_registered_targets_json(root)
+    benchmark_runs_payload = render_benchmark_runs_json(root)
     markdown_path = root / "docs" / "leaderboard.md"
     json_path = root / "docs" / "metrics" / "community-stats.json"
     ui_json_path = root / "docs" / "metrics" / "leaderboard-ui.json"
     gaps_json_path = root / "docs" / "metrics" / "attribution-gaps.json"
     sourcing_json_path = root / "docs" / "metrics" / "sourcing-leaderboard.json"
+    registered_targets_json_path = registered_targets_path(root)
+    benchmark_runs_json_path = benchmark_runs_path(root)
     svg_path = root / "docs" / "leaderboard.svg"
     timeline_svg_path = root / "docs" / "proofs-over-time.svg"
     # Single source of truth for the generated artifacts so --check, --write and
@@ -1628,6 +1758,8 @@ def main(argv: list[str] | None = None) -> int:
         (ui_json_path, ui_payload_json),
         (gaps_json_path, gaps_payload),
         (sourcing_json_path, sourcing_payload_json),
+        (registered_targets_json_path, registered_targets_payload),
+        (benchmark_runs_json_path, benchmark_runs_payload),
         (svg_path, svg),
         (timeline_svg_path, timeline_svg),
     )

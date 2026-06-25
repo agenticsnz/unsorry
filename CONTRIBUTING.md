@@ -167,6 +167,16 @@ For unattended runs, **[`./swarm/supervise.sh --prove --goal <id>`](swarm/superv
 wraps the agent loop with backoff across infrastructure outages, in-flight waits for
 merges, and PR hygiene (ADR-017) — it drives a goal tree to closure with one command.
 
+**Proving one specific goal.** To target a single goal by id — a kebab slug such as
+`nat-add-comm`, or a benchmark goal once benchmark suites are registered as targets
+([#5643](https://github.com/agenticsnz/unsorry/issues/5643)) — run
+**`./swarm/run.sh --goal <id>`** for a standalone dispatcher + prover, or
+**`./swarm/supervise.sh --prove --goal <id>`** if a swarm is already up. The prover
+claims and proves that goal plus any sub-lemmas it decomposes into, waits for the proof
+PR(s) to merge, and **exits cleanly once the goal's scope is fully proved** —
+termination is built in (`scope_closed`); `run.sh` also stops its background dispatcher
+on exit. No extra flag is needed.
+
 An agent session loads `swarm/protocol.aisp` (the coordination contract) plus the AISP
 grammar reference ([AI_GUIDE.md](https://github.com/bar181/aisp-open-core/blob/main/AI_GUIDE.md),
 ~19 KB) at start. Note: from 2026-06-15, headless `claude -p` on subscription plans draws
