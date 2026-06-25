@@ -96,8 +96,41 @@ additive.
   case asserting the switch is opt-in and never invokes the tools when off or absent.
 
 This entry gates nothing and admits nothing; it generates the agreement data and exercises
-the path that the trusted-side placements (§1, and the future Phase 3b backstop) and the §4
-acceptance gates build on.
+the path that the trusted-side placements (§1, and the §5b backstop) and the §4 acceptance
+gates build on.
+
+## 5b. Trusted-side entry — the scheduled backstop (shipped, observe-only)
+
+The trusted-side placement: a **scheduled, non-required, observe-only** workflow
+(`.github/workflows/independent-check-backstop.yml`) that re-checks **recently-merged library
+proofs** with the same scoped-export + nanoda check. Unlike the contributor-side entry (§5a),
+it does **not** depend on a local prover winning a goal — it samples whatever has landed on
+`main` (including the cloud swarm's proofs), so it accrues agreement evidence at scale
+regardless of the proving race. The two entries **coexist and are independent** (the
+existence of one changes nothing about the other), satisfying the non-breaking requirement.
+
+- **Trigger:** daily `schedule` + `workflow_dispatch`. **Non-required**, on no PR — it gates
+  nothing and reverts nothing (a sampled proof is already merged and `leanchecker`-verified at
+  `p = 1`).
+- **Sample:** library modules **added to `main`** within a window (`git --since`, the newest
+  proofs — what a backstop most wants to catch), capped; falls back to an even spread when the
+  window is empty, so a run is never vacuous.
+- **Check:** reuses `tools.pilot.export_checker_pilot --scope-decls --negative-control` (DRY)
+  — declaration-scoped export → nanoda with the §3 positive control, plus the §3 negative
+  control as a per-proof reject-invalid self-check. Tools built via the §5a `setup.sh`
+  (dogfoods the same bootstrap).
+- **Observe-only (for now).** A **disagreement** — nanoda fails to accept a main proof
+  (`status != ok`, target not confirmed, or the negative control not rejected) — is surfaced
+  loudly (`::warning::` + the run summary + the uploaded report) but the run **SUCCEEDS**:
+  `nanoda` is `0.4.10-beta` and pre-code-review (§4 gate 2), so a beta-checker quirk must be an
+  alert to investigate, **never a false red** on the schedule, and **never** a revert (ADR-049
+  `p = 1` is the only oracle). Escalating a confirmed disagreement to a **failing** run is a
+  deliberate follow-up, gated on the §4 acceptance gates (esp. the nanoda review) — *not* done
+  here.
+
+This is the placement whose production track record §4 / Phase 3b build on. "Step a works in
+production" = the backstop runs, samples merged proofs, and produces agreement data without
+false alarms; the §4 red-team (gate 1) follows once that is confirmed.
 
 ## 6. Out of scope
 

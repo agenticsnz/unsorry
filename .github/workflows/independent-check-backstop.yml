@@ -1,0 +1,177 @@
+name: independent-check-backstop
+
+# Trusted-side, scheduled, OBSERVE-ONLY kernel-diverse verification backstop
+# (ADR-096 Phase 3a, SPEC-096-A §5b). It re-checks recently-merged library proofs
+# with an independent Lean kernel (nanoda) over a declaration-scoped lean4export —
+# a second, kernel-diverse anchor that does NOT depend on a contributor's local
+# prover winning a goal (it samples whatever has landed on main, including the
+# cloud swarm's). Defense-in-depth only:
+#   - NON-GATING / NON-REQUIRED: it admits nothing, reverts nothing, gates no PR.
+#     ADR-049's leanchecker p=1 gate stays the sole truth oracle (unchanged).
+#   - OBSERVE-ONLY for now (nanoda is 0.4.10-beta, pre code-review — SPEC-096-A §4
+#     gate 2): a disagreement is surfaced loudly (::warning:: + report) but the run
+#     SUCCEEDS, so a beta-checker quirk is an alert to investigate, never a false
+#     red. Escalation to red-on-disagreement is deferred to after the §4 gates.
+#   - Coexists with the contributor-side check (SPEC-096-A §5a): both paths run
+#     the same scoped-export + nanoda check; neither changes the other.
+on:
+  schedule:
+    - cron: "0 14 * * *" # daily 14:00 UTC (~02:00 NZT, off-peak)
+  workflow_dispatch:
+    inputs:
+      since:
+        description: "Sample library proofs added within this window (git --since)"
+        required: false
+        default: "25 hours ago"
+      max_modules:
+        description: "Cap on sampled modules"
+        required: false
+        default: "30"
+      timeout:
+        description: "Per-checker timeout (seconds)"
+        required: false
+        default: "600"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: independent-check-backstop
+  cancel-in-progress: false
+
+jobs:
+  backstop:
+    name: independent-check backstop (observe-only)
+    runs-on: namespace-profile-unsorry-1
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.12"
+
+      # Build the library so lean4export/leanchecker run against a resident env.
+      - name: Namespace .lake cache volume
+        id: ns_lake_cache
+        continue-on-error: true
+        uses: namespacelabs/nscloud-cache-action@15799a6b54e5765f85b2aac25b3f0df43ed571c0 # v1.4.3
+        with:
+          path: ${{ github.workspace }}/.lake
+      - name: Build (lean-action, mathlib binary cache)
+        uses: leanprover/lean-action@38fbc41a8c28c4cbaec22d7f7de508ec2e7c0dd9 # v1.5.0
+        with:
+          use-github-cache: ${{ steps.ns_lake_cache.outputs.cache-hit != 'true' }}
+          build-args: "UnsorryLibrary"
+
+      # Build lean4export + nanoda via the SAME bootstrap contributors use
+      # (tools/independent_check/setup.sh) — DRY, and dogfoods the Rust auto-install
+      # and stdout discipline. continue-on-error: a tool build failure is a recorded
+      # outcome, not a gate failure.
+      - name: Build independent-check tools (lean4export + nanoda)
+        id: tools
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          eval "$(./tools/independent_check/setup.sh)"
+          {
+            echo "LEAN4EXPORT_BIN=$LEAN4EXPORT_BIN"
+            echo "NANODA_BIN=$NANODA_BIN"
+          } >> "$GITHUB_ENV"
+
+      # The sample: library proofs ADDED to main within the window (the newest
+      # proofs — what a backstop most wants to catch). Falls back to an even spread
+      # across the library when nothing landed in the window, so a run is never empty.
+      - name: Select recently-merged proofs
+        id: sample
+        env:
+          SINCE: ${{ github.event.inputs.since || '25 hours ago' }}
+          MAXN: ${{ github.event.inputs.max_modules || '30' }}
+        run: |
+          set -euo pipefail
+          modules="$(git log --since="$SINCE" --diff-filter=A --name-only --pretty=format: -- 'library/Unsorry/*.lean' 2>/dev/null \
+            | grep -E '^library/Unsorry/[A-Za-z0-9]+\.lean$' \
+            | grep -vE 'Binding\.lean$' \
+            | sed -E 's#^library/Unsorry/##; s#\.lean$##; s#^#Unsorry.#' \
+            | sort -u | head -n "$MAXN" | paste -sd, -)"
+          if [ -n "$modules" ]; then
+            echo "mode=recent" >> "$GITHUB_OUTPUT"
+            echo "list=$modules" >> "$GITHUB_OUTPUT"
+            echo "selected $(printf '%s' "$modules" | tr ',' '\n' | grep -c .) recently-merged proof(s)"
+          else
+            echo "mode=spread" >> "$GITHUB_OUTPUT"
+            echo "list=" >> "$GITHUB_OUTPUT"
+            echo "no proofs added in '$SINCE' — falling back to an even spread sample"
+          fi
+
+      - name: Run the independent-check backstop (observe-only)
+        env:
+          MODE: ${{ steps.sample.outputs.mode }}
+          LIST: ${{ steps.sample.outputs.list }}
+          MAXN: ${{ github.event.inputs.max_modules || '30' }}
+          TMO: ${{ github.event.inputs.timeout || '600' }}
+        run: |
+          set -euo pipefail
+          if [ -z "${NANODA_BIN:-}" ] || [ ! -x "${NANODA_BIN:-/nonexistent}" ]; then
+            echo "::warning::independent-check backstop: nanoda not built — skipping (tool build failed)"
+            echo "### Independent-check backstop — SKIPPED (nanoda unavailable)" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          if [ "$MODE" = "recent" ]; then
+            sel=(--module-list "$LIST")
+          else
+            sel=(--modules "$MAXN" --spread)
+          fi
+          # runs=1 (the backstop checks AGREEMENT, not the pilot's Q2 determinism);
+          # scope-decls (the only tractable export) + negative-control (nanoda's
+          # reject-invalid self-check on every sampled proof).
+          python3 -m tools.pilot.export_checker_pilot \
+            "${sel[@]}" --runs 1 --timeout "$TMO" --scope-decls --negative-control \
+            --lean4export-cmd "lake env ${LEAN4EXPORT_BIN}" \
+            --nanoda-cmd "${NANODA_BIN}" \
+            --leanchecker-cmd "lake env leanchecker" \
+            --output-json backstop-report.json --output-md backstop-report.md
+          echo '### Independent-check backstop' >> "$GITHUB_STEP_SUMMARY"
+          cat backstop-report.md >> "$GITHUB_STEP_SUMMARY"
+
+      # Disagreement analysis. A disagreement = nanoda did NOT accept a proof that
+      # is ON MAIN (already leanchecker-verified): status != ok, or the target was
+      # not confirmed present, or the negative control was not rejected. OBSERVE-ONLY:
+      # surface loudly, never fail (nanoda is pre-review; a quirk must not red-alarm
+      # the schedule). Escalation to a failing run is deferred to after SPEC-096-A §4.
+      - name: Flag disagreements (observe-only)
+        if: always()
+        run: |
+          set -euo pipefail
+          [ -f backstop-report.json ] || { echo "no report (skipped run)"; exit 0; }
+          python3 - <<'PY'
+          import json, os
+          d = json.load(open("backstop-report.json"))
+          rows = d.get("results", [])
+          dis = [r for r in rows
+                 if r.get("status") != "ok"
+                 or r.get("target_confirmed") is False
+                 or r.get("nc_rejected") is False]
+          summary = os.environ.get("GITHUB_STEP_SUMMARY")
+          if dis:
+              msg = f"independent-check backstop: {len(dis)}/{len(rows)} sampled proof(s) DISAGREE with nanoda — investigate (advisory; nothing reverted)"
+              print(f"::warning::{msg}")
+              if summary:
+                  with open(summary, "a") as h:
+                      h.write(f"\n**⚠️ {msg}**\n")
+                      for r in dis:
+                          h.write(f"- `{r['module']}`: status={r.get('status')} target={r.get('target_confirmed')} nc_rejected={r.get('nc_rejected')} {r.get('stderr','')}\n")
+          else:
+              print(f"independent-check backstop: all {len(rows)} sampled proof(s) agree (nanoda accepts, target confirmed, neg-control rejected)")
+          PY
+
+      - name: Upload backstop report
+        if: always()
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        with:
+          name: independent-check-backstop-report
+          path: |
+            backstop-report.json
+            backstop-report.md
+          if-no-files-found: ignore
