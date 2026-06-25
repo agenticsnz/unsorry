@@ -1,0 +1,20 @@
+𝔸5.1.goal.factorial-dvd-consec-three@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜factorial-dvd-consec-three
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/factorial-dvd-consec-three.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/factorial-dvd-consec-three.lean
+  sha≜ac37a0a1d1b74c028d12b42320f66e62d531b75a118491eb432613362e4e0193
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
