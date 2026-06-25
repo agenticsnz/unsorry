@@ -1,0 +1,8 @@
+𝔸5.1.lemma.bf045015fc76@2026-06-23
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜bf045015fc7685029bf03f10db57b1cfd01efcb05870c6a799e5d01e036bc8eb; goal≜telescoping-quartic-sum-coeff-fortynine; name≜telescoping_quartic_sum_coeff_fortynine}
+⟦Σ:Source⟧{src≜goals/telescoping-quartic-sum-coeff-fortynine.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜chat-bit-01; agent≜claude-web; provider≜lean; model≜ring; attempts≜1}
+⟦Ε⟧⟨δ≜0.75;τ≜◊⁺⟩

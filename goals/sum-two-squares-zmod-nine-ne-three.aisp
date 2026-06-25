@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-two-squares-zmod-nine-ne-three@2026-06-24
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-two-squares-zmod-nine-ne-three
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-two-squares-zmod-nine-ne-three.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-two-squares-zmod-nine-ne-three.lean
+  sha≜2454fca5086b4bcc8872aca8432c59b4a756bf48a6e28d2a0730ed0f4759cd9e
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.40;τ≜◊⁺⟩

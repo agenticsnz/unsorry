@@ -1,0 +1,20 @@
+𝔸5.1.goal.gzmod-320-pow-twentythree-sub-pow-seven@2026-06-24
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gzmod-320-pow-twentythree-sub-pow-seven
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/gzmod-320-pow-twentythree-sub-pow-seven.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/gzmod-320-pow-twentythree-sub-pow-seven.lean
+  sha≜91387bebffccf5e2f677043adb85932285a03773aab57c5d1c35bcd82dbecb35
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
