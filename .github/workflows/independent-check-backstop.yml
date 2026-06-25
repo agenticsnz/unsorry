@@ -90,11 +90,15 @@ jobs:
           MAXN: ${{ github.event.inputs.max_modules || '30' }}
         run: |
           set -euo pipefail
-          modules="$(git log --since="$SINCE" --diff-filter=A --name-only --pretty=format: -- 'library/Unsorry/*.lean' 2>/dev/null \
+          # `|| true`: `head -n N` closes the pipe after N lines, so when there are
+          # more matches `sort` gets SIGPIPE (write error) and pipefail would abort
+          # this step. Tolerate it — an empty result legitimately falls through to
+          # the spread sample below.
+          modules="$( { git log --since="$SINCE" --diff-filter=A --name-only --pretty=format: -- 'library/Unsorry/*.lean' 2>/dev/null \
             | grep -E '^library/Unsorry/[A-Za-z0-9]+\.lean$' \
             | grep -vE 'Binding\.lean$' \
             | sed -E 's#^library/Unsorry/##; s#\.lean$##; s#^#Unsorry.#' \
-            | sort -u | head -n "$MAXN" | paste -sd, -)"
+            | sort -u | head -n "$MAXN" | paste -sd, - ; } || true )"
           if [ -n "$modules" ]; then
             echo "mode=recent" >> "$GITHUB_OUTPUT"
             echo "list=$modules" >> "$GITHUB_OUTPUT"
