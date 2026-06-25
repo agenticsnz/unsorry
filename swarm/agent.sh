@@ -3109,7 +3109,7 @@ test_independent_check_advisory_opt_in() {
   ( unset UNSORRY_INDEPENDENT_CHECK; independent_check_advisory /tmp/x Foo ) \
     || { log "  default-off should return 0"; unset -f python3; return 1; }
   # on, but NANODA_BIN absent → skips gracefully, returns 0, python untouched
-  ( UNSORRY_INDEPENDENT_CHECK=1 LEAN4EXPORT_BIN= NANODA_BIN= independent_check_advisory /tmp/x Foo ) \
+  ( UNSORRY_INDEPENDENT_CHECK=1 LEAN4EXPORT_BIN='' NANODA_BIN='' independent_check_advisory /tmp/x Foo ) \
     || { log "  on-but-tools-absent should return 0"; unset -f python3; return 1; }
   [ "$ran" = 0 ] || { log "  python must not run without the tools present"; unset -f python3; return 1; }
   unset -f python3
