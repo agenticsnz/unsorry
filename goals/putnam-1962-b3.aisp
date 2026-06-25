@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜putnam-1962-b3
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜4
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/putnam-1962-b3.lean
-  sha≜∅
-  aff≜-20
+  sha≜5545cce11f2575378c01cf202095c7fd46c807c0e986ebb2632fed2c21eacd8c
+  aff≜-19
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
