@@ -1,0 +1,8 @@
+𝔸5.1.run.putnam-1962-b2.afnz-zbook-b336.20260625t113014387527z-80dffdf1@2026-06-25
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260625t113014387527z-80dffdf1; goal≜putnam-1962-b2; agent≜afnz-zbook-b336; outcome≜proved}
+⟦Π:Provenance⟧{solver≜cgbarlow; provider≜claude; model≜opus; effort≜high}
+⟦Γ:Goal⟧{goal≜putnam-1962-b2}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜869; ended≜2026-06-25T11:30:14Z; lessons≜0}
+⟦Σ:Artifact⟧{sha≜781d1cb3879775ea17c57ac59da0cc19c02a2aff5002db4ffde1c61c2051f56f}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

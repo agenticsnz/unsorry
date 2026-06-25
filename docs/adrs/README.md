@@ -2,7 +2,7 @@
 
 # Architecture Decision Records
 
-Index of the 84 ADRs in this directory, generated from the `ADR-*.md` headers and kept in sync by the `adr-index` workflow. See [ADR-001](ADR-001-Adopt-Development-Protocols.md) and [the development protocols](../protocols.md) for the WH(Y) format and process.
+Index of the 101 ADRs in this directory, generated from the `ADR-*.md` headers and kept in sync by the `adr-index` workflow. See [ADR-001](ADR-001-Adopt-Development-Protocols.md) and [the development protocols](../protocols.md) for the WH(Y) format and process.
 
 | ADR | Title | Status | Date |
 |-----|-------|--------|------|
@@ -45,7 +45,6 @@ Index of the 84 ADRs in this directory, generated from the `ADR-*.md` headers an
 | [ADR-038](ADR-038-Shared-Web-Surface-Design-Language.md) | Shared Web-Surface Design Language | Accepted | 2026-06-14 |
 | [ADR-039](ADR-039-Self-Updating-Harness.md) | Re-exec the Agent When the Harness Updates | Accepted | 2026-06-14 |
 | [ADR-040](ADR-040-Changelog-Fragments.md) | Changelog Fragments (one file per change) | Accepted | 2026-06-14 |
-| [ADR-041](ADR-041-OpenAI-Prove-Text-Extraction-Fallback.md) | OpenAI `--prove` Text-Extraction Fallback | Accepted | 2026-06-14 |
 | [ADR-041](ADR-041-Proof-Archive-Blocks.md) | Proof Archive Blocks | Accepted | 2026-06-14 |
 | [ADR-042](ADR-042-Isolated-Agent-Worktree.md) | Run the Agent in an Isolated Per-Agent Worktree | Accepted | 2026-06-14 |
 | [ADR-043](ADR-043-Identity-Engine.md) | The Identity Engine — mass-source mathlib-absent elementary identities at scale | Accepted | 2026-06-14 |
@@ -82,11 +81,29 @@ Index of the 84 ADRs in this directory, generated from the `ADR-*.md` headers an
 | [ADR-075](ADR-075-Solver-Fair-Queue-Dispatch-Order.md) | Solver-Fair Queue Dispatch Order | Accepted | 2026-06-20 |
 | [ADR-076](ADR-076-Sharded-Fork-Goal-Selection.md) | Sharded Fork Goal Selection | Proposed | 2026-06-20 |
 | [ADR-077](ADR-077-Roadmap-Project-Synced-From-Repo-State.md) | Roadmap GitHub Project, Synced from Repo State | Proposed | 2026-06-20 |
-| [ADR-078](ADR-078-Sponsor-Registered-Targets-And-Obligation-Discharge-Credit.md) | Sponsor-Registered Targets and Obligation-Discharge Credit | Proposed | 2026-06-20 |
+| [ADR-078](ADR-078-Sponsor-Registered-Targets-And-Obligation-Discharge-Credit.md) | Sponsor-Registered Targets and Obligation-Discharge Credit | Accepted | 2026-06-20 |
 | [ADR-079](ADR-079-Deterministic-Solver-Provider.md) | Deterministic Solver Provider — Zero-LLM Template/sympy Discharge, Honestly Attributed | Proposed | 2026-06-20 |
-| [ADR-080](ADR-080-Platform-Generalisation-And-Domain-Neutrality.md) | Platform Generalisation and the Self-Verification Gating Invariant | Draft | 2026-06-20 |
-| [ADR-081](ADR-081-Problem-Admission-And-Intake-Pipeline.md) | Problem Admission and the Skeleton Intake Pipeline | Draft | 2026-06-20 |
+| [ADR-080](ADR-080-Platform-Generalisation-And-Domain-Neutrality.md) | Platform Generalisation and the Self-Verification Gating Invariant | Accepted | 2026-06-20 |
+| [ADR-081](ADR-081-Problem-Admission-And-Intake-Pipeline.md) | Problem Admission and the Skeleton Intake Pipeline | Accepted | 2026-06-20 |
 | [ADR-082](ADR-082-Single-Pass-Leaderboard-Refresh.md) | Single-Pass Leaderboard Refresh (`--write-if-stale`) | Accepted | 2026-06-22 |
 | [ADR-083](ADR-083-Model-Pokemon-Registry-And-Operational-Tasks.md) | The Model → Pokémon Registry and Swarm Operational Tasks | Accepted | 2026-06-22 |
 | [ADR-084](ADR-084-Demand-Driven-Sourcing-Dedup.md) | Demand-Driven Sourcing Dedup — Skip When a Sourcing PR Is In Flight | Accepted | 2026-06-22 |
 | [ADR-085](ADR-085-Sourcer-Worktree-Isolation.md) | Isolate the Sourcer in a Per-Sourcer Worktree (ADR-042 parity) | Proposed | 2026-06-22 |
+| [ADR-086](ADR-086-Seedkit-Fixture-Generation-Path.md) | seedkit as a Documented Fixture-Generation Path Aligned to the Sourcing Paradigm | Accepted | 2026-06-23 |
+| [ADR-087](ADR-087-Backfill-Historical-Seedkit-Records.md) | Backfill Historical seedkit Records to Honest Provenance & Difficulty | Accepted | 2026-06-23 |
+| [ADR-088](ADR-088-Extend-Difficulty-Backfill-To-Mac158f.md) | Extend the Honest-Difficulty Backfill to mac-158f Template Goals | Accepted | 2026-06-23 |
+| [ADR-089](ADR-089-Pages-Scheduled-Actions-Deploy.md) | Deploy GitHub Pages on a Schedule via Actions, Decoupled from the Push Firehose | Accepted | 2026-06-23 |
+| [ADR-090](ADR-090-Periodic-Housekeeping.md) | Periodic Housekeeping — Naming as a Recurring Operational Task | Proposed | 2026-06-23 |
+| [ADR-091](ADR-091-Sharded-Gate-A-Axiom-Audit.md) | Sharded Gate A Axiom Audit | Proposed | 2026-06-24 |
+| [ADR-092](ADR-092-Segregated-Benchmark-Track.md) | Segregated Benchmark Track — Verified pass@k over Registered Suites | Accepted | 2026-06-24 |
+| [ADR-093](ADR-093-Lean4export-Nanoda-Independent-Checker-Pilot.md) | lean4export + nanoda Independent-Checker Pilot | Proposed | 2026-06-24 |
+| [ADR-094](ADR-094-Publish-Library-Oleans-On-PRs.md) | Publish Library Oleans on PRs (reliable per-shard env handoff) | Proposed | 2026-06-24 |
+| [ADR-095](ADR-095-Widen-Difficulty-Band-To-0-9.md) | Widen the goal `difficulty` band from 0–5 to 0–9 | Accepted | 2026-06-24 |
+| [ADR-096](ADR-096-Phase3-Scoped-Export-Independent-Checker.md) | Phase 3 — Declaration-Scoped Export + Independent Checker as a Kernel-Diverse Anchor | Proposed | 2026-06-25 |
+| [ADR-097](ADR-097-Phase3b-Nanoda-Replaces-Gate-A-Axiom-Audit.md) | Phase 3b — Replace the Gate A Axiom Audit with the nanoda Scoped-Export Check (p=1 preserved) | Proposed | 2026-06-25 |
+| [ADR-098](ADR-098-Leaderboard-Freshness-Alarm.md) | Leaderboard Freshness Alarm + Refresh Timeout (defence-in-depth) | Accepted | 2026-06-25 |
+| [ADR-099](ADR-099-Per-Suite-Mathlib-Pin-For-Benchmark-Ingestion.md) | Per-Suite Mathlib Pin for Benchmark Suite Ingestion & Verification | Proposed | 2026-06-25 |
+| [ADR-100](ADR-100-Auto-Install-Lake-Toolchain.md) | Client-Side Swarm Scripts Auto-Install the Lean Build Tool (`lake`) | Proposed | 2026-06-25 |
+| [ADR-101](ADR-101-Incremental-Leaderboard-Regen.md) | Per-Generation Leaderboard Regen (directory-scoped attribution + memoised loaders) | Accepted | 2026-06-25 |
+| [ADR-102](ADR-102-OpenAI-Prove-Text-Extraction-Fallback.md) | OpenAI `--prove` Text-Extraction Fallback | Accepted | 2026-06-14 |
+| [ADR-103](ADR-103-Validator-Role-Creditable-Distributed-Verification.md) | Validator Role — Creditable, Distributed, Reproducible Verification | Proposed | 2026-06-22 |

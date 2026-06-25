@@ -3,9 +3,14 @@ import os
 from pathlib import Path
 import subprocess
 
+import pytest
+
+from tools.leaderboard import generate
 from tools.leaderboard.generate import (
     attribution_gaps_payload,
     base_stats,
+    git_add_authors,
+    goal_add_authors,
     main,
     proofs,
     provenance_phantoms,
@@ -16,6 +21,7 @@ from tools.leaderboard.generate import (
     render_svg,
     render_timeline_svg,
     render_ui_json,
+    reset_caches,
     sourcing_contributors,
     sourcing_payload,
     ui_payload,
@@ -858,3 +864,131 @@ def test_write_and_check_cover_sourcing_artifact(tmp_path):
     assert main(["--check", str(tmp_path)]) == 0          # in sync right after a write
     sourcing_json.write_text("{}\n", encoding="utf-8")     # tamper
     assert main(["--check", str(tmp_path)]) == 1           # drift detected
+
+
+# --- regen performance regressions (issue #6317) -----------------------------
+#
+# The leaderboard regen had grown to ~64 min and starved the push-on-merge
+# refresh. Two compounding causes: git add-author attribution passed one pathspec
+# per proof/goal (so `git log` was O(history × corpus)), and every loader re-ran
+# ~4–9× because `base_stats` is recomputed for each rendered artifact. These tests
+# pin both fixes: a single directory-scoped git walk, and per-process memoisation.
+
+
+@pytest.fixture(autouse=True)
+def _reset_leaderboard_caches():
+    # The per-root loader caches are process-lifetime; reset around every test so a
+    # memo from one fixture repo can never leak into another (and so the
+    # call-counting assertions below start from a clean slate).
+    reset_caches()
+    yield
+    reset_caches()
+
+
+def _git_log_pathspecs(calls):
+    """The pathspecs (args after ``--``) of every captured add-author `git log`."""
+    specs = []
+    for argv in calls:
+        if "log" in argv and "--diff-filter=A" in argv and "--" in argv:
+            specs.append(argv[argv.index("--") + 1:])
+    return specs
+
+
+def _spy_subprocess(monkeypatch):
+    real_run = generate.subprocess.run
+    calls: list[list[str]] = []
+
+    def spy(argv, *a, **k):
+        calls.append(list(argv))
+        return real_run(argv, *a, **k)
+
+    monkeypatch.setattr(generate.subprocess, "run", spy)
+    return calls
+
+
+def test_git_add_authors_walks_one_directory_not_per_file(tmp_path, monkeypatch):
+    _git(tmp_path, "init")
+    _goal(tmp_path, "g1", 1)
+    _goal(tmp_path, "g2", 2)
+    _index(tmp_path, "a" * 64, "g1")
+    _index(tmp_path, "b" * 64, "g2")
+    _git(tmp_path, "add", "goals", "library/index")
+    _git(tmp_path, "commit", "-m", "land", author="Ada <ada@example.test>")
+
+    proof_data = proofs(tmp_path)  # no git, just file reads
+    calls = _spy_subprocess(monkeypatch)
+    authors = git_add_authors(tmp_path, proof_data)
+
+    # Attribution is unchanged: both proofs map to their add-author.
+    assert len(authors) == 2
+    assert {a.name for a in authors.values()} == {"Ada"}
+    # …and it took a SINGLE directory-scoped walk, not one pathspec per proof.
+    assert _git_log_pathspecs(calls) == [["library/index"]]
+
+
+def test_goal_add_authors_walks_one_directory_not_per_goal(tmp_path, monkeypatch):
+    _git(tmp_path, "init")
+    _goal(tmp_path, "g1", 1)
+    _goal(tmp_path, "g2", 2)
+    _git(tmp_path, "add", "goals")
+    _git(tmp_path, "commit", "-m", "source", author="Bo <bo@example.test>")
+
+    calls = _spy_subprocess(monkeypatch)
+    authors = goal_add_authors(tmp_path, ["g1", "g2"])
+
+    assert sorted(a.name for a in authors.values()) == ["Bo", "Bo"]
+    assert _git_log_pathspecs(calls) == [["goals"]]
+
+
+def test_generation_parses_each_record_once(tmp_path, monkeypatch):
+    # A full --write runs every renderer (markdown / community-stats /
+    # leaderboard-ui / svg / timeline / gaps / sourcing), each of which used to
+    # re-load the corpus. Under one scoped generation each record is parsed exactly
+    # once — here two source files (one goal, one index), so two parses total.
+    _goal(tmp_path, "g", 1)
+    _index(tmp_path, "a" * 64, "g")
+
+    counter = {"n": 0}
+    real_parse = generate.parse_record
+
+    def counting_parse(text):
+        counter["n"] += 1
+        return real_parse(text)
+
+    monkeypatch.setattr(generate, "parse_record", counting_parse)
+    assert main(["--write", str(tmp_path)]) == 0
+    assert counter["n"] == 2  # one goal + one index, not multiplied per renderer
+
+
+def test_main_walks_git_attribution_once_across_renderers(tmp_path, monkeypatch):
+    # The expensive add-author walk must run once per generation, not once per
+    # renderer. Driven through main(), the whole --write shares one scope.
+    _git(tmp_path, "init")
+    _goal(tmp_path, "g", 1)
+    _index(tmp_path, "a" * 64, "g")
+    _git(tmp_path, "add", "goals", "library/index")
+    _git(tmp_path, "commit", "-m", "land", author="Ada <ada@example.test>")
+
+    calls = _spy_subprocess(monkeypatch)
+    assert main(["--write", str(tmp_path)]) == 0
+
+    specs = _git_log_pathspecs(calls)
+    assert specs.count(["library/index"]) == 1  # add-author walk, once
+    assert specs.count(["goals"]) == 1           # sourcing walk, once
+
+
+def test_separate_top_level_calls_re_read_the_tree(tmp_path):
+    # Each top-level call is its own generation: the cache is cleared on entry/exit
+    # so a corpus change between two in-process generations is always seen (the
+    # workflow's rebase-and-regen push retry, or a test that mutates then recomputes).
+    _goal(tmp_path, "g", 1)
+    _index(tmp_path, "a" * 64, "g")
+    assert base_stats(tmp_path)["coverage"]["verified_proofs"] == 1
+    # Add a second proof, then recompute — no stale memo from the first call.
+    _goal(tmp_path, "g2", 2)
+    _index(tmp_path, "c" * 64, "g2")
+    assert base_stats(tmp_path)["coverage"]["verified_proofs"] == 2
+    # …and the same holds through the CLI entry point.
+    assert main(["--write", str(tmp_path)]) == 0
+    stats_path = tmp_path / "docs" / "metrics" / "community-stats.json"
+    assert json.loads(stats_path.read_text())["coverage"]["verified_proofs"] == 2

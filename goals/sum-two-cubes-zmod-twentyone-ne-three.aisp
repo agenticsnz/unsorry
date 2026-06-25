@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-two-cubes-zmod-twentyone-ne-three@2026-06-24
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-two-cubes-zmod-twentyone-ne-three
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-two-cubes-zmod-twentyone-ne-three.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-two-cubes-zmod-twentyone-ne-three.lean
+  sha≜77e4bbe74a41d02ecb122cb023742ad8f9fc10016a3c7bd6ce7f9e692b5e9088
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.40;τ≜◊⁺⟩

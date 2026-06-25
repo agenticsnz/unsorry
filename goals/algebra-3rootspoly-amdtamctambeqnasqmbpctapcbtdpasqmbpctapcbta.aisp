@@ -1,0 +1,20 @@
+𝔸5.1.goal.algebra-3rootspoly-amdtamctambeqnasqmbpctapcbtdpasqmbpctapcbta@2026-06-24
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜algebra-3rootspoly-amdtamctambeqnasqmbpctapcbtdpasqmbpctapcbta
+  phase≜prove
+  status≜open
+  difficulty≜4
+}
+⟦Σ:Source⟧{
+  src≜backlog/algebra-3rootspoly-amdtamctambeqnasqmbpctapcbtdpasqmbpctapcbta.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/algebra-3rootspoly-amdtamctambeqnasqmbpctapcbtdpasqmbpctapcbta.lean
+  sha≜∅
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
