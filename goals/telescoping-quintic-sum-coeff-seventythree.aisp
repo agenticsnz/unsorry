@@ -1,0 +1,20 @@
+𝔸5.1.goal.telescoping-quintic-sum-coeff-seventythree@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜telescoping-quintic-sum-coeff-seventythree
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/telescoping-quintic-sum-coeff-seventythree.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/telescoping-quintic-sum-coeff-seventythree.lean
+  sha≜52591816b1d26de9b970df4f69c6fe8f0db31afab84e14d32a1705c8a496cd85
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.75;τ≜◊⁺⟩

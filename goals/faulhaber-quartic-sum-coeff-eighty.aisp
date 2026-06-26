@@ -1,0 +1,20 @@
+𝔸5.1.goal.faulhaber-quartic-sum-coeff-eighty@2026-06-24
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜faulhaber-quartic-sum-coeff-eighty
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/faulhaber-quartic-sum-coeff-eighty.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/faulhaber-quartic-sum-coeff-eighty.lean
+  sha≜71634969d827dd8f79db84206071cd6ba2d39bdc28c6dc8bbe477f44c3513a5e
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.85;τ≜◊⁺⟩

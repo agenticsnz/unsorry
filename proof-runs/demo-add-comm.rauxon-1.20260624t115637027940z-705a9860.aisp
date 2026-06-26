@@ -1,0 +1,8 @@
+𝔸5.1.run.demo-add-comm.rauxon-1.20260624t115637027940z-705a9860@2026-06-24
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260624t115637027940z-705a9860; goal≜demo-add-comm; agent≜rauxon-1; outcome≜proved}
+⟦Π:Provenance⟧{solver≜Rauxon; provider≜claude; model≜opus; effort≜high}
+⟦Γ:Goal⟧{goal≜demo-add-comm}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜233; ended≜2026-06-24T11:56:37Z; lessons≜0}
+⟦Σ:Artifact⟧{sha≜15c6c4e03a58be028d3e6dad36640cae2e3fcd43cd4934076f3f30fd0b4d57e4}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

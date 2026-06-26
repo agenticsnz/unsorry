@@ -1,0 +1,20 @@
+𝔸5.1.goal.dvd-330-pow-twentyone-sub-self@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜dvd-330-pow-twentyone-sub-self
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/dvd-330-pow-twentyone-sub-self.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/dvd-330-pow-twentyone-sub-self.lean
+  sha≜d8dc8690e484c8a6ede39bc65e0716030fef3f958f7b9ae674cd4007c7d1719b
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

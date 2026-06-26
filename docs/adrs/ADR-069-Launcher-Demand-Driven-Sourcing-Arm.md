@@ -6,7 +6,7 @@
 | **Initiative** | problem supply / swarm autonomy |
 | **Proposed By** | unsorry maintainers |
 | **Date** | 2026-06-17 |
-| **Status** | Proposed |
+| **Status** | Accepted |
 
 ## Context
 
@@ -160,3 +160,4 @@ and a worktree-isolated prover, with full worktree isolation left as a follow-up
 | Status | Approver | Date |
 |--------|----------|------|
 | Proposed | unsorry maintainers | 2026-06-17 |
+| Accepted (implemented — launcher sourcing arm, #2148) | unsorry maintainers | 2026-06-19 |

@@ -1,0 +1,20 @@
+𝔸5.1.goal.arith-series-sum-coeff-fortythree@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜arith-series-sum-coeff-fortythree
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/arith-series-sum-coeff-fortythree.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/arith-series-sum-coeff-fortythree.lean
+  sha≜9e1d1d007c250f6fd384be4da57f3d2d0645822783a64550fa2a4db7ef02fcbd
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.55;τ≜◊⁺⟩

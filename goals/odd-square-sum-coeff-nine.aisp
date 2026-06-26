@@ -1,0 +1,20 @@
+𝔸5.1.goal.odd-square-sum-coeff-nine@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜odd-square-sum-coeff-nine
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/odd-square-sum-coeff-nine.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/odd-square-sum-coeff-nine.lean
+  sha≜580d000c4ed93fe46afde1cb0a3fd5cd417242d7fb099b7bc590bf66767d6717
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.70;τ≜◊⁺⟩

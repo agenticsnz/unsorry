@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-range-sq-mul-three-pow@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-range-sq-mul-three-pow
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-range-sq-mul-three-pow.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-range-sq-mul-three-pow.lean
+  sha≜a736840859007bd9fb8c827a7044170a989475594fdf80b94501fd38d9256cc3
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

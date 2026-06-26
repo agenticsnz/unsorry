@@ -1,0 +1,20 @@
+𝔸5.1.goal.faulhaber-quintic-sum-coeff-five@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜faulhaber-quintic-sum-coeff-five
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/faulhaber-quintic-sum-coeff-five.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/faulhaber-quintic-sum-coeff-five.lean
+  sha≜e5d16b2ddb7ce8c94512e7503b8a21937c49e53e3d8013d9d41d3c7d359d11bd
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.85;τ≜◊⁺⟩

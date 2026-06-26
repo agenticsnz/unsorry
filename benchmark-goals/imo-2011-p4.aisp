@@ -1,0 +1,20 @@
+𝔸5.1.goal.imo-2011-p4@2026-06-24
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜imo-2011-p4
+  phase≜prove
+  status≜open
+  difficulty≜4
+}
+⟦Σ:Source⟧{
+  src≜backlog/imo-2011-p4.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜benchmark-goals/imo-2011-p4.lean
+  sha≜∅
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

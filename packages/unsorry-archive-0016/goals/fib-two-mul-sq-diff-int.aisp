@@ -1,0 +1,20 @@
+𝔸5.1.goal.fib-two-mul-sq-diff-int@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜fib-two-mul-sq-diff-int
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/fib-two-mul-sq-diff-int.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/fib-two-mul-sq-diff-int.lean
+  sha≜f86d693c9fb72c772a8ad3a827af741419e90c71015787f37e16e36b35b45219
+  aff≜-19
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

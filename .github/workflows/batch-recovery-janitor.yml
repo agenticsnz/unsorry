@@ -1,0 +1,128 @@
+# Recover failed ADR-107 batch PRs (prove-batch(…)) so a batch never strands its
+# K−1 good proofs behind one bad one.
+#
+# A batch combines K independent proofs into one Gate A run (D1b, #5683), so it is
+# all-or-nothing per PR. This janitor classifies each open batch PR's latest gate-a:
+#
+#   * cancellation cascade (a leg cancelled by the merge firehose, cover cascaded)
+#     -> RE-RUN, do not split. ADR-105's finalization-recovery skips prove-batch(
+#     titles, so batch reruns are owned here. Reuses the same is-cancellation logic.
+#   * genuine failure (a bad proof, a policy block) -> REDISPATCH SINGLY: open a
+#     singleton PR for each constituent (its queued/prove/* branch still exists —
+#     assembly never deletes it), THEN close the batch. Each proof then gets an
+#     isolated verdict; the bad one is an isolated red singleton (a state already
+#     tolerated today), the K−1 good ones merge. Opening the singletons first
+#     establishes dedup so the set is never re-batched.
+#
+# Decision logic is pure (tools.dispatch.batch); this is the gh I/O shell. No-ops
+# when there are no open batch PRs, so it self-disables when batching is off.
+#
+# Token: rerun + the singleton/auto-merge enrol attribute to a real actor only under
+# REFRESH_TOKEN (admin PAT/App, #417). Without it: report-only.
+name: batch-recovery-janitor
+
+on:
+  workflow_run:
+    workflows: ["gate-a"]
+    types: [completed]
+  schedule:
+    # Backstop only — workflow_run is the real driver (cron drops under load).
+    - cron: "47 * * * *"
+  workflow_dispatch:
+    inputs:
+      apply:
+        description: "Set false for a dry-run (report only)"
+        default: "true"
+
+concurrency:
+  # cancel-in-progress: false so frequent gate-a completions COALESCE instead of a
+  # newer run cancelling the in-flight sweep — same posture as the other janitors.
+  group: batch-recovery-janitor
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pull-requests: write
+  actions: write   # gh run rerun
+
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          ref: main # the tools/ module + git ls-remote to resolve constituent branches
+          token: ${{ secrets.REFRESH_TOKEN || github.token }}
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.12"
+      - name: Detect refresh token (#417)
+        id: tok
+        env:
+          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+        run: |
+          [ -n "${REFRESH_TOKEN}" ] && echo "present=true" >> "$GITHUB_OUTPUT" || echo "present=false" >> "$GITHUB_OUTPUT"
+
+      - name: Recover open batch PRs
+        env:
+          GH_TOKEN: ${{ secrets.REFRESH_TOKEN || github.token }}
+          APPLY: ${{ (steps.tok.outputs.present == 'true' && github.event.inputs.apply != 'false') && '1' || '' }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          acted=0; cap=10
+          # Process substitution (not a pipe) so the loop runs in THIS shell and the
+          # counter/cap survive — same reason as finalization-recovery-janitor.
+          while read -r num sha; do
+              [ "$acted" -ge "$cap" ] && break
+              [ -z "$num" ] && continue
+              # Latest gate-a run for this PR head; only act on a COMPLETED run.
+              rid=""; concl=""
+              read -r rid concl < <(gh api "repos/$REPO/actions/workflows/gate-a.yml/runs?head_sha=$sha" \
+                    --jq '.workflow_runs | sort_by(.created_at) | last | select(.status=="completed") | "\(.id) \(.conclusion)"' 2>/dev/null) || true
+              [ -z "${rid:-}" ] && continue
+              jobs=$(gh api "repos/$REPO/actions/runs/$rid/jobs?per_page=100" \
+                    --jq '[.jobs[] | {name,conclusion}]' 2>/dev/null || echo '[]')
+              action=$(printf '%s' "$jobs" | python3 -m tools.dispatch.batch recover --conclusion "${concl:-}")
+              case "$action" in
+                none) continue ;;
+                rerun)
+                  if [ -z "${APPLY}" ]; then echo "  would rerun gate-a for batch #$num (run $rid, cancellation cascade)"; acted=$((acted+1)); continue; fi
+                  if gh run rerun "$rid" --repo "$REPO" 2>/dev/null; then
+                    gh pr merge "$num" --repo "$REPO" --auto --merge 2>/dev/null || true
+                    echo "  reran gate-a for batch #$num (run $rid) + re-armed"
+                    acted=$((acted+1))
+                  fi
+                  ;;
+                redispatch)
+                  if [ -z "${APPLY}" ]; then echo "  would redispatch batch #$num singly + close (genuine failure)"; acted=$((acted+1)); continue; fi
+                  body=$(gh pr view "$num" --repo "$REPO" --json body --jq '.body' 2>/dev/null || echo "")
+                  opened=0
+                  # Open a singleton for each constituent BEFORE closing the batch, so
+                  # the goals are deduped (own open PR) and never re-batched.
+                  while read -r goal; do
+                      [ -z "$goal" ] && continue
+                      br=$(git ls-remote --heads origin "queued/prove/$goal/*" 2>/dev/null | head -1 | sed 's#.*refs/heads/##')
+                      [ -z "$br" ] && continue
+                      git fetch -q origin "$br" 2>/dev/null || continue
+                      title=$(git log -1 --format=%s FETCH_HEAD 2>/dev/null || echo "")
+                      case "$title" in prove\(*) ;; *) continue ;; esac
+                      if gh pr create --repo "$REPO" --base main --head "$br" --title "$title" \
+                           --body "Redispatched singly from failed batch #$num (ADR-107): isolated re-verification so the good constituents still land." 2>/dev/null; then
+                        gh pr merge "$br" --repo "$REPO" --auto --squash 2>/dev/null || true
+                        opened=$((opened+1))
+                      fi
+                  done < <(printf '%s' "$body" | python3 -m tools.dispatch.batch parse-manifest)
+                  gh pr close "$num" --repo "$REPO" \
+                    --comment "Batch failed genuinely (not a cancellation cascade); redispatched $opened constituents as isolated singletons (ADR-107)." 2>/dev/null || true
+                  echo "  redispatched batch #$num as $opened singletons + closed"
+                  acted=$((acted+1))
+                  ;;
+              esac
+          done < <(gh pr list --repo "$REPO" --state open --limit 200 --search 'prove-batch in:title' \
+                     --json number,headRefOid --jq '.[] | "\(.number) \(.headRefOid)"')
+          echo "batch recovery actions taken/dry: $acted (cap $cap)"
+
+      - name: No REFRESH_TOKEN — report-only notice (#417)
+        if: steps.tok.outputs.present != 'true'
+        run: echo "::warning::REFRESH_TOKEN unset — batch-recovery ran report-only (rerun/redispatch/close need the admin PAT/App token to attribute to a real actor and fire downstream workflows)."

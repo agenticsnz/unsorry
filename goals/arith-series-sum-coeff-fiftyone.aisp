@@ -1,0 +1,20 @@
+𝔸5.1.goal.arith-series-sum-coeff-fiftyone@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜arith-series-sum-coeff-fiftyone
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/arith-series-sum-coeff-fiftyone.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/arith-series-sum-coeff-fiftyone.lean
+  sha≜e4e087a0399d5d6f7df6017e28c7821dd57f4b19ecf62509513188bffeebaae0
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.55;τ≜◊⁺⟩

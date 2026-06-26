@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-icc-k-mul-three-k-sub-one-eq
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-icc-k-mul-three-k-sub-one-eq.md
+  src≜packages/unsorry-archive-0010/backlog/sum-icc-k-mul-three-k-sub-one-eq.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-icc-k-mul-three-k-sub-one-eq.lean
+  lean≜packages/unsorry-archive-0010/goals/sum-icc-k-mul-three-k-sub-one-eq.lean
   sha≜5a16be82d68c3d1d67f5f72037d42a1a4be15d6aeb0849362d684e50c32d3788
   aff≜-10
 }

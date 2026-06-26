@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜alt-sum-range-choose-sq-eq-zero-odd
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/alt-sum-range-choose-sq-eq-zero-odd.md
+  src≜packages/unsorry-archive-0016/backlog/alt-sum-range-choose-sq-eq-zero-odd.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/alt-sum-range-choose-sq-eq-zero-odd.lean
-  sha≜∅
-  aff≜-20
+  lean≜packages/unsorry-archive-0016/goals/alt-sum-range-choose-sq-eq-zero-odd.lean
+  sha≜643f1d2df24b572e5f1fbb18be08b35d4e8b169767da1df4de699e91a71e4667
+  aff≜-19
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

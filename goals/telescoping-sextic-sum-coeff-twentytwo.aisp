@@ -1,0 +1,20 @@
+𝔸5.1.goal.telescoping-sextic-sum-coeff-twentytwo@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜telescoping-sextic-sum-coeff-twentytwo
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/telescoping-sextic-sum-coeff-twentytwo.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/telescoping-sextic-sum-coeff-twentytwo.lean
+  sha≜aa9931a9678f94a4312c14b5b5eedb23869475a7028675655e9424a8686fb1d3
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.75;τ≜◊⁺⟩

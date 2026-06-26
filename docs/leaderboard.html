@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unsorry Leaderboard</title>
+    <title>unsorry — Leaderboard</title>
     <!-- Using the existing leaderboard template styling as the project visual base. -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -78,13 +78,14 @@
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
-<body class="text-brand-text p-4 md:p-8 flex justify-center items-start min-h-screen">
+<body class="font-sans text-brand-text p-4 md:p-8 flex justify-center items-start min-h-screen">
 
     <main class="w-full max-w-6xl bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-6 md:p-10 border border-slate-100 relative overflow-hidden">
 
         <!-- Top navigation — shared across home / leaderboard / proof graph (issue #738). -->
-        <nav class="flex items-center gap-1 mb-8 text-sm font-medium" aria-label="Primary">
+        <nav class="flex flex-wrap items-center gap-1 mb-8 text-sm font-medium" aria-label="Primary">
             <a href="index.html" class="px-3 py-1.5 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors">Home</a>
+            <a href="showcase.html" class="px-3 py-1.5 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors">Showcase</a>
             <a href="leaderboard.html" aria-current="page" class="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-800">Leaderboard</a>
             <a href="proofs-contributors-visualisation.html" class="px-3 py-1.5 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors">Proof graph</a>
             <a href="queue.html" class="px-3 py-1.5 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors">Queue</a>
@@ -93,7 +94,7 @@
         <!-- Header Section -->
         <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
             <div class="flex flex-col">
-                <h1 class="text-5xl md:text-7xl font-bold text-slate-200 tracking-tighter leading-none mb-2">Unsorry</h1>
+                <h1 class="text-5xl md:text-7xl font-bold text-slate-200 tracking-tighter leading-none mb-2">unsorry</h1>
                 <div class="inline-flex items-center bg-slate-100 rounded-full px-4 py-1 text-xs font-semibold text-slate-600 uppercase tracking-wider w-max">
                     <span id="generated-at">Loading proof stats</span>
                 </div>
@@ -196,9 +197,16 @@
 
         <!-- ===== View: proofs over time (cumulative line graph) ===== -->
         <div id="view-timeline" class="hidden">
-            <div class="flex flex-col gap-0.5 sm:flex-row sm:items-baseline sm:justify-between mb-5">
+            <div class="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between mb-5">
                 <h2 class="text-lg font-bold text-slate-700">Proofs over time</h2>
-                <span class="text-xs text-slate-400 uppercase tracking-wider">cumulative kernel-verified proofs</span>
+                <!-- Solve/merge toggle (issue #738): merge (hourly) keys on when each proof
+                     landed on main; solve (daily) keys on the recorded AISP solve date. -->
+                <div id="timeline-mode" role="tablist" aria-label="Timeline basis" class="inline-flex rounded-lg border border-slate-200 bg-slate-50 p-0.5 text-xs font-semibold">
+                    <button id="tl-mode-merge" type="button" role="tab" aria-selected="true"
+                        class="px-3 py-1 rounded-md">merged · hourly</button>
+                    <button id="tl-mode-solve" type="button" role="tab" aria-selected="false"
+                        class="px-3 py-1 rounded-md">solved · daily</button>
+                </div>
             </div>
             <div id="timeline-chart" class="w-full">
                 <div class="state-panel">Loading timeline…</div>
@@ -206,6 +214,7 @@
             <div class="mt-4 flex flex-wrap gap-3 text-xs text-slate-500">
                 <span><span id="timeline-total" class="font-semibold text-slate-700">0</span> proofs total</span>
                 <span><span id="timeline-span" class="font-semibold text-slate-700">—</span></span>
+                <span id="timeline-basis" class="text-slate-400"></span>
             </div>
         </div>
 
@@ -267,9 +276,13 @@
             const rateSvg = document.getElementById('svg-trend').innerHTML;
             const difficultySvg = document.getElementById('svg-trophy').innerHTML;
             return `
-                <div class="hidden md:flex items-center gap-3 mt-1 opacity-70">
+                <!-- flex-wrap + min-w-0 so the badge row (incl. the optional "dispatch"
+                     badge) wraps within the fixed-width name column instead of
+                     overflowing into the contributor's score bar. -->
+                <div class="hidden md:flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-1 opacity-70 min-w-0">
                     <span class="flex items-center gap-1 text-[11px] font-medium">${proofSvg} ${formatNumber(badges.proofs)} proofs</span>
                     <span class="flex items-center gap-1 text-[11px] font-medium">${difficultySvg} ${formatNumber(badges.difficulty)} diff</span>
+                    ${badges.dispatch ? `<span class="flex items-center gap-1 text-[11px] font-medium">${difficultySvg} ${formatNumber(badges.dispatch)} dispatch</span>` : ''}
                     <span class="flex items-center gap-1 text-[11px] font-medium">${rateSvg} ${formatPercent(badges.success_rate_percent)}</span>
                 </div>
             `;
@@ -298,7 +311,10 @@
             explicitProofs: Number(row.explicit_solver_proofs || 0),
             inferredProofs: Number(row.inferred_git_proofs || 0),
             creditSource: row.credit_source_summary || 'unknown',
-            badges: row.badges || { proofs: 0, difficulty: 0, success_rate_percent: null },
+            badges: {
+                ...(row.badges || { proofs: 0, difficulty: 0, success_rate_percent: null }),
+                dispatch: Number(row.dispatch_points || 0),
+            },
         }));
 
         const updateSummary = (payload) => {
@@ -409,6 +425,14 @@
             listContainer.innerHTML = '';
             timelineContainer.innerHTML = '';
 
+            // Top-strip avatars are placed by score%. A dominant leader (e.g. one
+            // contributor at 100%) compresses everyone else toward the left, piling
+            // the avatars on top of each other. Avatars are added high-to-low score,
+            // so keep each at least MIN_AVATAR_GAP% to the left of the previous
+            // (higher) one — spreads the cluster instead of overlapping it.
+            const MIN_AVATAR_GAP = 4;
+            let lastAvatarLeft = Infinity;
+
             leaderboardData.forEach((user, index) => {
                 const rank = index + 1;
                 const widthPercent = Math.max(2, (user.score / maxScore) * 100);
@@ -416,7 +440,9 @@
                     const avatarNode = document.createElement('a');
                     avatarNode.href = user.profileUrl;
                     avatarNode.className = 'absolute transform -translate-x-1/2 -top-1 w-8 h-8 rounded-full border-2 border-white shadow-sm overflow-hidden z-10 transition-transform hover:scale-110';
-                    avatarNode.style.left = `${Math.min(widthPercent, 100)}%`;
+                    const avatarLeft = Math.max(0, Math.min(Math.min(widthPercent, 100), lastAvatarLeft - MIN_AVATAR_GAP));
+                    lastAvatarLeft = avatarLeft;
+                    avatarNode.style.left = `${avatarLeft}%`;
                     avatarNode.innerHTML = `<img src="${escapeHTML(user.avatar)}" alt="${escapeHTML(user.name)}" class="w-full h-full object-cover">`;
                     timelineContainer.appendChild(avatarNode);
                 }
@@ -468,9 +494,11 @@
                 row.className = 'flex items-center w-full gap-3';
                 row.innerHTML = `
                     <div class="w-36 md:w-52 flex-shrink-0 text-sm font-medium text-slate-700 truncate" title="${escapeHTML(model.label)}">${escapeHTML(model.label)}</div>
-                    <div class="flex-grow flex items-center min-w-0">
-                        <div class="h-7 md:h-8 bg-brand-blue rounded-r-2xl progress-bar-fill shadow-sm flex-shrink-0" style="width: 0%;" data-target-width="${widthPercent}%"></div>
-                        <span class="ml-3 text-sm font-semibold text-slate-600 whitespace-nowrap">${formatNumber(model.proofs)} <span class="font-normal text-slate-400">proofs · ${percentFormatter.format(share)}%</span></span>
+                    <div class="flex-grow flex items-center min-w-0 gap-3">
+                        <div class="flex-grow min-w-0">
+                            <div class="h-7 md:h-8 bg-brand-blue rounded-r-2xl progress-bar-fill shadow-sm" style="width: 0%;" data-target-width="${widthPercent}%"></div>
+                        </div>
+                        <span class="text-sm font-semibold text-slate-600 whitespace-nowrap flex-shrink-0">${formatNumber(model.proofs)} <span class="font-normal text-slate-400">proofs · ${percentFormatter.format(share)}%</span></span>
                     </div>
                 `;
                 list.appendChild(row);
@@ -483,22 +511,105 @@
             }, 100);
         };
 
-        const renderTimeline = (payload) => {
+        // Remembered across re-renders so switching tabs keeps the chosen basis.
+        let timelineMode = null;
+
+        // Normalise a series to {t, proofs, cumulative_proofs}. The current schema
+        // uses `t` (an ISO bucket); a legacy single-series payload used `date`.
+        const normalizeSeries = (arr) => (Array.isArray(arr) ? arr : [])
+            .map((d) => ({
+                t: d.t || d.date,
+                proofs: Number(d.proofs || 0),
+                cumulative_proofs: Number(d.cumulative_proofs || 0),
+            }))
+            .filter((d) => d.t);
+
+        // Pick a series by basis. Falls back to the legacy `payload.timeline`
+        // (pre-#738 toggle), treated as the solve series, until the next refresh
+        // writes the two-series `payload.timelines`.
+        const timelineSeries = (payload, mode) => {
+            if (payload.timelines && Array.isArray(payload.timelines[mode])) {
+                return normalizeSeries(payload.timelines[mode]);
+            }
+            if (mode === 'solve' && Array.isArray(payload.timeline)) {
+                return normalizeSeries(payload.timeline);
+            }
+            return [];
+        };
+
+        // ISO bucket → compact label. Merge buckets carry an hour; solve a date.
+        const fmtBucket = (iso, mode) => {
+            const d = new Date(iso);
+            if (Number.isNaN(d.getTime())) return iso;
+            const day = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
+            return mode === 'merge' ? `${day} ${String(d.getUTCHours()).padStart(2, '0')}:00` : day;
+        };
+
+        // Reflect the active basis (and disable a basis with no data) on the toggle.
+        const syncTimelineToggle = (payload, mode) => {
+            const buttons = { merge: 'tl-mode-merge', solve: 'tl-mode-solve' };
+            Object.entries(buttons).forEach(([key, id]) => {
+                const btn = document.getElementById(id);
+                if (!btn) return;
+                const isActive = key === mode;
+                const hasData = timelineSeries(payload, key).length > 0;
+                btn.setAttribute('aria-selected', String(isActive));
+                btn.classList.toggle('bg-white', isActive);
+                btn.classList.toggle('shadow-sm', isActive);
+                btn.classList.toggle('text-slate-800', isActive);
+                btn.classList.toggle('text-slate-500', !isActive);
+                btn.disabled = !hasData;
+                btn.classList.toggle('opacity-40', !hasData);
+                btn.classList.toggle('cursor-not-allowed', !hasData);
+            });
+        };
+
+        const renderTimeline = (payload, requested) => {
             const container = document.getElementById('timeline-chart');
-            const series = Array.isArray(payload.timeline) ? payload.timeline : [];
+            // Resolve the basis: an explicit request, else the remembered one, else
+            // the payload default — then fall back to whichever series has data.
+            const def = (payload.timelines && payload.timelines.default) || 'merge';
+            let mode = requested || timelineMode || def;
+            let series = timelineSeries(payload, mode);
+            if (!series.length) {
+                const alt = mode === 'merge' ? 'solve' : 'merge';
+                const altSeries = timelineSeries(payload, alt);
+                if (altSeries.length) { mode = alt; series = altSeries; }
+            }
+            timelineMode = mode;
+            syncTimelineToggle(payload, mode);
+
             if (!series.length) {
                 container.innerHTML = '<div class="state-panel">No dated proofs yet.</div>';
                 setText('timeline-total', '0');
                 setText('timeline-span', '—');
+                setText('timeline-basis', '');
                 return;
             }
+
             const W = 900, H = 320, padL = 48, padR = 24, padT = 20, padB = 40;
             const n = series.length;
+            const ph = H - padT - padB;
             const maxY = Math.max(series[n - 1].cumulative_proofs, 1);
-            const x = (i) => padL + (n === 1 ? (W - padL - padR) / 2 : i * (W - padL - padR) / (n - 1));
-            const y = (v) => H - padB - v * (H - padT - padB) / maxY;
-            const line = series.map((d, i) => `${x(i).toFixed(1)},${y(d.cumulative_proofs).toFixed(1)}`).join(' ');
-            const area = `${x(0).toFixed(1)},${(H - padB).toFixed(1)} ${line} ${x(n - 1).toFixed(1)},${(H - padB).toFixed(1)}`;
+            const maxBar = Math.max(...series.map((d) => d.proofs), 1);
+            // True time x-axis: quiet stretches read as flat, busy stretches as steep.
+            const time = (d) => new Date(d.t).getTime();
+            const t0 = time(series[0]), t1 = time(series[n - 1]);
+            const tspan = Math.max(1, t1 - t0);
+            const x = (d) => padL + (n === 1 ? (W - padL - padR) / 2 : (time(d) - t0) / tspan * (W - padL - padR));
+            const y = (v) => H - padB - v * ph / maxY;
+
+            const line = series.map((d) => `${x(d).toFixed(1)},${y(d.cumulative_proofs).toFixed(1)}`).join(' ');
+            const area = `${x(series[0]).toFixed(1)},${(H - padB).toFixed(1)} ${line} ${x(series[n - 1]).toFixed(1)},${(H - padB).toFixed(1)}`;
+
+            // Per-bucket throughput bars (own scale, ~35% of the plot) behind the line
+            // so daily/hourly cadence is explicit, not just inferred from slope.
+            const barW = Math.max(1.5, Math.min(14, (W - padL - padR) / n * 0.7));
+            const bars = series.map((d) => {
+                const h = d.proofs / maxBar * (ph * 0.35);
+                return `<rect x="${(x(d) - barW / 2).toFixed(1)}" y="${(H - padB - h).toFixed(1)}" width="${barW.toFixed(1)}" height="${h.toFixed(1)}" fill="#7dd3fc" opacity="0.35"/>`;
+            }).join('');
+
             const ticks = [...new Set([0, 0.25, 0.5, 0.75, 1].map((f) => Math.round(maxY * f)))];
             const grid = ticks.map((v) => {
                 const yy = y(v);
@@ -507,12 +618,13 @@
             }).join('');
             const labelIdx = [...new Set([0, Math.floor((n - 1) / 2), n - 1])];
             const xLabels = labelIdx.map((i) =>
-                `<text x="${x(i).toFixed(1)}" y="${H - padB + 22}" text-anchor="middle" font-size="11" fill="#94a3b8">${escapeHTML(series[i].date)}</text>`
+                `<text x="${x(series[i]).toFixed(1)}" y="${H - padB + 22}" text-anchor="middle" font-size="11" fill="#94a3b8">${escapeHTML(fmtBucket(series[i].t, mode))}</text>`
             ).join('');
-            const lastX = x(n - 1), lastY = y(maxY);
+            const lastX = x(series[n - 1]), lastY = y(maxY);
             container.innerHTML =
-                `<svg viewBox="0 0 ${W} ${H}" class="w-full h-auto" role="img" aria-label="Cumulative kernel-verified proofs over time">`
+                `<svg viewBox="0 0 ${W} ${H}" class="w-full h-auto" role="img" aria-label="Cumulative kernel-verified proofs over time (${mode})">`
                 + grid
+                + bars
                 + `<polygon points="${area}" fill="#e0f2fe" opacity="0.55"/>`
                 + `<polyline points="${line}" fill="none" stroke="#38bdf8" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`
                 + `<circle cx="${lastX.toFixed(1)}" cy="${lastY.toFixed(1)}" r="4" fill="#0ea5e9"/>`
@@ -520,7 +632,8 @@
                 + xLabels
                 + `</svg>`;
             setText('timeline-total', formatNumber(maxY));
-            setText('timeline-span', `${series[0].date} → ${series[n - 1].date}`);
+            setText('timeline-span', `${fmtBucket(series[0].t, mode)} → ${fmtBucket(series[n - 1].t, mode)}`);
+            setText('timeline-basis', mode === 'merge' ? 'by merge time (hourly, UTC)' : 'by solve date (daily)');
         };
 
         // One sourcer bar row — same visual language as the contributor rows, but
@@ -627,6 +740,8 @@
             on('tab-top5', () => { renderTop5(payload); setView('top5'); });
             on('tab-timeline', () => { renderTimeline(payload); setView('timeline'); });
             on('tab-sourcing', () => { ensureSourcing(); setView('sourcing'); });
+            on('tl-mode-merge', () => renderTimeline(payload, 'merge'));
+            on('tl-mode-solve', () => renderTimeline(payload, 'solve'));
         };
 
         async function initApp() {

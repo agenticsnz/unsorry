@@ -1,0 +1,20 @@
+𝔸5.1.goal.gzmod-76-pow-twentyfive-sub-pow-seven@2026-06-18
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gzmod-76-pow-twentyfive-sub-pow-seven
+  phase≜prove
+  status≜archived
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜packages/unsorry-archive-0063/backlog/gzmod-76-pow-twentyfive-sub-pow-seven.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜packages/unsorry-archive-0063/goals/gzmod-76-pow-twentyfive-sub-pow-seven.lean
+  sha≜b87dce79a7c7b4bc5a6ef7731905f292901f5648b9d8f16392de0ff4bd6f17ad
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

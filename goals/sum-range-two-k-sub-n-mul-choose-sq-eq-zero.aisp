@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-two-k-sub-n-mul-choose-sq-eq-zero
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-two-k-sub-n-mul-choose-sq-eq-zero.md
+  src≜packages/unsorry-archive-0038/backlog/sum-range-two-k-sub-n-mul-choose-sq-eq-zero.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-two-k-sub-n-mul-choose-sq-eq-zero.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0038/goals/sum-range-two-k-sub-n-mul-choose-sq-eq-zero.lean
+  sha≜4cc492a3ee8c514571951c1d89d955a868f33d8726192cd7ff0c73e2db7cae62
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
