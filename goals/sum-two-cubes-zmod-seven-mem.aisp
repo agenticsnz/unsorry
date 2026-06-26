@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-two-cubes-zmod-seven-mem
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-two-cubes-zmod-seven-mem.md
+  src≜packages/unsorry-archive-0065/backlog/sum-two-cubes-zmod-seven-mem.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-two-cubes-zmod-seven-mem.lean
+  lean≜packages/unsorry-archive-0065/goals/sum-two-cubes-zmod-seven-mem.lean
   sha≜2bd3bf882089b63c6da8528664217f15a2d99de5e41195e255bed31b158572e0
   aff≜-9
 }

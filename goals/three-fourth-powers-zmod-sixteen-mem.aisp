@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜three-fourth-powers-zmod-sixteen-mem
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/three-fourth-powers-zmod-sixteen-mem.md
+  src≜packages/unsorry-archive-0065/backlog/three-fourth-powers-zmod-sixteen-mem.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/three-fourth-powers-zmod-sixteen-mem.lean
+  lean≜packages/unsorry-archive-0065/goals/three-fourth-powers-zmod-sixteen-mem.lean
   sha≜e0f893f714c3cadb672a4874cee030885a5e78bb72306caeb524554bb4ffb3ee
   aff≜-9
 }
