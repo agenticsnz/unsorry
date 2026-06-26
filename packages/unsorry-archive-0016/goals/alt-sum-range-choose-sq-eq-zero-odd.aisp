@@ -1,0 +1,20 @@
+𝔸5.1.goal.alt-sum-range-choose-sq-eq-zero-odd@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜alt-sum-range-choose-sq-eq-zero-odd
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/alt-sum-range-choose-sq-eq-zero-odd.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/alt-sum-range-choose-sq-eq-zero-odd.lean
+  sha≜643f1d2df24b572e5f1fbb18be08b35d4e8b169767da1df4de699e91a71e4667
+  aff≜-19
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

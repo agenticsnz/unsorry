@@ -1,0 +1,179 @@
+{
+  "block_id": "unsorry-archive-0015",
+  "target_size": 40,
+  "proof_count": 40,
+  "status": "frozen",
+  "source_commit": "bd6e826771a24226e999855dd45238988eb6eda5",
+  "validation_commit": null,
+  "pins": {
+    "lean_toolchain": "leanprover/lean4:v4.30.0",
+    "mathlib": "v4.30.0"
+  },
+  "notes": [
+    "ADR-041 proof archive block 0015.",
+    "Whole decomposition trees + standalone proved goals only (invariant A).",
+    "Active goal records remain as archived metadata pointing at this package."
+  ],
+  "goals": [
+    {
+      "goal": "sum-centered-triangular-running-closed-form",
+      "module": "Unsorry.SumCenteredTriangularRunningClosedForm"
+    },
+    {
+      "goal": "sum-cube-add-id-closed-form",
+      "module": "Unsorry.SumCubeAddIdClosedForm"
+    },
+    {
+      "goal": "sum-decagonal-numbers-closed-form",
+      "module": "Unsorry.SumDecagonalNumbersClosedForm"
+    },
+    {
+      "goal": "sum-decagonal-second-kind-closed-form",
+      "module": "Unsorry.SumDecagonalSecondKindClosedForm"
+    },
+    {
+      "goal": "sum-even-cubes-eq-twice-square",
+      "module": "Unsorry.SumEvenCubesEqTwiceSquare"
+    },
+    {
+      "goal": "sum-even-index-triangular-closed-form",
+      "module": "Unsorry.SumEvenIndexTriangularClosedForm"
+    },
+    {
+      "goal": "sum-even-squares-faulhaber",
+      "module": "Unsorry.SumEvenSquaresFaulhaber"
+    },
+    {
+      "goal": "sum-five-consecutive-product-closed-form",
+      "module": "Unsorry.SumFiveConsecutiveProductClosedForm"
+    },
+    {
+      "goal": "sum-four-consecutive-eq-hyper-tetrahedral",
+      "module": "Unsorry.SumFourConsecutiveEqHyperTetrahedral"
+    },
+    {
+      "goal": "sum-fourth-powers-eq",
+      "module": "Unsorry.SumFourthPowersEq"
+    },
+    {
+      "goal": "sum-icc-five-k-sub-two-mul-three-pow-pred-closed",
+      "module": "Unsorry.SumIccFiveKSubTwoMulThreePowPredClosed"
+    },
+    {
+      "goal": "sum-icc-k-mul-three-k-add-one-eq",
+      "module": "Unsorry.SumIccKMulThreeKAddOneEq"
+    },
+    {
+      "goal": "sum-k-mul-k-add-two-closed-form",
+      "module": "Unsorry.SumKMulKAddTwoClosedForm"
+    },
+    {
+      "goal": "sum-k-mul-succ-mul-two-k-succ",
+      "module": "Unsorry.SumKMulSuccMulTwoKSucc"
+    },
+    {
+      "goal": "sum-k-mul-succ-sq-closed-form",
+      "module": "Unsorry.SumKMulSuccSqClosedForm"
+    },
+    {
+      "goal": "sum-oblong-eq",
+      "module": "Unsorry.SumOblongEq"
+    },
+    {
+      "goal": "sum-octagonal-eq",
+      "module": "Unsorry.SumOctagonalEq"
+    },
+    {
+      "goal": "sum-octagonal-numbers-closed-form",
+      "module": "Unsorry.SumOctagonalNumbersClosedForm"
+    },
+    {
+      "goal": "sum-octahedral-numbers-closed-form",
+      "module": "Unsorry.SumOctahedralNumbersClosedForm"
+    },
+    {
+      "goal": "sum-odd-squares-eq",
+      "module": "Unsorry.SumOddSquaresEq"
+    },
+    {
+      "goal": "sum-pentagonal-pyramidal-closed-form",
+      "module": "Unsorry.SumPentagonalPyramidalClosedForm"
+    },
+    {
+      "goal": "sum-pentatope-triple-product",
+      "module": "Unsorry.SumPentatopeTripleProduct"
+    },
+    {
+      "goal": "sum-quadruple-product-closed-form",
+      "module": "Unsorry.SumQuadrupleProductClosedForm"
+    },
+    {
+      "goal": "sum-quintic-gnomon-eq-fifth-power",
+      "module": "Unsorry.SumQuinticGnomonEqFifthPower"
+    },
+    {
+      "goal": "sum-range-cube-diff-eq-cube",
+      "module": "Unsorry.SumRangeCubeDiffEqCube"
+    },
+    {
+      "goal": "sum-range-cube-mul-three-pow-closed",
+      "module": "Unsorry.SumRangeCubeMulThreePowClosed"
+    },
+    {
+      "goal": "sum-range-four-cube-diff-eq",
+      "module": "Unsorry.SumRangeFourCubeDiffEq"
+    },
+    {
+      "goal": "sum-range-id-mul-neg-two-pow-closed",
+      "module": "Unsorry.SumRangeIdMulNegTwoPowClosed"
+    },
+    {
+      "goal": "sum-range-id-mul-three-pow-closed",
+      "module": "Unsorry.SumRangeIdMulThreePowClosed"
+    },
+    {
+      "goal": "sum-range-k-sq-mul-five-pow-closed",
+      "module": "Unsorry.SumRangeKSqMulFivePowClosed"
+    },
+    {
+      "goal": "sum-range-k-sq-mul-four-pow-closed",
+      "module": "Unsorry.SumRangeKSqMulFourPowClosed"
+    },
+    {
+      "goal": "sum-range-odd-mul-three-pow",
+      "module": "Unsorry.SumRangeOddMulThreePow"
+    },
+    {
+      "goal": "sum-range-recip-two-pow",
+      "module": "Unsorry.SumRangeRecipTwoPow"
+    },
+    {
+      "goal": "sum-range-sq-mul-four-pow-closed",
+      "module": "Unsorry.SumRangeSqMulFourPowClosed"
+    },
+    {
+      "goal": "sum-range-sq-mul-three-pow-closed",
+      "module": "Unsorry.SumRangeSqMulThreePowClosed"
+    },
+    {
+      "goal": "sum-range-sq-mul-three-pow",
+      "module": "Unsorry.SumRangeSqMulThreePow"
+    },
+    {
+      "goal": "sum-range-succ-mul-two-pow-eq-closed",
+      "module": "Unsorry.SumRangeSuccMulTwoPowEqClosed"
+    },
+    {
+      "goal": "sum-range-two-mul-add-one",
+      "module": "Unsorry.SumRangeTwoMulAddOne"
+    },
+    {
+      "goal": "sum-squares-eq-square-pyramidal",
+      "module": "Unsorry.SumSquaresEqSquarePyramidal"
+    },
+    {
+      "goal": "sum-stella-octangula-closed-form",
+      "module": "Unsorry.SumStellaOctangulaClosedForm"
+    }
+  ]
+}

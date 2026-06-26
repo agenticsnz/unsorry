@@ -1,0 +1,20 @@
+𝔸5.1.goal.gpow-diff-ten-pow-four@2026-06-19
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gpow-diff-ten-pow-four
+  phase≜prove
+  status≜archived
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜packages/unsorry-archive-0031/backlog/gpow-diff-ten-pow-four.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜packages/unsorry-archive-0031/goals/gpow-diff-ten-pow-four.lean
+  sha≜2ac9cb2f5a8b3477ddf316d3856a7bdfae6fb43d049979522669e8d9903aed47
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

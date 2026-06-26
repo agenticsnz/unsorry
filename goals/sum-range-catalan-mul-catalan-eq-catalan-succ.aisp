@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-catalan-mul-catalan-eq-catalan-succ
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-catalan-mul-catalan-eq-catalan-succ.md
+  src≜packages/unsorry-archive-0034/backlog/sum-range-catalan-mul-catalan-eq-catalan-succ.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-catalan-mul-catalan-eq-catalan-succ.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0034/goals/sum-range-catalan-mul-catalan-eq-catalan-succ.lean
+  sha≜94896d756592f266a51e1237804093e1db8a10a39d5006e3b2edcb080c4f38f4
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

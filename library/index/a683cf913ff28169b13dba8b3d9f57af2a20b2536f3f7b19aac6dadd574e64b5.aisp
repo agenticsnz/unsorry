@@ -1,0 +1,8 @@
+𝔸5.1.lemma.a683cf913ff2@2026-06-23
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜a683cf913ff28169b13dba8b3d9f57af2a20b2536f3f7b19aac6dadd574e64b5; goal≜telescoping-quintic-sum-coeff-five; name≜telescoping_quintic_sum_coeff_five}
+⟦Σ:Source⟧{src≜goals/telescoping-quintic-sum-coeff-five.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜chat-bit-01; agent≜claude-web; provider≜lean; model≜ring; attempts≜1}
+⟦Ε⟧⟨δ≜0.75;τ≜◊⁺⟩

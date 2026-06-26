@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜two-squares-zmod-sixteen-ne-three-seven-eleven
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/two-squares-zmod-sixteen-ne-three-seven-eleven.md
+  src≜packages/unsorry-archive-0039/backlog/two-squares-zmod-sixteen-ne-three-seven-eleven.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/two-squares-zmod-sixteen-ne-three-seven-eleven.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0039/goals/two-squares-zmod-sixteen-ne-three-seven-eleven.lean
+  sha≜c7e66bc6482c6994c446af20d7f7e81612def809ca7d1e895aefc07899d5f18e
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

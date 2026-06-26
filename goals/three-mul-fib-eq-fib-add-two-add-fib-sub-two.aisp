@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜three-mul-fib-eq-fib-add-two-add-fib-sub-two
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/three-mul-fib-eq-fib-add-two-add-fib-sub-two.md
+  src≜packages/unsorry-archive-0039/backlog/three-mul-fib-eq-fib-add-two-add-fib-sub-two.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/three-mul-fib-eq-fib-add-two-add-fib-sub-two.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0039/goals/three-mul-fib-eq-fib-add-two-add-fib-sub-two.lean
+  sha≜049fee1d135e7f9ad350c2d2559f25a485e4f48309adf2c8ffb5dbab5082cd33
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

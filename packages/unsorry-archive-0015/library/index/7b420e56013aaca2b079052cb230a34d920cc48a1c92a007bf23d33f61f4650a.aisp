@@ -1,0 +1,8 @@
+𝔸5.1.lemma.7b420e56013a@2026-06-17
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜7b420e56013aaca2b079052cb230a34d920cc48a1c92a007bf23d33f61f4650a; goal≜sum-k-mul-k-add-two-closed-form; name≜sum_k_mul_k_add_two_closed_form}
+⟦Σ:Source⟧{src≜goals/sum-k-mul-k-add-two-closed-form.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜python; model≜sympy; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

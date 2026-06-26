@@ -1,0 +1,20 @@
+𝔸5.1.goal.gpow-sum-two-pow-four@2026-06-19
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gpow-sum-two-pow-four
+  phase≜prove
+  status≜archived
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜packages/unsorry-archive-0047/backlog/gpow-sum-two-pow-four.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜packages/unsorry-archive-0047/goals/gpow-sum-two-pow-four.lean
+  sha≜ddb33d104b1d809c9b76af249d760d35ea10aab0ad768cac2bc13d8cbe37f75f
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

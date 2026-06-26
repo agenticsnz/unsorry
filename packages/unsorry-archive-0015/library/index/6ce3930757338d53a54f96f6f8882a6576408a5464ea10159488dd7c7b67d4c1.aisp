@@ -1,0 +1,8 @@
+𝔸5.1.lemma.6ce393075733@2026-06-17
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜6ce3930757338d53a54f96f6f8882a6576408a5464ea10159488dd7c7b67d4c1; goal≜sum-decagonal-numbers-closed-form; name≜sum_decagonal_numbers_closed_form}
+⟦Σ:Source⟧{src≜goals/sum-decagonal-numbers-closed-form.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜python; model≜sympy; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

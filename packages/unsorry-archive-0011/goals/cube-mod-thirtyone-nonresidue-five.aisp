@@ -1,0 +1,20 @@
+𝔸5.1.goal.cube-mod-thirtyone-nonresidue-five@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜cube-mod-thirtyone-nonresidue-five
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/cube-mod-thirtyone-nonresidue-five.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/cube-mod-thirtyone-nonresidue-five.lean
+  sha≜3c5a5d2307103c55e12558ce5f1f99f7a848339db791b8b7b8c61ecb1d32e9a4
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

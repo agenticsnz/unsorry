@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜dvd-455-pow-thirteen-sub-self
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/dvd-455-pow-thirteen-sub-self.md
+  src≜packages/unsorry-archive-0011/backlog/dvd-455-pow-thirteen-sub-self.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/dvd-455-pow-thirteen-sub-self.lean
+  lean≜packages/unsorry-archive-0011/goals/dvd-455-pow-thirteen-sub-self.lean
   sha≜26d3e4f95e72b8678a9f08cefb95c4ce74d836b3d62aa8130ec413c4852b95aa
   aff≜-9
 }

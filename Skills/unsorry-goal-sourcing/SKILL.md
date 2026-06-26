@@ -55,7 +55,7 @@ tool with a meaningful exit code — interpret it, do not paper over it.
 Aim high. "The most difficult problems are the best problems."
 
 - Target **difficulty ≥ 3** and prefer goals carrying **≥ 1 decomposition edge**
-  (a goal you can see how to split has depth). Tag `difficulty` honestly (0–5).
+  (a goal you can see how to split has depth). Tag `difficulty` honestly (0–9).
 - Source the **hard families in parallel** (ADR-031/043): Freek-#50 **Phase-2
   Euler substrate** *and* **Phase-3 library growth**. The triviality battery
   deliberately omits `nlinarith/positivity/field_simp/gcongr`, so multivariate
@@ -78,14 +78,22 @@ Two tiers. Stage cheaply, promote deliberately.
   ```bash
   python3 -m tools.sourcing.gen_triples --slug <kebab-id> \
       --lean-sig '<signature after the theorem name>' \
-      --statement '<one-line English>' --difficulty <0-5> \
+      --statement '<one-line English>' --difficulty <0-9> \
       --source '...' --reference '...' --absence '...' \
       --triviality '...' --decomposition '...' --validate
   ```
 
-  A fresh goal is always `status≜open`, `sha≜∅`. Templates and the exact schema
+  A fresh **sourced** goal is always `status≜open`, `sha≜∅`. Templates and the exact schema
   are in references/triple-format.md and assets/. The assembler refuses to clobber
   an existing goal (ADR-018) — pick a new slug instead.
+
+  > **Not your path:** the seedkit *fixture* generator (`tools/seedkit/`,
+  > [ADR-086](../../docs/adrs/ADR-086-Seedkit-Fixture-Generation-Path.md)) also
+  > creates goals, but mints them **already `status≜proved`** with the proof
+  > attached, for the *library* — a different tool with a different contract. If a
+  > request is "batch-generate divisibility / Faulhaber / residue identities at
+  > scale", reach for seedkit, not this skill (which sources *hard, open*
+  > problems for the swarm).
 
 ## Don't collide (no pre-claim; dedup at mine-time and merge-time)
 

@@ -1,0 +1,20 @@
+𝔸5.1.goal.mathd-algebra-247@2026-06-24
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜mathd-algebra-247
+  phase≜prove
+  status≜open
+  difficulty≜4
+}
+⟦Σ:Source⟧{
+  src≜backlog/mathd-algebra-247.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/mathd-algebra-247.lean
+  sha≜∅
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
