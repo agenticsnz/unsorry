@@ -1,0 +1,20 @@
+𝔸5.1.goal.gzmod-360-pow-twenty-sub-pow-eight@2026-06-18
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gzmod-360-pow-twenty-sub-pow-eight
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/gzmod-360-pow-twenty-sub-pow-eight.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/gzmod-360-pow-twenty-sub-pow-eight.lean
+  sha≜25d7c98c7b20a3c674616a9896b271d881b1d6642f71c5f7ce40d22e9fc540a5
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

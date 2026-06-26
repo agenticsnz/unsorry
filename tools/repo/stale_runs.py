@@ -8,10 +8,14 @@ Either way they keep counting against the submission governor's in-flight budget
 cancellation cascades — the "70 PRs failing" that was really one zombie jam.
 
 This cancels such runs so the in-flight budget reflects *live* work. Conservative
-by design: `in_progress` is only stale well past a normal run (default 90 min;
-normal incremental Gate A is ~15 min), and `queued` only when it's clearly
-abandoned (default 180 min; legitimate queueing waits minutes, not hours) — so it
-never kills a genuinely-running or briefly-queued job.
+by design: `in_progress` is only stale well past any legitimate run (default
+180 min). The threshold measures run *age*, which under a deep backlog also counts
+a healthy run whose jobs sit queued for one of the few lanes — so the bar must sit
+above that queue wait, not just above a run's active time, or it kills slow-but-live
+runs and trips Gate A's fail-closed asserts. A true zombie wedges `in_progress`
+forever, so a high bar still reaps it (just later). `queued` cancellation stays off
+by default (re-running a queued run does not free a lane; superseded queued runs are
+auto-cancelled by the workflow's cancel-in-progress concurrency).
 """
 from __future__ import annotations
 
@@ -74,8 +78,22 @@ def main(argv: list[str] | None = None) -> int:
         description="Cancel Gate A runs stuck in_progress/queued past a limit.")
     ap.add_argument("--workflow", default="gate-a.yml")
     ap.add_argument("--repo", default=None, help="owner/name (default: gh's repo)")
-    ap.add_argument("--in-progress-minutes", type=float, default=90.0)
-    ap.add_argument("--queued-minutes", type=float, default=180.0)
+    # in_progress zombies (a dead/preempted runner orphans the run) clog the
+    # governor's in-flight budget. The threshold measures run *age*, which under a
+    # deep backlog also counts a healthy run whose jobs sit queued waiting for one
+    # of the few lanes — a run can legitimately stay `in_progress` for over an hour
+    # without a single job hanging. A true zombie wedges `in_progress` *forever*
+    # (GitHub never gets the runner's completion signal), so a high bar still
+    # catches it, just later; too low a bar kills legit slow runs and trips Gate
+    # A's fail-closed asserts (the "many PRs failed" cancellations). 180 min sits
+    # above any backlog-induced queue wait while still reaping real zombies.
+    ap.add_argument("--in-progress-minutes", type=float, default=180.0)
+    # Queued cancellation is OFF by default (huge threshold). Under a backlog,
+    # runs queue legitimately for a long time waiting for a free runner, and
+    # cancelling them just forces a re-run (churn) — it does NOT free a runner.
+    # Truly-superseded queued runs are auto-cancelled by the workflow's
+    # cancel-in-progress concurrency, so the janitor never needs to.
+    ap.add_argument("--queued-minutes", type=float, default=10_000_000.0)
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args(argv)
 

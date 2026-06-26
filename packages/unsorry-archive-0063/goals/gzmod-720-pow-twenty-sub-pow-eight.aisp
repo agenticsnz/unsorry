@@ -1,0 +1,20 @@
+𝔸5.1.goal.gzmod-720-pow-twenty-sub-pow-eight@2026-06-18
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gzmod-720-pow-twenty-sub-pow-eight
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/gzmod-720-pow-twenty-sub-pow-eight.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/gzmod-720-pow-twenty-sub-pow-eight.lean
+  sha≜0d0b5003a74ac971f1c9560bb9f10aa975782744c9d98e82bd18efd4bdd1e4f5
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -1,0 +1,20 @@
+𝔸5.1.goal.gbinom-falling-three-fact-dvd@2026-06-19
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gbinom-falling-three-fact-dvd
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/gbinom-falling-three-fact-dvd.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/gbinom-falling-three-fact-dvd.lean
+  sha≜26ca16622be6408f419d35c63ceed6e9e175f25396f0252691d072669ab50fba
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -1,0 +1,8 @@
+𝔸5.1.lemma.f0b15a1d6bb3@2026-06-23
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜f0b15a1d6bb3f3585f227db5579422a35c021c1fbb81372c388a8e08bf971bd4; goal≜odd-square-sum-coeff-fiftyeight; name≜odd_square_sum_coeff_fiftyeight}
+⟦Σ:Source⟧{src≜goals/odd-square-sum-coeff-fiftyeight.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜chat-bit-01; agent≜claude-web; provider≜lean; model≜ring; attempts≜1}
+⟦Ε⟧⟨δ≜0.70;τ≜◊⁺⟩

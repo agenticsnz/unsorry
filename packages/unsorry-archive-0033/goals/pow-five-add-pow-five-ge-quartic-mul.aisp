@@ -1,0 +1,20 @@
+𝔸5.1.goal.pow-five-add-pow-five-ge-quartic-mul@2026-06-14
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜pow-five-add-pow-five-ge-quartic-mul
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/pow-five-add-pow-five-ge-quartic-mul.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/pow-five-add-pow-five-ge-quartic-mul.lean
+  sha≜77e6905bc504d985a1982fa03b8726b260432ded64901349bd54daf17cdb4ba1
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

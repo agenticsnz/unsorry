@@ -1,0 +1,20 @@
+𝔸5.1.goal.gpow-diff-five-pow-twelve@2026-06-19
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gpow-diff-five-pow-twelve
+  phase≜prove
+  status≜archived
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜packages/unsorry-archive-0030/backlog/gpow-diff-five-pow-twelve.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜packages/unsorry-archive-0030/goals/gpow-diff-five-pow-twelve.lean
+  sha≜11eff3039d84feeafd774b3976f20e5ec49a9722b9744102c4b0cacf4cc45fe0
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

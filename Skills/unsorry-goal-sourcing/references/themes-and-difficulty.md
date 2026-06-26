@@ -1,8 +1,8 @@
 # Themes and the difficulty mandate
 
-ADR-060 / #400: **harder problems, many more of them.** Difficulty (0–5) is
-self-tagged and gate-unenforced, so the supply is only as hard as the sourcer
-makes it. Today most shipped goals sit at difficulty 1–2 — that is the gap to
+ADR-060 / #400: **harder problems, many more of them.** Difficulty (0–9, the
+band widened from 0–5 by ADR-095) is self-tagged and gate-unenforced, so the
+supply is only as hard as the sourcer makes it. Today most shipped goals sit at difficulty 1–2 — that is the gap to
 close. Source the families below **in parallel** (ADR-031/043).
 
 ## What makes a goal hard *and* admissible

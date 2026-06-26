@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-pentatope-triple-product
   phase≜prove
-  status≜proved
-  difficulty≜2
+  status≜archived
+  difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-pentatope-triple-product.md
+  src≜packages/unsorry-archive-0015/backlog/sum-pentatope-triple-product.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-pentatope-triple-product.lean
+  lean≜packages/unsorry-archive-0015/goals/sum-pentatope-triple-product.lean
   sha≜82d1ebdb05a383bfb4ee6894d9a42bf06782bb4654ef7e0cdf84fa1ab98c879a
   aff≜-9
 }

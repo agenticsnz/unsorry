@@ -1,0 +1,4 @@
+import Mathlib
+
+theorem gself_pow_28_add_pow_22 (n : ℤ) : (n) ∣ (n^28 + n^22) := by
+  sorry

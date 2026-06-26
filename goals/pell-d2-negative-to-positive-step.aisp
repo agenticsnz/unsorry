@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜pell-d2-negative-to-positive-step
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/pell-d2-negative-to-positive-step.md
+  src≜packages/unsorry-archive-0009/backlog/pell-d2-negative-to-positive-step.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/pell-d2-negative-to-positive-step.lean
+  lean≜packages/unsorry-archive-0009/goals/pell-d2-negative-to-positive-step.lean
   sha≜271ff5a83b68330aad0de2653e9862f7157b6be55a4f01e5a51eb799d88eae90
   aff≜-10
 }

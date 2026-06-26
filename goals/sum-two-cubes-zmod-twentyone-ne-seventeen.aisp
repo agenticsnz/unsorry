@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-two-cubes-zmod-twentyone-ne-seventeen@2026-06-24
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-two-cubes-zmod-twentyone-ne-seventeen
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-two-cubes-zmod-twentyone-ne-seventeen.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-two-cubes-zmod-twentyone-ne-seventeen.lean
+  sha≜cd8b4d54b77af668062fac0d6a08333edce76d75d890fb6bc384443473bcce92
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.40;τ≜◊⁺⟩

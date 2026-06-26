@@ -575,3 +575,31 @@ def test_oversized_lesson_sig_rejected(tmp_path):
     )
     violations = [v for v in run_validate(tree) if v.code == "GB020"]
     assert any("exceeds" in v.message for v in violations)
+
+
+# ---------------------------------------------------- GB003 difficulty band (ADR-095)
+
+
+def _write_goal_difficulty(tree: Path, gid: str, d: str) -> None:
+    """Write a clean open prove goal, then set its difficulty digit to ``d``."""
+    _write_goal(tree, gid)
+    p = tree / "goals" / f"{gid}.aisp"
+    p.write_text(p.read_text(encoding="utf-8").replace("difficulty≜1", f"difficulty≜{d}"),
+                 encoding="utf-8")
+
+
+@pytest.mark.parametrize("d", ["0", "1", "5", "6", "7", "8", "9"])
+def test_gb003_accepts_difficulty_0_through_9(tmp_path, d):
+    # ADR-095 widened the band from 0–5 to 0–9; the 0–5 anchors still pass.
+    tree = tmp_path / "t"
+    _write_goal_difficulty(tree, "g1", d)
+    assert "GB003" not in {v.code for v in run_validate(tree)}
+
+
+@pytest.mark.parametrize("d", ["10", "x", "99", "-1"])
+def test_gb003_rejects_out_of_band_difficulty(tmp_path, d):
+    # Two-digit (10+), non-digit, and negative remain GB003 — the band is a single
+    # digit 0–9, so 10 is still rejected (raising the ceiling needs a 2-digit scheme).
+    tree = tmp_path / "t"
+    _write_goal_difficulty(tree, "g1", d)
+    assert "GB003" in {v.code for v in run_validate(tree)}

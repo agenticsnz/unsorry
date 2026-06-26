@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-range-id-div-two-pow-eq-two-sub@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-range-id-div-two-pow-eq-two-sub
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-range-id-div-two-pow-eq-two-sub.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-range-id-div-two-pow-eq-two-sub.lean
+  sha≜30dd1fa4e3132fa9cf1f3cc30194ee26187c91f530064fb7297ab5ac6ae27994
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

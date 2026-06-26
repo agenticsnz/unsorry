@@ -1,0 +1,65 @@
+# Reconcile the "unsorry Roadmap" GitHub Project from repo state (ADR-077).
+#
+# GitHub Projects has no native file->item sync: a new ADR in docs/adrs/adrs.json, or
+# a Proposed->Accepted status flip, never reaches the board on its own. tools.project_sync
+# reads the authoritative adrs.json and reconciles the board (creates ADR draft items,
+# enforces ADR Status / Item Type / ADR #, tidies auto-added issue items) while never
+# clobbering the maintainer-curated Roadmap Stage. See SPEC-077-A.
+#
+# Triggering is the load-bearing part. The adr-index workflow (ADR-073) refreshes
+# adrs.json with a `[skip ci]` commit, so a naive `push: paths: adrs.json` trigger would
+# be skipped and never see the update. Instead we fire **after `adr-index` completes**
+# (workflow_run) — at which point adrs.json on `main` is fresh — plus a periodic cron as
+# a safety net (it also reflects issue close->Done, which never goes through adr-index)
+# and a manual dispatch.
+#
+# Auth: the sync talks to the org-level Projects v2 API, which the default GITHUB_TOKEN
+# cannot reach. It uses a PROJECTS_TOKEN secret (a PAT carrying the `project` scope) as
+# GH_TOKEN. When the secret is unset the job degrades to a report-only warning rather
+# than failing red — the same graceful-degrade model as adr-index.yml / #417.
+
+name: project-sync
+
+on:
+  workflow_run:
+    workflows: ["adr-index"]
+    types: [completed]
+  schedule:
+    - cron: "17 * * * *" # hourly: issue lifecycle + safety net for missed runs
+  workflow_dispatch:
+
+# Never overlap a reconcile with another; a queued run picks up the latest state anyway.
+concurrency:
+  group: project-sync
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.12"
+      - name: Detect PROJECTS_TOKEN
+        id: tok
+        env:
+          PROJECTS_TOKEN: ${{ secrets.PROJECTS_TOKEN }}
+        run: |
+          if [ -n "${PROJECTS_TOKEN}" ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Reconcile the roadmap project (ADR-077)
+        if: steps.tok.outputs.present == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.PROJECTS_TOKEN }}
+        run: python3 -m tools.project_sync --sync .
+      - name: No PROJECTS_TOKEN — report only (ADR-077)
+        if: steps.tok.outputs.present != 'true'
+        run: |
+          echo "::warning::project-sync skipped — set the PROJECTS_TOKEN secret (a PAT with the 'project' scope) to enable roadmap-board reconciliation (ADR-077)."

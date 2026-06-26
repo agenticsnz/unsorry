@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-recip-odd-pair-consecutive
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-recip-odd-pair-consecutive.md
+  src≜packages/unsorry-archive-0038/backlog/sum-range-recip-odd-pair-consecutive.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-recip-odd-pair-consecutive.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0038/goals/sum-range-recip-odd-pair-consecutive.lean
+  sha≜882737b0da036b773b1d2d41a01139ba979a5e06534a95fb3e76ccbab786d151
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

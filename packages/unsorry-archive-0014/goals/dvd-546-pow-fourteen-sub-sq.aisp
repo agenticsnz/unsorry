@@ -1,0 +1,20 @@
+𝔸5.1.goal.dvd-546-pow-fourteen-sub-sq@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜dvd-546-pow-fourteen-sub-sq
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/dvd-546-pow-fourteen-sub-sq.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/dvd-546-pow-fourteen-sub-sq.lean
+  sha≜ce59264db69c020262d1e6a4c53e72b3afce686de363a1855b580e860b674e43
+  aff≜-19
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

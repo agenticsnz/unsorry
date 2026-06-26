@@ -1,0 +1,20 @@
+𝔸5.1.goal.gself-pow-21-add-pow-four@2026-06-19
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gself-pow-21-add-pow-four
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/gself-pow-21-add-pow-four.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/gself-pow-21-add-pow-four.lean
+  sha≜1b069e85e6ed3f38c595203adebd688ad48da3fe763e27d44cac7ab9b8b196e1
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -1,0 +1,20 @@
+𝔸5.1.goal.prod-icc-k-mul-add-two-div-succ-sq-telescope@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜prod-icc-k-mul-add-two-div-succ-sq-telescope
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/prod-icc-k-mul-add-two-div-succ-sq-telescope.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/prod-icc-k-mul-add-two-div-succ-sq-telescope.lean
+  sha≜8533946d105a1d21c215f8dca092d58a9e411587c5772818fb87e024a95d4ad5
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

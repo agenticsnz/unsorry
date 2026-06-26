@@ -1,0 +1,20 @@
+𝔸5.1.goal.gpow-diff-three-pow-seventeen@2026-06-19
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gpow-diff-three-pow-seventeen
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/gpow-diff-three-pow-seventeen.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/gpow-diff-three-pow-seventeen.lean
+  sha≜6411fcbf891c36df4121cf92a660ef20d3855b3d59c429950198bd2bf5d07f78
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

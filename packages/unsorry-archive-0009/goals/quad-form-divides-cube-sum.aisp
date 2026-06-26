@@ -1,0 +1,20 @@
+𝔸5.1.goal.quad-form-divides-cube-sum@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜quad-form-divides-cube-sum
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/quad-form-divides-cube-sum.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/quad-form-divides-cube-sum.lean
+  sha≜9d60de0adaf88569514e429f136417ef7aeb96aab5fb2ffc169a2d8915258efe
+  aff≜-10
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
