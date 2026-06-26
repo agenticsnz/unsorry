@@ -218,6 +218,9 @@ def test_goal_module_for_path():
     assert goal_module_for_path("goals/sub/foo.lean") == "goals.sub.foo"
     assert goal_module_for_path("library/Unsorry/Foo.lean") is None
     assert goal_module_for_path("goals/index.json") is None
+    # ADR-110: benchmark obligation statements live in benchmark-goals/ and are NOT part
+    # of the repo-pin UnsorryGoals build/audit set (elaborated at the suite pin instead).
+    assert goal_module_for_path("benchmark-goals/combibench-x.lean") is None
 
 
 def test_forces_full_replay():

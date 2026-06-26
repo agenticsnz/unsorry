@@ -170,6 +170,28 @@ def _open_goal_aisp(goal_id: str, difficulty: int, date: str) -> str:
     )
 
 
+def _segregate_benchmark_goal(root: Path, slug: str) -> None:
+    """ADR-110: relocate a benchmark obligation's swarm-visible statement from
+    ``goals/<slug>.lean`` to ``benchmark-goals/<slug>.lean`` so it is NOT globbed into
+    the repo-pin ``UnsorryGoals`` build (``lakefile.toml`` globs ``goals.+``; the module
+    ``benchmark_goals.<slug>`` is outside that). The obligation is elaborated and
+    kernel-verified at its suite's pin in ``targets/<suite>/_verify`` (ADR-099), never at
+    v4.30. The content-addressed package copy under ``targets/<suite>/goals/`` is the
+    registry source of truth and is left untouched (its relative ``goals/<slug>.lean``
+    artifact path resolves inside the package)."""
+    dst = root / "benchmark-goals"
+    dst.mkdir(exist_ok=True)
+    for ext in ("lean", "aisp"):
+        src = root / "goals" / f"{slug}.{ext}"
+        text = src.read_text("utf-8")
+        if ext == "aisp":
+            text = text.replace(
+                f"lean≜goals/{slug}.lean", f"lean≜benchmark-goals/{slug}.lean"
+            )
+        (dst / f"{slug}.{ext}").write_text(text, "utf-8")
+        src.unlink()
+
+
 def _existing_credit(pkg: Path) -> dict[str, str]:
     """The credit map from an existing suite skeleton, so re-importing into a suite
     **accumulates** obligations across batches instead of replacing them. Empty for a
@@ -248,6 +270,8 @@ def assemble_package(
         # Content-addressed package copy (the registry copy; tied by statement_sha).
         for ext in ("lean", "aisp"):
             shutil.copyfile(root / "goals" / f"{slug}.{ext}", pkg_goals / f"{slug}.{ext}")
+        # ADR-110: move the swarm-visible copy out of the v4.30 UnsorryGoals glob.
+        _segregate_benchmark_goal(root, slug)
         credit_by_slug[slug] = credit_of(slug)
 
     # The skeleton lists EVERY obligation in the package (prior batches + this one), so a
@@ -470,7 +494,13 @@ def main(argv: list[str] | None = None) -> int:
     extracted = len(problems)
     problems = [
         p for p in problems
-        if not (root_path / "goals" / f"{slugify(p.name)}.lean").is_file()
+        # already imported = present in either top-level dir: benchmark-goals/ for
+        # native-pin obligations (ADR-110), or goals/ for suites first imported before
+        # the segregation (so re-importing such a suite still dedups correctly).
+        if not (
+            (root_path / "benchmark-goals" / f"{slugify(p.name)}.lean").is_file()
+            or (root_path / "goals" / f"{slugify(p.name)}.lean").is_file()
+        )
     ]
     if not problems:
         print(f"all {extracted} extracted statement(s) already imported — nothing new",

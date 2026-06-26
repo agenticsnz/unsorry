@@ -102,10 +102,27 @@ def test_assemble_produces_admissible_package(tmp_path):
     assert result.ok, result.failures
     assert set(result.leaves) == {"putnam-1988-b2", "putnam-2001-a1"}
 
-    # 2. the swarm-visible top-level goals are Gate-B clean
+    # 2. the swarm-visible statement is relocated to benchmark-goals/ (ADR-110), never
+    #    goals/, so the v4.30 UnsorryGoals build (globs goals.+) cannot compile it; the
+    #    Gate-B tree stays clean (no benchmark records leak into goals/).
     assert validate_tree(tmp_path) == []
-    assert (tmp_path / "goals" / "putnam-1988-b2.aisp").is_file()
+    assert (tmp_path / "benchmark-goals" / "putnam-1988-b2.lean").is_file()
+    assert (tmp_path / "benchmark-goals" / "putnam-1988-b2.aisp").is_file()
+    assert not (tmp_path / "goals" / "putnam-1988-b2.lean").exists()
+    assert not (tmp_path / "goals" / "putnam-1988-b2.aisp").exists()
     assert (tmp_path / "backlog" / "putnam-1988-b2.md").is_file()
+    # the relocated record's artifact path is rewritten to benchmark-goals/
+    aisp = (tmp_path / "benchmark-goals" / "putnam-1988-b2.aisp").read_text("utf-8")
+    assert "lean≜benchmark-goals/putnam-1988-b2.lean" in aisp
+    assert "lean≜goals/putnam-1988-b2.lean" not in aisp
+    # statement-hash parity with the content-addressed package copy (single source of truth)
+    from tools.lean_sig import statement_sha
+
+    bench = (tmp_path / "benchmark-goals" / "putnam-1988-b2.lean").read_text("utf-8")
+    pkgcopy = (
+        tmp_path / "targets" / "putnam-v1" / "goals" / "putnam-1988-b2.lean"
+    ).read_text("utf-8")
+    assert statement_sha(bench) == statement_sha(pkgcopy)
 
     # 3. the package carries exactly the schema the M5a generator reads
     pkg = tmp_path / "targets" / "putnam-v1"
@@ -183,10 +200,10 @@ def test_build_flow_excludes_quarantined_and_tags_credit(tmp_path):
         supplier="trishul", domain="lean-math", mathlib="m", toolchain="tc",
         license="Apache-2.0", credit_of=lambda slug: credit.get(slug, "credited"),
     )
-    # the quarantined statement was never imported; the rest are
-    assert not (tmp_path / "goals" / "putnam-bad.lean").exists()
-    assert (tmp_path / "goals" / "putnam-easy.lean").exists()
-    assert (tmp_path / "goals" / "putnam-hard.lean").exists()
+    # the quarantined statement was never imported; the rest land in benchmark-goals/ (ADR-110)
+    assert not (tmp_path / "benchmark-goals" / "putnam-bad.lean").exists()
+    assert (tmp_path / "benchmark-goals" / "putnam-easy.lean").exists()
+    assert (tmp_path / "benchmark-goals" / "putnam-hard.lean").exists()
     skeleton = parse_record(
         (tmp_path / "targets" / "putnam-v1" / "skeleton.aisp").read_text("utf-8")
     )
@@ -259,7 +276,7 @@ def test_assemble_bundles_companion_into_goal(tmp_path):
         supplier="trishul", domain="lean-math", mathlib="m", toolchain="t",
         license="Apache-2.0",
     )
-    goal = (tmp_path / "goals" / "putnam-2017-a1.lean").read_text("utf-8")
+    goal = (tmp_path / "benchmark-goals" / "putnam-2017-a1.lean").read_text("utf-8")
     # the concrete answer is bundled (so the statement is fixed + provable, not opaque)
     assert f"abbrev putnam_2017_a1_solution : Set ℤ := {ANSWER}" in goal
     assert "theorem putnam_2017_a1" in goal
@@ -305,15 +322,30 @@ def test_main_skips_already_imported_and_accumulates(tmp_path):
             "--root", str(tmp_path), "--limit", "1"]
 
     assert main(argv) == 0  # batch 1 → first obligation only (limit 1)
-    assert (tmp_path / "goals" / "putnam-a.lean").is_file()
-    assert not (tmp_path / "goals" / "putnam-b.lean").is_file()
+    assert (tmp_path / "benchmark-goals" / "putnam-a.lean").is_file()
+    assert not (tmp_path / "benchmark-goals" / "putnam-b.lean").is_file()
 
     assert main(argv) == 0  # batch 2 → skips putnam_a, picks up putnam_b
-    assert (tmp_path / "goals" / "putnam-b.lean").is_file()
+    assert (tmp_path / "benchmark-goals" / "putnam-b.lean").is_file()
     skeleton = (tmp_path / "targets" / "putnam-v1" / "skeleton.aisp").read_text("utf-8")
     assert "id≜putnam-a" in skeleton and "id≜putnam-b" in skeleton  # accumulated
 
     assert main(argv) == 0  # batch 3 → everything already imported, nothing new
+
+
+def test_main_skips_a_goal_pre_existing_in_goals_dir(tmp_path):
+    """A suite first imported before ADR-110 has its obligations in goals/, not
+    benchmark-goals/. Re-importing must still skip them (dedup checks both dirs), or the
+    batch would re-import them and overflow the 50-per-package cap."""
+    src = tmp_path / "src"
+    src.mkdir()
+    (src / "p.lean").write_text("import Mathlib\n\ntheorem putnam_a : 1 = 1 := by sorry\n", "utf-8")
+    (tmp_path / "goals").mkdir()  # simulate a pre-segregation import (obligation in goals/)
+    (tmp_path / "goals" / "putnam-a.lean").write_text("x", "utf-8")
+    argv = ["putnam-v1", str(src), "--supplier", "acme", "--license", "L", "--mathlib", "m",
+            "--root", str(tmp_path), "--limit", "50"]
+    assert main(argv) == 0  # putnam_a already in goals/ → nothing new
+    assert not (tmp_path / "benchmark-goals" / "putnam-a.lean").exists()  # not re-imported
 
 
 def test_batch_cap_enforced(tmp_path):
@@ -494,7 +526,7 @@ def test_main_build_uses_suite_context_not_repo_root(tmp_path, monkeypatch):
     manifest = _native_manifest(tmp_path, rev=REV24)
 
     assert main(_build_argv(tmp_path, src, manifest=manifest)) == 0
-    assert (tmp_path / "goals" / "minif2f-a.lean").is_file()
+    assert (tmp_path / "benchmark-goals" / "minif2f-a.lean").is_file()
     vctx = str(tmp_path / "targets" / "minif2f-v1" / "_verify")
     assert runner.calls and all(c.cwd == vctx for c in runner.calls)  # never the repo root
 

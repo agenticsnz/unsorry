@@ -114,6 +114,21 @@ def test_render_schema_shape(tmp_path):
     assert goal["run_snippet"] == "./swarm/run.sh --goal putnam-1988-b2"
 
 
+def test_difficulty_resolves_from_benchmark_goals_dir(tmp_path):
+    """ADR-110: a native-pin obligation's record lives in benchmark-goals/, not goals/.
+    _difficulty resolves either dir so the suite card shows the right difficulty."""
+    from tools.leaderboard.registered_targets import _difficulty
+
+    (tmp_path / "benchmark-goals").mkdir(parents=True)
+    (tmp_path / "benchmark-goals" / "combibench-x.aisp").write_text(
+        "⟦Ω:Goal⟧{id≜combibench-x; status≜open; difficulty≜5}\n", "utf-8"
+    )
+    assert _difficulty(tmp_path, "combibench-x") == 5
+    _goal(tmp_path, "organic-y", 3)  # organic goals (goals/) still resolve
+    assert _difficulty(tmp_path, "organic-y") == 3
+    assert _difficulty(tmp_path, "missing-z") == 0
+
+
 def test_status_from_library_index(tmp_path):
     _goal(tmp_path, "p-proved", 4)
     _goal(tmp_path, "p-open", 4)
