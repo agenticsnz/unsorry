@@ -2090,14 +2090,10 @@ dispatch_open_batch_goals() {
 # The batch PR body: human context + the machine-readable Batch-Goals: manifest
 # (the dedup source of truth while the PR is open) + each constituent prove title.
 batch_pr_body() {
-  local n="$1" manifest="$2"; shift 2
-  local b titles=""
-  for b in "$@"; do
-    titles="$titles- \`$(git log -1 --format=%s "origin/${b#origin/}" 2>/dev/null)\`"$'\n'
-  done
-  # shellcheck disable=SC2016  # literal backticks + \n: this is a markdown PR body, not shell expansion
-  printf 'Batch verification (ADR-107, D1b): %s independent proofs combined into one Gate A run so the mathlib env-load is amortised across them. Gate A re-verifies every proof from scratch (lake build + nanoda per leaf + replay per olean); no proof trusts another (ADR-049). Enrolled with a merge commit (not squash) so each `prove(<goal>)` lands in main history for leaderboard attribution.\n\n%s\n\nProofs:\n%s' \
-    "$n" "$manifest" "$titles"
+  local n="$1" manifest="$2"
+  # shellcheck disable=SC2016  # literal backticks: this is a markdown PR body, not shell expansion
+  printf 'Batch verification (ADR-107, D1b): %s independent proofs combined into one Gate A run so the mathlib env-load is amortised across them. Gate A re-verifies every proof from scratch (lake build + nanoda per leaf + replay per olean); no proof trusts another (ADR-049). Enrolled with a merge commit (not squash) so each `prove(<goal>)` constituent commit lands in main history for leaderboard attribution.\n\n%s\n' \
+    "$n" "$manifest"
 }
 
 _cleanup_batch_worktree() {
@@ -2107,62 +2103,88 @@ _cleanup_batch_worktree() {
   rm -rf "${wt%/*}" 2>/dev/null || true
 }
 
-# Assemble the given queued/prove branches into one batch/prove/<hash> PR.
-# Cherry-picks each disjoint ADD-only prove commit (never conflicts; preserves the
-# prove(<goal>) subject+author so the leaderboard's merge_times/git_add_authors
-# resolve every batched proof), Gate-B-validates the combined tree, pushes, opens
-# ONE PR enrolled with `--merge` (NOT squash — keeps each proof commit reachable in
-# main history). Constituent branches are left intact (recovery redispatches them
-# singly on a genuine failure). Returns non-zero on any assembly error, leaving the
-# branches for singleton dispatch.
-# Build the batch worktree at $wt on $branch (from origin/main) by cherry-picking
-# each constituent's single proof commit. Two shallow-clone hazards are handled
-# here (the CI dispatcher uses actions/checkout depth 1):
-#   1. A queued branch's PARENT is not fetched at depth 1, and cherry-pick needs it
-#      to compute the patch — so deepen the selected branches to depth 2 first (a
-#      queued proof is exactly one commit atop its base).
-#   2. WITHOUT the parent, cherry-pick treats the commit as a ROOT and re-adds its
-#      whole tree, RESURRECTING files main has since deleted/archived (verified) —
-#      i.e. the depth-2 deepen is load-bearing for soundness, not just for success.
-# A cherry-pick conflict aborts and returns 1 (the batch is abandoned; the branches
-# fall back to singleton dispatch). No-op deepen on a full local clone.
+# owner/repo for the GitHub API (inferred from origin; the dispatcher is non-fork).
+batch_repo_nwo() { gh repo view --json nameWithOwner -q .nameWithOwner 2>/dev/null; }
+
+# The NET files a queued branch adds vs main — its proof files — via the GitHub
+# compare API (server-side merge-base / 3-dot diff). This is the ONLY robust way to
+# get just the proof on the dispatcher's shallow checkout: a local 3-dot diff needs
+# a merge-base (absent at depth 1) and cherry-pick breaks on branches that merged
+# main in (a merge commit replays main's whole delta → conflicts). The compare API
+# handles every branch shape and never lists main's own deletions, so the proof can
+# never resurrect archived files. Prints added/modified paths, one per line.
+batch_net_files() {
+  local repo="$1" branch="$2"
+  # A pruned/raced-out branch (goal proved + branch deleted) makes compare return a
+  # 404 whose JSON body `gh --jq` can leak to stdout. Filter to valid path lines so a
+  # 404 yields EMPTY (→ the constituent is skipped) instead of a bogus pathspec.
+  gh api "repos/$repo/compare/main...$branch" --paginate \
+    --jq '.files[] | select(.status=="added" or .status=="modified") | .filename' 2>/dev/null \
+    | grep -E '^[A-Za-z0-9._/-]+$' || true
+}
+
+# Build the batch worktree at $wt on $branch (from origin/main) by laying down each
+# constituent's NET proof files (batch_net_files) checked out from its branch TREE
+# (present even on a shallow clone), then committing them under a `prove(<goal>):`
+# subject so the leaderboard's merge_times still buckets each proof by merge time.
+# No cherry-pick — so it is correct for branches that merged main in — and it only
+# ever ADDS the proof's own files, so it cannot resurrect deleted/archived content.
+# Any error aborts (the batch is abandoned; branches fall back to singleton
+# dispatch). `batch_net_files` is overridable for hermetic tests.
 build_batch_worktree() {
   local wt="$1" branch="$2"; shift 2
   local -a branches=("$@")
-  local b
-  for b in "${branches[@]}"; do
-    b="${b#origin/}"
-    git fetch -q --depth=2 origin "+refs/heads/$b:refs/remotes/origin/$b" 2>/dev/null || true
-  done
+  local b goal repo
+  repo="$(batch_repo_nwo)" || true
   git worktree add -q -B "$branch" "$wt" origin/main || { log "batch: worktree add for $branch failed"; return 1; }
   for b in "${branches[@]}"; do
     b="${b#origin/}"
-    if ! git -C "$wt" cherry-pick "origin/$b" >/dev/null 2>&1; then
-      log "batch: cherry-pick of $b conflicted — aborting batch $branch"
-      git -C "$wt" cherry-pick --abort >/dev/null 2>&1 || true
-      return 1
+    goal="${b#queued/prove/}"; goal="${goal%%/*}"
+    local -a files=()
+    mapfile -t files < <(batch_net_files "$repo" "$b")
+    # A constituent can RACE OUT mid-pass — its goal proved and branch pruned by a
+    # concurrent dispatcher (empty/404 net files), or it otherwise fails to apply.
+    # SKIP it and keep the rest rather than abandon the whole batch. The goals that
+    # DO land are printed to stdout (the only stdout here — log() goes to stderr) and
+    # become the PR's dedup manifest, so a skipped goal stays singleton-eligible.
+    if [ "${#files[@]}" -eq 0 ]; then
+      log "batch: no net proof files for $goal (proved/pruned mid-pass?) — skipping it"
+      continue
     fi
+    if ! git -C "$wt" checkout "origin/$b" -- "${files[@]}" 2>/dev/null \
+       || ! git -C "$wt" add -- "${files[@]}" 2>/dev/null \
+       || ! git -C "$wt" commit -q -m "prove($goal): batched proof (ADR-107)" 2>/dev/null; then
+      log "batch: could not lay down $goal — skipping it"
+      git -C "$wt" reset -q --hard 2>/dev/null || true
+      continue
+    fi
+    printf '%s\n' "$goal"
   done
   return 0
 }
 
 assemble_and_dispatch_batch() {
   local -a branches=("$@")
-  local meta branch manifest title body wt n rc=0
+  local meta branch manifest title body wt n rc=0 succeeded
   meta="$(printf '%s\n' "${branches[@]}" | python3 -m tools.dispatch.batch meta)" || return 1
   branch="$(printf '%s\n' "$meta" | sed -n '1p')"
-  manifest="$(printf '%s\n' "$meta" | sed -n '2p')"
-  n="${#branches[@]}"
   [ -n "$branch" ] || return 1
   if queued_branch_has_pr "$branch"; then
     log "batch: a PR for $branch already exists — skipping"
     return 0
   fi
   wt="$(mktemp -d)/wt"
-  if ! build_batch_worktree "$wt" "$branch" "${branches[@]}"; then
+  # build_batch_worktree creates the worktree (persists on disk) and prints the goals
+  # that actually assembled; the manifest is built from THOSE, not the selected set,
+  # so a raced-out constituent never strands behind the dedup.
+  succeeded="$(build_batch_worktree "$wt" "$branch" "${branches[@]}")"
+  n="$(printf '%s\n' "$succeeded" | grep -c .)"
+  if [ "$n" -lt 2 ]; then
+    log "batch: fewer than 2 proofs assembled cleanly (got $n) — abandoning; branches fall back to singleton dispatch"
     _cleanup_batch_worktree "$wt" "$branch"
     return 1
   fi
+  manifest="Batch-Goals: $(printf '%s\n' "$succeeded" | grep -v '^$' | sort -u | tr '\n' ' ')"
   if ! python3 -m tools.gate_b validate "$wt" >/dev/null; then
     log "batch: combined tree fails Gate B — aborting batch $branch"
     _cleanup_batch_worktree "$wt" "$branch"
@@ -2179,7 +2201,7 @@ assemble_and_dispatch_batch() {
     return 1
   fi
   title="prove-batch($n): amortised verification of $n proofs (ADR-107)"
-  body="$(batch_pr_body "$n" "$manifest" "${branches[@]}")"
+  body="$(batch_pr_body "$n" "$manifest")"
   (
     cd "$wt" || exit 1
     gh pr create --base main --head "$branch" --title "$title" --body "$body" \
@@ -6239,13 +6261,14 @@ test_batch_dedup_inactive_at_size_one() {
 }
 
 test_batch_build_worktree_shallow_safe() {
-  # ADR-107: assembling a batch on a SHALLOW clone (the CI dispatcher's checkout)
-  # must (a) cherry-pick the proofs successfully and (b) NOT resurrect files main
-  # has since deleted/archived. Without the depth-2 deepen, cherry-pick treats the
-  # parentless commit as a root and re-adds its whole tree — re-introducing deleted
-  # content to main (a soundness bug). Builds a hermetic file:// origin so --depth
-  # is honoured (it is ignored for local-path clones).
-  local tmp ci rc=0 resurrected=1 hasproof=0
+  # ADR-107: batch assembly must work on the dispatcher's SHALLOW checkout even when
+  # a queued branch MERGED main in (tip is a merge commit — the real shape that broke
+  # cherry-pick by replaying main's whole delta), and must NOT resurrect files main
+  # has since deleted/archived. build_batch_worktree lays down each branch's NET proof
+  # files (batch_net_files, the GitHub compare API in prod) checked out from the branch
+  # tree. Stub batch_net_files to the proof's file; use a file:// origin so --depth is
+  # honoured (it is ignored for local-path clones).
+  local tmp ci rc=0 resurrected=1 hasproof=0 hascommit=0 succ=""
   tmp="$(mktemp -d)"
   (
     set -e
@@ -6254,16 +6277,19 @@ test_batch_build_worktree_shallow_safe() {
     git clone -q origin.git w
     cd w
     git config user.email t@t; git config user.name t
-    mkdir -p library/Unsorry
+    mkdir -p library/Unsorry goals
     echo old > library/Unsorry/Archived.lean
-    echo base > library/Unsorry/Base.lean
+    echo statement > goals/gx.lean
     git add -A; git commit -qm base; git push -q origin HEAD:main
     git checkout -q -b queued/prove/gx/agent-x
-    echo px > library/Unsorry/Gx.lean
-    git add -A; git commit -qm "prove(gx): gx by agent"; git push -q origin HEAD
+    echo proof > library/Unsorry/Gx.lean
+    git add -A; git commit -qm "prove(gx): gx by agent-x"
     git checkout -q main
     git rm -q library/Unsorry/Archived.lean
-    git commit -qm "archive: remove Archived.lean"; git push -q origin main
+    echo m1 > m1; git add -A; git commit -qm "archive Archived.lean + move main"; git push -q origin main
+    git checkout -q queued/prove/gx/agent-x
+    git merge -q --no-edit main         # the solver merges updated main in (merge-commit tip)
+    git push -q origin queued/prove/gx/agent-x
   ) || { log "  fixture build failed"; rm -rf "$tmp"; return 1; }
   ci="$tmp/ci"
   if ! git clone -q --depth=1 --branch main "file://$tmp/origin.git" "$ci" 2>/dev/null; then
@@ -6272,13 +6298,18 @@ test_batch_build_worktree_shallow_safe() {
   test -f "$ci/.git/shallow" || { log "  test clone was not shallow — invalid fixture"; rm -rf "$tmp"; return 1; }
   git -C "$ci" config user.email t@t; git -C "$ci" config user.name t
   git -C "$ci" fetch -q --depth=1 origin '+refs/heads/queued/prove/*:refs/remotes/origin/queued/prove/*'
-  ( cd "$ci" && build_batch_worktree ".bwt" "batch/test" queued/prove/gx/agent-x ) || rc=$?
+  batch_net_files() { printf 'library/Unsorry/Gx.lean\n'; }   # stub the compare-API resolver
+  succ="$( cd "$ci" && build_batch_worktree ".bwt" "batch/test" queued/prove/gx/agent-x )" || rc=$?
+  unset -f batch_net_files
   [ -f "$ci/.bwt/library/Unsorry/Gx.lean" ] && hasproof=1
   [ -f "$ci/.bwt/library/Unsorry/Archived.lean" ] || resurrected=0
+  ( cd "$ci/.bwt" 2>/dev/null && git log -1 --format=%s | grep -q '^prove(gx):' ) && hascommit=1
   git -C "$ci" worktree remove --force .bwt >/dev/null 2>&1 || true
   rm -rf "$tmp"
-  [ "$rc" -eq 0 ] || { log "  build_batch_worktree failed on a shallow clone (rc=$rc)"; return 1; }
+  [ "$rc" -eq 0 ] || { log "  build_batch_worktree failed on a shallow merge-commit branch (rc=$rc)"; return 1; }
+  [ "$succ" = gx ] || { log "  expected succeeded-goals stdout 'gx', got '$succ'"; return 1; }
   [ "$hasproof" -eq 1 ] || { log "  proof Gx.lean missing from the assembled batch"; return 1; }
+  [ "$hascommit" -eq 1 ] || { log "  expected a prove(gx): constituent commit (for leaderboard merge_times)"; return 1; }
   [ "$resurrected" -eq 0 ] || { log "  UNSOUND: deleted Archived.lean was resurrected by the batch assembly"; return 1; }
 }
 
