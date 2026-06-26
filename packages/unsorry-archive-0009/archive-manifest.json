@@ -1,0 +1,179 @@
+{
+  "block_id": "unsorry-archive-0009",
+  "target_size": 40,
+  "proof_count": 40,
+  "status": "frozen",
+  "source_commit": "bd6e826771a24226e999855dd45238988eb6eda5",
+  "validation_commit": null,
+  "pins": {
+    "lean_toolchain": "leanprover/lean4:v4.30.0",
+    "mathlib": "v4.30.0"
+  },
+  "notes": [
+    "ADR-041 proof archive block 0009.",
+    "Whole decomposition trees + standalone proved goals only (invariant A).",
+    "Active goal records remain as archived metadata pointing at this package."
+  ],
+  "goals": [
+    {
+      "goal": "pell-d17-ladder-step-preserves",
+      "module": "Unsorry.PellD17LadderStepPreserves"
+    },
+    {
+      "goal": "pell-d18-ladder-step-preserves",
+      "module": "Unsorry.PellD18LadderStepPreserves"
+    },
+    {
+      "goal": "pell-d2-form-product-telescope-step",
+      "module": "Unsorry.PellD2FormProductTelescopeStep"
+    },
+    {
+      "goal": "pell-d2-ladder-step-preserves",
+      "module": "Unsorry.PellD2LadderStepPreserves"
+    },
+    {
+      "goal": "pell-d2-negative-to-positive-step",
+      "module": "Unsorry.PellD2NegativeToPositiveStep"
+    },
+    {
+      "goal": "pell-d2-no-small-nontrivial-y",
+      "module": "Unsorry.PellD2NoSmallNontrivialY"
+    },
+    {
+      "goal": "pell-d2-positive-multiple-of-form",
+      "module": "Unsorry.PellD2PositiveMultipleOfForm"
+    },
+    {
+      "goal": "pell-d2-positive-to-negative-step",
+      "module": "Unsorry.PellD2PositiveToNegativeStep"
+    },
+    {
+      "goal": "pell-d2-quad-ladder-step-preserves",
+      "module": "Unsorry.PellD2QuadLadderStepPreserves"
+    },
+    {
+      "goal": "pell-d2-solution-coords-coprime",
+      "module": "Unsorry.PellD2SolutionCoordsCoprime"
+    },
+    {
+      "goal": "pell-d2-square-doubling-identity",
+      "module": "Unsorry.PellD2SquareDoublingIdentity"
+    },
+    {
+      "goal": "pell-d2-square-ladder-step-preserves",
+      "module": "Unsorry.PellD2SquareLadderStepPreserves"
+    },
+    {
+      "goal": "pell-d2-stormer-seven-ladder-preserves",
+      "module": "Unsorry.PellD2StormerSevenLadderPreserves"
+    },
+    {
+      "goal": "pell-d2-x-odd",
+      "module": "Unsorry.PellD2XOdd"
+    },
+    {
+      "goal": "pell-d2-x-sq-congr-one-mod-eight",
+      "module": "Unsorry.PellD2XSqCongrOneModEight"
+    },
+    {
+      "goal": "pell-d21-ladder-step-preserves",
+      "module": "Unsorry.PellD21LadderStepPreserves"
+    },
+    {
+      "goal": "pell-d23-ladder-step-preserves",
+      "module": "Unsorry.PellD23LadderStepPreserves"
+    },
+    {
+      "goal": "pell-d3-form-value-ne-two-zmod3",
+      "module": "Unsorry.PellD3FormValueNeTwoZmod3"
+    },
+    {
+      "goal": "pell-d3-fundamental-square-doubling",
+      "module": "Unsorry.PellD3FundamentalSquareDoubling"
+    },
+    {
+      "goal": "pell-d3-ladder-step-preserves",
+      "module": "Unsorry.PellD3LadderStepPreserves"
+    },
+    {
+      "goal": "pell-d3-no-negative-solution-zmod3",
+      "module": "Unsorry.PellD3NoNegativeSolutionZmod3"
+    },
+    {
+      "goal": "pell-d3-no-small-nontrivial-y",
+      "module": "Unsorry.PellD3NoSmallNontrivialY"
+    },
+    {
+      "goal": "pell-d3-rational-bound-above",
+      "module": "Unsorry.PellD3RationalBoundAbove"
+    },
+    {
+      "goal": "pell-d3-x-coord-pos-gt-y",
+      "module": "Unsorry.PellD3XCoordPosGtY"
+    },
+    {
+      "goal": "pell-d5-ladder-step-preserves",
+      "module": "Unsorry.PellD5LadderStepPreserves"
+    },
+    {
+      "goal": "pell-d5-negative-ladder-step-preserves",
+      "module": "Unsorry.PellD5NegativeLadderStepPreserves"
+    },
+    {
+      "goal": "pell-d5-positive-from-negative-square",
+      "module": "Unsorry.PellD5PositiveFromNegativeSquare"
+    },
+    {
+      "goal": "pell-d6-ladder-step-preserves",
+      "module": "Unsorry.PellD6LadderStepPreserves"
+    },
+    {
+      "goal": "pell-d7-ladder-step-preserves",
+      "module": "Unsorry.PellD7LadderStepPreserves"
+    },
+    {
+      "goal": "pell-d7-no-negative-solution-zmod7",
+      "module": "Unsorry.PellD7NoNegativeSolutionZmod7"
+    },
+    {
+      "goal": "pell-doubling-identity-generic-d",
+      "module": "Unsorry.PellDoublingIdentityGenericD"
+    },
+    {
+      "goal": "pell-negative-brahmagupta-composition-generic-d",
+      "module": "Unsorry.PellNegativeBrahmaguptaCompositionGenericD"
+    },
+    {
+      "goal": "prod-icc-one-add-recip-k-sq-add-two-k-telescope",
+      "module": "Unsorry.ProdIccOneAddRecipKSqAddTwoKTelescope"
+    },
+    {
+      "goal": "prod-range-one-sub-recip-succ-sq",
+      "module": "Unsorry.ProdRangeOneSubRecipSuccSq"
+    },
+    {
+      "goal": "product-of-two-sums-of-squares-ge-square-of-cross",
+      "module": "Unsorry.ProductOfTwoSumsOfSquaresGeSquareOfCross"
+    },
+    {
+      "goal": "quad-form-divides-cube-sum",
+      "module": "Unsorry.QuadFormDividesCubeSum"
+    },
+    {
+      "goal": "quad-form-ge-three-quarter-sq",
+      "module": "Unsorry.QuadFormGeThreeQuarterSq"
+    },
+    {
+      "goal": "shifted-sophie-germain-x4-plus-4-dvd-by-x2-plus-2x-plus-2",
+      "module": "Unsorry.ShiftedSophieGermainX4Plus4DvdByX2Plus2xPlus2"
+    },
+    {
+      "goal": "shifted-sum-sq-ge-twice-sum-three-var",
+      "module": "Unsorry.ShiftedSumSqGeTwiceSumThreeVar"
+    },
+    {
+      "goal": "sixth-power-mod-nine-mem",
+      "module": "Unsorry.SixthPowerModNineMem"
+    }
+  ]
+}

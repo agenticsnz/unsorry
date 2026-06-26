@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-k-mul-choose-sq-eq-central
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜4
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-k-mul-choose-sq-eq-central.md
+  src≜packages/unsorry-archive-0036/backlog/sum-range-k-mul-choose-sq-eq-central.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-k-mul-choose-sq-eq-central.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0036/goals/sum-range-k-mul-choose-sq-eq-central.lean
+  sha≜36a7c25817c34b9d1352f02dd26858316b83e9c42c8647e1e517bdfabcdb58c4
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

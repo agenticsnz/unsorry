@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-icc-k-sq-add-one-mul-factorial-eq-pronic-factorial
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-icc-k-sq-add-one-mul-factorial-eq-pronic-factorial.md
+  src≜packages/unsorry-archive-0034/backlog/sum-icc-k-sq-add-one-mul-factorial-eq-pronic-factorial.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-icc-k-sq-add-one-mul-factorial-eq-pronic-factorial.lean
-  sha≜∅
-  aff≜-10
+  lean≜packages/unsorry-archive-0034/goals/sum-icc-k-sq-add-one-mul-factorial-eq-pronic-factorial.lean
+  sha≜17210d659d084748a523730e5f8c51e3910e10920e3b6bdf2402a1814112497c
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

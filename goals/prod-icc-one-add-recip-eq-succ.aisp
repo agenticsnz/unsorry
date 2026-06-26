@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜prod-icc-one-add-recip-eq-succ
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/prod-icc-one-add-recip-eq-succ.md
+  src≜packages/unsorry-archive-0033/backlog/prod-icc-one-add-recip-eq-succ.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/prod-icc-one-add-recip-eq-succ.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0033/goals/prod-icc-one-add-recip-eq-succ.lean
+  sha≜505491fcd2db31ff70dd825b92a338132eb973ddc0d05d0bd1b156a6d52c1ac1
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -1,0 +1,8 @@
+𝔸5.1.lemma.1e400c8e7fa3@2026-06-25
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜1e400c8e7fa3e62064a69c14cf2ad1b4d190a091aed0f5e882bc426a9298d54a; goal≜sum-two-squares-zmod-four-ne-three; name≜sum_two_squares_zmod_four_ne_three}
+⟦Σ:Source⟧{src≜goals/sum-two-squares-zmod-four-ne-three.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜chat-bit-01; agent≜claude-web; provider≜claude; model≜opus; effort≜high; attempts≜1; solve_s≜60}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

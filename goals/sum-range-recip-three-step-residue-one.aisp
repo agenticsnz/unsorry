@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-recip-three-step-residue-one
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-recip-three-step-residue-one.md
+  src≜packages/unsorry-archive-0038/backlog/sum-range-recip-three-step-residue-one.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-recip-three-step-residue-one.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0038/goals/sum-range-recip-three-step-residue-one.lean
+  sha≜5b31677bfa25c4cbdd157b8ac6e28bea6b90df8998d7dc65629cda7071e6e2c8
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

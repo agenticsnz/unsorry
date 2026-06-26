@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-recip-three-consec-shifted
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-recip-three-consec-shifted.md
+  src≜packages/unsorry-archive-0038/backlog/sum-range-recip-three-consec-shifted.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-recip-three-consec-shifted.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0038/goals/sum-range-recip-three-consec-shifted.lean
+  sha≜c8f4cc20a167d6e7122dc59eafef680bf42720384075d903469ff1efea75a363
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

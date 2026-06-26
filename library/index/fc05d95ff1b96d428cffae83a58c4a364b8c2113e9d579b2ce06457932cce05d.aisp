@@ -1,0 +1,8 @@
+𝔸5.1.lemma.fc05d95ff1b9@2026-06-23
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜fc05d95ff1b96d428cffae83a58c4a364b8c2113e9d579b2ce06457932cce05d; goal≜shift-square-sum-coeff-twentysix; name≜shift_square_sum_coeff_twentysix}
+⟦Σ:Source⟧{src≜goals/shift-square-sum-coeff-twentysix.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜chat-bit-01; agent≜claude-web; provider≜lean; model≜ring; attempts≜1}
+⟦Ε⟧⟨δ≜0.70;τ≜◊⁺⟩

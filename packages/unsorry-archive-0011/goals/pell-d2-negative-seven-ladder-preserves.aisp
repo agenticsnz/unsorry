@@ -1,0 +1,20 @@
+𝔸5.1.goal.pell-d2-negative-seven-ladder-preserves@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜pell-d2-negative-seven-ladder-preserves
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/pell-d2-negative-seven-ladder-preserves.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/pell-d2-negative-seven-ladder-preserves.lean
+  sha≜860717f578ba1eff976f842e5de1a76a68945497c3c67a38f9fb5c7695e46df0
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

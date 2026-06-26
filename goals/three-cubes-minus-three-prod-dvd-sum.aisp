@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜three-cubes-minus-three-prod-dvd-sum
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/three-cubes-minus-three-prod-dvd-sum.md
+  src≜packages/unsorry-archive-0039/backlog/three-cubes-minus-three-prod-dvd-sum.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/three-cubes-minus-three-prod-dvd-sum.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0039/goals/three-cubes-minus-three-prod-dvd-sum.lean
+  sha≜52405078afa212faacc0dff456f2d425b93a91f1f365257639b2303463fc0ec1
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

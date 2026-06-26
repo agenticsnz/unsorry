@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜three-quartic-ge-sum-times-cubes
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/three-quartic-ge-sum-times-cubes.md
+  src≜packages/unsorry-archive-0020/backlog/three-quartic-ge-sum-times-cubes.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/three-quartic-ge-sum-times-cubes.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0020/goals/three-quartic-ge-sum-times-cubes.lean
+  sha≜53e47df75f953fff54b7a78941f83325c18a944ad1652deea67301e8cd2ebfaf
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -1,0 +1,8 @@
+𝔸5.1.lemma.dc98ae3e023d@2026-06-23
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜dc98ae3e023d7d3502ace36bda1a08372be540f82187f2e12df9405b2bfc1051; goal≜telescoping-square-sum-coeff-fortyseven; name≜telescoping_square_sum_coeff_fortyseven}
+⟦Σ:Source⟧{src≜goals/telescoping-square-sum-coeff-fortyseven.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜chat-bit-01; agent≜claude-web; provider≜lean; model≜ring; attempts≜1}
+⟦Ε⟧⟨δ≜0.75;τ≜◊⁺⟩

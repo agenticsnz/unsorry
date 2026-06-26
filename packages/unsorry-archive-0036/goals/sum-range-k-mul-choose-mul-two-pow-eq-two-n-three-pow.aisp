@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-range-k-mul-choose-mul-two-pow-eq-two-n-three-pow@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-range-k-mul-choose-mul-two-pow-eq-two-n-three-pow
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-range-k-mul-choose-mul-two-pow-eq-two-n-three-pow.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-range-k-mul-choose-mul-two-pow-eq-two-n-three-pow.lean
+  sha≜29c959d7b473739052dcc4098b39b2bf0443dac06186847c0beb4d2231d3fc71
+  aff≜-10
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

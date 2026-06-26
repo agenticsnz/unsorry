@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-icc-recip-km1-k-kp1-telescope
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-icc-recip-km1-k-kp1-telescope.md
+  src≜packages/unsorry-archive-0010/backlog/sum-icc-recip-km1-k-kp1-telescope.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-icc-recip-km1-k-kp1-telescope.lean
+  lean≜packages/unsorry-archive-0010/goals/sum-icc-recip-km1-k-kp1-telescope.lean
   sha≜768e3228e9fff24d2245b709f1b4f98ae9347fb585237a7601dc23207f171080
   aff≜-10
 }

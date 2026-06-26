@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-sq-ge-third-sq-sum@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-sq-ge-third-sq-sum
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-sq-ge-third-sq-sum.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-sq-ge-third-sq-sum.lean
+  sha≜e58ec693f8bc84a5f4288e1f8c63bc0f3ef7cad108b2790df1390b66f0fca927
+  aff≜-10
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
