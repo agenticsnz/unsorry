@@ -62,12 +62,22 @@ def test_select_batch_skips_duplicate_goals():
     assert [goal_of(r) for r in picked] == ["a", "b"]
 
 
-def test_select_batch_skips_unknown_diff():
+def test_select_batch_keeps_unknown_diff_via_goal_key():
+    # Shallow CI checkout: per-branch file diffs can't be computed, so changed_files
+    # is empty for every branch. Disjointness then keys on the GOAL (distinct goals
+    # ⇒ disjoint content-addressed files), so the branch is STILL batchable — an
+    # empty diff must NOT drop it (the bug that made batching never engage).
     refs = _refs("a", "b")
-    files = _disjoint_files(refs)
-    files[refs[0]] = []  # unknown / empty diff
+    files = {r: [] for r in refs}  # all unknown / empty (the shallow-clone reality)
     picked = select_batch(refs, files, 5)
-    assert [goal_of(r) for r in picked] == ["b"]
+    assert [goal_of(r) for r in picked] == ["a", "b"]
+
+
+def test_select_batch_empty_diff_still_dedups_by_goal():
+    # even with no file info, two branches for the same goal don't both get picked
+    refs = _refs("a", "a", "b")
+    picked = select_batch(refs, {r: [] for r in refs}, 5)
+    assert [goal_of(r) for r in picked] == ["a", "b"]
 
 
 def test_select_batch_drops_file_colliding_branch():

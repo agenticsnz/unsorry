@@ -73,10 +73,19 @@ def select_batch(refs, changed_files_of, max_size, *, exclude_goals=()):
     """Pick up to ``max_size`` refs to combine into ONE batch PR, in input order.
 
     ``refs`` arrives already in dispatch order (ADR-075/106), so the batch fills
-    with the highest-priority eligible branches. ``changed_files_of`` maps a ref
-    to its changed paths. A ref is skipped (left for singleton dispatch) when its
-    goal is excluded or already picked, when its diff is unknown/empty, or when
-    its paths COLLIDE with an already-picked ref (would not apply cleanly).
+    with the highest-priority eligible branches. A ref is skipped (left for
+    singleton dispatch) when its goal is excluded or already picked.
+
+    **Disjointness is keyed on the GOAL** — distinct goals add disjoint,
+    content-addressed files by construction (the ADR-107 premise), so two distinct
+    goals never write the same path. This is the only disjointness signal that is
+    robust in the CI dispatcher's *shallow* checkout, where a per-branch file diff
+    can't be computed (no merge-base / parent). ``changed_files_of`` is an
+    OPPORTUNISTIC extra defence: when a ref's changed files ARE known (e.g. a full
+    local clone) and COLLIDE with an already-picked ref, that ref is dropped; an
+    empty/unknown file set is NOT a reason to skip (goal-distinctness already
+    guarantees disjointness, and assembly's cherry-pick is the hard backstop for
+    any true conflict).
 
     Pure and deterministic. Returns ``[]`` when ``max_size < 2`` (batching off) so
     the caller falls straight through to the singleton path.
@@ -94,10 +103,8 @@ def select_batch(refs, changed_files_of, max_size, *, exclude_goals=()):
         if g in excluded or g in seen_goals:
             continue
         files = set(changed_files_of.get(ref) or ())
-        if not files:
-            continue                      # unknown diff ⇒ don't risk it in a batch
-        if files & taken_files:
-            continue                      # path collision ⇒ singleton it instead
+        if files and files & taken_files:
+            continue                      # known path collision ⇒ singleton it instead
         picked.append(ref)
         taken_files |= files
         seen_goals.add(g)

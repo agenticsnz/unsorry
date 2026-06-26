@@ -2115,33 +2115,54 @@ _cleanup_batch_worktree() {
 # main history). Constituent branches are left intact (recovery redispatches them
 # singly on a genuine failure). Returns non-zero on any assembly error, leaving the
 # branches for singleton dispatch.
+# Build the batch worktree at $wt on $branch (from origin/main) by cherry-picking
+# each constituent's single proof commit. Two shallow-clone hazards are handled
+# here (the CI dispatcher uses actions/checkout depth 1):
+#   1. A queued branch's PARENT is not fetched at depth 1, and cherry-pick needs it
+#      to compute the patch — so deepen the selected branches to depth 2 first (a
+#      queued proof is exactly one commit atop its base).
+#   2. WITHOUT the parent, cherry-pick treats the commit as a ROOT and re-adds its
+#      whole tree, RESURRECTING files main has since deleted/archived (verified) —
+#      i.e. the depth-2 deepen is load-bearing for soundness, not just for success.
+# A cherry-pick conflict aborts and returns 1 (the batch is abandoned; the branches
+# fall back to singleton dispatch). No-op deepen on a full local clone.
+build_batch_worktree() {
+  local wt="$1" branch="$2"; shift 2
+  local -a branches=("$@")
+  local b
+  for b in "${branches[@]}"; do
+    b="${b#origin/}"
+    git fetch -q --depth=2 origin "+refs/heads/$b:refs/remotes/origin/$b" 2>/dev/null || true
+  done
+  git worktree add -q -B "$branch" "$wt" origin/main || { log "batch: worktree add for $branch failed"; return 1; }
+  for b in "${branches[@]}"; do
+    b="${b#origin/}"
+    if ! git -C "$wt" cherry-pick "origin/$b" >/dev/null 2>&1; then
+      log "batch: cherry-pick of $b conflicted — aborting batch $branch"
+      git -C "$wt" cherry-pick --abort >/dev/null 2>&1 || true
+      return 1
+    fi
+  done
+  return 0
+}
+
 assemble_and_dispatch_batch() {
   local -a branches=("$@")
-  local meta branch manifest title body wt n=0 b rc=0
+  local meta branch manifest title body wt n rc=0
   meta="$(printf '%s\n' "${branches[@]}" | python3 -m tools.dispatch.batch meta)" || return 1
   branch="$(printf '%s\n' "$meta" | sed -n '1p')"
   manifest="$(printf '%s\n' "$meta" | sed -n '2p')"
+  n="${#branches[@]}"
   [ -n "$branch" ] || return 1
   if queued_branch_has_pr "$branch"; then
     log "batch: a PR for $branch already exists — skipping"
     return 0
   fi
   wt="$(mktemp -d)/wt"
-  if ! git worktree add -q -B "$branch" "$wt" origin/main; then
-    log "batch: worktree add for $branch failed"
-    rm -rf "${wt%/*}" 2>/dev/null || true
+  if ! build_batch_worktree "$wt" "$branch" "${branches[@]}"; then
+    _cleanup_batch_worktree "$wt" "$branch"
     return 1
   fi
-  for b in "${branches[@]}"; do
-    b="${b#origin/}"
-    if ! git -C "$wt" cherry-pick "origin/$b" >/dev/null 2>&1; then
-      log "batch: cherry-pick of $b conflicted — aborting batch $branch"
-      git -C "$wt" cherry-pick --abort >/dev/null 2>&1 || true
-      _cleanup_batch_worktree "$wt" "$branch"
-      return 1
-    fi
-    n=$((n + 1))
-  done
   if ! python3 -m tools.gate_b validate "$wt" >/dev/null; then
     log "batch: combined tree fails Gate B — aborting batch $branch"
     _cleanup_batch_worktree "$wt" "$branch"
@@ -2189,7 +2210,11 @@ dispatch_batch_pass() {
   mapfile -t picked < <(queued_branch_refs | fair_dispatch_order \
     | python3 -m tools.dispatch.batch select --max "$UNSORRY_BATCH_SIZE" --exclude-file "$exclude_file" 2>/dev/null)
   rm -f "$exclude_file"
-  [ "${#picked[@]}" -ge 2 ] || return 0   # <2 batchable branches — singletons handle it
+  log "batch: pass start (size=$UNSORRY_BATCH_SIZE) — selected ${#picked[@]} candidate branch(es)"
+  if [ "${#picked[@]}" -lt 2 ]; then
+    log "batch: fewer than 2 batchable branches this pass — leaving the rest to singleton dispatch"
+    return 0
+  fi
   # ADR-071 fresh re-check: drop any pick taken (merged/PR'd) since selection.
   local -a final=()
   local b g
@@ -6213,6 +6238,50 @@ test_batch_dedup_inactive_at_size_one() {
     || { log "  gb must dispatch as a normal singleton at size 1, got '$sent'"; return 1; }
 }
 
+test_batch_build_worktree_shallow_safe() {
+  # ADR-107: assembling a batch on a SHALLOW clone (the CI dispatcher's checkout)
+  # must (a) cherry-pick the proofs successfully and (b) NOT resurrect files main
+  # has since deleted/archived. Without the depth-2 deepen, cherry-pick treats the
+  # parentless commit as a root and re-adds its whole tree — re-introducing deleted
+  # content to main (a soundness bug). Builds a hermetic file:// origin so --depth
+  # is honoured (it is ignored for local-path clones).
+  local tmp ci rc=0 resurrected=1 hasproof=0
+  tmp="$(mktemp -d)"
+  (
+    set -e
+    cd "$tmp"
+    git init -q --bare origin.git
+    git clone -q origin.git w
+    cd w
+    git config user.email t@t; git config user.name t
+    mkdir -p library/Unsorry
+    echo old > library/Unsorry/Archived.lean
+    echo base > library/Unsorry/Base.lean
+    git add -A; git commit -qm base; git push -q origin HEAD:main
+    git checkout -q -b queued/prove/gx/agent-x
+    echo px > library/Unsorry/Gx.lean
+    git add -A; git commit -qm "prove(gx): gx by agent"; git push -q origin HEAD
+    git checkout -q main
+    git rm -q library/Unsorry/Archived.lean
+    git commit -qm "archive: remove Archived.lean"; git push -q origin main
+  ) || { log "  fixture build failed"; rm -rf "$tmp"; return 1; }
+  ci="$tmp/ci"
+  if ! git clone -q --depth=1 --branch main "file://$tmp/origin.git" "$ci" 2>/dev/null; then
+    log "  shallow clone failed"; rm -rf "$tmp"; return 1
+  fi
+  test -f "$ci/.git/shallow" || { log "  test clone was not shallow — invalid fixture"; rm -rf "$tmp"; return 1; }
+  git -C "$ci" config user.email t@t; git -C "$ci" config user.name t
+  git -C "$ci" fetch -q --depth=1 origin '+refs/heads/queued/prove/*:refs/remotes/origin/queued/prove/*'
+  ( cd "$ci" && build_batch_worktree ".bwt" "batch/test" queued/prove/gx/agent-x ) || rc=$?
+  [ -f "$ci/.bwt/library/Unsorry/Gx.lean" ] && hasproof=1
+  [ -f "$ci/.bwt/library/Unsorry/Archived.lean" ] || resurrected=0
+  git -C "$ci" worktree remove --force .bwt >/dev/null 2>&1 || true
+  rm -rf "$tmp"
+  [ "$rc" -eq 0 ] || { log "  build_batch_worktree failed on a shallow clone (rc=$rc)"; return 1; }
+  [ "$hasproof" -eq 1 ] || { log "  proof Gx.lean missing from the assembled batch"; return 1; }
+  [ "$resurrected" -eq 0 ] || { log "  UNSOUND: deleted Archived.lean was resurrected by the batch assembly"; return 1; }
+}
+
 run_self_tests() {
   local tests=(
     test_agent_id_generation
@@ -6302,6 +6371,7 @@ run_self_tests() {
     test_dispatch_open_batch_goals_parses_manifests
     test_batch_dedup_skips_batched_goal
     test_batch_dedup_inactive_at_size_one
+    test_batch_build_worktree_shallow_safe
     test_demote_open_prove_records_telemetry_only
     test_floored_recompose_noop_records_telemetry_only
     test_render_decomp_gateb
