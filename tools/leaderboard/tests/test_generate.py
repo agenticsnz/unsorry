@@ -404,6 +404,26 @@ def test_base_stats_derive_failure_and_efficiency_metrics(tmp_path):
     assert "`codex / gpt-5.1-codex` | 1 | 2 | 50.0% | 4" in out
 
 
+def test_template_proof_folds_to_honest_engine_in_model_distribution(tmp_path):
+    # ADR-100: a deterministic-template proof landed before the next attribution
+    # sweep must be counted under its honest engine (lean / ring), never surfacing
+    # a phantom "claude / template-*" model in the distribution.
+    _goal(tmp_path, "tele-ring", 1, status="proved")
+    _index(
+        tmp_path,
+        "c" * 64,
+        "tele-ring",
+        provenance=(
+            "⟦Π:Provenance⟧{solver≜chat-bit-01; agent≜claude-web; "
+            "provider≜claude; model≜template-induction-ring; attempts≜1}\n"
+        ),
+    )
+    models = base_stats(tmp_path)["models"]
+    by_label = {m["provider_model"]: m for m in models}
+    assert "claude / template-induction-ring" not in by_label
+    assert by_label["lean / ring"]["verified_proofs"] == 1
+
+
 def test_lesson_telemetry_is_ignored_by_leaderboard(tmp_path):
     # ADR-024: the optional lessons count and ⟦Δ:Lesson⟧ sig are advisory; the
     # leaderboard must derive identical statistics with or without them.

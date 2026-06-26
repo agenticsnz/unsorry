@@ -108,11 +108,14 @@ def _proved_goal_ids(root: Path) -> set[str]:
 
 
 def _difficulty(root: Path, goal_id: str) -> int:
-    path = Path(root) / "goals" / f"{goal_id}.aisp"
-    if not path.is_file():
-        return 0
-    match = _DIFFICULTY_RE.search(path.read_text(encoding="utf-8"))
-    return int(match.group(1)) if match else 0
+    # Benchmark obligations live at benchmark-goals/<id>.aisp (ADR-110); organic goals at
+    # goals/<id>.aisp. Read whichever exists.
+    for sub in ("goals", "benchmark-goals"):
+        path = Path(root) / sub / f"{goal_id}.aisp"
+        if path.is_file():
+            match = _DIFFICULTY_RE.search(path.read_text(encoding="utf-8"))
+            return int(match.group(1)) if match else 0
+    return 0
 
 
 def pass_at_k(n: int, c: int, k: int) -> float:

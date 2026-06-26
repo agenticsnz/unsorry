@@ -159,6 +159,64 @@ def split_evenly(items: Sequence[str], chunks: int) -> list[list[str]]:
     return result
 
 
+# A top-level declaration that adds a name to the module's root namespace. Two
+# modules that both declare the same such name cannot be `importModules`-ed into
+# one environment (`AxiomAudit/Main.lean`) — the second import fails with
+# "environment already contains '<name>'". Goals are flat/un-namespaced (regular
+# goals are bare theorems with unique names; the clash is an auxiliary helper like
+# `IsMagicSquare`, declared identically by two benchmark goals — ADR-018 freezes
+# the goal `.lean`, so the audit, not the goal, must tolerate it).
+_TOPLEVEL_DECL_RE = re.compile(
+    r"^(?:@\[[^\]]*\]\s*)?"
+    r"(?:(?:noncomputable|unsafe|partial|private|protected|scoped|local)\s+)*"
+    r"(?:structure|inductive|class|def|abbrev|theorem|lemma|opaque|axiom)\s+"
+    r"([^\s({:\[]+)",
+    re.MULTILINE,
+)
+
+
+def module_top_level_names(root: Path, module: str) -> set[str]:
+    """The root-namespace declaration names a goal/library module introduces.
+    Best-effort (regex over source); an unreadable file yields the empty set, so
+    the module never forces a split — safe degradation to the prior behaviour."""
+    path = root / (module.replace(".", "/") + ".lean")
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return set()
+    return set(_TOPLEVEL_DECL_RE.findall(text))
+
+
+def collision_free_chunks(
+    modules: Sequence[str], names_of, chunks: int
+) -> list[list[str]]:
+    """Pack `modules` into ~`chunks` size-balanced groups such that no group holds
+    two modules sharing a top-level declaration name — so each group can be a
+    single `axiom_audit` import without an "already contains" collision. Modules
+    with disjoint names pack freely (≈`split_evenly`); a module that conflicts with
+    every group opens a fresh one. `names_of(module)` returns its top-level names.
+    Auditing a module alone yields the same per-decl axioms as auditing it in a
+    group (axioms depend only on the decl's own import closure), so this is
+    soundness-neutral — it only changes how targets are batched."""
+    if not modules:
+        return []
+    target = min(max(chunks, 1), len(modules))
+    groups: list[list[str]] = [[] for _ in range(target)]
+    group_names: list[set] = [set() for _ in range(target)]
+    for module in modules:
+        names = names_of(module)
+        # smallest non-conflicting group first, to keep sizes balanced
+        for index in sorted(range(len(groups)), key=lambda i: len(groups[i])):
+            if names.isdisjoint(group_names[index]):
+                groups[index].append(module)
+                group_names[index] |= names
+                break
+        else:  # conflicts with every existing group → isolate it
+            groups.append([module])
+            group_names.append(set(names))
+    return [group for group in groups if group]
+
+
 def run_commands(
     commands: Sequence[Command],
     jobs: int,
@@ -254,12 +312,19 @@ def audit(
         )
         for index, chunk in enumerate(split_evenly(scope.library, library_jobs), 1)
     ]
+    # Goals are batched collision-free, not just evenly: two goals declaring the
+    # same top-level helper (e.g. `IsMagicSquare` in brualdi-ch1-10/16) cannot share
+    # one axiom_audit import. split_evenly could co-locate them and fail the import;
+    # collision_free_chunks keeps clashing goals in separate audit calls.
+    goal_chunks = collision_free_chunks(
+        scope.goals, lambda module: module_top_level_names(root, module), goal_jobs
+    )
     commands.extend(
         Command(
             ("lake", "exe", "axiom_audit", "--allow-sorry", *chunk),
             f"goal audit chunk {index}",
         )
-        for index, chunk in enumerate(split_evenly(scope.goals, goal_jobs), 1)
+        for index, chunk in enumerate(goal_chunks, 1)
     )
 
     results = run_commands(commands, audit_jobs, runner)

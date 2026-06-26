@@ -32,6 +32,7 @@ from tools.leaderboard.benchmark_runs import (
     benchmark_runs_path,
     render_benchmark_runs_json,
 )
+from tools.repo.relabel_attribution import honest_engine
 
 
 SCORE_POLICY = (
@@ -809,7 +810,11 @@ def base_stats(root: Path) -> dict:
     goal_runs: dict[str, list[Run]] = defaultdict(list)
     for run in data.runs:
         contributor_runs[run.solver].append(run)
-        model_runs[f"{run.provider} / {run.model or 'unknown'}"].append(run)
+        # Fold deterministic-template provenance to its honest engine so a proof
+        # landed before the next attribution sweep never surfaces a phantom
+        # `template-*` model in the distribution (ADR-100).
+        rp, rm = honest_engine(run.agent, run.provider, run.model)
+        model_runs[f"{rp} / {rm or 'unknown'}"].append(run)
         difficulty_runs[run.difficulty].append(run)
         effort_runs[run.effort or "unknown"].append(run)
         daily_runs[run.ended[:10] or "unknown"].append(run)
@@ -817,7 +822,8 @@ def base_stats(root: Path) -> dict:
     for proof in attributed:
         assert proof.solver and proof.provider
         contributor_proofs[proof.solver].append(proof)
-        model_proofs[f"{proof.provider} / {proof.model or 'unknown'}"].append(proof)
+        pp, pm = honest_engine(proof.agent, proof.provider, proof.model)
+        model_proofs[f"{pp} / {pm or 'unknown'}"].append(proof)
 
     contributors = []
     for solver in sorted(set(contributor_runs) | set(contributor_proofs)):
