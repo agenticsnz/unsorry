@@ -83,7 +83,7 @@ def candidates(shape, coeffs, limit, existing):
 
 def run(shape, coeffs=None, limit=5, goals_dir="goals"):
     if coeffs is None:
-        coeffs = range(1, 31)
+        coeffs = range(1, max(WORDS) + 1)
     existing = {
         os.path.splitext(f)[0]
         for f in os.listdir(goals_dir)

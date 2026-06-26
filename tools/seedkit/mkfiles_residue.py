@@ -80,9 +80,9 @@ def write_goal(family, m, r, solver=None, agent=None, date=None):
             f"{r} is not a sum of {_DESC[family]} modulo {m}; "
             f"provable by a finite `ZMod {m}` case check."
         ),
-        difficulty=2,
+        difficulty=1,
         delta="0.40",
-        model="template-zmod-decide",
+        model="decide",
         solver=solver,
         agent=agent,
         date=date,

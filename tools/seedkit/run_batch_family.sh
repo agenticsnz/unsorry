@@ -13,6 +13,11 @@
 #   SEEDKIT_LABEL     RESULT-line token identifying the batch (e.g. "mods=156")
 #   SEEDKIT_BRANCH    working branch (default current branch)
 #   SEEDKIT_BUILD_TIMEOUT  seconds for the lake build (default 540)
+#   SEEDKIT_CLEAN_BUILD    1 (default) ⇒ `rm -rf .lake/build` after each batch
+#                          so the per-module `.c`/`.olean` output cannot pile up
+#                          and exhaust the disk over a long pool run (the mathlib
+#                          binary cache lives in .lake/packages and is untouched);
+#                          set 0 to keep build artifacts between batches.
 #
 # Pipeline per batch:
 #   gen -> writer (per goal) -> Gate A statement-binding generate
@@ -40,13 +45,17 @@ ARGC="${SEEDKIT_ARGC:-3}"
 LABEL="${SEEDKIT_LABEL:-batch}"
 WORK_BRANCH="${SEEDKIT_BRANCH:-$(git rev-parse --abbrev-ref HEAD)}"
 BUILD_TIMEOUT="${SEEDKIT_BUILD_TIMEOUT:-540}"
+CLEAN_BUILD="${SEEDKIT_CLEAN_BUILD:-1}"
 
 git checkout -q "$WORK_BRANCH"
 git reset --hard origin/main --quiet
 git clean -fdq backlog goals library 2>/dev/null || true
 
 batch="$(mktemp)"; made="$(mktemp)"
-trap 'rm -f "$batch" "$made"' EXIT
+# Bound disk use: drop the per-module build output after the batch (the mathlib
+# cache in .lake/packages is untouched, so the next batch just recompiles its own
+# few modules). Runs on every exit path — success, gate fail, or no candidates.
+trap 'rm -f "$batch" "$made"; [ "$CLEAN_BUILD" = 1 ] && rm -rf "$REPO_ROOT/.lake/build" 2>/dev/null' EXIT
 
 # shellcheck disable=SC2086  # GEN_ARGS is an intentional word-split arg string
 python3 "$GEN" $GEN_ARGS > "$batch"

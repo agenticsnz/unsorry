@@ -4,6 +4,9 @@ from pathlib import Path
 
 from tools.gate_a.parallel_modules import (
     audit,
+    audit_shard,
+    combine_audit_reports,
+    compute_audit_targets,
     compute_replay_targets,
     forces_full_audit,
     forces_full_replay,
@@ -11,6 +14,7 @@ from tools.gate_a.parallel_modules import (
     import_graph,
     library_module_for_path,
     module_names,
+    plan_audit_shards,
     plan_shards,
     replay,
     replay_scope,
@@ -544,3 +548,225 @@ def test_replay_shard_fail_closed_full_on_git_failure(tmp_path):
         assert replay_shard(tmp_path, index, 3, runner, base="deadbeef") == 0
         union |= set(recorded)
     assert union == all_modules  # FULL set covered despite the git failure
+
+
+# --- sharded axiom audit (ADR-091) ------------------------------------------
+
+def _make_goals(tmp_path: Path, names) -> set[str]:
+    (tmp_path / "goals").mkdir(exist_ok=True)
+    for name in names:
+        (tmp_path / "goals" / f"{name}.lean").write_text("")
+    return {f"goals.{name}" for name in names}
+
+
+def _audit_shard_modules(tmp_path, shard_total, *, base=None, changed=""):
+    """Run every audit shard 0..shard_total-1; return the module-sets each audited."""
+    per_shard = []
+    for index in range(shard_total):
+        recorded: list[str] = []
+
+        def runner(argv, _rec=recorded, **_kw):
+            argv = tuple(argv)
+            if argv[0] == "git" and "diff" in argv:
+                return completed(argv, stdout=changed)
+            if argv[:3] == ("lake", "exe", "axiom_audit"):
+                mods = [a for a in argv[3:] if a != "--allow-sorry"]
+                _rec.extend(mods)
+                return completed(argv, stdout=json.dumps([{"decl": m, "axioms": []} for m in mods]))
+            return completed(argv)  # lake build axiom_audit etc.
+
+        out = tmp_path / f"shard-{index}.json"
+        assert audit_shard(tmp_path, index, shard_total, out, runner, base=base) == 0
+        per_shard.append(set(recorded))
+    return per_shard
+
+
+def test_audit_shards_partition_covers_every_module_exactly_once(tmp_path):
+    # THE soundness invariant (ADR-091): across all shards, every in-scope module
+    # (library AND goals) is axiom-audited exactly once — disjoint AND covering.
+    lib = _many_lib(tmp_path, 20)
+    goals = _make_goals(tmp_path, [f"g{i}" for i in range(5)])
+    per_shard = _audit_shard_modules(tmp_path, 4)
+    union: set[str] = set()
+    for modules in per_shard:
+        assert union.isdisjoint(modules)  # disjoint: no module in two shards
+        union |= modules
+    assert union == lib | goals  # covering: every library and goal module audited
+
+
+def test_audit_shards_partition_covers_incremental_scope_exactly_once(tmp_path):
+    # Same exactly-once guarantee on the incremental path: the shards partition the
+    # changed library closure + changed goals, nothing outside, nothing twice.
+    _write_lib(tmp_path, {"A": [], "B": ["A"], "C": [], "ABinding": ["A"]})
+    _make_goals(tmp_path, ["one", "two"])
+    per_shard = _audit_shard_modules(
+        tmp_path, 3, base="origin/main", changed="library/Unsorry/A.lean\ngoals/one.lean\n"
+    )
+    union: set[str] = set()
+    for modules in per_shard:
+        assert union.isdisjoint(modules)
+        union |= modules
+    # A -> A + ABinding + B; goal one; C and goal two excluded
+    assert union == {"Unsorry.A", "Unsorry.ABinding", "Unsorry.B", "goals.one"}
+
+
+def test_plan_audit_shards_full(tmp_path):
+    _many_lib(tmp_path, 8)
+    _make_goals(tmp_path, ["g0", "g1"])
+    plan = plan_audit_shards(tmp_path, 4, None)
+    assert plan["mode"] == "full"
+    assert plan["count"] == 10  # 8 library + 2 goals
+    assert plan["shards"] == [0, 1, 2, 3]
+
+
+def test_plan_audit_shards_caps_at_module_count(tmp_path):
+    _many_lib(tmp_path, 3)
+    plan = plan_audit_shards(tmp_path, 8, None)  # 8 requested, only 3 modules
+    assert plan["count"] == 3
+    assert plan["shards"] == [0, 1, 2]  # capped — no empty shards
+
+
+def test_plan_audit_shards_empty_on_no_change(tmp_path):
+    _write_lib(tmp_path, {"A": []})
+    runner, _ = _runner_for(tmp_path, "docs/readme.md\n")
+    plan = plan_audit_shards(tmp_path, 8, "origin/main", runner)
+    assert plan["count"] == 0
+    assert plan["shards"] == []  # empty matrix -> matrix job skipped
+    assert plan["mode"] == "none"
+
+
+def test_plan_audit_shards_fail_closed_to_full_on_git_failure(tmp_path):
+    # An untrusted diff must plan the FULL set, never an empty one (fail-closed).
+    _write_lib(tmp_path, {"A": [], "B": []})
+    runner, _ = _runner_for(tmp_path, "", git_rc=128)
+    plan = plan_audit_shards(tmp_path, 8, "deadbeef", runner)
+    assert plan["mode"] == "full"
+    assert plan["count"] == 2
+
+
+def test_plan_audit_shards_fail_closed_to_full_on_global_impact(tmp_path):
+    # The audit's conservative trigger (AxiomAudit/ change) forces a full audit.
+    _write_lib(tmp_path, {"A": [], "B": ["A"]})
+    runner, _ = _runner_for(tmp_path, "AxiomAudit/Main.lean\n")
+    plan = plan_audit_shards(tmp_path, 8, "origin/main", runner)
+    assert plan["mode"] == "full"
+    assert plan["count"] == 2
+
+
+def test_audit_shard_runs_only_its_slice(tmp_path):
+    _many_lib(tmp_path, 8)
+    scope = compute_audit_targets(tmp_path, None)
+    targets = list(scope.library) + list(scope.goals)
+    expected = set(split_evenly(targets, 4)[1])  # slice 1 of 4
+    recorded: list[str] = []
+
+    def runner(argv, **_kw):
+        argv = tuple(argv)
+        if argv[:3] == ("lake", "exe", "axiom_audit"):
+            recorded.extend(a for a in argv[3:] if a != "--allow-sorry")
+        return completed(argv, stdout="[]")
+
+    assert audit_shard(tmp_path, 1, 4, tmp_path / "shard.json", runner) == 0
+    assert set(recorded) == expected
+
+
+def test_audit_shard_splits_library_and_goal_invocations(tmp_path):
+    # Library members audit plainly; goal members audit with --allow-sorry.
+    _write_lib(tmp_path, {"A": [], "B": []})
+    _make_goals(tmp_path, ["g"])
+    calls: list[tuple[str, ...]] = []
+
+    def runner(argv, **_kw):
+        argv = tuple(argv)
+        if argv[:3] == ("lake", "exe", "axiom_audit"):
+            calls.append(argv)
+        return completed(argv, stdout="[]")
+
+    assert audit_shard(tmp_path, 0, 1, tmp_path / "shard.json", runner) == 0  # one shard = everything
+    lib_calls = [c for c in calls if "--allow-sorry" not in c]
+    goal_calls = [c for c in calls if "--allow-sorry" in c]
+    assert any("Unsorry.A" in c and "Unsorry.B" in c for c in lib_calls)
+    assert any("goals.g" in c for c in goal_calls)
+    assert all("goals.g" not in c for c in lib_calls)  # goals never plain-audited
+
+
+def test_audit_shard_out_of_range_writes_empty_fragment(tmp_path):
+    _many_lib(tmp_path, 3)
+    out = tmp_path / "shard.json"
+    calls: list[tuple] = []
+
+    def runner(argv, **_kw):
+        argv = tuple(argv)
+        if argv[:3] == ("lake", "exe", "axiom_audit"):
+            calls.append(argv)
+        return completed(argv, stdout="[]")
+
+    # 3 modules split into 5 -> only 3 shards exist; index 4 is a no-op empty.
+    assert audit_shard(tmp_path, 4, 5, out, runner) == 0
+    assert calls == []
+    assert json.loads(out.read_text()) == []
+
+
+def test_audit_shard_propagates_failure(tmp_path):
+    _many_lib(tmp_path, 8)
+
+    def runner(argv, **_kw):
+        argv = tuple(argv)
+        if argv[:3] == ("lake", "exe", "axiom_audit"):
+            return completed(argv, returncode=1, stdout="")
+        return completed(argv)
+
+    # a failing audit in shard 0 turns that shard red
+    assert audit_shard(tmp_path, 0, 4, tmp_path / "shard.json", runner) == 1
+
+
+def test_audit_shard_fail_closed_full_on_git_failure(tmp_path):
+    # If git can't diff, a shard must audit from the FULL set (fail-closed).
+    all_modules = _many_lib(tmp_path, 6)
+    union: set[str] = set()
+    for index in range(3):
+        recorded: list[str] = []
+
+        def runner(argv, _rec=recorded, **_kw):
+            argv = tuple(argv)
+            if argv[0] == "git" and "diff" in argv:
+                return completed(argv, returncode=128)  # git can't answer
+            if argv[:3] == ("lake", "exe", "axiom_audit"):
+                _rec.extend(a for a in argv[3:] if a != "--allow-sorry")
+            return completed(argv, stdout="[]")
+
+        assert audit_shard(tmp_path, index, 3, tmp_path / f"s{index}.json", runner, base="deadbeef") == 0
+        union |= set(recorded)
+    assert union == all_modules  # FULL set covered despite the git failure
+
+
+def test_audit_shard_fragments_combine_to_full_sorted_report(tmp_path):
+    # The composability property: concatenating every shard's fragment reproduces
+    # the serial audit's combined, decl-sorted report (the footprint comment).
+    _many_lib(tmp_path, 10)
+    fragments = []
+    for index in range(4):
+        out = tmp_path / f"shard-{index}.json"
+
+        def runner(argv, **_kw):
+            argv = tuple(argv)
+            if argv[:3] == ("lake", "exe", "axiom_audit"):
+                mods = [a for a in argv[3:] if a != "--allow-sorry"]
+                return completed(argv, stdout=json.dumps([{"decl": m, "axioms": []} for m in mods]))
+            return completed(argv)
+
+        assert audit_shard(tmp_path, index, 4, out, runner) == 0
+        fragments.append(out)
+
+    combined = tmp_path / "axiom-report.json"
+    assert combine_audit_reports(fragments, combined) == 0
+    decls = [item["decl"] for item in json.loads(combined.read_text())]
+    assert decls == sorted(f"Unsorry.M{i}" for i in range(10))  # full + sorted
+
+
+def test_combine_audit_reports_fails_closed_on_bad_fragment(tmp_path):
+    good = tmp_path / "good.json"
+    good.write_text(json.dumps([{"decl": "Unsorry.A", "axioms": []}]))
+    bad = tmp_path / "bad.json"
+    bad.write_text("{ not an array }")
+    assert combine_audit_reports([good, bad], tmp_path / "out.json") == 1
