@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-range-two-k-add-one-mul-two-pow-closed@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-range-two-k-add-one-mul-two-pow-closed
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-range-two-k-add-one-mul-two-pow-closed.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-range-two-k-add-one-mul-two-pow-closed.lean
+  sha≜156637594f78d33e9f165287aa83c9e3b32ff00cdad6fb11650beba3a8709ce7
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

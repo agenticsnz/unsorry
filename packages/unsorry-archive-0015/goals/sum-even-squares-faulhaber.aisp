@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-even-squares-faulhaber@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-even-squares-faulhaber
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-even-squares-faulhaber.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-even-squares-faulhaber.lean
+  sha≜836f9de8fc20c02c2c41eeea3af7aa69859f4dc7295cb19e97354216fdebe6cb
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

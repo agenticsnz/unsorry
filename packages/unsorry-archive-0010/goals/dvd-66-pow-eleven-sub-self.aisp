@@ -1,0 +1,20 @@
+𝔸5.1.goal.dvd-66-pow-eleven-sub-self@2026-06-14
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜dvd-66-pow-eleven-sub-self
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/dvd-66-pow-eleven-sub-self.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/dvd-66-pow-eleven-sub-self.lean
+  sha≜cd4c35589c8f601063bf8ef10342ae5f724b142ed739d00aeef381add239842e
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

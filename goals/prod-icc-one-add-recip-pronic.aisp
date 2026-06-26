@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜prod-icc-one-add-recip-pronic
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/prod-icc-one-add-recip-pronic.md
+  src≜packages/unsorry-archive-0033/backlog/prod-icc-one-add-recip-pronic.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/prod-icc-one-add-recip-pronic.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0033/goals/prod-icc-one-add-recip-pronic.lean
+  sha≜9e18f981cd9c764b766940b8bd66f6390e7b94db7cdfde09ccfefd92c9f382d5
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -73,37 +73,61 @@ jobs:
           else
             echo "stale=true" >> "$GITHUB_OUTPUT"
           fi
-      - name: Regenerate, commit, and push on drift
+      - name: Regenerate once, then push with cheap retries on drift
         if: steps.check.outputs.stale == 'true' && steps.tok.outputs.present == 'true'
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          # Retry-rebase (#426): all three artifact workflows can fire on the same
-          # merge and push to main, so a plain push races (non-fast-forward). Each
-          # attempt resets to the latest main and regenerates — the visualisation
-          # is a pure function of the AISP records + prove(…) commits, and the
-          # three artifacts write disjoint files — then pushes; a lost race just
-          # retries onto the updated main. `[skip ci]` + the docs-only paths keep
-          # it from re-firing.
+          # Regenerate ONCE, then retry only the *push* (follow-up to #426 / #3546).
+          #
+          # The original #426 loop reset to latest main and *regenerated* on every
+          # push attempt. This visualisation's regen is sub-second, so it has not
+          # livelocked — but the leaderboard's ~2-min regen did exactly that under
+          # the swarm's merge firehose (every attempt slower than the inter-merge
+          # gap, so every push lost the race and the board froze for hours; see
+          # #3546). Adopt the same regen-once shape here defensively so the three
+          # artifact refreshers stay consistent and a future slowdown can't
+          # reintroduce the livelock.
+          #
+          # Pay the regen once, then on a lost race rebase the single docs commit
+          # onto the updated main and push again — no second regen. The artifacts
+          # are disjoint from the goals/ + library/index + proof-runs/ paths a
+          # proof merge touches, so the rebase is always conflict-free and each
+          # retry is sub-second. A rebase conflict (the disjoint-path invariant
+          # being violated) aborts and falls back to a fresh regen so a half-merged
+          # tree is never pushed. `[skip ci]` + the docs-only paths keep it from
+          # re-firing.
           paths="docs/proofs-contributors-visualisation.md docs/proofs-contributors-visualisation.html docs/proof-graph.svg"
-          for attempt in 1 2 3 4 5; do
-            git fetch --quiet origin main
-            git reset --hard --quiet origin/main
-            python3 -m tools.visualiser --write .
-            if git diff --quiet -- $paths; then
-              echo "visualisation already in sync with latest main — nothing to push"
-              exit 0
-            fi
-            git add $paths
-            git commit -q -m "docs: refresh proofs-contributors-visualisation [skip ci]"
+          git fetch --quiet origin main
+          git reset --hard --quiet origin/main
+          python3 -m tools.visualiser --write .
+          if git diff --quiet -- $paths; then
+            echo "visualisation already in sync with latest main — nothing to push"
+            exit 0
+          fi
+          git add $paths
+          git commit -q -m "docs: refresh proofs-contributors-visualisation [skip ci]"
+          for attempt in 1 2 3 4 5 6 7 8 9 10; do
             if git push --quiet origin HEAD:main; then
               echo "pushed visualisation refresh (attempt ${attempt})"
               exit 0
             fi
-            echo "push raced on attempt ${attempt} — retrying onto updated main"
+            echo "push raced on attempt ${attempt} — rebasing onto updated main"
+            git fetch --quiet origin main
+            if ! git rebase --quiet origin/main; then
+              git rebase --abort || true
+              git reset --hard --quiet origin/main
+              python3 -m tools.visualiser --write .
+              if git diff --quiet -- $paths; then
+                echo "visualisation already in sync with latest main — nothing to push"
+                exit 0
+              fi
+              git add $paths
+              git commit -q -m "docs: refresh proofs-contributors-visualisation [skip ci]"
+            fi
           done
-          echo "::warning::could not push the visualisation refresh after 5 attempts (persistent concurrent pushes, #426); the next push to main will refresh it"
+          echo "::warning::could not push the visualisation refresh after 10 attempts (persistent concurrent pushes, #426); the next push to main will refresh it"
       - name: Drift but no REFRESH_TOKEN — report only (#417)
         if: steps.check.outputs.stale == 'true' && steps.tok.outputs.present != 'true'
         run: |

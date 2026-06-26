@@ -1,0 +1,8 @@
+𝔸5.1.lemma.e9e1e8b602d2@2026-06-17
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜e9e1e8b602d29a427ba40f52060020fd0169165e11809b2ed1702ebbbf3d0eda; goal≜sum-range-odd-mul-three-pow; name≜sum_range_odd_mul_three_pow}
+⟦Σ:Source⟧{src≜goals/sum-range-odd-mul-three-pow.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜python; model≜sympy; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

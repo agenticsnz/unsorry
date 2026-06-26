@@ -1,0 +1,6 @@
+𝔸5.1.skeleton.demo-v1@2026-06-24
+γ≔unsorry.skeleton
+⟦Μ:Manifest⟧{top≜demo-v1-suite;supplier≜agenticsnz;domain≜math;toolchain≜leanprover/lean4:v4.30.0;mathlib≜c5ea00351c28e24afc9f0f84379aa41082b1188f}
+⟦Σ:Subs⟧{sub₁≜⟨id≜demo-add-comm,sha≜15c6c4e03a58be028d3e6dad36640cae2e3fcd43cd4934076f3f30fd0b4d57e4⟩;sub₂≜⟨id≜demo-two-add-two,sha≜63c0493265cda616baf086dcf2b22bd33e6266d6f7f22275ffc5c32e1f9bee05⟩;sub₃≜⟨id≜demo-mul-comm,sha≜54bbe975708daa8364c188dba660e58d63774c8fa31238a8662b3be15b86c8dc⟩;sub₄≜⟨id≜demo-le-refl,sha≜89c9286a4b76150989b29f997e4d75b9dfee5a9d7289d269ccd4322228a114b5⟩}
+⟦Κ:Credit⟧{demo-add-comm≜credited;demo-two-add-two≜credited;demo-mul-comm≜credited;demo-le-refl≜credited}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

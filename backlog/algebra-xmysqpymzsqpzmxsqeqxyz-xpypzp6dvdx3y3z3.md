@@ -1,0 +1,10 @@
+# algebra-xmysqpymzsqpzmxsqeqxyz-xpypzp6dvdx3y3z3
+
+minif2f-v1 benchmark obligation algebra_xmysqpymzsqpzmxsqeqxyz_xpypzp6dvdx3y3z3
+
+- **Source:** minif2f-v1 benchmark suite
+- **Reference:** github.com/yangky11/miniF2F-lean4
+- **Absence:** imported benchmark statement (absent from the library)
+- **Triviality:** classified credited/glue at registration (ADR-078 full battery)
+- **Difficulty:** 4
+- **Decomposition sketch:** flat benchmark obligation under the suite root

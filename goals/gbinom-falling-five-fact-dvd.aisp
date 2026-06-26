@@ -1,0 +1,20 @@
+𝔸5.1.goal.gbinom-falling-five-fact-dvd@2026-06-19
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gbinom-falling-five-fact-dvd
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/gbinom-falling-five-fact-dvd.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/gbinom-falling-five-fact-dvd.lean
+  sha≜e8e72ac21fb9b37d56eb3dd4d6fd8454d8d3824e1cd3572996da0c8e04fd9178
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

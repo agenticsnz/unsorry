@@ -1,0 +1,20 @@
+𝔸5.1.goal.prime-pow-six-mod-504@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜prime-pow-six-mod-504
+  phase≜prove
+  status≜proved
+  difficulty≜4
+}
+⟦Σ:Source⟧{
+  src≜backlog/prime-pow-six-mod-504.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/prime-pow-six-mod-504.lean
+  sha≜169d6e4d9cb3456aa9fa8c2cf8edf9e1bb053e3991356eeb686722d326f0249a
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

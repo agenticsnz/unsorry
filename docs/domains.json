@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "source": "registry (manually maintained, PR-reviewed)",
+  "domains": [
+    {
+      "id": "math",
+      "name": "Math",
+      "url_slug": "math",
+      "tier": "VERIFIED",
+      "description": "Lean theorem proving — the founding unsorry domain (ADR-030)."
+    }
+  ]
+}

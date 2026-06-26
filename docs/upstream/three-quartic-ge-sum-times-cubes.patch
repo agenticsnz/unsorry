@@ -1,0 +1,15 @@
+--- /dev/null
++++ b/Mathlib/Unsorry/ThreeQuarticGeSumTimesCubes.lean
+@@ -0,0 +1,12 @@
++/-
++Copyright (c) 2026 Chris Barlow. All rights reserved.
++Released under Apache 2.0 license as described in the file LICENSE.
++Authors: Chris Barlow
++-/
++import Mathlib
++
++theorem three_quartic_ge_sum_times_cubes (a b c : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b)
++    (hc : 0 ≤ c) : (a + b + c) * (a ^ 3 + b ^ 3 + c ^ 3) ≤ 3 * (a ^ 4 + b ^ 4 + c ^ 4) := by
++  nlinarith [mul_nonneg (sq_nonneg (a - b)) (show (0 : ℝ) ≤ a ^ 2 + a * b + b ^ 2 by positivity),
++    mul_nonneg (sq_nonneg (b - c)) (show (0 : ℝ) ≤ b ^ 2 + b * c + c ^ 2 by positivity),
++    mul_nonneg (sq_nonneg (a - c)) (show (0 : ℝ) ≤ a ^ 2 + a * c + c ^ 2 by positivity)]

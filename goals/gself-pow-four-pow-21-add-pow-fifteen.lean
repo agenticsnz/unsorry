@@ -1,0 +1,4 @@
+import Mathlib
+
+theorem gself_pow_four_pow_21_add_pow_fifteen (n : ℤ) : (n^4) ∣ (n^21 + n^15) := by
+  sorry

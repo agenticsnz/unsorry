@@ -41,3 +41,13 @@ def test_completed_status_never_stale():
 
 def test_age_minutes():
     assert round(stale_runs.age_minutes(_ago(90), NOW)) == 90
+
+
+def test_backlogged_queued_run_not_killed_by_default():
+    # Under a backlog a run can queue for hours legitimately; the default must
+    # NOT cancel it (cancelling only forces a re-run, frees no runner).
+    assert stale_runs.is_stale("queued", _ago(600), NOW, 60, 10_000_000) is False
+
+
+def test_in_progress_zombie_caught_at_60():
+    assert stale_runs.is_stale("in_progress", _ago(75), NOW, 60, 10_000_000) is True

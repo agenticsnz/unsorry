@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-centered-square-numbers-closed-form
   phase≜prove
-  status≜proved
-  difficulty≜2
+  status≜archived
+  difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-centered-square-numbers-closed-form.md
+  src≜packages/unsorry-archive-0014/backlog/sum-centered-square-numbers-closed-form.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-centered-square-numbers-closed-form.lean
+  lean≜packages/unsorry-archive-0014/goals/sum-centered-square-numbers-closed-form.lean
   sha≜5e9cd4b7682b10fcdcd5e8b06474292d21187c123a28c881b230c651b41caf05
   aff≜-9
 }

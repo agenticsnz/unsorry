@@ -1,0 +1,20 @@
+𝔸5.1.goal.gzmod-66-pow-fourteen-sub-pow-four@2026-06-18
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gzmod-66-pow-fourteen-sub-pow-four
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/gzmod-66-pow-fourteen-sub-pow-four.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/gzmod-66-pow-fourteen-sub-pow-four.lean
+  sha≜35bbd2be31f4b9feb797290cd64fe02159f16971539521529e7740281d9a0598
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
