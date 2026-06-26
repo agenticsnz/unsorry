@@ -1,7 +1,0 @@
-𝔸5.1.claim.putnam-1964-a3.afnz-zbook-b336@2026-06-26
-γ≔unsorry.claim
-⟦Ω:Claim⟧{goal≜putnam-1964-a3; agent≜afnz-zbook-b336}
-⟦Σ:Times⟧{ts≜2026-06-26T19:46:03Z; ttl≜7200}
-⟦Γ:Expiry⟧{now>ts+ttl⇒expired}
-⟦Λ:Release⟧{release≜λ_.rm(self)}
-⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
