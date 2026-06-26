@@ -1,0 +1,9 @@
+𝔸5.1.run.putnam-1966-b1-s4.rauxon-1.20260625t224423743776z-f32de64a@2026-06-25
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260625t224423743776z-f32de64a; goal≜putnam-1966-b1-s4; agent≜rauxon-1; outcome≜decomposed}
+⟦Π:Provenance⟧{solver≜Rauxon; provider≜claude; model≜opus; effort≜max}
+⟦Γ:Goal⟧{goal≜putnam-1966-b1-s4}
+⟦Λ:Metrics⟧{attempts≜3; solve_s≜1412; ended≜2026-06-25T22:44:23Z; lessons≜0}
+⟦Σ:Artifact⟧{sha≜∅}
+⟦Δ:Lesson⟧{sig≜(no file was written at library/Unsorry/Putnam1966B1S4.lean)}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

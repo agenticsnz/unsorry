@@ -1,0 +1,20 @@
+𝔸5.1.goal.faulhaber-square-sum-coeff-sixtytwo@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜faulhaber-square-sum-coeff-sixtytwo
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/faulhaber-square-sum-coeff-sixtytwo.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/faulhaber-square-sum-coeff-sixtytwo.lean
+  sha≜b19c6e5104d50fe8c23741cd17eb93f9734846c0995f241e656c36c2db40611e
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.85;τ≜◊⁺⟩

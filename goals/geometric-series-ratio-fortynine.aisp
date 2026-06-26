@@ -1,0 +1,20 @@
+𝔸5.1.goal.geometric-series-ratio-fortynine@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜geometric-series-ratio-fortynine
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/geometric-series-ratio-fortynine.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/geometric-series-ratio-fortynine.lean
+  sha≜9d560078224f6037f22927fe60cb884080df5fc6ecc4718cc9e4f76b58314b5b
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.85;τ≜◊⁺⟩

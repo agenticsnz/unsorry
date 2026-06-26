@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-two-cubes-zmod-nine-ne-five@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-two-cubes-zmod-nine-ne-five
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-two-cubes-zmod-nine-ne-five.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-two-cubes-zmod-nine-ne-five.lean
+  sha≜9450b529649efca9594e223e21ee6b266ea4cdec1ede4a5eb3433dd2ff9a2c89
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.40;τ≜◊⁺⟩

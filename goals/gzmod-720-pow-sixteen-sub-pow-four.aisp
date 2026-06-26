@@ -1,0 +1,20 @@
+𝔸5.1.goal.gzmod-720-pow-sixteen-sub-pow-four@2026-06-18
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gzmod-720-pow-sixteen-sub-pow-four
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/gzmod-720-pow-sixteen-sub-pow-four.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/gzmod-720-pow-sixteen-sub-pow-four.lean
+  sha≜3cda8fa361660ba10148c493ad416008dc6bc3bd318c4c76746de4b73dc8ccce
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
