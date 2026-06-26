@@ -4,34 +4,34 @@
 
 Verified output comes from active `library/index` records plus archived index records only after their active copy has been retired; append-only terminal-run telemetry comes from `proof-runs/`. Rates cover only logged runs and never guess historical failures from Git history. Timing is contributor-reported local proof plus verification time.
 
-**4406 verified proofs · 4098 attributed · 308 historical/unknown · 1221 logged terminal runs.**
+**4447 verified proofs · 4139 attributed · 308 historical/unknown · 1250 logged terminal runs.**
 
 ## Efficiency Baseline
 
 | Metric | Value |
 |--------|------:|
-| Successful terminal runs | 864 |
+| Successful terminal runs | 893 |
 | Failed terminal runs | 357 |
 | Decomposed after failure | 29 |
 | Failed without decomposition | 328 |
-| Run success rate | 70.8% |
-| Provider attempts | 1338 |
+| Run success rate | 71.4% |
+| Provider attempts | 1367 |
 | Failed attempts | 474 |
-| Attempt yield | 64.6% |
+| Attempt yield | 65.3% |
 | Recorded run time | 114h 43m |
-| Median / p90 run time | 0s / 31m 21s |
-| Verified successes per recorded hour | 7.53 |
-| Proofs with run telemetry | 864 (19.6%) |
+| Median / p90 run time | 0s / 31m 20s |
+| Verified successes per recorded hour | 7.78 |
+| Proofs with run telemetry | 893 (20.1%) |
 
 ## Work Queue
 
-**4663 goals · 2199 archived · 12 blocked · 224 open · 2219 proved · 9 translated.**
+**4704 goals · 2199 archived · 12 blocked · 224 open · 2260 proved · 9 translated.**
 
 ## Efficiency by Difficulty
 
 | Difficulty | Runs | Successes | Run success | Failed attempts | Median time |
 |-----------:|-----:|----------:|------------:|----------------:|------------:|
-| 1 | 1001 | 845 | 84.4% | 227 | 0s |
+| 1 | 1030 | 874 | 84.9% | 227 | 0s |
 | 2 | 113 | 5 | 4.4% | 125 | 6m 48s |
 | 3 | 67 | 3 | 4.5% | 73 | 9m 24s |
 | 4 | 38 | 11 | 28.9% | 47 | 24m 5s |
@@ -58,9 +58,9 @@ Rank uses Score (difficulty points + dispatch credit). Explicit `solver≜...` p
 
 | Rank | Contributor | Proof credit | Explicit | Inferred | Runs | Run success | Difficulty points | Dispatch (0.9 ea) | Score |
 |-----:|-------------|-------------:|---------:|---------:|-----:|------------:|------------------:|------------------:|------:|
-| 1 | [@cgbarlow](https://github.com/cgbarlow) | 120 | 73 | 47 | 280 | 5.4% | 216 | 2627.1 | 287310 |
-| 2 | [@chat-bit-01](https://github.com/chat-bit-01) | 2011 | 1764 | 247 | 4 | 100.0% | 2342 | 18.9 | 286365 |
-| 3 | [@ohdearquant](https://github.com/ohdearquant) | 2037 | 2036 | 1 | 824 | 100.0% | 2040 | 0.0 | 254925 |
+| 1 | [@cgbarlow](https://github.com/cgbarlow) | 120 | 73 | 47 | 280 | 5.4% | 216 | 2664.0 | 291000 |
+| 2 | [@chat-bit-01](https://github.com/chat-bit-01) | 2023 | 1776 | 247 | 4 | 100.0% | 2354 | 18.9 | 287865 |
+| 3 | [@ohdearquant](https://github.com/ohdearquant) | 2066 | 2065 | 1 | 853 | 100.0% | 2069 | 0.0 | 258550 |
 | 4 | [@ruvnet](https://github.com/ruvnet) | 160 | 160 | 0 | 0 | — | 429 | 0.0 | 46900 |
 | 5 | [@perttu](https://github.com/perttu) | 41 | 37 | 4 | 27 | 14.8% | 87 | 202.5 | 29975 |
 | 6 | [@adam91holt](https://github.com/adam91holt) | 19 | 19 | 0 | 56 | 0.0% | 46 | 0.0 | 5075 |
@@ -70,16 +70,16 @@ Rank uses Score (difficulty points + dispatch credit). Explicit `solver≜...` p
 
 ## Attribution Notes
 
-**4098 explicit solver credits · 308 inferred git credits · 0 uncredited proof records.**
+**4139 explicit solver credits · 308 inferred git credits · 0 uncredited proof records.**
 
-Git add-author attribution covers 4406 of 4406 proof index files. It is used only where explicit `solver≜` provenance is missing.
+Git add-author attribution covers 4447 of 4447 proof index files. It is used only where explicit `solver≜` provenance is missing.
 
 ## Providers and Models
 
 | Provider / model | Verified proofs | Runs | Run success | Failed attempts | Solvers | Median time | Successes / recorded hour |
 |------------------|----------------:|-----:|------------:|----------------:|--------:|------------:|-------------------------:|
-| `python / sympy` | 2035 | 824 | 100.0% | 0 | 1 | 0s | — |
-| `lean / ring` | 1107 | 0 | — | 0 | 1 | — | — |
+| `python / sympy` | 2064 | 853 | 100.0% | 0 | 1 | 0s | — |
+| `lean / ring` | 1119 | 0 | — | 0 | 1 | — | — |
 | `lean / decide` | 653 | 0 | — | 0 | 1 | — | — |
 | `openrouter / unknown` | 160 | 0 | — | 0 | 1 | — | — |
 | `claude / opus` | 70 | 70 | 51.4% | 101 | 6 | 10m 18s | 1.31 |

@@ -6,6 +6,7 @@ from pathlib import Path
 from tools.repo.relabel_attribution import (
     correct_difficulty,
     correct_solver,
+    honest_engine,
     index_is_mac158f,
     index_is_seedkit,
     index_is_template_fixture,
@@ -317,3 +318,44 @@ def test_solver_reattribution_end_to_end(tmp_path: Path, capsys):
     # second run is a no-op (idempotent)
     assert main([str(tmp_path), "--apply"]) == 0
     assert "re-attributed 0 record(s)" in capsys.readouterr().out
+
+
+# --- ADR-100: canonical honest_engine + suffix-tolerant template matching ---
+
+def test_honest_engine_maps_known_templates():
+    assert honest_engine("mac-158f", "claude", "template-zmod-decide") == ("python", "sympy")
+    assert honest_engine("mac-158f", "python", "template-anything") == ("python", "sympy")
+    assert honest_engine("claude-web", "claude", "template-zmod-decide") == ("lean", "decide")
+    assert honest_engine("claude-web", "claude", "template-induction-ring") == ("lean", "ring")
+    assert honest_engine("seedkit", "seedkit", "template-induction-ring") == ("lean", "ring")
+
+
+def test_honest_engine_is_suffix_tolerant():
+    # A NEW template name (never seen by the literal rules) is still folded by its
+    # tactic suffix — the hardening that stops a fresh shape slipping through.
+    assert honest_engine("claude-web", "claude", "template-fin-decide") == ("lean", "decide")
+    assert honest_engine("seedkit", "seedkit", "template-nat-induction-ring") == ("lean", "ring")
+    assert honest_engine("mac-158f", "claude", "template-brand-new") == ("python", "sympy")
+
+
+def test_honest_engine_leaves_genuine_and_unknown_untouched():
+    # genuine LLM proofs (non-template) are never touched
+    assert honest_engine("claude-web", "claude", "opus") == ("claude", "opus")
+    assert honest_engine("mac-158f", "claude", "sonnet") == ("claude", "sonnet")
+    # already-honest engines are idempotent
+    assert honest_engine("mac-158f", "python", "sympy") == ("python", "sympy")
+    assert honest_engine("seedkit", "lean", "decide") == ("lean", "decide")
+    # a template under an unknown agent, or an unknown tactic, is left as-is rather
+    # than guessed at — surfaced, not mis-mapped
+    assert honest_engine("mystery-agent", "claude", "template-foo") == ("claude", "template-foo")
+    assert honest_engine("claude-web", "claude", "template-omega") == ("claude", "template-omega")
+    assert honest_engine(None, "claude", "template-foo") == ("claude", "template-foo")
+
+
+def test_relabel_record_catches_new_template_shape():
+    # End-to-end: the sweep now rewrites a never-before-seen template name on disk.
+    new, changed = relabel_record(
+        _prov(solver="chat-bit-01", agent="claude-web", provider="claude",
+              model="template-fin-decide"))
+    assert changed is True
+    assert "provider≜lean" in new and "model≜decide" in new and "template-" not in new

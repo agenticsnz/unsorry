@@ -56,23 +56,15 @@ import re
 import sys
 from pathlib import Path
 
-# Each rule: (agent, model-regex, honest provider, honest model). A record is
-# rewritten when it carries the rule's `agent≜…` and `model≜…` shape and a
-# non-honest provider; scoping each rule to its agent keeps an identical
-# `model≜…` shape under any other contributor untouched. mac-158f is genuinely
-# Python/sympy; the seedkit agents (claude-web, seedkit) are Lean.
-_RULES = (
-    ("mac-158f", re.compile(r"model≜template-[^;}\s]*"), "python", "sympy"),
-    ("claude-web", re.compile(r"model≜template-zmod-decide(?=[;}\s])"), "lean", "decide"),
-    ("claude-web", re.compile(r"model≜template-induction-ring(?=[;}\s])"), "lean", "ring"),
-    ("seedkit", re.compile(r"model≜template-zmod-decide(?=[;}\s])"), "lean", "decide"),
-    ("seedkit", re.compile(r"model≜template-induction-ring(?=[;}\s])"), "lean", "ring"),
-)
-
-# Providers that flag a deterministic engine mislabelled (`claude`) or
-# bespoke-labelled (`seedkit`). Honest providers (lean/python) are left alone,
-# which is what makes the sweep idempotent.
-_REWRITABLE_PROVIDERS = ("claude", "seedkit")
+# Deterministic-template pipelines record a placeholder `model≜template-*` (and,
+# for the LLM-fronted ones, `provider≜claude`/`seedkit`) until the sweep rewrites
+# it to the real engine that closed the goal. `honest_engine` (below) is the single
+# source of truth for that mapping — shared by `relabel_record` (rewrites the
+# on-disk record) and the leaderboard generator (folds the placeholder so a proof
+# landed in the window *before* the next sweep never surfaces a phantom
+# `template-*` model). The seedkit agents (claude-web, seedkit) emit Lean kernel
+# proofs; mac-158f emits Python/sympy.
+_TEMPLATE_LEAN_AGENTS = ("claude-web", "seedkit")
 
 # Agent → the contributor who owns that pipeline, for solver re-attribution
 # (ADR-099). A record whose `agent≜` is listed here is credited to the named
@@ -106,19 +98,49 @@ _GOAL_RE = re.compile(r"goal≜([^;}\s]+)")
 _DIFFICULTY_RE = re.compile(r"difficulty≜[2-5]\b")  # only the inflated 2..5
 
 
+def honest_engine(
+    agent: str | None, provider: str | None, model: str | None
+) -> tuple[str | None, str | None]:
+    """Map a deterministic-template provenance to the honest ``(provider, model)``
+    of the engine that actually closed the goal. A genuine (non-``template-*``)
+    model is returned unchanged, so this is idempotent and safe to apply to every
+    record — the canonical mapping behind both `relabel_record` (the on-disk
+    rewrite) and the leaderboard model distribution.
+
+    - ``mac-158f`` → ``python / sympy`` (any ``template-*``; ADR-079/088).
+    - ``claude-web`` / ``seedkit`` → ``lean / decide | ring`` by the template's
+      tactic suffix (ADR-086/087). Suffix-matched, so a *new* template name ending
+      in the same tactic (e.g. ``template-fin-decide``) is still caught — only an
+      unrecognised tactic under these agents, or a template under an unknown agent,
+      is left untouched (surfaced rather than mis-mapped to a guessed engine).
+    """
+    if not model or not model.startswith("template-"):
+        return provider, model
+    if agent == "mac-158f":
+        return "python", "sympy"
+    if agent in _TEMPLATE_LEAN_AGENTS:
+        if model.endswith("decide"):
+            return "lean", "decide"
+        if model.endswith("ring"):
+            return "lean", "ring"
+    return provider, model
+
+
 def relabel_record(text: str) -> tuple[str, bool]:
     """Return (text, changed). Rewrites a deterministic-template record to its
-    honest provider/model per ``_RULES``. Idempotent: a record whose provider is
-    already honest, or which matches no rule, is returned unchanged."""
+    honest provider/model via `honest_engine`. Idempotent: a record already honest,
+    or carrying no recognised template shape, is returned unchanged."""
     prov = _PROVIDER_RE.search(text)
-    if prov is None or prov.group(1) not in _REWRITABLE_PROVIDERS:
+    model = _MODEL_RE.search(text)
+    if prov is None or model is None:
         return text, False
-    for agent, model_re, provider, model in _RULES:
-        if f"agent≜{agent}" in text and model_re.search(text):
-            new = _PROVIDER_RE.sub(f"provider≜{provider}", text, count=1)
-            new = model_re.sub(f"model≜{model}", new)
-            return new, new != text
-    return text, False
+    agent = _AGENT_RE.search(text)
+    hp, hm = honest_engine(agent.group(1) if agent else None, prov.group(1), model.group(1))
+    if (hp, hm) == (prov.group(1), model.group(1)):
+        return text, False
+    new = _PROVIDER_RE.sub(f"provider≜{hp}", text, count=1)
+    new = _MODEL_RE.sub(f"model≜{hm}", new, count=1)
+    return new, new != text
 
 
 def correct_solver(text: str) -> tuple[str, bool]:
