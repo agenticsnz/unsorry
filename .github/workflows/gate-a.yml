@@ -582,6 +582,21 @@ jobs:
       - name: Library build — zero-warning bar (--wfail)
         if: steps.plan.outputs.covered == 'true' && steps.lake_build_cache.outputs.cache-hit != 'true'
         run: lake build UnsorryLibrary --wfail
+      # Both checkers are PINNED — lean4export to the lean-toolchain tag, nanoda to
+      # NANODA_COMMIT in setup.sh — so the built binaries are identical across every
+      # PR until a pin bumps. Cache them keyed on those two pin sources: a hit makes
+      # the build step below a ~no-op (setup.sh skips when the binaries exist), so the
+      # gate-a-nanoda job drops from ~3 min (cold cargo+lake build) to the ~9 s check.
+      # A pin bump changes the hash ⇒ fresh build, so no stale binary can be served.
+      # Soundness: the cache cannot admit a bad proof — leanchecker replay still gates
+      # every proof at p=1, and the daily full axiom_audit backstop (ADR-048) re-runs
+      # the real audit; the cache is repo-scoped + fork-write-protected (#5751, #5678).
+      - name: Cache pinned independent-check binaries (lean4export + nanoda)
+        if: steps.plan.outputs.covered == 'true'
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: ~/.unsorry/independent-check
+          key: indep-check-${{ runner.os }}-${{ hashFiles('lean-toolchain', 'tools/independent_check/setup.sh') }}
       - name: Build independent-check tools (pinned lean4export + nanoda)
         if: steps.plan.outputs.covered == 'true'
         run: |

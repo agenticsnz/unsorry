@@ -302,3 +302,22 @@ def test_nanoda_is_pinned_not_master_head():
         t = path.read_text(encoding="utf-8")
         assert not re.search(r"clone --depth 1 https://github\.com/ammkrn/nanoda_lib\.git", t), \
             f"{path.name}: nanoda must be fetched at a pinned commit, not cloned at HEAD"
+
+
+def test_nanoda_binary_cache_key_busts_on_pin_bump():
+    """The gate-a-nanoda binary cache MUST key on both pin sources — the
+    lean-toolchain tag (lean4export pin) and setup.sh (which holds NANODA_COMMIT) —
+    so bumping either pin changes the key and forces a fresh build. A cache keyed on
+    less (e.g. a constant) could serve a stale binary built from an old pin after a
+    bump, silently diverging the trusted checker from its reviewed commit."""
+    text = _workflow_text()
+    # the cache step exists and points at the independent-check prefix
+    assert "~/.unsorry/independent-check" in text, \
+        "gate-a-nanoda must cache the pinned independent-check binaries"
+    # its key must include BOTH pin sources via hashFiles, so a pin bump busts it
+    assert re.search(
+        r"key:\s*indep-check-\$\{\{\s*runner\.os\s*\}\}-"
+        r"\$\{\{\s*hashFiles\([^)]*lean-toolchain[^)]*"
+        r"tools/independent_check/setup\.sh[^)]*\)\s*\}\}",
+        text,
+    ), "binary cache key must hash lean-toolchain AND setup.sh so either pin bump busts it"
