@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜gself-pow-two-pow-fifteen-add-pow-two
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/gself-pow-two-pow-fifteen-add-pow-two.md
+  src≜packages/unsorry-archive-0064/backlog/gself-pow-two-pow-fifteen-add-pow-two.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/gself-pow-two-pow-fifteen-add-pow-two.lean
+  lean≜packages/unsorry-archive-0064/goals/gself-pow-two-pow-fifteen-add-pow-two.lean
   sha≜f14de9da98f18e9e10a2e596b8620978583634fa03664db569193721bda699f1
   aff≜0
 }
