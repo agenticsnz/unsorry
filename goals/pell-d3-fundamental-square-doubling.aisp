@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜pell-d3-fundamental-square-doubling
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/pell-d3-fundamental-square-doubling.md
+  src≜packages/unsorry-archive-0009/backlog/pell-d3-fundamental-square-doubling.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/pell-d3-fundamental-square-doubling.lean
+  lean≜packages/unsorry-archive-0009/goals/pell-d3-fundamental-square-doubling.lean
   sha≜7047606465a638faea0e1e1c466b965389a8b1fa4f06b9e6bffd633b9e19b0c5
   aff≜-10
 }

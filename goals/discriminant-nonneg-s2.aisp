@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜discriminant-nonneg-s2
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜decompositions/discriminant-nonneg.1367ab40f0b1-e413.aisp
+  src≜packages/unsorry-archive-0010/decompositions/discriminant-nonneg.1367ab40f0b1-e413.aisp
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/discriminant-nonneg-s2.lean
+  lean≜packages/unsorry-archive-0010/goals/discriminant-nonneg-s2.lean
   sha≜371c5f9bf176fadb60edbadcbed859640ade565ea8fe7bf6754b256c457fdb39
   aff≜-8
   depth≜1

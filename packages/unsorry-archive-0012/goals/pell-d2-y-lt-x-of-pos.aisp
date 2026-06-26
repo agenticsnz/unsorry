@@ -1,0 +1,20 @@
+𝔸5.1.goal.pell-d2-y-lt-x-of-pos@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜pell-d2-y-lt-x-of-pos
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/pell-d2-y-lt-x-of-pos.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/pell-d2-y-lt-x-of-pos.lean
+  sha≜06f186aa7e3755f96e21441db7901c6f8ffd877cab8e871f6911c23c09072488
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

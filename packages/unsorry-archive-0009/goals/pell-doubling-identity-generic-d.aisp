@@ -1,0 +1,20 @@
+𝔸5.1.goal.pell-doubling-identity-generic-d@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜pell-doubling-identity-generic-d
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/pell-doubling-identity-generic-d.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/pell-doubling-identity-generic-d.lean
+  sha≜e4a769ba7e4d750003e39fe66cd4f4c58795ff47e46cf505d5c7b50608d3a25a
+  aff≜-10
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

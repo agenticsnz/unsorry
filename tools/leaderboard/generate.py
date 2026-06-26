@@ -8,8 +8,11 @@ Usage:
 """
 from __future__ import annotations
 
+import datetime
+import functools
 import json
 import math
+import os
 import re
 import statistics
 import subprocess
@@ -20,12 +23,30 @@ from html import escape as html_escape
 from pathlib import Path
 
 from tools.gate_b.records import parse_record
+from tools.leaderboard.registered_targets import (
+    benchmark_goal_ids,
+    registered_targets_path,
+    render_registered_targets_json,
+)
+from tools.leaderboard.benchmark_runs import (
+    benchmark_runs_path,
+    render_benchmark_runs_json,
+)
+from tools.repo.relabel_attribution import honest_engine
 
 
 SCORE_POLICY = (
-    "rank by credited verified proofs desc, difficulty_points desc; "
-    "score = difficulty_points * 100 + credited_proofs * 25"
+    "rank by score desc; "
+    "score = difficulty_points * 100 + credited_proofs * 25 "
+    "+ dispatch_points * 100 (dispatch_points = 0.9 flat for each proof PR you "
+    "opened/landed for another contributor; self-dispatch excluded — the system "
+    "does not run without dispatchers)"
 )
+
+# Flat credit, in difficulty-point units, for landing ANOTHER contributor's proof
+# PR. Dispatch is load-bearing infrastructure (no dispatch -> nothing merges), so
+# it is valued at nearly a full proof regardless of that proof's difficulty.
+DISPATCH_POINTS_PER_DISPATCH = 0.9
 
 
 @dataclass(frozen=True)
@@ -94,6 +115,82 @@ class GitAuthor:
         return f"{self.name} <{self.email}>"
 
 
+# --- Per-generation memoisation (issue #6317) --------------------------------
+#
+# The board's source corpus (goals/ + library/index + proof-runs/ + archive
+# blocks + contributor-aliases + git add-author history) is read MANY times per
+# refresh: `base_stats` alone runs ~4× across the markdown / community-stats /
+# leaderboard-ui / svg renderers, each one re-parsing every AISP record and
+# re-walking git attribution. As the corpus grew to ~4k proofs / ~1.2k runs that
+# *repetition* — not the per-record work — is what pushed a single regen to the
+# ~64 min that starved the push-on-merge refresh (issue #6317).
+#
+# The two pieces below memoise each loader so a single generation parses every
+# record and walks git attribution exactly ONCE, then reuses it across every
+# renderer:
+#
+#   * `@_memo_by_root` caches a `fn(root, …)` loader on the resolved repo root.
+#     Invariant: every memoised loader is a pure function of `root` (its other
+#     parameters are themselves derived from `root` — `known_goals` is always
+#     `goals(root)`, `proof_data` is always `load_dataset(root).proofs`), so
+#     keying on `root` alone is sound.
+#
+#   * `@_scoped` bounds a cache's lifetime to ONE outermost call. Re-entering at
+#     depth 0 (a fresh top-level generation) clears every cache first, so each
+#     generation re-reads the working tree; nested calls (a renderer asking for
+#     the dataset main already loaded) run at depth > 0 and hit the warm cache.
+#     This is what keeps the memo from going stale when the corpus changes
+#     between two in-process generations — e.g. a test that registers a benchmark
+#     suite then recomputes, or the workflow's rebase-and-regen push retry.
+_ROOT_CACHES: list[dict] = []
+_SCOPE_DEPTH = 0
+
+
+def reset_caches() -> None:
+    """Drop every per-root loader cache."""
+    for cache in _ROOT_CACHES:
+        cache.clear()
+
+
+def _memo_by_root(fn):
+    """Memoise a ``fn(root, …)`` loader on the resolved repo root."""
+    cache: dict[str, object] = {}
+    _ROOT_CACHES.append(cache)
+
+    @functools.wraps(fn)
+    def wrapper(root: Path, *args, **kwargs):
+        key = str(Path(root).resolve())
+        if key not in cache:
+            cache[key] = fn(root, *args, **kwargs)
+        return cache[key]
+
+    return wrapper
+
+
+def _scoped(fn):
+    """Bound the loader caches to one outermost call (see the block comment).
+
+    A fresh top-level call (``_SCOPE_DEPTH == 0``) clears the caches on entry and
+    exit, so it always re-reads the working tree; nested calls reuse the warm
+    cache. Wraps a memoised loader OUTSIDE ``@_memo_by_root``.
+    """
+
+    @functools.wraps(fn)
+    def wrapper(*args, **kwargs):
+        global _SCOPE_DEPTH
+        if _SCOPE_DEPTH == 0:
+            reset_caches()
+        _SCOPE_DEPTH += 1
+        try:
+            return fn(*args, **kwargs)
+        finally:
+            _SCOPE_DEPTH -= 1
+            if _SCOPE_DEPTH == 0:
+                reset_caches()
+
+    return wrapper
+
+
 _GITHUB_HANDLE = re.compile(r"^[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?$")
 
 
@@ -105,6 +202,8 @@ def _integer(value: str | None) -> int | None:
     return int(value) if value and value.isdigit() else None
 
 
+@_scoped
+@_memo_by_root
 def goals(root: Path) -> list[Goal]:
     result = []
     for path in sorted((root / "goals").glob("*.aisp")):
@@ -139,6 +238,8 @@ def proof_index_paths(root: Path) -> list[Path]:
     return sorted(paths)
 
 
+@_scoped
+@_memo_by_root
 def proofs(root: Path, known_goals: list[Goal] | None = None) -> list[Proof]:
     known_goals = goals(root) if known_goals is None else known_goals
     difficulty = {goal.id: goal.difficulty for goal in known_goals}
@@ -165,6 +266,8 @@ def proofs(root: Path, known_goals: list[Goal] | None = None) -> list[Proof]:
     return result
 
 
+@_scoped
+@_memo_by_root
 def runs(root: Path, known_goals: list[Goal] | None = None) -> list[Run]:
     known_goals = goals(root) if known_goals is None else known_goals
     difficulty = {goal.id: goal.difficulty for goal in known_goals}
@@ -195,9 +298,19 @@ def runs(root: Path, known_goals: list[Goal] | None = None) -> list[Run]:
     return result
 
 
+@_scoped
+@_memo_by_root
 def load_dataset(root: Path) -> Dataset:
     goal_data = goals(root)
-    return Dataset(goal_data, proofs(root, goal_data), runs(root, goal_data))
+    proof_data = proofs(root, goal_data)
+    # ADR-092 cohort segregation: a registered benchmark obligation is scored on its
+    # own surface (registered-targets.json), never the organic board. No-op until a
+    # suite is registered — benchmark_goal_ids is empty without targets/ — so organic
+    # stats stay byte-identical until a suite actually lands.
+    bench = benchmark_goal_ids(root)
+    if bench:
+        proof_data = [proof for proof in proof_data if proof.goal not in bench]
+    return Dataset(goal_data, proof_data, runs(root, goal_data))
 
 
 def _valid_github_handle(value: str | None) -> str | None:
@@ -246,6 +359,8 @@ def _git_attribution_path(path: str) -> str:
     return path
 
 
+@_scoped
+@_memo_by_root
 def git_add_authors(root: Path, proof_data: list[Proof]) -> dict[str, GitAuthor]:
     lookup_by_proof = {
         proof.path: _git_attribution_path(proof.path) for proof in proof_data
@@ -253,6 +368,15 @@ def git_add_authors(root: Path, proof_data: list[Proof]) -> dict[str, GitAuthor]
     lookup_paths = sorted(set(lookup_by_proof.values()))
     if not lookup_paths:
         return {}
+    # Walk the add-history of the `library/index` DIRECTORY, not each of the
+    # thousands of individual index files. Every attribution path is under
+    # `library/index/` (active records sit there; archived records remap to it via
+    # `_git_attribution_path`), so one directory pathspec yields exactly the same
+    # add-commits while we filter to `wanted` below. Passing ~4k literal pathspecs
+    # instead made `git log` O(history × pathspecs) — ~86 s per call on the current
+    # corpus, ×~9 calls per refresh — which was the dominant term in the ~64 min
+    # regen (issue #6317). The directory walk does the same work in well under a
+    # second; the streamed result is filtered in Python, so the output is identical.
     command = [
         "git",
         "-C",
@@ -262,7 +386,7 @@ def git_add_authors(root: Path, proof_data: list[Proof]) -> dict[str, GitAuthor]
         "--name-only",
         "--format=\x1e%H\x1f%an\x1f%ae\x1f%cs",
         "--",
-        *lookup_paths,
+        "library/index",
     ]
     result = subprocess.run(
         command,
@@ -429,6 +553,8 @@ def credited_contributors(
                 "explicit_solver_proofs": 0,
                 "inferred_git_proofs": 0,
                 "difficulty_points": 0,
+                "dispatch_proofs": 0,
+                "dispatch_points": 0.0,
                 "credit_sources": [],
             },
         )
@@ -452,10 +578,34 @@ def credited_contributors(
         if source not in row["credit_sources"]:
             row["credit_sources"].append(source)
 
+    # Dispatch credit (fairness): the contributor who opened/landed a proof PR did
+    # real plumbing — without dispatchers nothing merges — so they earn a flat
+    # DISPATCH_POINTS_PER_DISPATCH (≈ a full proof), but ONLY when they dispatched
+    # SOMEONE ELSE's proof. Opening your own PR (self-dispatch) earns nothing extra,
+    # so a high-volume prover cannot also farm dispatch points. Credited only to
+    # contributors who already have a proof row (no phantom rows).
+    for proof in data.proofs:
+        if not proof.solver:
+            continue  # no explicit solver: the git-author IS the inferred prover
+        author = authors_by_path.get(proof.path)
+        if author is None:
+            continue
+        _, disp_github = _alias_for(aliases, author)
+        disp_key = disp_github or f"git:{author.key}"
+        solver_handle = _valid_github_handle(proof.solver)
+        if disp_github and solver_handle and disp_github == solver_handle:
+            continue  # self-dispatch
+        drow = rows.get(disp_key)
+        if drow is None:
+            continue
+        drow["dispatch_proofs"] += 1
+        drow["dispatch_points"] += DISPATCH_POINTS_PER_DISPATCH
+
     for row in rows.values():
         handle = row.get("github") or row.get("solver")
         run_stats = _group_stats(contributor_runs.get(str(handle), []))
         row.update(run_stats)
+        row["dispatch_points"] = round(row["dispatch_points"], 1)
         row["credit_sources"].sort()
         if row["explicit_solver_proofs"] and row["inferred_git_proofs"]:
             row["credit_source_summary"] = "explicit + inferred"
@@ -660,7 +810,11 @@ def base_stats(root: Path) -> dict:
     goal_runs: dict[str, list[Run]] = defaultdict(list)
     for run in data.runs:
         contributor_runs[run.solver].append(run)
-        model_runs[f"{run.provider} / {run.model or 'unknown'}"].append(run)
+        # Fold deterministic-template provenance to its honest engine so a proof
+        # landed before the next attribution sweep never surfaces a phantom
+        # `template-*` model in the distribution (ADR-100).
+        rp, rm = honest_engine(run.agent, run.provider, run.model)
+        model_runs[f"{rp} / {rm or 'unknown'}"].append(run)
         difficulty_runs[run.difficulty].append(run)
         effort_runs[run.effort or "unknown"].append(run)
         daily_runs[run.ended[:10] or "unknown"].append(run)
@@ -668,7 +822,8 @@ def base_stats(root: Path) -> dict:
     for proof in attributed:
         assert proof.solver and proof.provider
         contributor_proofs[proof.solver].append(proof)
-        model_proofs[f"{proof.provider} / {proof.model or 'unknown'}"].append(proof)
+        pp, pm = honest_engine(proof.agent, proof.provider, proof.model)
+        model_proofs[f"{pp} / {pm or 'unknown'}"].append(proof)
 
     contributors = []
     for solver in sorted(set(contributor_runs) | set(contributor_proofs)):
@@ -892,16 +1047,22 @@ def render(root: Path) -> str:
         "",
         "## Contributor Leaderboard",
         "",
-        "Rank uses credited verified proofs. Explicit `solver≜...` provenance wins; "
-        "older proof records without solver provenance use git add-author attribution "
-        "as inferred historical credit.",
+        "Rank uses Score (difficulty points + dispatch credit). Explicit `solver≜...` "
+        "provenance wins; older proof records without solver provenance use git "
+        "add-author attribution as inferred historical credit. **Dispatch credit** "
+        "awards 0.9 points to the contributor who opened/landed "
+        "someone else's proof PR (self-dispatch excluded); it is added to Score.",
         "",
-        "| Rank | Contributor | Proof credit | Explicit | Inferred | Runs | Run success | Difficulty points | Score |",
-        "|-----:|-------------|-------------:|---------:|---------:|-----:|------------:|------------------:|------:|",
+        "| Rank | Contributor | Proof credit | Explicit | Inferred | Runs | Run success | Difficulty points | Dispatch (0.9 ea) | Score |",
+        "|-----:|-------------|-------------:|---------:|---------:|-----:|------------:|------------------:|------------------:|------:|",
     ])
     if not stats["credited_contributors"]:
-        lines.append("| — | No credited work yet | — | — | — | — | — | — | — |")
-    for rank, row in enumerate(stats["credited_contributors"], 1):
+        lines.append("| — | No credited work yet | — | — | — | — | — | — | — | — |")
+    ranked = sorted(
+        stats["credited_contributors"],
+        key=lambda r: (-_score(r), str(r.get("display_name") or "").lower()),
+    )
+    for rank, row in enumerate(ranked, 1):
         contributor = (
             f"[@{row['github']}]({row['profile_url']})"
             if row.get("github") and row.get("profile_url")
@@ -911,7 +1072,7 @@ def render(root: Path) -> str:
             f"| {rank} | {contributor} | {row['credited_proofs']} | "
             f"{row['explicit_solver_proofs']} | {row['inferred_git_proofs']} | "
             f"{row['runs']} | {_percent(row['run_success_rate'])} | "
-            f"{row['difficulty_points']} | {_score(row)} |"
+            f"{row['difficulty_points']} | {row['dispatch_points']} | {_score(row)} |"
         )
 
     historical = stats["historical_attribution"]
@@ -980,34 +1141,144 @@ def render_json(root: Path) -> str:
 
 
 def _score(row: dict) -> int:
-    return int(row["difficulty_points"]) * 100 + int(row["verified_proofs"]) * 25
+    dispatch = float(row.get("dispatch_points", 0) or 0)
+    return (
+        int(row["difficulty_points"]) * 100
+        + int(row["verified_proofs"]) * 25
+        + int(round(dispatch * 100))
+    )
 
 
 def _success_rate_percent(value: float | None) -> float | None:
     return None if value is None else round(value * 100, 2)
 
 
-def _proof_timeline(proof_list: list[Proof]) -> list[dict]:
-    """Cumulative count of library proofs by calendar date (issue #738).
+#: ``prove(<goal>)`` / ``recompose(<goal>)`` squash-merge subject (ADR-026) —
+#: the authoritative record of a proof landing on the branch. Only the goal id is
+#: needed here (the merge *timestamp* comes from the commit, not the subject).
+_PROVE_GOAL_RE = re.compile(r"^(?:prove|recompose)\((?P<goal>[a-z0-9][a-z0-9-]*)\):")
 
-    A deterministic series for the leaderboard's "proofs over time" view: one
-    entry per date on which at least one proof index landed, carrying that day's
-    count and the running cumulative total. Proofs without a parseable date are
-    ignored so the series stays monotonic in time.
+
+def parse_merge_log(text: str) -> dict[str, str]:
+    """Map goal → UTC merge-hour timestamp from ``<iso-hour>\\0<subject>`` lines.
+
+    ``git log`` is newest-first, so the *last* assignment per goal wins — the
+    oldest ``prove(<goal>)`` commit, i.e. the merge that first landed the proof.
+    Pure and testable; no git access here.
     """
-    by_date: dict[str, int] = defaultdict(int)
-    for proof in proof_list:
-        day = (proof.date or "")[:10]
-        if day:
-            by_date[day] += 1
+    result: dict[str, str] = {}
+    for line in text.splitlines():
+        timestamp, _, subject = line.partition("\x00")
+        match = _PROVE_GOAL_RE.match(subject)
+        if match and timestamp:
+            result[match.group("goal")] = timestamp
+    return result
+
+
+@_scoped
+@_memo_by_root
+def merge_times(root: Path) -> dict[str, str]:
+    """Resolve goal → UTC merge-hour timestamp from the ``prove(...)`` commits.
+
+    The commit timestamp is normalised to UTC and truncated to the hour (via git's
+    ``format-local`` under ``TZ=UTC``) so the merge timeline can bucket hourly —
+    the AISP solve ``@date`` carries no time, so it can only bucket daily, whereas
+    the merge time records to the second. Degrades to ``{}`` outside a git checkout
+    so the AISP-only path (and the fixture tests) stay green.
+    """
+    try:
+        proc = subprocess.run(
+            [
+                "git", "-C", str(root), "log", "--no-merges",
+                "--date=format-local:%Y-%m-%dT%H:00:00Z", "--format=%cd%x00%s",
+            ],
+            capture_output=True,
+            text=True,
+            check=False,
+            env={**os.environ, "TZ": "UTC"},
+        )
+    except (OSError, ValueError):
+        return {}
+    if proc.returncode != 0:
+        return {}
+    return parse_merge_log(proc.stdout)
+
+
+def _cumulative_series(buckets: list[str]) -> list[dict]:
+    """Cumulative proof count per non-empty time bucket, in ascending order.
+
+    Shared by both proofs-over-time series. Empty bucket keys — a proof with no
+    recorded solve date, or no ``prove(...)`` commit on the merge series — are
+    dropped so the series stays monotonic in time.
+    """
+    by_bucket: dict[str, int] = defaultdict(int)
+    for bucket in buckets:
+        if bucket:
+            by_bucket[bucket] += 1
     cumulative = 0
     series: list[dict] = []
-    for day in sorted(by_date):
-        cumulative += by_date[day]
+    for bucket in sorted(by_bucket):
+        cumulative += by_bucket[bucket]
         series.append(
-            {"date": day, "proofs": by_date[day], "cumulative_proofs": cumulative}
+            {"t": bucket, "proofs": by_bucket[bucket], "cumulative_proofs": cumulative}
         )
     return series
+
+
+def proof_timelines(proof_list: list[Proof], merges: dict[str, str]) -> dict:
+    """The two proofs-over-time series for the leaderboard toggle (issue #738).
+
+    ``merge`` (the default): bucketed hourly by the git merge timestamp — when
+    each proof landed on the branch — so a merge wave clearing a solve backlog
+    reads as recent slope rather than a flat tail. ``solve``: bucketed daily by
+    the recorded AISP ``@date`` (a date-only source — daily is the finest honest
+    bucket). The ``merge`` series is empty outside a git checkout; ``default``
+    names the series the page should show first.
+    """
+    return {
+        "default": "merge",
+        "merge": _cumulative_series(
+            [merges.get(proof.goal, "") for proof in proof_list]
+        ),
+        "solve": _cumulative_series(
+            [(proof.date or "")[:10] for proof in proof_list]
+        ),
+    }
+
+
+# Data paths whose commits change what the board reports — proof merges, archive
+# rolls, attribution relabels, and sourcing all land here. Generated docs under
+# docs/ are deliberately excluded, so the refresh's own [skip ci] docs commit never
+# moves the timestamp (keeping --check free of timestamp-only drift; ADR-036).
+_BOARD_SOURCE_PATHS = (
+    "goals",
+    "library/index",
+    "packages",
+    "proof-runs",
+    "docs/metrics/contributor-aliases.json",
+)
+
+
+def _latest_source_commit_z(root: Path) -> str | None:
+    """ISO-8601 UTC (``…Z``) committer time of the most recent commit under ``root``
+    that touched the board's source data, or ``None`` when git is unavailable (no
+    repo, shallow clone, or a non-repo fixture root). Deterministic for a given
+    commit — so it bumps on every proof/relabel merge yet never on the refresh's own
+    docs-only commit, leaving ``--check`` free of spurious timestamp-only drift."""
+    try:
+        result = subprocess.run(
+            ["git", "-C", str(root), "log", "-1", "--format=%ct", "--",
+             *_BOARD_SOURCE_PATHS],
+            check=False, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True,
+        )
+    except OSError:
+        return None
+    out = result.stdout.strip()
+    if result.returncode != 0 or not out:
+        return None
+    return datetime.datetime.fromtimestamp(
+        int(out), tz=datetime.timezone.utc
+    ).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def ui_payload(root: Path) -> dict:
@@ -1030,6 +1301,8 @@ def ui_payload(root: Path) -> dict:
                 "explicit_solver_proofs": row["explicit_solver_proofs"],
                 "inferred_git_proofs": row["inferred_git_proofs"],
                 "difficulty_points": row["difficulty_points"],
+                "dispatch_proofs": row["dispatch_proofs"],
+                "dispatch_points": row["dispatch_points"],
                 "runs": row["runs"],
                 "successes": row["successes"],
                 "run_success_rate": row["run_success_rate"],
@@ -1065,10 +1338,15 @@ def ui_payload(root: Path) -> dict:
     return {
         "schema_version": 1,
         "generated_from": "docs/metrics/community-stats.json",
-        # Deterministic by design: this is the latest recorded terminal-run
-        # timestamp, not wall-clock generation time.
+        # Current as of the latest commit that changed the board's source data
+        # (proof merges and attribution relabels both land there) — so it bumps on
+        # every refresh that follows a real change while staying deterministic: the
+        # refresh's own docs-only [skip ci] commit doesn't touch those paths, so
+        # --check sees no timestamp-only drift (no churn). Falls back to the latest
+        # recorded run time when git is unavailable (e.g. a non-repo fixture root).
         "generated_at": (
-            stats["recent_runs"][0]["ended"] if stats["recent_runs"] else None
+            _latest_source_commit_z(root)
+            or (stats["recent_runs"][0]["ended"] if stats["recent_runs"] else None)
         ),
         "score_policy": SCORE_POLICY,
         "summary": {
@@ -1099,14 +1377,122 @@ def ui_payload(root: Path) -> dict:
             }
             for model in stats["models"]
         ],
-        # Cumulative library proofs by date — the "proofs over time" line graph
-        # toggled on the leaderboard page (issue #738).
-        "timeline": _proof_timeline(proofs(root)),
+        # Cumulative library proofs over time — the "proofs over time" line graph
+        # on the leaderboard page (issue #738), with a solve/merge toggle: merge
+        # (hourly, default) keys on when each proof landed; solve (daily) keys on
+        # the recorded AISP solve date.
+        "timelines": proof_timelines(proofs(root), merge_times(root)),
     }
 
 
 def render_ui_json(root: Path) -> str:
     return json.dumps(ui_payload(root), ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+
+
+def _bucket_dt(t: str) -> datetime.datetime:
+    """Parse a timeline bucket (``2026-06-20T17:00:00Z`` or ``2026-06-13``).
+
+    Used only for x-axis positioning, so naïve date-only buckets and aware hour
+    buckets never mix within a single series — differences stay deterministic.
+    """
+    return datetime.datetime.fromisoformat(t.replace("Z", "+00:00"))
+
+
+def render_timeline_svg(root: Path) -> str:
+    """README preview card: cumulative kernel-verified proofs over time.
+
+    Plots the **merge** series (hourly — when each proof landed on ``main``; the
+    leaderboard's default proofs-over-time view, issue #738), falling back to the
+    daily **solve** series outside a git checkout. A self-contained SVG mirroring
+    ``docs/leaderboard.svg``'s visual language, and a pure function of the series
+    so it is deterministic for the ``--check`` gate.
+    """
+    series = proof_timelines(proofs(root), merge_times(root))
+    points = series.get("merge") or series.get("solve") or []
+    by_merge = bool(series.get("merge"))
+    width, height = 900, 320
+    pad_l, pad_r, pad_t, pad_b = 52, 28, 90, 48
+    font = "Inter, system-ui, sans-serif"
+    total = points[-1]["cumulative_proofs"] if points else 0
+    out = [
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" '
+        f'viewBox="0 0 {width} {height}" role="img" aria-labelledby="title desc">',
+        '<title id="title">unsorry proofs over time</title>',
+        '<desc id="desc">Cumulative kernel-verified proofs over time, '
+        "by the hour each proof was merged.</desc>",
+        f'<rect width="{width}" height="100%" rx="18" fill="#ffffff"/>',
+        f'<rect x="0.5" y="0.5" width="{width - 1}" height="{height - 1}" rx="18" '
+        'fill="none" stroke="#e2e8f0"/>',
+        f'<text x="32" y="44" font-family="{font}" font-size="28" font-weight="700" '
+        'fill="#334155">unsorry — Proofs Over Time</text>',
+        f'<text x="32" y="72" font-family="{font}" font-size="13" fill="#64748b">'
+        f"{total} cumulative kernel-verified proofs · "
+        f"{'merged, hourly' if by_merge else 'solved, daily'}</text>",
+    ]
+    if not points:
+        out.append(
+            f'<text x="32" y="{pad_t + 40}" font-family="{font}" font-size="16" '
+            'fill="#64748b">No dated proofs yet.</text>'
+        )
+        out.append("</svg>")
+        return "\n".join(out) + "\n"
+
+    plot_w = width - pad_l - pad_r
+    plot_h = height - pad_t - pad_b
+    dts = [_bucket_dt(p["t"]) for p in points]
+    span = max(1.0, (dts[-1] - dts[0]).total_seconds())
+    max_y = max(total, 1)
+    n = len(points)
+
+    def px(i: int) -> float:
+        if n == 1:
+            return pad_l + plot_w / 2
+        return pad_l + (dts[i] - dts[0]).total_seconds() / span * plot_w
+
+    def py(v: float) -> float:
+        return pad_t + plot_h - v / max_y * plot_h
+
+    for frac in (0, 0.25, 0.5, 0.75, 1):
+        v = round(max_y * frac)
+        yy = py(v)
+        out.append(
+            f'<line x1="{pad_l}" y1="{yy:.1f}" x2="{width - pad_r}" y2="{yy:.1f}" '
+            'stroke="#f1f5f9"/>'
+        )
+        out.append(
+            f'<text x="{pad_l - 8}" y="{yy + 4:.1f}" text-anchor="end" '
+            f'font-family="{font}" font-size="11" fill="#94a3b8">{v}</text>'
+        )
+
+    coords = " ".join(
+        f"{px(i):.1f},{py(p['cumulative_proofs']):.1f}" for i, p in enumerate(points)
+    )
+    base = pad_t + plot_h
+    out.append(
+        f'<polygon points="{px(0):.1f},{base:.1f} {coords} {px(n - 1):.1f},{base:.1f}" '
+        'fill="#e0f2fe" opacity="0.55"/>'
+    )
+    out.append(
+        f'<polyline points="{coords}" fill="none" stroke="#38bdf8" stroke-width="2.5" '
+        'stroke-linejoin="round" stroke-linecap="round"/>'
+    )
+    lx, ly = px(n - 1), py(max_y)
+    out.append(f'<circle cx="{lx:.1f}" cy="{ly:.1f}" r="4" fill="#0ea5e9"/>')
+    out.append(
+        f'<text x="{lx - 6:.1f}" y="{ly - 10:.1f}" text-anchor="end" font-family="{font}" '
+        f'font-size="13" font-weight="700" fill="#334155">{max_y}</text>'
+    )
+
+    def label(dt: datetime.datetime) -> str:
+        return f"{dt:%b %d}" + (f" {dt:%H}:00" if by_merge else "")
+
+    for i in sorted({0, n // 2, n - 1}):
+        out.append(
+            f'<text x="{px(i):.1f}" y="{height - pad_b + 22}" text-anchor="middle" '
+            f'font-family="{font}" font-size="11" fill="#94a3b8">{label(dts[i])}</text>'
+        )
+    out.append("</svg>")
+    return "\n".join(out) + "\n"
 
 
 def render_svg(root: Path) -> str:
@@ -1121,11 +1507,11 @@ def render_svg(root: Path) -> str:
     summary = payload["summary"]
     lines = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-labelledby="title desc">',
-        "<title id=\"title\">Unsorry leaderboard</title>",
-        "<desc id=\"desc\">Gamified Unsorry contributor leaderboard ranked by credited verified proofs and difficulty points.</desc>",
+        "<title id=\"title\">unsorry leaderboard</title>",
+        "<desc id=\"desc\">Gamified unsorry contributor leaderboard ranked by credited verified proofs and difficulty points.</desc>",
         "<rect width=\"900\" height=\"100%\" rx=\"18\" fill=\"#ffffff\"/>",
         "<rect x=\"0.5\" y=\"0.5\" width=\"899\" height=\"{h}\" rx=\"18\" fill=\"none\" stroke=\"#e2e8f0\"/>".format(h=height - 1),
-        "<text x=\"32\" y=\"44\" font-family=\"Inter, system-ui, sans-serif\" font-size=\"28\" font-weight=\"700\" fill=\"#334155\">Unsorry Leaderboard</text>",
+        "<text x=\"32\" y=\"44\" font-family=\"Inter, system-ui, sans-serif\" font-size=\"28\" font-weight=\"700\" fill=\"#334155\">unsorry — Leaderboard</text>",
         (
             "<text x=\"32\" y=\"72\" font-family=\"Inter, system-ui, sans-serif\" "
             "font-size=\"13\" fill=\"#64748b\">"
@@ -1193,6 +1579,8 @@ def render_attribution_gaps_json(root: Path) -> str:
     ) + "\n"
 
 
+@_scoped
+@_memo_by_root
 def goal_add_authors(root: Path, goal_ids: list[str]) -> dict[str, GitAuthor]:
     """git add-author for each ``goals/<id>.aisp`` — who **sourced** the goal
     (the earliest commit that added the record). Mirrors ``git_add_authors`` but
@@ -1201,10 +1589,14 @@ def goal_add_authors(root: Path, goal_ids: list[str]) -> dict[str, GitAuthor]:
     lookup = {goal_id: f"goals/{goal_id}.aisp" for goal_id in goal_ids}
     if not lookup:
         return {}
+    # As in `git_add_authors`, walk the `goals` directory's add-history once
+    # rather than passing one pathspec per goal (O(history × goals); issue #6317),
+    # then filter the stream to `wanted`. Identical output, sub-second instead of
+    # tens of seconds on the grown corpus.
     result = subprocess.run(
         [
             "git", "-C", str(root), "log", "--diff-filter=A", "--name-only",
-            "--format=\x1e%H\x1f%an\x1f%ae\x1f%cs", "--", *sorted(lookup.values()),
+            "--format=\x1e%H\x1f%an\x1f%ae\x1f%cs", "--", "goals",
         ],
         check=False, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True,
     )
@@ -1315,7 +1707,12 @@ def render_sourcing(root: Path) -> str:
     return "\n".join(lines) + "\n"
 
 
+@_scoped
 def main(argv: list[str] | None = None) -> int:
+    # @_scoped makes this the outermost generation: the whole run shares one warm
+    # cache (each record parsed once, each git attribution walked once across all
+    # renderers), and the cache is cleared on entry/exit so a second in-process
+    # invocation — the workflow's rebase-and-regen push retry — re-reads the tree.
     argv = sys.argv[1:] if argv is None else argv
     if "--audit-provenance" in argv:
         rest = [arg for arg in argv if arg != "--audit-provenance"]
@@ -1330,39 +1727,63 @@ def main(argv: list[str] | None = None) -> int:
             render_sourcing_json(root) if "--json" in argv else render_sourcing(root)
         )
         return 0
-    modes = [flag for flag in ("--check", "--write", "--json") if flag in argv]
+    write_modes = ("--check", "--write", "--write-if-stale", "--json")
+    modes = [flag for flag in write_modes if flag in argv]
     if len(modes) > 1:
-        print("--check, --write, and --json are mutually exclusive", file=sys.stderr)
+        print(
+            "--check, --write, --write-if-stale, and --json are mutually exclusive",
+            file=sys.stderr,
+        )
         return 2
     mode = modes[0] if modes else ""
-    rest = [arg for arg in argv if arg not in ("--check", "--write", "--json")]
+    rest = [arg for arg in argv if arg not in write_modes]
     root = Path(rest[0]) if rest else Path.cwd()
     markdown = render(root)
     payload = render_json(root)
     ui_payload_json = render_ui_json(root)
     svg = render_svg(root)
+    timeline_svg = render_timeline_svg(root)
     gaps_payload = render_attribution_gaps_json(root)
     sourcing_payload_json = render_sourcing_json(root)
+    registered_targets_payload = render_registered_targets_json(root)
+    benchmark_runs_payload = render_benchmark_runs_json(root)
     markdown_path = root / "docs" / "leaderboard.md"
     json_path = root / "docs" / "metrics" / "community-stats.json"
     ui_json_path = root / "docs" / "metrics" / "leaderboard-ui.json"
     gaps_json_path = root / "docs" / "metrics" / "attribution-gaps.json"
     sourcing_json_path = root / "docs" / "metrics" / "sourcing-leaderboard.json"
+    registered_targets_json_path = registered_targets_path(root)
+    benchmark_runs_json_path = benchmark_runs_path(root)
     svg_path = root / "docs" / "leaderboard.svg"
+    timeline_svg_path = root / "docs" / "proofs-over-time.svg"
+    # Single source of truth for the generated artifacts so --check, --write and
+    # --write-if-stale share one staleness/write definition (DRY).
+    artifacts = (
+        (markdown_path, markdown),
+        (json_path, payload),
+        (ui_json_path, ui_payload_json),
+        (gaps_json_path, gaps_payload),
+        (sourcing_json_path, sourcing_payload_json),
+        (registered_targets_json_path, registered_targets_payload),
+        (benchmark_runs_json_path, benchmark_runs_payload),
+        (svg_path, svg),
+        (timeline_svg_path, timeline_svg),
+    )
+
+    def stale_paths() -> list[str]:
+        return [
+            path.relative_to(root).as_posix()
+            for path, content in artifacts
+            if not path.is_file() or path.read_text(encoding="utf-8") != content
+        ]
+
+    def write_all() -> None:
+        for path, content in artifacts:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(content, encoding="utf-8")
+
     if mode == "--check":
-        stale = []
-        if not markdown_path.is_file() or markdown_path.read_text(encoding="utf-8") != markdown:
-            stale.append(markdown_path.relative_to(root).as_posix())
-        if not json_path.is_file() or json_path.read_text(encoding="utf-8") != payload:
-            stale.append(json_path.relative_to(root).as_posix())
-        if not ui_json_path.is_file() or ui_json_path.read_text(encoding="utf-8") != ui_payload_json:
-            stale.append(ui_json_path.relative_to(root).as_posix())
-        if not gaps_json_path.is_file() or gaps_json_path.read_text(encoding="utf-8") != gaps_payload:
-            stale.append(gaps_json_path.relative_to(root).as_posix())
-        if not sourcing_json_path.is_file() or sourcing_json_path.read_text(encoding="utf-8") != sourcing_payload_json:
-            stale.append(sourcing_json_path.relative_to(root).as_posix())
-        if not svg_path.is_file() or svg_path.read_text(encoding="utf-8") != svg:
-            stale.append(svg_path.relative_to(root).as_posix())
+        stale = stale_paths()
         if stale:
             print(
                 f"{', '.join(stale)} stale — regenerate with "
@@ -1372,15 +1793,20 @@ def main(argv: list[str] | None = None) -> int:
             return 1
         return 0
     if mode == "--write":
-        markdown_path.parent.mkdir(parents=True, exist_ok=True)
-        json_path.parent.mkdir(parents=True, exist_ok=True)
-        markdown_path.write_text(markdown, encoding="utf-8")
-        json_path.write_text(payload, encoding="utf-8")
-        ui_json_path.write_text(ui_payload_json, encoding="utf-8")
-        gaps_json_path.write_text(gaps_payload, encoding="utf-8")
-        sourcing_json_path.write_text(sourcing_payload_json, encoding="utf-8")
-        svg_path.write_text(svg, encoding="utf-8")
+        write_all()
         return 0
+    if mode == "--write-if-stale":
+        # ADR-082: fold --check + --write into ONE recompute for the post-merge
+        # refresh. The artifacts above are computed exactly once; here we write
+        # them only if they drifted and signal that via the exit code — mirroring
+        # --check (1 = was stale, now rewritten; 0 = already in sync) — so the
+        # workflow no longer pays the heavy regen twice per refresh.
+        stale = stale_paths()
+        if not stale:
+            return 0
+        write_all()
+        print(f"{', '.join(stale)} regenerated", file=sys.stderr)
+        return 1
     sys.stdout.write(payload if mode == "--json" else markdown)
     return 0
 

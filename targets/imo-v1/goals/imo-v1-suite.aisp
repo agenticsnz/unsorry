@@ -1,0 +1,7 @@
+𝔸5.1.goal.imo-v1-suite@2026-06-24
+γ≔unsorry.goal
+⟦Ω:Goal⟧{id≜imo-v1-suite;phase≜prove;status≜open;difficulty≜0}
+⟦Σ:Source⟧{src≜backlog/imo-v1-suite.md}
+⟦Γ:Deps⟧{deps≜⟨⟩}
+⟦Λ:Artifact⟧{lean≜goals/imo-v1-suite.lean;sha≜∅}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

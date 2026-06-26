@@ -1,0 +1,8 @@
+𝔸5.1.lemma.9790715e918a@2026-06-16
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜9790715e918a94944e1b4f44bd44170ff09a72bca46133e050deca98a6e3e70d; goal≜three-dvd-n-cubed-add-two-n; name≜three_dvd_n_cubed_add_two_n}
+⟦Σ:Source⟧{src≜goals/three-dvd-n-cubed-add-two-n.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜python; model≜sympy; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

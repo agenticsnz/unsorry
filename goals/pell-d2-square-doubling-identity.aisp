@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜pell-d2-square-doubling-identity
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/pell-d2-square-doubling-identity.md
+  src≜packages/unsorry-archive-0009/backlog/pell-d2-square-doubling-identity.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/pell-d2-square-doubling-identity.lean
+  lean≜packages/unsorry-archive-0009/goals/pell-d2-square-doubling-identity.lean
   sha≜6e0fa6a05ff53bbfcd4f768935bff435aca932345f206ca9351e80578fa7848f
   aff≜-10
 }

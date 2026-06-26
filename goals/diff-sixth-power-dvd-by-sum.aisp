@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜diff-sixth-power-dvd-by-sum
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/diff-sixth-power-dvd-by-sum.md
+  src≜packages/unsorry-archive-0011/backlog/diff-sixth-power-dvd-by-sum.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/diff-sixth-power-dvd-by-sum.lean
+  lean≜packages/unsorry-archive-0011/goals/diff-sixth-power-dvd-by-sum.lean
   sha≜f7ce05b203d54deb84f2bf74d5341229cfe36174bf883afbff1a9670ccd9f15e
   aff≜-9
 }

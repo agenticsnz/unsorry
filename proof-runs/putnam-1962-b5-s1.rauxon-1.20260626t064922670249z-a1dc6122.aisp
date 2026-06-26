@@ -1,0 +1,8 @@
+𝔸5.1.run.putnam-1962-b5-s1.rauxon-1.20260626t064922670249z-a1dc6122@2026-06-26
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260626t064922670249z-a1dc6122; goal≜putnam-1962-b5-s1; agent≜rauxon-1; outcome≜proved}
+⟦Π:Provenance⟧{solver≜Rauxon; provider≜claude; model≜opus; effort≜high}
+⟦Γ:Goal⟧{goal≜putnam-1962-b5-s1}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜517; ended≜2026-06-26T06:49:22Z; lessons≜0}
+⟦Σ:Artifact⟧{sha≜fd6fa72d62be0369080225816ca5d73bcfacb7c4f66951ce8e8a9c99fc33a641}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -1,0 +1,13 @@
+𝔸5.1.decomp.putnam-1966-b4.afnz-zbook-b336@2026-06-26
+γ≔unsorry.decomposition
+⟦Ω:Decomp⟧{parent≜putnam-1966-b4; agent≜afnz-zbook-b336}
+⟦Σ:Subs⟧{
+  sub₁≜⟨id≜putnam-1966-b4-s1,sha≜92e50ff4ad9104eb143c00572097729dae4b7b09ac2f842021af9091dabf379c⟩
+  sub₂≜⟨id≜putnam-1966-b4-s2,sha≜6d3096ca1afdf09780dc7d84eef1ef73a30c4e844f39f7141d79d3cc42db22f4⟩
+  sub₃≜⟨id≜putnam-1966-b4-s3,sha≜4b971396d924dc3616ec392412b1ca82ac9bbbb231b5d11ea08ac7414681aba6⟩
+}
+⟦Γ:Edges⟧{
+  Post(sub₁)⊆Pre(parent); Post(sub₂)⊆Pre(parent); Post(sub₃)⊆Pre(parent)
+}
+⟦Λ:Requeue⟧{∀s∈subs:goal(s)≫status≔open}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

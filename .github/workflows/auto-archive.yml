@@ -13,7 +13,7 @@ on:
     inputs:
       ceiling:
         description: "Cut when proved-not-archived >= this many goals"
-        default: "40"
+        default: "20"
 
 concurrency:
   group: auto-archive
@@ -54,5 +54,5 @@ jobs:
         if: steps.tok.outputs.present == 'true'
         env:
           GH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
-          CEILING: ${{ github.event.inputs.ceiling || '40' }}
+          CEILING: ${{ github.event.inputs.ceiling || '20' }}
         run: ./tools/archive/auto_cut.sh

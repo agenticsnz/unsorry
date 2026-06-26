@@ -1,0 +1,20 @@
+𝔸5.1.goal.pell-d7-no-negative-solution-zmod7@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜pell-d7-no-negative-solution-zmod7
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/pell-d7-no-negative-solution-zmod7.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/pell-d7-no-negative-solution-zmod7.lean
+  sha≜ab2a72142f601e91053d40369c7ce42621dcc83f8ccc35067597035abdb9605e
+  aff≜-10
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

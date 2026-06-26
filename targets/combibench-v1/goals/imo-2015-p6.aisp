@@ -1,0 +1,20 @@
+𝔸5.1.goal.imo-2015-p6@2026-06-24
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜imo-2015-p6
+  phase≜prove
+  status≜open
+  difficulty≜4
+}
+⟦Σ:Source⟧{
+  src≜backlog/imo-2015-p6.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/imo-2015-p6.lean
+  sha≜∅
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
