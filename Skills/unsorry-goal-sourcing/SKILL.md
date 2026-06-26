@@ -55,7 +55,7 @@ tool with a meaningful exit code — interpret it, do not paper over it.
 Aim high. "The most difficult problems are the best problems."
 
 - Target **difficulty ≥ 3** and prefer goals carrying **≥ 1 decomposition edge**
-  (a goal you can see how to split has depth). Tag `difficulty` honestly (0–5).
+  (a goal you can see how to split has depth). Tag `difficulty` honestly (0–9).
 - Source the **hard families in parallel** (ADR-031/043): Freek-#50 **Phase-2
   Euler substrate** *and* **Phase-3 library growth**. The triviality battery
   deliberately omits `nlinarith/positivity/field_simp/gcongr`, so multivariate
@@ -78,7 +78,7 @@ Two tiers. Stage cheaply, promote deliberately.
   ```bash
   python3 -m tools.sourcing.gen_triples --slug <kebab-id> \
       --lean-sig '<signature after the theorem name>' \
-      --statement '<one-line English>' --difficulty <0-5> \
+      --statement '<one-line English>' --difficulty <0-9> \
       --source '...' --reference '...' --absence '...' \
       --triviality '...' --decomposition '...' --validate
   ```

@@ -1,7 +1,7 @@
 𝔸5.1.run.gbinom-consec-seven-fact-dvd.mac-158f.20260619t172044725006z-f13758bb@2026-06-19
 γ≔unsorry.proof.run
 ⟦Ω:Run⟧{id≜20260619t172044725006z-f13758bb; goal≜gbinom-consec-seven-fact-dvd; agent≜mac-158f; outcome≜proved}
-⟦Π:Provenance⟧{solver≜cgbarlow; provider≜python; model≜sympy}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜python; model≜sympy}
 ⟦Γ:Goal⟧{goal≜gbinom-consec-seven-fact-dvd}
 ⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-19T17:20:44Z}
 ⟦Σ:Artifact⟧{sha≜d7f3568e1f3a3cdb365276e3671217a718213ee27d3aaeb1347ef297ad4fe1b4}

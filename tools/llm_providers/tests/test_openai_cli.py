@@ -1,4 +1,4 @@
-"""Tests for the openai `--prove` text-extraction fallback (ADR-041).
+"""Tests for the openai `--prove` text-extraction fallback (ADR-102).
 
 A proof-specialised model behind an OpenAI-compatible endpoint may answer in
 plain text (the Lean module as a fenced block or bare prose) instead of emitting

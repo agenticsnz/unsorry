@@ -5,6 +5,7 @@ from pathlib import Path
 
 from tools.repo.relabel_attribution import (
     correct_difficulty,
+    correct_solver,
     index_is_mac158f,
     index_is_seedkit,
     index_is_template_fixture,
@@ -246,3 +247,73 @@ def test_mac158f_difficulty_backfilled_end_to_end(tmp_path: Path, capsys):
     assert "difficulty≜1" in (goals / f"{mac}.aisp").read_text(encoding="utf-8")
     # mac-158f provenance was already honest (python/sympy) — unchanged
     assert "provider≜python" in (idx / "m.aisp").read_text(encoding="utf-8")
+
+
+# --- ADR-099: mac-158f solver re-attribution ---
+
+def test_correct_solver_reattributes_owned_agent():
+    # A mac-158f proof landed under the lander's handle is re-credited to the
+    # pipeline owner (ohdearquant), whoever landed it.
+    for lander in ("cgbarlow", "perttu"):
+        new, changed = correct_solver(_prov(solver=lander, provider="python", model="sympy"))
+        assert changed is True
+        assert "solver≜ohdearquant" in new
+        assert f"solver≜{lander}" not in new
+        # only solver moves — agent/provider/model are untouched
+        assert "agent≜mac-158f" in new and "provider≜python" in new and "model≜sympy" in new
+
+
+def test_correct_solver_idempotent_and_owner_unchanged():
+    # already the owner → no-op (covers the genuine claude/sonnet mac-158f proof,
+    # which is ohdearquant's own work)
+    owner = _prov(solver="ohdearquant", provider="claude", model="sonnet")
+    assert correct_solver(owner) == (owner, False)
+    once, _ = correct_solver(_prov(solver="cgbarlow"))
+    twice, changed = correct_solver(once)
+    assert changed is False and twice == once
+
+
+def test_correct_solver_leaves_unowned_agents_alone():
+    # Any agent not declared in _AGENT_OWNER keeps its solver — the sweep only
+    # re-attributes the one agent-owned pipeline, never general dispatch credit.
+    web = _prov(solver="chat-bit-01", agent="claude-web", provider="lean", model="decide")
+    assert correct_solver(web) == (web, False)
+    other = _prov(solver="ruvnet", agent="ruvnet-swarm", provider="anthropic", model="opus")
+    assert correct_solver(other) == (other, False)
+
+
+def test_solver_reattribution_end_to_end(tmp_path: Path, capsys):
+    idx = tmp_path / "library" / "index"
+    idx.mkdir(parents=True)
+    runs = tmp_path / "proof-runs"
+    runs.mkdir()
+    # (1) a mac-158f proof landed under cgbarlow, provenance already honest
+    (idx / "a.aisp").write_text(
+        "⟦Ω:Lemma⟧{}\n" + _prov(solver="cgbarlow", provider="python", model="sympy"),
+        encoding="utf-8")
+    # (2) a pre-relabel mac-158f record landed under perttu (claude/template-*) —
+    #     both provider/model AND solver must be corrected in one sweep. The
+    #     mac-158f rule maps any template-* engine to python/sympy.
+    (runs / "r.mac-158f.x.aisp").write_text(
+        "⟦Ω:Run⟧{}\n" + _prov(solver="perttu", provider="claude", model="template-sympy-7"),
+        encoding="utf-8")
+    # (3) another contributor's own proof on a different agent — untouched
+    (idx / "c.aisp").write_text(
+        "⟦Ω:Lemma⟧{}\n" + _prov(solver="ruvnet", agent="ruvnet-swarm",
+                                 provider="anthropic", model="opus"),
+        encoding="utf-8")
+
+    assert main([str(tmp_path), "--apply"]) == 0
+    out = capsys.readouterr().out
+    assert "re-attributed 2 record(s)" in out
+    a = (idx / "a.aisp").read_text(encoding="utf-8")
+    r = (runs / "r.mac-158f.x.aisp").read_text(encoding="utf-8")
+    c = (idx / "c.aisp").read_text(encoding="utf-8")
+    assert "solver≜ohdearquant" in a and "solver≜cgbarlow" not in a
+    # the pre-relabel run is corrected in both dimensions at once
+    assert "solver≜ohdearquant" in r and "provider≜python" in r and "model≜sympy" in r
+    # the unowned agent keeps its solver
+    assert "solver≜ruvnet" in c
+    # second run is a no-op (idempotent)
+    assert main([str(tmp_path), "--apply"]) == 0
+    assert "re-attributed 0 record(s)" in capsys.readouterr().out

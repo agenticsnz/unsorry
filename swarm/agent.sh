@@ -34,6 +34,12 @@ PROTOCOL_FILE="swarm/protocol.aisp"
 TRANSLATE_PROMPT_FILE="swarm/prompts/translate.md"
 EVIDENCE_LINE="⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩"
 
+# Shared bootstrap for the Lean build tool: `ensure_lake` puts elan on PATH and
+# installs it if `lake` is missing (ADR-100, SPEC-100-A). Sourced relative to this
+# script so it resolves regardless of the caller's cwd.
+# shellcheck source=swarm/lib/ensure_lake.sh
+. "$(dirname "${BASH_SOURCE[0]}")/lib/ensure_lake.sh"
+
 # ------------------------------------------------------------------- logging
 
 log() {
@@ -1813,7 +1819,19 @@ submit_pr_tree() {
     return 1
   fi
   git -C "$prwt" add "$@" || return 1
-  git -C "$prwt" commit -q -m "$title" || return 1
+  # ADR-096: same independent-check verdict carry as queue_pr_tree — as a commit
+  # trailer (audit) and, since this path opens the PR in-process, appended to the
+  # PR body directly.
+  local -a ic_trailer=()
+  case "$title" in
+    prove\(*)
+      if [ -n "${INDEPENDENT_CHECK_VERDICT:-}" ]; then
+        ic_trailer=(-m "Independent-Check: $INDEPENDENT_CHECK_VERDICT")
+        body="$body"$'\n\n'"_Independent check (advisory, ADR-096): ${INDEPENDENT_CHECK_VERDICT}_"
+      fi
+      ;;
+  esac
+  git -C "$prwt" commit -q -m "$title" "${ic_trailer[@]}" || return 1
   # The proof branch is pushed to `origin` in both modes — origin is the canonical
   # repo on the write-access path, and the contributor's own fork in fork mode.
   git -C "$prwt" push -q origin "$branch" || return 1
@@ -1845,9 +1863,25 @@ queue_pr_tree() {
     return 1
   fi
   git -C "$prwt" add "$@" || return 1
-  git -C "$prwt" commit -q -m "$title" || return 1
+  # ADR-096: carry the advisory independent-check verdict to the dispatcher as a
+  # commit trailer (only on a prove commit, only when the check ran). The
+  # dispatcher reads it back from the branch and surfaces it on the PR. The title
+  # (commit subject) is unchanged, so the prove-title contract still holds.
+  local -a ic_trailer=()
+  case "$title" in
+    prove\(*) [ -n "${INDEPENDENT_CHECK_VERDICT:-}" ] && ic_trailer=(-m "Independent-Check: $INDEPENDENT_CHECK_VERDICT") ;;
+  esac
+  git -C "$prwt" commit -q -m "$title" "${ic_trailer[@]}" || return 1
   git -C "$prwt" push -q origin "$branch" || return 1
   return 0
+}
+
+# ADR-096: extract the advisory independent-check verdict trailer (if any) from a
+# branch's tip commit, as a one-line PR-body addendum. Empty when absent.
+independent_check_pr_note() {
+  local ref="$1" v
+  v="$(git log -1 --format=%b "$ref" 2>/dev/null | sed -n 's/^Independent-Check: //p' | head -1)"
+  [ -n "$v" ] && printf '\n\n_Independent check (advisory, ADR-096): %s_' "$v"
 }
 
 fetch_queued_prove_branches() {
@@ -1874,6 +1908,7 @@ dispatch_queued_proof_branch() {
   name="${title#*: }"
   name="${name% by *}"
   body="Queued proof dispatch (ADR-058, SPEC-007-A): branch \`$branch\` was produced by coordinated \`--prove\` in \`UNSORRY_SUBMIT_MODE=queue\` after local verification passed. The dispatcher opened this PR only after the submission governor admitted more verifier work. New library proof: \`$name\` for goal \`$goal\`."
+  body="$body$(independent_check_pr_note "$remote_ref")"
   if [ "$DRY_RUN" -eq 1 ]; then
     printf 'dry-run: would dispatch queued branch %s as "%s"\n' "$branch" "$title"
     return 0
@@ -2886,11 +2921,23 @@ seed_library_cache() {
 #   1. lake build UnsorryLibrary --wfail   (zero-sorry, zero-warning bar)
 #   2. lake exe axiom_audit Unsorry.<camel> (whitelist only, NO --allow-sorry)
 #   3. python3 -m tools.gate_a.check_library_options <root>/library
+# ADR-099 / SPEC-099-A §3: the suite verifier context for a goal, as the tab-separated
+# line `toolchain<TAB>mathlib<TAB>verify_dir<TAB>build_target`, or empty when the goal is
+# not a registered benchmark obligation. A benchmark goal proves at its SUITE's pin in
+# the suite's _verify lake project (already in this checkout), not the repo-wide pin.
+suite_context_for_goal() {
+  python3 -m tools.intake.suite_context "$1" --root "$2" 2>/dev/null
+}
+
 prove_local_verify() {
-  local root="$1" camel="$2"
+  local root="$1" camel="$2" lib_target="${3:-UnsorryLibrary}" do_audit="${4:-1}"
+  # ``library`` is relative to <root>: the repo root for an organic goal, the suite
+  # _verify project for a benchmark goal. The repo axiom_audit exe is absent in a suite
+  # package, so do_audit=0 there — Gate A's gate-a-benchmark leg (--wfail + forbidden
+  # tokens) verifies at the suite pin instead (ADR-099 §2).
   ( cd "$root" \
-    && lake build UnsorryLibrary --wfail \
-    && lake exe axiom_audit "Unsorry.$camel" \
+    && lake build "$lib_target" --wfail \
+    && { [ "$do_audit" != 1 ] || lake exe axiom_audit "Unsorry.$camel"; } \
     && python3 -m tools.gate_a.check_library_options library ) >/dev/null 2>&1
 }
 
@@ -2910,18 +2957,35 @@ run_proof() {
   PROOF_SOLVE_SECONDS=""
   PROOF_LAST_ERROR=""
   PROOF_LESSONS_USED=""
+  INDEPENDENT_CHECK_VERDICT=""
   proof_started="$(date +%s)"
   name="$(py_helper lean-name "$prwt/goals/$goal.lean")" || return 1
   stmt="$(py_helper lean-stmt "$prwt/goals/$goal.lean")" || return 1
-  target="library/Unsorry/$camel.lean"
-  binding="library/Unsorry/${camel}Binding.lean"
+  # ADR-099 / SPEC-099-A §3: a benchmark goal proves at its SUITE's pin in the suite
+  # verifier context (targets/<suite>/_verify — a lake project pinned to the suite's
+  # toolchain+mathlib, already committed in this checkout), not the repo-wide pin.
+  # Organic goals leave every variable at its repo default (empty context), so their
+  # path below is byte-identical to before.
+  local lib_rel="library" lib_target="UnsorryLibrary" do_audit=1 build_dir="$prwt" sctx vdir
+  sctx="$(suite_context_for_goal "$goal" "$prwt")"
+  if [ -n "$sctx" ]; then
+    vdir="$(printf '%s' "$sctx" | cut -f3)"
+    lib_rel="$vdir/library"
+    lib_target="$(printf '%s' "$sctx" | cut -f4)"
+    do_audit=0
+    build_dir="$prwt/$vdir"
+    log "benchmark goal $goal → proving at the suite pin in $vdir (target $lib_target); repo axiom_audit skipped — Gate A's gate-a-benchmark leg verifies at the suite pin (ADR-099)"
+  fi
+  target="$lib_rel/Unsorry/$camel.lean"
+  binding="$lib_rel/Unsorry/${camel}Binding.lean"
   # The PR worktree is a fresh checkout with no .lake (it is gitignored), so
-  # the mathlib oleans are absent and `lake build UnsorryLibrary --wfail` would
-  # otherwise recompile all of mathlib from source and blow the attempt budget
-  # (observed in phase1-run-001). Restore the prebuilt cache once, up front.
+  # the mathlib oleans are absent and `lake build … --wfail` would otherwise
+  # recompile all of mathlib from source and blow the attempt budget (observed in
+  # phase1-run-001). Restore the prebuilt cache once, up front, in the build dir
+  # (the suite _verify project for a benchmark goal — its own pin's cache).
   # Best-effort: a warm global cache makes this a ~20s no-op; on failure the
   # build still works, just slowly, so we warn rather than abort.
-  if ! ( cd "$prwt" && lake exe cache get ) >/dev/null 2>&1; then
+  if ! ( cd "$build_dir" && lake exe cache get ) >/dev/null 2>&1; then
     log "warning: 'lake exe cache get' failed in the prove worktree for $goal — verification may be slow"
   fi
   # cache get restores only *mathlib* oleans; the project's own UnsorryLibrary
@@ -3024,16 +3088,22 @@ Fix the module so both pass. Write the corrected $target."
     # theorem inhabits the GOAL's exact type. Built by prove_local_verify's
     # --wfail build below (and by Gate A in CI), so a proof of a weakened or
     # vacuous statement under the goal's name fails here, not just in review.
-    write_binding_module "$prwt" "$goal" "$camel" || { err="(could not emit binding obligation)"; continue; }
-    if prove_local_verify "$prwt" "$camel"; then
-      minimize_proof_imports "$prwt" "$camel"   # ADR-074: best-effort, never fails the proof
+    write_binding_module "$prwt" "$goal" "$camel" "$lib_rel" || { err="(could not emit binding obligation)"; continue; }
+    if prove_local_verify "$build_dir" "$camel" "$lib_target" "$do_audit"; then
+      # ADR-074/096 import-narrowing + kernel-diverse confirm are repo-pin-only
+      # best-effort/advisory passes; skip them for a benchmark goal (its module
+      # lives in the suite package, at the suite pin) — they never gate the proof.
+      if [ -z "$sctx" ]; then
+        minimize_proof_imports "$prwt" "$camel"   # ADR-074: best-effort, never fails the proof
+        independent_check_advisory "$prwt" "$camel"  # ADR-096: best-effort kernel-diverse confirm, never fails the proof
+      fi
       PROOF_SOLVE_SECONDS=$(( $(date +%s) - proof_started ))
       log "proof of $goal verified locally — statement bound (attempt $attempt)"
       return 0
     fi
     log "local verification of $goal failed (attempt $attempt)"
-    err="$( ( cd "$prwt" && lake build UnsorryLibrary --wfail \
-      && lake exe axiom_audit "Unsorry.$camel" ) 2>&1 | tail -n 40 )"
+    err="$( ( cd "$build_dir" && lake build "$lib_target" --wfail \
+      && { [ "$do_audit" != 1 ] || lake exe axiom_audit "Unsorry.$camel"; } ) 2>&1 | tail -n 40 )"
   done
   PROOF_SOLVE_SECONDS=$(( $(date +%s) - proof_started ))
   # ADR-024: the final attempt's verifier output becomes this run's lesson,
@@ -3074,6 +3144,75 @@ minimize_proof_imports() {
   return 0
 }
 
+# ADR-096 Phase 3a: advisory kernel-diverse independent check. Opt-in via
+# UNSORRY_INDEPENDENT_CHECK (default off), NON-GATING. After a proof verifies
+# locally, re-check it with an independent Lean kernel (nanoda) over a
+# declaration-scoped lean4export of the proved theorem — a second-kernel
+# confirmation. ADVISORY ONLY: it admits nothing and is strictly subordinate to
+# ADR-049's p=1 Lean gate (which still runs in CI regardless). It NEVER fails the
+# prove loop — if the tools (LEAN4EXPORT_BIN / NANODA_BIN) are absent or the check
+# errors, it logs and returns 0. A nanoda disagreement is surfaced as a warning,
+# never a block. Mirrors minimize_proof_imports's best-effort pattern.
+independent_check_advisory() {
+  env_truthy "${UNSORRY_INDEPENDENT_CHECK:-}" || return 0
+  local prwt="$1" camel="$2"
+  local l4e="${LEAN4EXPORT_BIN:-}" nan="${NANODA_BIN:-}"
+  if [ -z "$l4e" ] || [ -z "$nan" ] || [ ! -x "$nan" ]; then
+    log "independent-check: requested but lean4export/nanoda unavailable (set LEAN4EXPORT_BIN and an executable NANODA_BIN) — skipping (ADR-096)"
+    return 0
+  fi
+  local out
+  out="$( ( cd "$prwt" && python3 -m tools.independent_check \
+            --module "Unsorry.$camel" \
+            --lean4export-cmd "lake env $l4e" --nanoda-cmd "$nan" ) 2>&1 )" || true
+  [ -n "$out" ] && log "$out"
+  # Capture the one-line verdict (drop the "independent-check: <module> " prefix
+  # and any ::warning:: noise) so the proof commit can carry it to the PR.
+  local verdict
+  verdict="$(printf '%s\n' "$out" | sed -n 's/^independent-check: [^ ]* //p' | head -1)"
+  [ -n "$verdict" ] && INDEPENDENT_CHECK_VERDICT="$verdict"
+  return 0
+}
+
+# ADR-096: the verdict rides the proof commit as an `Independent-Check:` trailer
+# and the dispatcher surfaces it on the PR via independent_check_pr_note. A commit
+# WITHOUT the trailer yields an empty note (a normal proof shows nothing extra).
+test_independent_check_pr_note_roundtrip() {
+  local d; d="$(mktemp -d)" || return 1
+  ( git -C "$d" init -q \
+    && git -C "$d" -c user.email=t@t -c user.name=t commit -q --allow-empty \
+         -m "prove(g): foo by a" -m "Independent-Check: nanoda=ok decls=3965 target=✓ 0.4s" ) \
+    || { rm -rf "$d"; log "  setup failed"; return 1; }
+  local note
+  note="$(cd "$d" && independent_check_pr_note HEAD)"
+  case "$note" in
+    *"advisory, ADR-096"*"nanoda=ok decls=3965 target=✓"*) ;;
+    *) rm -rf "$d"; log "  trailer not surfaced: [$note]"; return 1 ;;
+  esac
+  # a plain prove commit (no trailer) → empty note
+  ( git -C "$d" -c user.email=t@t -c user.name=t commit -q --allow-empty -m "prove(g2): bar by a" )
+  note="$(cd "$d" && independent_check_pr_note HEAD)"
+  rm -rf "$d"
+  [ -z "$note" ] || { log "  expected empty note for a plain proof, got [$note]"; return 1; }
+  return 0
+}
+
+# ADR-096: the independent check is opt-in and never breaks proving. Off by
+# default → no-op exit 0; on but tools absent → skip (no python invoked) exit 0.
+test_independent_check_advisory_opt_in() {
+  local ran=0
+  python3() { ran=1; return 0; }  # tripwire: must NOT be invoked in either case
+  # default (unset) → no-op, returns 0, python untouched
+  ( unset UNSORRY_INDEPENDENT_CHECK; independent_check_advisory /tmp/x Foo ) \
+    || { log "  default-off should return 0"; unset -f python3; return 1; }
+  # on, but NANODA_BIN absent → skips gracefully, returns 0, python untouched
+  ( UNSORRY_INDEPENDENT_CHECK=1 LEAN4EXPORT_BIN='' NANODA_BIN='' independent_check_advisory /tmp/x Foo ) \
+    || { log "  on-but-tools-absent should return 0"; unset -f python3; return 1; }
+  [ "$ran" = 0 ] || { log "  python must not run without the tools present"; unset -f python3; return 1; }
+  unset -f python3
+  return 0
+}
+
 # ADR-011 / SPEC-011-A: write library/Unsorry/<Camel>Binding.lean — a kernel
 # obligation `theorem <name>_binding_check : <∀-goal-type> := <name>`. It
 # type-checks iff the proved theorem's type is definitionally equal to the
@@ -3081,7 +3220,7 @@ minimize_proof_imports() {
 # insertion; a weaker/vacuous one does not). Built under --wfail, so the kernel
 # itself performs the defeq binding — no metaprogram, no name clash.
 write_binding_module() {
-  local prwt="$1" goal="$2" camel="$3" name ftype opens
+  local prwt="$1" goal="$2" camel="$3" lib_rel="${4:-library}" name ftype opens
   name="$(py_helper lean-name "$prwt/goals/$goal.lean")" || return 1
   ftype="$(py_helper lean-foralltype "$prwt/goals/$goal.lean")" || return 1
   # The goal's own `open` commands travel with the type (a statement written
@@ -3100,7 +3239,7 @@ write_binding_module() {
     # type-checking, not lints.
     printf 'set_option linter.unusedVariables false in\n'
     printf 'theorem %s_binding_check : %s := %s\n' "$name" "$ftype" "$name"
-  } > "$prwt/library/Unsorry/${camel}Binding.lean"
+  } > "$prwt/$lib_rel/Unsorry/${camel}Binding.lean"
 }
 
 # Persist one terminal proof-run fact in the same PR as its durable outcome.
@@ -3169,9 +3308,20 @@ check_in_proof() {
   name="$(py_helper lean-name "$prwt/goals/$goal.lean")" || return 1
   sha="$(py_helper lean-sha "$prwt/goals/$goal.lean")" || return 1
 
-  mkdir -p "$prwt/library/index" || return 1
+  # ADR-099 / SPEC-099-A §3: a benchmark proof lives in its suite's _verify package
+  # (kernel-verified at the suite pin), not the repo library — route the index +
+  # binding + staged tree accordingly. Organic goals stay byte-identical (empty sctx).
+  local lib_rel="library" stage_root="library" sctx vdir
+  sctx="$(suite_context_for_goal "$goal" "$prwt")"
+  if [ -n "$sctx" ]; then
+    vdir="$(printf '%s' "$sctx" | cut -f3)"
+    lib_rel="$vdir/library"
+    stage_root="$(printf '%s' "$vdir" | cut -d/ -f1)"  # "targets"
+  fi
+
+  mkdir -p "$prwt/$lib_rel/index" || return 1
   py_helper render-index "$sha" "$goal" "$name" "${provenance[@]}" \
-    > "$prwt/library/index/$sha.aisp" || return 1
+    > "$prwt/$lib_rel/index/$sha.aisp" || return 1
   write_proof_run_record "$prwt" "$goal" proved "$sha" || return 1
   py_helper rewrite-goal "$prwt/goals/$goal.aisp" proved "$sha" || return 1
   # ⊕ a merge reinforces the goal's pattern (+1 affinity, ADR-010); folds
@@ -3180,20 +3330,20 @@ check_in_proof() {
   # The self-check binding (run_proof) is not committed: Gate A REGENERATES the
   # binding obligation from the goal so a contributor cannot weaken or omit it
   # (ADR-011, SPEC-011-A). Remove it from the PR tree.
-  rm -f "$prwt/library/Unsorry/${camel}Binding.lean"
+  rm -f "$prwt/$lib_rel/Unsorry/${camel}Binding.lean"
 
   branch="$(git -C "$prwt" rev-parse --abbrev-ref HEAD)" || return 1
   title="prove($goal): $name by $AGENT_ID"
-  body="Automated Phase-1 proof of goal \`$goal\` by agent \`$AGENT_ID\` (ADR-006, ADR-007, SPEC-007-A). New library module \`library/Unsorry/$camel.lean\` re-states and proves \`$name\`; built with \`lake build UnsorryLibrary --wfail\` and audited with \`lake exe axiom_audit Unsorry.$camel\` (whitelist only). Index entry keyed by the content address of the goal's Lean statement."
+  body="Automated Phase-1 proof of goal \`$goal\` by agent \`$AGENT_ID\` (ADR-006, ADR-007, SPEC-007-A). New library module \`$lib_rel/Unsorry/$camel.lean\` re-states and proves \`$name\`; built with \`lake build --wfail\` at the suite/repo pin. Index entry keyed by the content address of the goal's Lean statement."
   if [ "$UNSORRY_SUBMIT_MODE" = queue ]; then
-    queue_pr_tree "$prwt" "$branch" "$title" library goals proof-runs || return 1
+    queue_pr_tree "$prwt" "$branch" "$title" "$stage_root" goals proof-runs || return 1
     emit_event proved "$goal"
     emit_event queued "$goal"
     log "queued verified proof branch $branch for $goal (sha ${sha:0:12})"
     return 0
   fi
 
-  submit_pr_tree "$prwt" "$branch" "$title" "$body" library goals proof-runs || return 1
+  submit_pr_tree "$prwt" "$branch" "$title" "$body" "$stage_root" goals proof-runs || return 1
   emit_event proved "$goal"
   emit_event pr-opened "$goal"
   log "opened auto-merge prove PR for $goal (sha ${sha:0:12})"
@@ -5440,6 +5590,32 @@ test_seed_library_cache() {
   return "$rc"
 }
 
+# ADR-099 / SPEC-099-A §3: a benchmark goal resolves to its suite's verifier context
+# (toolchain/mathlib/_verify/target); an organic goal resolves to empty so the prove
+# path keeps the repo pin. Exercises the run_proof / check_in_proof routing seam.
+test_suite_context_for_goal() {
+  local root rc=0 out
+  root="$(mktemp -d)"
+  mkdir -p "$root/targets/minif2f-v1"
+  {
+    printf '𝔸5.1.skeleton.minif2f-v1@2026-06-25\n'
+    printf 'γ≔unsorry.skeleton\n'
+    printf '⟦Μ:Manifest⟧{top≜minif2f-v1-suite;supplier≜acme;domain≜math;toolchain≜leanprover/lean4:v4.24.0;mathlib≜rev24}\n'
+    printf '⟦Σ:Subs⟧{sub₁≜⟨id≜minif2f-a,sha≜%s⟩}\n' "$(printf 'a%.0s' $(seq 64))"
+    printf '⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩\n'
+  } > "$root/targets/minif2f-v1/skeleton.aisp"
+  # a registered obligation → resolves to the suite verifier context
+  out="$(suite_context_for_goal "minif2f-a" "$root")"
+  case "$out" in
+    "leanprover/lean4:v4.24.0"$'\t'"rev24"$'\t'"targets/minif2f-v1/_verify"$'\t'"Minif2fV1") ;;
+    *) log "  benchmark goal context wrong: [$out]"; rc=1 ;;
+  esac
+  # an organic goal → empty (keeps the repo pin path)
+  [ -z "$(suite_context_for_goal "some-organic-goal" "$root")" ] || { log "  organic goal not empty"; rc=1; }
+  rm -rf "$root"
+  return "$rc"
+}
+
 test_open_pr_claim_guard() {
   local rc
   # ADR-017: an open prove PR for exactly this goal → skip it (rc 0). gh is
@@ -5887,6 +6063,7 @@ run_self_tests() {
     test_sweep_detection
     test_goal_rewrite
     test_seed_library_cache
+    test_suite_context_for_goal
     test_convergence_rewrite
     test_record_validation
     test_require_main_checkout
@@ -5960,6 +6137,8 @@ run_self_tests() {
     test_demote_open_prove_records_telemetry_only
     test_floored_recompose_noop_records_telemetry_only
     test_render_decomp_gateb
+    test_independent_check_advisory_opt_in
+    test_independent_check_pr_note_roundtrip
   )
   local failures=0 t
   for t in "${tests[@]}"; do
@@ -5995,6 +6174,10 @@ PROOF_MODEL_USED=""
 PROOF_EFFORT_USED=""
 PROOF_ATTEMPTS_USED=""
 PROOF_SOLVE_SECONDS=""
+# ADR-096: the advisory independent-check verdict for the current proof (empty
+# when the check did not run). Set by independent_check_advisory, attached as a
+# commit trailer on the proof commit so the dispatcher can surface it on the PR.
+INDEPENDENT_CHECK_VERDICT=""
 
 # ADR-068 fork-native contribution mode. A contributor with no write access to
 # the canonical upstream runs the prover from a fork: it proves CLAIMLESS (no
@@ -6307,7 +6490,7 @@ main() {
     # launching a provider; retain the caller's remaining PATH entries.
     PATH="/opt/homebrew/bin:/usr/local/bin:$HOME/.elan/bin:$PATH"
     export PATH
-    require_cmd lake
+    ensure_lake || die_config "the Lean build tool 'lake' is required and could not be installed automatically"
     case "$UNSORRY_PROVIDER" in
       claude) require_cmd claude ;;
       codex) require_cmd codex ;;
@@ -6423,7 +6606,8 @@ main() {
     [ "$PROVE" -eq 1 ] && resolve_solver
     [ "$PROVE" -eq 1 ] && guard_solver_credit
     [ "$PROVE" -eq 1 ] && resolve_git_identity
-    [ "$PROVE" -eq 1 ] && require_cmd lake  # prove verify builds locally
+    # prove verify builds locally — install lake (elan) if it is missing
+    [ "$PROVE" -eq 1 ] && { ensure_lake || die_config "the Lean build tool 'lake' is required and could not be installed automatically"; }
   fi
 
   local effort_disp="${UNSORRY_EFFORT:-default}"

@@ -209,32 +209,27 @@ def audit(
         print("no library or goal modules found", file=sys.stderr)
         return 2
 
-    scope = AuditScope(library, goals, "full")
-    if base is not None:
-        scoped = scoped_audit_targets(root, base, library, goals, runner)
-        if scoped is None:
-            pass  # reason already logged; full audit below
-        else:
-            scope = scoped
-            print(
-                f"incremental axiom audit: {len(scope.library)} of {len(library)} "
-                f"library and {len(scope.goals)} of {len(goals)} goal module(s)"
-            )
-            if not scope.library and not scope.goals:
-                output.write_text("[]\n", encoding="utf-8")
-                elapsed = time.perf_counter() - started
-                print("axiom audit: no changed library or goal modules — empty report")
-                append_step_summary(
-                    "Gate A axiom audit",
-                    (
-                        ("Scope", scope.mode),
-                        ("Library modules", f"0 of {len(library)}"),
-                        ("Goal modules", f"0 of {len(goals)}"),
-                        ("Commands", 0),
-                        ("Elapsed", fmt_duration(elapsed)),
-                    ),
-                )
-                return 0
+    scope = compute_audit_targets(root, base, runner)
+    if scope.mode == "incremental":
+        print(
+            f"incremental axiom audit: {len(scope.library)} of {len(library)} "
+            f"library and {len(scope.goals)} of {len(goals)} goal module(s)"
+        )
+    if scope.mode == "none":
+        output.write_text("[]\n", encoding="utf-8")
+        elapsed = time.perf_counter() - started
+        print("axiom audit: no changed library or goal modules — empty report")
+        append_step_summary(
+            "Gate A axiom audit",
+            (
+                ("Scope", scope.mode),
+                ("Library modules", f"0 of {len(library)}"),
+                ("Goal modules", f"0 of {len(goals)}"),
+                ("Commands", 0),
+                ("Elapsed", fmt_duration(elapsed)),
+            ),
+        )
+        return 0
 
     build = runner(
         ("lake", "build", "axiom_audit"),
@@ -464,6 +459,34 @@ def scoped_audit_targets(
     )
 
 
+def compute_audit_targets(
+    root: Path, base: str | None, runner: Runner = subprocess.run
+) -> AuditScope:
+    """The modules an axiom audit must cover, as an ``AuditScope`` whose ``mode`` is:
+
+    - ``"full"``        — ``base`` is None, or the diff is untrusted / global-impact
+      (``forces_full_audit``), so the FULL on-disk library + goals are audited
+      (fail-closed: an unscopeable base never yields an empty set).
+    - ``"incremental"`` — ``base`` given and scoped to the changed library closure
+      (ADR-033) plus the changed goals.
+    - ``"none"``        — ``base`` given and no library or goal module changed.
+
+    This is the single source of truth for *what to audit*; the serial ``audit``
+    and the sharded ``plan_audit_shards`` / ``audit_shard`` all read it, so a shard
+    can never audit a different set than a full audit would (the soundness coverage
+    invariant, ADR-048/049/091)."""
+    library = module_names(root, "library")
+    goals = module_names(root, "goals")
+    if base is None:
+        return AuditScope(library, goals, "full")
+    scoped = scoped_audit_targets(root, base, library, goals, runner)
+    if scoped is None:
+        return AuditScope(library, goals, "full")  # untrusted/global-impact — fail-closed
+    if not scoped.library and not scoped.goals:
+        return AuditScope([], [], "none")
+    return scoped
+
+
 def compute_replay_targets(
     root: Path, base: str | None, runner: Runner = subprocess.run
 ) -> tuple[list[str], str]:
@@ -631,29 +654,185 @@ def replay_shard(
     return 0
 
 
+def plan_audit_shards(
+    root: Path, shards: int, base: str | None, runner: Runner = subprocess.run
+) -> dict[str, object]:
+    """Plan a sharded axiom audit (ADR-091): compute the audit scope and how many
+    disjoint shards it splits into. Emits `{shards, count, mode}` where `shards` is
+    the matrix index list `[0, …, effective-1]`, `effective = min(shards, count)`,
+    and `count = len(library) + len(goals)` of the scope. `count == 0` (no change)
+    yields an empty matrix so the matrix job is skipped. Each audit_shard re-derives
+    its own slice from the same scope + shard count, so no module list is passed
+    between jobs (only the git SHA is shared — keeping the auditor's inputs
+    locally-derived, the ADR-049 invariant)."""
+    scope = compute_audit_targets(root, base, runner)
+    count = len(scope.library) + len(scope.goals)
+    effective = min(max(shards, 1), count) if count else 0
+    return {"shards": list(range(effective)), "count": count, "mode": scope.mode}
+
+
+def audit_shard(
+    root: Path,
+    shard_index: int,
+    shard_total: int,
+    output: Path,
+    runner: Runner = subprocess.run,
+    base: str | None = None,
+) -> int:
+    """Axiom-audit one shard of the audit scope (ADR-091). The scope is recomputed
+    from source (same SHA → identical set) and the ordered target list
+    `library ++ goals` is partitioned by split_evenly into `shard_total` disjoint,
+    covering slices; this audits slice `shard_index`, separating it back into the
+    plain (`axiom_audit`) and `--allow-sorry` (goal) invocations. Every module lands
+    in exactly one shard, so across all shards each module is audited exactly once —
+    the same guarantee the serial audit gives. An out-of-range index is a no-op that
+    writes an empty `[]` fragment, not an error. The shard's combined JSON report is
+    written to `output`; `combine_audit_reports` merges the per-shard fragments."""
+    started = time.perf_counter()
+    scope = compute_audit_targets(root, base, runner)
+    targets = list(scope.library) + list(scope.goals)
+    if not targets:
+        output.write_text("[]\n", encoding="utf-8")
+        print(f"axiom audit shard {shard_index}: nothing to audit ({scope.mode})")
+        return 0
+    parts = split_evenly(targets, shard_total)
+    if not 0 <= shard_index < len(parts):
+        output.write_text("[]\n", encoding="utf-8")
+        print(
+            f"axiom audit shard {shard_index}: out of range "
+            f"({len(parts)} shard(s) for {len(targets)} module(s)) — empty"
+        )
+        return 0
+    shard_targets = parts[shard_index]
+    library_set = set(scope.library)
+    goal_set = set(scope.goals)
+    shard_library = [m for m in shard_targets if m in library_set]
+    shard_goals = [m for m in shard_targets if m in goal_set]
+
+    build = runner(
+        ("lake", "build", "axiom_audit"),
+        check=False,
+        text=True,
+        capture_output=True,
+    )
+    if build.returncode != 0:
+        print(build.stdout, end="", file=sys.stderr)
+        print(build.stderr, end="", file=sys.stderr)
+        return build.returncode
+
+    commands: list[Command] = []
+    if shard_library:
+        commands.append(
+            Command(("lake", "exe", "axiom_audit", *shard_library), f"library audit shard {shard_index}")
+        )
+    if shard_goals:
+        commands.append(
+            Command(
+                ("lake", "exe", "axiom_audit", "--allow-sorry", *shard_goals),
+                f"goal audit shard {shard_index}",
+            )
+        )
+    # Serial within a shard: one mathlib-resident audit process at a time (cross-
+    # *runner* parallelism is the shard matrix; intra-runner concurrency OOMs).
+    results = run_commands(commands, 1, runner)
+    if report_failures(commands, results):
+        return 1
+
+    combined: list[dict[str, object]] = []
+    for command, result in zip(commands, results, strict=True):
+        try:
+            report = json.loads(result.stdout)
+        except json.JSONDecodeError as exc:
+            print(f"{command.label} returned invalid JSON: {exc}", file=sys.stderr)
+            return 1
+        if not isinstance(report, list):
+            print(f"{command.label} returned a non-array report", file=sys.stderr)
+            return 1
+        combined.extend(report)
+
+    combined.sort(key=lambda item: str(item.get("decl", "")))
+    output.write_text(json.dumps(combined, indent=2) + "\n", encoding="utf-8")
+    elapsed = time.perf_counter() - started
+    print(
+        f"audited shard {shard_index + 1}/{len(parts)}: {len(shard_library)} library "
+        f"+ {len(shard_goals)} goal module(s) ({scope.mode}, {fmt_duration(elapsed)})"
+    )
+    append_step_summary(
+        "Gate A axiom audit (shard)",
+        (
+            ("Shard", f"{shard_index + 1} of {len(parts)}"),
+            ("Library modules", len(shard_library)),
+            ("Goal modules", len(shard_goals)),
+            ("Scope", scope.mode),
+            ("Elapsed", fmt_duration(elapsed)),
+        ),
+    )
+    return 0
+
+
+def combine_audit_reports(fragments: Sequence[Path], output: Path) -> int:
+    """Merge the per-shard ``axiom-report.json`` fragments into the unified report
+    (ADR-091). Concatenates the JSON arrays and sorts by ``decl`` — identical to the
+    serial ``audit``'s combined report — so the footprint comment is shard-count-
+    independent. A fragment that is missing or not a JSON array fails closed."""
+    combined: list[dict[str, object]] = []
+    for fragment in fragments:
+        try:
+            report = json.loads(Path(fragment).read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            print(f"audit fragment {fragment} unreadable: {exc}", file=sys.stderr)
+            return 1
+        if not isinstance(report, list):
+            print(f"audit fragment {fragment} is not a JSON array", file=sys.stderr)
+            return 1
+        combined.extend(report)
+    combined.sort(key=lambda item: str(item.get("decl", "")))
+    Path(output).write_text(json.dumps(combined, indent=2) + "\n", encoding="utf-8")
+    print(f"combined {len(fragments)} audit fragment(s): {len(combined)} declaration(s)")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("audit", "replay", "plan", "replay-shard"))
+    parser.add_argument(
+        "command",
+        choices=(
+            "audit",
+            "replay",
+            "plan",
+            "replay-shard",
+            "plan-audit",
+            "audit-shard",
+            "combine-audit",
+        ),
+    )
     parser.add_argument("--jobs", type=int, default=4)
     parser.add_argument("--output", type=Path, default=Path("axiom-report.json"))
     parser.add_argument("--root", type=Path, default=Path("."))
     parser.add_argument(
+        "--reports-dir",
+        type=Path,
+        default=None,
+        help="combine-audit: directory of per-shard JSON report fragments (merged "
+        "recursively, decl-sorted, into --output).",
+    )
+    parser.add_argument(
         "--shards",
         type=int,
         default=8,
-        help="plan: max parallel replay shards (capped at the module count).",
+        help="plan / plan-audit: max parallel shards (capped at the module count).",
     )
     parser.add_argument(
         "--shard-index",
         type=int,
         default=0,
-        help="replay-shard: which shard (0-based) of --shard-total to replay.",
+        help="replay-shard / audit-shard: which shard (0-based) of --shard-total.",
     )
     parser.add_argument(
         "--shard-total",
         type=int,
         default=1,
-        help="replay-shard: total shard count (must equal plan's --shards).",
+        help="replay-shard / audit-shard: total shard count (must equal --shards).",
     )
     parser.add_argument(
         "--base",
@@ -675,6 +854,24 @@ def main(argv: list[str] | None = None) -> int:
             parser.error("--shards must be positive")
         print(json.dumps(plan_shards(args.root, args.shards, args.base)))
         return 0
+    if args.command == "plan-audit":
+        if args.shards < 1:
+            parser.error("--shards must be positive")
+        print(json.dumps(plan_audit_shards(args.root, args.shards, args.base)))
+        return 0
+    if args.command == "audit-shard":
+        if args.shard_total < 1:
+            parser.error("--shard-total must be positive")
+        return audit_shard(
+            args.root, args.shard_index, args.shard_total, args.output, base=args.base
+        )
+    if args.command == "combine-audit":
+        if args.reports_dir is None:
+            parser.error("combine-audit needs --reports-dir")
+        fragments = sorted(Path(args.reports_dir).rglob("*.json"))
+        if not fragments:
+            parser.error(f"no .json fragments under {args.reports_dir}")
+        return combine_audit_reports(fragments, args.output)
     # replay-shard
     if args.shard_total < 1:
         parser.error("--shard-total must be positive")

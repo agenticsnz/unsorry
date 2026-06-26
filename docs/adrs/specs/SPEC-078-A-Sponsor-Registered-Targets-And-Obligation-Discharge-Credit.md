@@ -1,8 +1,8 @@
 # SPEC-078-A: Sponsor-Registered Targets and Obligation-Discharge Credit
 
-Implements: [ADR-078](../ADR-078-Sponsor-Registered-Targets-And-Obligation-Discharge-Credit.md) · Status: Draft (proposed with ADR-078) · Updated: 2026-06-20 · Refines [SPEC-035-A](SPEC-035-A-Non-Trivial-Theorem-Enforcement.md), reuses [SPEC-012-A](SPEC-012-A-Backlog-Sourcing.md)
+Implements: [ADR-078](../ADR-078-Sponsor-Registered-Targets-And-Obligation-Discharge-Credit.md) · Status: Accepted · Updated: 2026-06-24 · Refines [SPEC-035-A](SPEC-035-A-Non-Trivial-Theorem-Enforcement.md), reuses [SPEC-012-A](SPEC-012-A-Backlog-Sourcing.md)
 
-This SPEC is a design sketch accompanying a **Proposed** ADR. It fixes enough of the "how" to argue about concretely; the numbers (credit weights, the completion bonus) are placeholders to be set with a worked example before any board change ships.
+This SPEC accompanies an **Accepted** ADR (#5643); the mechanism is fixed. The numeric weights (credit weights, the completion bonus `B`) remain **deferred placeholders** to be set with a worked example before any organic-board change ships (ADR-078 §55). The benchmark track (ADR-092) uses per-obligation credit on a segregated cohort and does not depend on them.
 
 ## 1. The target registry
 
