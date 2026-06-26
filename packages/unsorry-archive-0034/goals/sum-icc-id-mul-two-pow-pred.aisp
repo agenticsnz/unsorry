@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-icc-id-mul-two-pow-pred@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-icc-id-mul-two-pow-pred
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-icc-id-mul-two-pow-pred.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-icc-id-mul-two-pow-pred.lean
+  sha≜32656fe78c35026ad41f49cb3b52b6cc0822544656b8593b21ec4c77b0e3595c
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

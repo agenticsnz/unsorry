@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜tangent-line-cube-trick
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/tangent-line-cube-trick.md
+  src≜packages/unsorry-archive-0039/backlog/tangent-line-cube-trick.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/tangent-line-cube-trick.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0039/goals/tangent-line-cube-trick.lean
+  sha≜008484f8fcad689b114574530510d12d0b37ba0df38519a404feba87229a2d7b
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -132,7 +132,7 @@ passes through; SPEC-054-A extends its admissibility selector with per-owner ope
 PR caps, a denylist, trial/trusted tiering, and an emergency pause. This delivers
 most of ADR-054's abuse control by reusing existing infrastructure.
 
-### 8.3 Sharded fork selection (2c)
+### 8.3 Sharded fork selection (2c) — **implemented (ADR-076)**
 
 A second claimless mitigation, still **no lease**: each fork deterministically
 owns a slice of the open-goal space, `shard = H(agent_id) mod K`, and selects
@@ -141,6 +141,12 @@ kernel + first-merge-wins remain the backstop). This lowers the probability two
 forks pick the same goal without any coordination round-trip. `K` and the
 fall-through policy (a fork may step outside its shard when its slice is dry) are
 policy values.
+
+> **Shipped:** [ADR-076](../ADR-076-Sharded-Fork-Goal-Selection.md) /
+> [SPEC-076-A](SPEC-076-A-Sharded-Fork-Goal-Selection.md). `H = cksum` (CRC-32,
+> cross-machine stable), `K = UNSORRY_FORK_SHARDS` (default 8); the fork's ranked
+> candidate list is reordered in-shard-first with rank-preserving fall-through.
+> Composes with the #3164 co-located goal lock.
 
 ### 8.4 The fork-writable lease (2d)
 

@@ -1,0 +1,20 @@
+𝔸5.1.goal.gzmod-140-pow-fifteen-sub-pow-three@2026-06-18
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gzmod-140-pow-fifteen-sub-pow-three
+  phase≜prove
+  status≜archived
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜packages/unsorry-archive-0037/backlog/gzmod-140-pow-fifteen-sub-pow-three.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜packages/unsorry-archive-0037/goals/gzmod-140-pow-fifteen-sub-pow-three.lean
+  sha≜98c96fa93249632631e3eb98ee2619660bfd95baefa41da16e0f51c0cc672b25
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

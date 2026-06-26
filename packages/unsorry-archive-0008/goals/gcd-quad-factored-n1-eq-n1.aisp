@@ -1,0 +1,20 @@
+𝔸5.1.goal.gcd-quad-factored-n1-eq-n1@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gcd-quad-factored-n1-eq-n1
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/gcd-quad-factored-n1-eq-n1.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/gcd-quad-factored-n1-eq-n1.lean
+  sha≜f3f5db6b6d94637f6ba8e13001fbb369dd29d4a63e7c1fee0531ad30b30ffce8
+  aff≜-10
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

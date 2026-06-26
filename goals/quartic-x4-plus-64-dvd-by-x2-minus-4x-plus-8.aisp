@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜quartic-x4-plus-64-dvd-by-x2-minus-4x-plus-8
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/quartic-x4-plus-64-dvd-by-x2-minus-4x-plus-8.md
+  src≜packages/unsorry-archive-0012/backlog/quartic-x4-plus-64-dvd-by-x2-minus-4x-plus-8.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/quartic-x4-plus-64-dvd-by-x2-minus-4x-plus-8.lean
+  lean≜packages/unsorry-archive-0012/goals/quartic-x4-plus-64-dvd-by-x2-minus-4x-plus-8.lean
   sha≜23fafd7ff4117e4bb83e43e411020f4bf55a3d0a17e83eabb66da43b1b2779ad
   aff≜-9
 }

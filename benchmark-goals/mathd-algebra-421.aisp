@@ -1,0 +1,20 @@
+𝔸5.1.goal.mathd-algebra-421@2026-06-24
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜mathd-algebra-421
+  phase≜prove
+  status≜open
+  difficulty≜4
+}
+⟦Σ:Source⟧{
+  src≜backlog/mathd-algebra-421.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜benchmark-goals/mathd-algebra-421.lean
+  sha≜∅
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

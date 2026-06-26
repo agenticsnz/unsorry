@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜gcd-factorial-succ-eq-factorial
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/gcd-factorial-succ-eq-factorial.md
+  src≜packages/unsorry-archive-0008/backlog/gcd-factorial-succ-eq-factorial.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/gcd-factorial-succ-eq-factorial.lean
+  lean≜packages/unsorry-archive-0008/goals/gcd-factorial-succ-eq-factorial.lean
   sha≜2e37000c5449248ba58b231974c96c2d1a7f66be09d9757ae7be7826b26b2ee0
   aff≜-10
 }

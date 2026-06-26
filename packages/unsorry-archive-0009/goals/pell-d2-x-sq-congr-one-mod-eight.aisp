@@ -1,0 +1,20 @@
+𝔸5.1.goal.pell-d2-x-sq-congr-one-mod-eight@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜pell-d2-x-sq-congr-one-mod-eight
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/pell-d2-x-sq-congr-one-mod-eight.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/pell-d2-x-sq-congr-one-mod-eight.lean
+  sha≜d339d8b436311775ac8257e4721b887452a734c46a96d33b6bd32522b7f0a6a1
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -1,0 +1,8 @@
+𝔸5.1.lemma.8004635211c3@2026-06-16
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜8004635211c3628a0ebf34a75fa07a83331a6c25f2762c6be29753e6d5a2dc55; goal≜sum-range-sq-add-one-mul-two-pow-closed; name≜sum_range_sq_add_one_mul_two_pow_closed}
+⟦Σ:Source⟧{src≜goals/sum-range-sq-add-one-mul-two-pow-closed.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜python; model≜sympy; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

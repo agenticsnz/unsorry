@@ -1,0 +1,20 @@
+𝔸5.1.goal.shift-square-sum-coeff-thirtysix@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜shift-square-sum-coeff-thirtysix
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/shift-square-sum-coeff-thirtysix.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/shift-square-sum-coeff-thirtysix.lean
+  sha≜43ec3d9c46abe3ddce9c24d74fc903eea9586ae33b77a27ed0689a978f1cbe2c
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.70;τ≜◊⁺⟩

@@ -1,0 +1,8 @@
+𝔸5.1.lemma.26ca16622be6@2026-06-19
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜26ca16622be6408f419d35c63ceed6e9e175f25396f0252691d072669ab50fba; goal≜gbinom-falling-three-fact-dvd; name≜gbinom_falling_three_fact_dvd}
+⟦Σ:Source⟧{src≜goals/gbinom-falling-three-fact-dvd.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜python; model≜sympy; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

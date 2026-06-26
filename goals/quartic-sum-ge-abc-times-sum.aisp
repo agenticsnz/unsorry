@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜quartic-sum-ge-abc-times-sum
   phase≜prove
-  status≜proved
-  difficulty≜2
+  status≜archived
+  difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/quartic-sum-ge-abc-times-sum.md
+  src≜packages/unsorry-archive-0013/backlog/quartic-sum-ge-abc-times-sum.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/quartic-sum-ge-abc-times-sum.lean
+  lean≜packages/unsorry-archive-0013/goals/quartic-sum-ge-abc-times-sum.lean
   sha≜4c1f20c099d86384db9029e66f6d64d9ca7e8ec8e2ae3f338abe98572a883c5e
   aff≜-19
 }
