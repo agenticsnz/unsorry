@@ -1959,71 +1959,13 @@ queued_branch_refs() {
 # verbatim. Disable with `UNSORRY_FAIR_DISPATCH=0` (reverts to lexical).
 fair_dispatch_order() {
   [ "${UNSORRY_FAIR_DISPATCH:-1}" = 0 ] && { cat; return 0; }
-  # Program via process substitution (not a stdin heredoc) so the piped refs stay
-  # on this command's stdin for the script to read.
-  python3 <(cat <<'PY'
-import sys, json, subprocess, collections
-
-def board_map():
-    """branch -> solver key, from the authoritative queue board on origin/main."""
-    try:
-        out = subprocess.run(["git", "show", "origin/main:docs/queue.json"],
-                             capture_output=True, text=True, check=True).stdout
-        data = json.loads(out)
-    except Exception:
-        return {}
-    m = {}
-    for grp in data.get("solvers", []):
-        key = grp.get("github") or grp.get("solver") or "unknown"
-        for e in grp.get("queued", []):
-            b = e.get("branch")
-            if b:
-                m[b] = "solver:" + key
-    return m
-
-def token_key(ref):
-    # [origin/]queued/prove/<goal>/<agent-id>-<hex> -> agent:<agent-id>
-    seg = ref.rsplit("/", 1)[-1]
-    return "agent:" + (seg.rsplit("-", 1)[0] if "-" in seg else seg)
-
-refs = [ln.rstrip("\n") for ln in sys.stdin if ln.strip()]
-board = board_map()
-buckets = collections.OrderedDict()
-for ref in refs:
-    norm = ref[len("origin/"):] if ref.startswith("origin/") else ref
-    key = board.get(norm) or token_key(ref)
-    buckets.setdefault(key, []).append(ref)
-
-# Round-robin across buckets in a deterministic (sorted-key) order: round i emits
-# the i-th branch of every bucket that still has one. Each active solver therefore
-# gets exactly one branch per round until its backlog is exhausted.
-order = sorted(buckets)
-try:
-    i = 0
-    while True:
-        progressed = False
-        for k in order:
-            lst = buckets[k]
-            if i < len(lst):
-                print(lst[i]); progressed = True
-        if not progressed:
-            break
-        i += 1
-    # Force any buffered output out now so an EPIPE surfaces here, inside the
-    # guard, rather than during interpreter shutdown where it cannot be caught.
-    sys.stdout.flush()
-except BrokenPipeError:
-    # The consumer (dispatch_queue's read loop) stops reading as soon as it hits
-    # its dispatch limit or the submission governor pauses, then closes the pipe;
-    # the still-unread refs are exactly the ones it chose not to act on, so a short
-    # read is normal, not an error. Redirect stdout to devnull so the interpreter's
-    # shutdown flush cannot re-raise, and exit cleanly. (Python docs, "Note on
-    # SIGPIPE".)
-    import os
-    os.dup2(os.open(os.devnull, os.O_WRONLY), sys.stdout.fileno())
-    sys.exit(0)
-PY
-)
+  # ADR-075 per-solver round-robin + ADR-106 difficulty deprioritisation, in the
+  # unit-tested module tools/dispatch/fair_order.py (reads refs on stdin, emits
+  # them reordered). Both reorderings are pure and reversible (UNSORRY_FAIR_DISPATCH
+  # =0 reverts to lexical here; UNSORRY_DIFFICULTY_DISPATCH=0 reverts to fairness-
+  # only inside the module). The module handles the early-reader-close (EPIPE) of
+  # the dispatch loop, the queue-board read, and the token-key fallback.
+  python3 -m tools.dispatch.fair_order
 }
 
 # ADR-071: a final fresh "is this goal already taken?" check, run immediately
