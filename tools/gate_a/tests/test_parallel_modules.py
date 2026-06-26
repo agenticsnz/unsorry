@@ -5,6 +5,7 @@ from pathlib import Path
 from tools.gate_a.parallel_modules import (
     audit,
     audit_shard,
+    collision_free_chunks,
     combine_audit_reports,
     compute_audit_targets,
     compute_replay_targets,
@@ -14,6 +15,7 @@ from tools.gate_a.parallel_modules import (
     import_graph,
     library_module_for_path,
     module_names,
+    module_top_level_names,
     plan_audit_shards,
     plan_shards,
     replay,
@@ -773,3 +775,87 @@ def test_combine_audit_reports_fails_closed_on_bad_fragment(tmp_path):
     bad = tmp_path / "bad.json"
     bad.write_text("{ not an array }")
     assert combine_audit_reports([good, bad], tmp_path / "out.json") == 1
+
+
+# --- ADR-018-safe audit fix: goal name-collision tolerance ------------------
+
+def test_module_top_level_names_extracts_declarations(tmp_path: Path):
+    (tmp_path / "goals").mkdir()
+    (tmp_path / "goals" / "magic-16.lean").write_text(
+        "import Mathlib\n"
+        "structure IsMagicSquare {n : ℕ} (M : X) : Prop where\n"
+        "  rowsum : True\n"
+        "noncomputable def helper : Nat := 0\n"
+        "theorem brualdi_ch1_16 (M : X) : IsMagicSquare M := by sorry\n"
+    )
+    names = module_top_level_names(tmp_path, "goals.magic-16")
+    assert {"IsMagicSquare", "helper", "brualdi_ch1_16"} <= names
+
+
+def test_module_top_level_names_missing_file_is_empty(tmp_path: Path):
+    assert module_top_level_names(tmp_path, "goals.nope") == set()
+
+
+def test_collision_free_chunks_separates_clashing_modules():
+    names = {
+        "g.a": {"IsMagicSquare", "brualdi_ch1_10"},
+        "g.b": {"IsMagicSquare", "brualdi_ch1_16"},  # clashes with g.a on IsMagicSquare
+        "g.c": {"foo"},
+    }
+    chunks = collision_free_chunks(["g.a", "g.b", "g.c"], lambda m: names[m], 1)
+    # one requested chunk, but the clash forces g.a and g.b into different chunks
+    assert any("g.a" in c and "g.b" in c for c in chunks) is False
+    # every module appears exactly once
+    flat = [m for c in chunks for m in c]
+    assert sorted(flat) == ["g.a", "g.b", "g.c"]
+
+
+def test_collision_free_chunks_packs_disjoint_like_split_evenly():
+    names = {m: {m} for m in ("g.a", "g.b", "g.c", "g.d")}  # all unique
+    chunks = collision_free_chunks(["g.a", "g.b", "g.c", "g.d"], lambda m: names[m], 2)
+    assert len(chunks) == 2
+    assert sorted(m for c in chunks for m in c) == ["g.a", "g.b", "g.c", "g.d"]
+    assert all(len(c) == 2 for c in chunks)  # balanced
+
+
+def test_collision_free_chunks_empty():
+    assert collision_free_chunks([], lambda m: set(), 4) == []
+
+
+def test_audit_keeps_colliding_goals_in_separate_calls(tmp_path: Path):
+    """End-to-end: two goals declaring `IsMagicSquare` must never be passed to one
+    `axiom_audit` invocation (which would fail the importModules with a name clash)."""
+    (tmp_path / "library" / "Unsorry").mkdir(parents=True)
+    (tmp_path / "goals").mkdir()
+    body = (
+        "import Mathlib\n"
+        "structure IsMagicSquare (M : Nat) : Prop where mk ::\n"
+        "theorem {name} (M : Nat) : IsMagicSquare M := by sorry\n"
+    )
+    (tmp_path / "goals" / "brualdi-ch1-10.lean").write_text(body.format(name="brualdi_ch1_10"))
+    (tmp_path / "goals" / "brualdi-ch1-16.lean").write_text(body.format(name="brualdi_ch1_16"))
+
+    audit_calls: list[tuple[str, ...]] = []
+
+    def runner(argv, **kwargs):
+        argv = tuple(argv)
+        if argv[0] == "git" and "diff" in argv:
+            return completed(argv, returncode=128)  # untrusted ⇒ full scope (both goals)
+        if argv[:3] == ("lake", "build", "axiom_audit"):
+            return completed(argv)
+        if argv[:3] == ("lake", "exe", "axiom_audit"):
+            audit_calls.append(argv)
+            return completed(argv, stdout="[]")
+        return completed(argv, stdout="[]")
+
+    audit(tmp_path, jobs=1, output=tmp_path / "report.json", runner=runner, base="deadbeef")
+
+    goal_calls = [c for c in audit_calls if "--allow-sorry" in c]
+    assert goal_calls, "the goal audit must run"
+    for call in goal_calls:
+        mods = [a for a in call if a.startswith("goals.")]
+        assert not ("goals.brualdi-ch1-10" in mods and "goals.brualdi-ch1-16" in mods), \
+            "colliding goals were passed to the same axiom_audit import"
+    # both goals are still audited, just in separate calls
+    audited = {m for c in goal_calls for m in c if m.startswith("goals.")}
+    assert {"goals.brualdi-ch1-10", "goals.brualdi-ch1-16"} <= audited
