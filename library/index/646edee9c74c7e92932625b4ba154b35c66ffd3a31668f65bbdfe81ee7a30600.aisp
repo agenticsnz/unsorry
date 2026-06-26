@@ -4,5 +4,5 @@
 ⟦Σ:Source⟧{src≜goals/faulhaber-square-sum-coeff-five.lean}
 ⟦Γ:Tags⟧{tags≜⟨⟩}
 ⟦Λ:Meta⟧{use≜0; aff≜0}
-⟦Π:Provenance⟧{solver≜chat-bit-01; agent≜claude-web; provider≜claude; model≜template-induction-ring; attempts≜1}
+⟦Π:Provenance⟧{solver≜chat-bit-01; agent≜claude-web; provider≜lean; model≜ring; attempts≜1}
 ⟦Ε⟧⟨δ≜0.85;τ≜◊⁺⟩

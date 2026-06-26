@@ -7,9 +7,12 @@
 # they are all corrected — self-healing as the pipeline produces more.
 #
 # Precise: genuine LLM proofs by the same agent (e.g. model≜sonnet), seedkit
-# fixtures (provider≜seedkit), and other contributors are untouched; solver/credit
-# never changes. It edits provenance metadata only (soundness-neutral; Gate A
-# checks proofs, not provider labels).
+# fixtures (provider≜seedkit), and other contributors' provider/model are
+# untouched. The one credit change is ADR-099: a record from an agent-owned
+# pipeline (mac-158f → ohdearquant) is re-credited `solver≜<owner>`, so dispatched
+# proofs stop crediting the PR lander; every other agent's solver is left alone.
+# It edits provenance metadata only (soundness-neutral; Gate A checks proofs, not
+# provider/solver labels).
 #
 # Token: a default-GITHUB_TOKEN push cannot update protected `main`, so the commit
 # authenticates with the admin REFRESH_TOKEN (same secret as the leaderboard/

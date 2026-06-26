@@ -61,9 +61,9 @@ def write_goal(shape, a, solver=None, agent=None, date=None):
             f"follows from (k+1)^{p} − k^{p} telescoping; proved by induction "
             f"on n."
         ),
-        difficulty=4,
+        difficulty=1,
         delta="0.75",
-        model="template-induction-ring",
+        model="ring",
         solver=solver,
         agent=agent,
         date=date,

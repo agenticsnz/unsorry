@@ -97,7 +97,7 @@ def candidates(family, values, limit, existing):
 
 def run(family, values=None, limit=5, goals_dir="goals"):
     if values is None:
-        values = range(2, 27)
+        values = range(2, max(WORDS) + 1)
     existing = {
         os.path.splitext(f)[0]
         for f in os.listdir(goals_dir)

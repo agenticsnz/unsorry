@@ -1,0 +1,8 @@
+𝔸5.1.run.sum-two-squares-zmod-four-ne-three.claude-web.20260625t220244546434z-3c578146@2026-06-25
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260625t220244546434z-3c578146; goal≜sum-two-squares-zmod-four-ne-three; agent≜claude-web; outcome≜proved}
+⟦Π:Provenance⟧{solver≜chat-bit-01; provider≜claude; model≜opus; effort≜high}
+⟦Γ:Goal⟧{goal≜sum-two-squares-zmod-four-ne-three}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜60; ended≜2026-06-25T22:02:44Z}
+⟦Σ:Artifact⟧{sha≜1e400c8e7fa3e62064a69c14cf2ad1b4d190a091aed0f5e882bc426a9298d54a}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

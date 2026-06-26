@@ -18,9 +18,14 @@ varying strings and calls :func:`write_artifacts`, which derives the content
 address, writes the five files atomically-enough for the push step, and returns
 the ``"<id>|<name>|<Module>|<sha>"`` line that ``split_push.sh`` consumes.
 
-The provenance ``solver`` id is taken from ``$SEEDKIT_SOLVER`` (default
-``anon``) and the ``agent`` id from ``$SEEDKIT_AGENT`` (default ``seedkit``), so
-a run is attributable without hard-coding an identity into the kit.
+The provenance ``solver`` id is taken from ``$UNSORRY_SOLVER`` (preferred) or
+``$SEEDKIT_SOLVER``; if neither is set the writer raises rather than stamping an
+anonymous id (ADR-086 — seedkit attribution conforms to the sourcing paradigm).
+The ``agent`` id comes from ``$SEEDKIT_AGENT`` (default ``seedkit``), and the
+engine is recorded honestly as ``provider≜lean`` with the real closing tactic as
+``model`` (``decide`` for the finite-``ZMod`` families, ``ring`` for the
+``induction; ring`` closed forms) — attributable to an authenticated identity and
+a true engine, with no post-hoc relabel needed.
 """
 from __future__ import annotations
 
@@ -45,7 +50,7 @@ def write_artifacts(
     difficulty: int,
     delta: str,
     model: str,
-    provider: str = "seedkit",
+    provider: str = "lean",
     solver: str | None = None,
     agent: str | None = None,
     date: str | None = None,
@@ -55,18 +60,23 @@ def write_artifacts(
 
     ``goal_lean`` is the statement file verbatim (``import``…``sorry``); its
     content address (`tools.lean_sig.statement_sha`) is the index key and is
-    embedded in both AISP records. ``difficulty`` must lie in ``0..5`` — Gate B
+    embedded in both AISP records. ``difficulty`` must lie in ``0..9`` — Gate B
     rejects anything outside that band (GB003), so an out-of-range value is a
     generator bug and is raised here rather than written out to fail later.
     """
-    if not 0 <= difficulty <= 5:
+    if not 0 <= difficulty <= 9:
         raise ValueError(
-            f"difficulty {difficulty} out of range 0..5 for goal {gid!r} "
+            f"difficulty {difficulty} out of range 0..9 for goal {gid!r} "
             f"(Gate B GB003 would reject it)"
         )
 
     mod = LS.camel_name(gid)
-    solver = solver or os.environ.get("SEEDKIT_SOLVER", "anon")
+    solver = solver or os.environ.get("UNSORRY_SOLVER") or os.environ.get("SEEDKIT_SOLVER")
+    if not solver:
+        raise ValueError(
+            "seedkit refuses to stamp anonymous provenance (ADR-086): set "
+            "UNSORRY_SOLVER (preferred) or SEEDKIT_SOLVER to the authenticated solver id"
+        )
     agent = agent or os.environ.get("SEEDKIT_AGENT", "seedkit")
     date = date or datetime.date.today().isoformat()
     sha = LS.statement_sha(goal_lean)

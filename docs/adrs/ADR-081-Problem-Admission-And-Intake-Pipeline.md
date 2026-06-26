@@ -6,9 +6,9 @@
 | **Initiative** | unsorry — turning an admissible problem into pipeline-consumable work |
 | **Proposed By** | unsorry maintainers; operational companion to [ADR-080](ADR-080-Platform-Generalisation-And-Domain-Neutrality.md) and [ADR-078](ADR-078-Sponsor-Registered-Targets-And-Obligation-Discharge-Credit.md) |
 | **Date** | 2026-06-20 |
-| **Status** | Draft |
+| **Status** | Accepted |
 
-> **DRAFT for discussion.** ADR-080 says *which* problems are admissible (policy);
+> **Ratified** (2026-06-24, #5643) by Chris Barlow (founder). ADR-080 says *which* problems are admissible (policy);
 > this says *how* an admissible problem becomes work the swarm can consume
 > (mechanism). It is part of a four-ADR set reconciled with Leo's (#3232/#3246):
 > **078 (Leo) = how contribution earns credit · 079 (Leo) = deterministic sympy
@@ -114,10 +114,17 @@ A package failing any check is rejected at intake — never partially queued.
   `skeleton-validate`, which will surface what the contract is missing for *software*
   targets (the spec/refinement-framework attachment in step 4).
 
-## Open questions
-1. Format for the spec + refinement-framework attachment for software targets
-   (step 4) — Lion will define this in practice.
-2. Should `skeleton-validate` be a Gate (blocking) or an intake tool run by the
-   onboarding operator? (Leaning: an intake tool + a CI check on the package PR.)
-3. Autoformalisation assistance for step 1 (the founding plan's Phase 0/1 on-ramp)
-   vs. requiring suppliers to hand over a type-checking statement.
+## Open questions — status at ratification (#5643)
+1. **Spec + refinement-framework attachment for software targets (step 4)** — deferred; the
+   first math/benchmark packages don't need it, and Lion will define it in practice.
+2. **`skeleton-validate` — gate or tool?** Resolved: **both** — an intake tool run by the
+   onboarding operator *and* a blocking CI check on the `targets/**` package PR (SPEC-081-A).
+3. **Autoformalisation assist for step 1** — deferred; suppliers hand over a type-checking
+   top statement for now.
+
+## Status History
+
+| Status | Approver | Date |
+|--------|----------|------|
+| Draft | unsorry maintainers | 2026-06-20 |
+| Accepted | Chris Barlow (founder, #5643) | 2026-06-24 |
