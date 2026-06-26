@@ -2,7 +2,7 @@
 
 # Architecture Decision Records
 
-Index of the 101 ADRs in this directory, generated from the `ADR-*.md` headers and kept in sync by the `adr-index` workflow. See [ADR-001](ADR-001-Adopt-Development-Protocols.md) and [the development protocols](../protocols.md) for the WH(Y) format and process.
+Index of the 102 ADRs in this directory, generated from the `ADR-*.md` headers and kept in sync by the `adr-index` workflow. See [ADR-001](ADR-001-Adopt-Development-Protocols.md) and [the development protocols](../protocols.md) for the WH(Y) format and process.
 
 | ADR | Title | Status | Date |
 |-----|-------|--------|------|
@@ -107,3 +107,4 @@ Index of the 101 ADRs in this directory, generated from the `ADR-*.md` headers a
 | [ADR-101](ADR-101-Incremental-Leaderboard-Regen.md) | Per-Generation Leaderboard Regen (directory-scoped attribution + memoised loaders) | Accepted | 2026-06-25 |
 | [ADR-102](ADR-102-OpenAI-Prove-Text-Extraction-Fallback.md) | OpenAI `--prove` Text-Extraction Fallback | Accepted | 2026-06-14 |
 | [ADR-103](ADR-103-Validator-Role-Creditable-Distributed-Verification.md) | Validator Role — Creditable, Distributed, Reproducible Verification | Proposed | 2026-06-22 |
+| [ADR-104](ADR-104-Phase3c-Sampled-Leanchecker-Replay.md) | Phase 3c — Sample the Leanchecker Kernel Replay at p < 1 with nanoda as the Every-Proof Kernel (amends ADR-049) | Proposed — **design banked, NOT for enablement yet** (see §Enablement gates) | 2026-06-26 |
