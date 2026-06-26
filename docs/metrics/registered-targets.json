@@ -1551,11 +1551,11 @@
       "stats": {
         "best_solve_s": 869,
         "contributors": 2,
-        "failed_runs": 4,
+        "failed_runs": 10,
         "median_solve_s": 1595,
-        "success_rate": 0.6667,
+        "success_rate": 0.4444,
         "successful_runs": 8,
-        "total_runs": 12,
+        "total_runs": 18,
         "worst_solve_s": 4056
       },
       "supplier": "trishullab",

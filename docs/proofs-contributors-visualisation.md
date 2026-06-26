@@ -6,9 +6,9 @@ A visualiser for the swarm's proof graph (issue #371): every prove-goal, its sta
 
 > An **interactive** version — pan/zoom, click-to-detail panel, filterable table — is generated alongside this file at [`docs/proofs-contributors-visualisation.html`](proofs-contributors-visualisation.html) (open it locally or via GitHub Pages; the browser renders it, GitHub shows the source).
 
-**4616 goals — 213 open · 7 blocked · 9 translated · 2188 proved · 2199 archived.** 9 decomposition families shown below; standalone goals (no lineage) are folded into one summary cluster per status — the interactive page expands a cluster into its goals on click, and every goal is listed individually in the table.
+**4647 goals — 224 open · 12 blocked · 9 translated · 2203 proved · 2199 archived.** 14 decomposition families shown below; standalone goals (no lineage) are folded into one summary cluster per status — the interactive page expands a cluster into its goals on click, and every goal is listed individually in the table.
 
-Solving agent, PR and the GitHub user who merged it are resolved from the `prove(…)` merge commits (2184 of 2188 proved goals carry a per-goal prove-PR; the rest predate that convention and are left blank). The **solver** shows the recorded AISP login only — never guessed (ADR-023), so a goal with no recorded solver shows “—”; **merged by** is the GitHub user who landed the PR (who merged it, not who solved it), shown in its own column so the two are never conflated. The model comes from recorded provenance only.
+Solving agent, PR and the GitHub user who merged it are resolved from the `prove(…)` merge commits (2199 of 2203 proved goals carry a per-goal prove-PR; the rest predate that convention and are left blank). The **solver** shows the recorded AISP login only — never guessed (ADR-023), so a goal with no recorded solver shows “—”; **merged by** is the GitHub user who landed the PR (who merged it, not who solved it), shown in its own column so the two are never conflated. The model comes from recorded provenance only.
 
 ## Dependency lineage
 
@@ -40,6 +40,36 @@ flowchart LR
   g_nat_sq_lt_two_pow_s2_s3["nat-sq-lt-two-pow-s2-s3"]
   class g_nat_sq_lt_two_pow_s2_s3 proved;
   click g_nat_sq_lt_two_pow_s2_s3 "https://github.com/agenticsnz/unsorry/blob/main/goals/nat-sq-lt-two-pow-s2-s3.lean" "nat-sq-lt-two-pow-s2-s3 — proved"
+  g_putnam_1962_a1["putnam-1962-a1"]
+  class g_putnam_1962_a1 blocked;
+  click g_putnam_1962_a1 "https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1962-a1.lean" "putnam-1962-a1 — blocked"
+  g_putnam_1962_a1_s1["putnam-1962-a1-s1"]
+  class g_putnam_1962_a1_s1 open;
+  click g_putnam_1962_a1_s1 "https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1962-a1-s1.lean" "putnam-1962-a1-s1 — open"
+  g_putnam_1962_a1_s2["putnam-1962-a1-s2"]
+  class g_putnam_1962_a1_s2 open;
+  click g_putnam_1962_a1_s2 "https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1962-a1-s2.lean" "putnam-1962-a1-s2 — open"
+  g_putnam_1962_a1_s3["putnam-1962-a1-s3"]
+  class g_putnam_1962_a1_s3 open;
+  click g_putnam_1962_a1_s3 "https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1962-a1-s3.lean" "putnam-1962-a1-s3 — open"
+  g_putnam_1962_a1_s4["putnam-1962-a1-s4"]
+  class g_putnam_1962_a1_s4 open;
+  click g_putnam_1962_a1_s4 "https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1962-a1-s4.lean" "putnam-1962-a1-s4 — open"
+  g_putnam_1962_b5["putnam-1962-b5"]
+  class g_putnam_1962_b5 blocked;
+  click g_putnam_1962_b5 "https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1962-b5.lean" "putnam-1962-b5 — blocked"
+  g_putnam_1962_b5_s1["putnam-1962-b5-s1"]
+  class g_putnam_1962_b5_s1 open;
+  click g_putnam_1962_b5_s1 "https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1962-b5-s1.lean" "putnam-1962-b5-s1 — open"
+  g_putnam_1962_b5_s2["putnam-1962-b5-s2"]
+  class g_putnam_1962_b5_s2 open;
+  click g_putnam_1962_b5_s2 "https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1962-b5-s2.lean" "putnam-1962-b5-s2 — open"
+  g_putnam_1962_b5_s3["putnam-1962-b5-s3"]
+  class g_putnam_1962_b5_s3 open;
+  click g_putnam_1962_b5_s3 "https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1962-b5-s3.lean" "putnam-1962-b5-s3 — open"
+  g_putnam_1962_b5_s4["putnam-1962-b5-s4"]
+  class g_putnam_1962_b5_s4 open;
+  click g_putnam_1962_b5_s4 "https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1962-b5-s4.lean" "putnam-1962-b5-s4 — open"
   g_putnam_1965_b6["putnam-1965-b6"]
   class g_putnam_1965_b6 blocked;
   click g_putnam_1965_b6 "https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1965-b6.lean" "putnam-1965-b6 — blocked"
@@ -47,11 +77,11 @@ flowchart LR
   class g_putnam_1965_b6_s1 proved;
   click g_putnam_1965_b6_s1 "https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1965-b6-s1.lean" "putnam-1965-b6-s1 — proved"
   g_putnam_1965_b6_s2["putnam-1965-b6-s2"]
-  class g_putnam_1965_b6_s2 open;
-  click g_putnam_1965_b6_s2 "https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1965-b6-s2.lean" "putnam-1965-b6-s2 — open"
+  class g_putnam_1965_b6_s2 proved;
+  click g_putnam_1965_b6_s2 "https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1965-b6-s2.lean" "putnam-1965-b6-s2 — proved"
   g_putnam_1965_b6_s3["putnam-1965-b6-s3"]
-  class g_putnam_1965_b6_s3 open;
-  click g_putnam_1965_b6_s3 "https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1965-b6-s3.lean" "putnam-1965-b6-s3 — open"
+  class g_putnam_1965_b6_s3 proved;
+  click g_putnam_1965_b6_s3 "https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1965-b6-s3.lean" "putnam-1965-b6-s3 — proved"
   g_putnam_1965_b6_s4["putnam-1965-b6-s4"]
   class g_putnam_1965_b6_s4 open;
   click g_putnam_1965_b6_s4 "https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1965-b6-s4.lean" "putnam-1965-b6-s4 — open"
@@ -77,11 +107,44 @@ flowchart LR
   class g_putnam_1966_b1_s2 proved;
   click g_putnam_1966_b1_s2 "https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1966-b1-s2.lean" "putnam-1966-b1-s2 — proved"
   g_putnam_1966_b1_s3["putnam-1966-b1-s3"]
-  class g_putnam_1966_b1_s3 open;
-  click g_putnam_1966_b1_s3 "https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1966-b1-s3.lean" "putnam-1966-b1-s3 — open"
+  class g_putnam_1966_b1_s3 blocked;
+  click g_putnam_1966_b1_s3 "https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1966-b1-s3.lean" "putnam-1966-b1-s3 — blocked"
+  g_putnam_1966_b1_s3_s1["putnam-1966-b1-s3-s1"]
+  class g_putnam_1966_b1_s3_s1 open;
+  click g_putnam_1966_b1_s3_s1 "https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1966-b1-s3-s1.lean" "putnam-1966-b1-s3-s1 — open"
+  g_putnam_1966_b1_s3_s2["putnam-1966-b1-s3-s2"]
+  class g_putnam_1966_b1_s3_s2 open;
+  click g_putnam_1966_b1_s3_s2 "https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1966-b1-s3-s2.lean" "putnam-1966-b1-s3-s2 — open"
+  g_putnam_1966_b1_s3_s3["putnam-1966-b1-s3-s3"]
+  class g_putnam_1966_b1_s3_s3 open;
+  click g_putnam_1966_b1_s3_s3 "https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1966-b1-s3-s3.lean" "putnam-1966-b1-s3-s3 — open"
   g_putnam_1966_b1_s4["putnam-1966-b1-s4"]
-  class g_putnam_1966_b1_s4 open;
-  click g_putnam_1966_b1_s4 "https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1966-b1-s4.lean" "putnam-1966-b1-s4 — open"
+  class g_putnam_1966_b1_s4 blocked;
+  click g_putnam_1966_b1_s4 "https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1966-b1-s4.lean" "putnam-1966-b1-s4 — blocked"
+  g_putnam_1966_b1_s4_s1["putnam-1966-b1-s4-s1"]
+  class g_putnam_1966_b1_s4_s1 open;
+  click g_putnam_1966_b1_s4_s1 "https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1966-b1-s4-s1.lean" "putnam-1966-b1-s4-s1 — open"
+  g_putnam_1966_b1_s4_s2["putnam-1966-b1-s4-s2"]
+  class g_putnam_1966_b1_s4_s2 open;
+  click g_putnam_1966_b1_s4_s2 "https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1966-b1-s4-s2.lean" "putnam-1966-b1-s4-s2 — open"
+  g_putnam_1966_b1_s4_s3["putnam-1966-b1-s4-s3"]
+  class g_putnam_1966_b1_s4_s3 open;
+  click g_putnam_1966_b1_s4_s3 "https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1966-b1-s4-s3.lean" "putnam-1966-b1-s4-s3 — open"
+  g_putnam_1966_b1_s4_s4["putnam-1966-b1-s4-s4"]
+  class g_putnam_1966_b1_s4_s4 open;
+  click g_putnam_1966_b1_s4_s4 "https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1966-b1-s4-s4.lean" "putnam-1966-b1-s4-s4 — open"
+  g_putnam_1966_b4["putnam-1966-b4"]
+  class g_putnam_1966_b4 blocked;
+  click g_putnam_1966_b4 "https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1966-b4.lean" "putnam-1966-b4 — blocked"
+  g_putnam_1966_b4_s1["putnam-1966-b4-s1"]
+  class g_putnam_1966_b4_s1 open;
+  click g_putnam_1966_b4_s1 "https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1966-b4-s1.lean" "putnam-1966-b4-s1 — open"
+  g_putnam_1966_b4_s2["putnam-1966-b4-s2"]
+  class g_putnam_1966_b4_s2 open;
+  click g_putnam_1966_b4_s2 "https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1966-b4-s2.lean" "putnam-1966-b4-s2 — open"
+  g_putnam_1966_b4_s3["putnam-1966-b4-s3"]
+  class g_putnam_1966_b4_s3 open;
+  click g_putnam_1966_b4_s3 "https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1966-b4-s3.lean" "putnam-1966-b4-s3 — open"
   g_putnam_1967_a5["putnam-1967-a5"]
   class g_putnam_1967_a5 blocked;
   click g_putnam_1967_a5 "https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1967-a5.lean" "putnam-1967-a5 — blocked"
@@ -138,6 +201,14 @@ flowchart LR
   g_nat_sq_lt_two_pow_s2 --> g_nat_sq_lt_two_pow_s2_s1
   g_nat_sq_lt_two_pow_s2 --> g_nat_sq_lt_two_pow_s2_s2
   g_nat_sq_lt_two_pow_s2 --> g_nat_sq_lt_two_pow_s2_s3
+  g_putnam_1962_a1 --> g_putnam_1962_a1_s1
+  g_putnam_1962_a1 --> g_putnam_1962_a1_s2
+  g_putnam_1962_a1 --> g_putnam_1962_a1_s3
+  g_putnam_1962_a1 --> g_putnam_1962_a1_s4
+  g_putnam_1962_b5 --> g_putnam_1962_b5_s1
+  g_putnam_1962_b5 --> g_putnam_1962_b5_s2
+  g_putnam_1962_b5 --> g_putnam_1962_b5_s3
+  g_putnam_1962_b5 --> g_putnam_1962_b5_s4
   g_putnam_1965_b6 --> g_putnam_1965_b6_s1
   g_putnam_1965_b6 --> g_putnam_1965_b6_s2
   g_putnam_1965_b6 --> g_putnam_1965_b6_s3
@@ -149,6 +220,16 @@ flowchart LR
   g_putnam_1966_b1 --> g_putnam_1966_b1_s2
   g_putnam_1966_b1 --> g_putnam_1966_b1_s3
   g_putnam_1966_b1 --> g_putnam_1966_b1_s4
+  g_putnam_1966_b1_s3 --> g_putnam_1966_b1_s3_s1
+  g_putnam_1966_b1_s3 --> g_putnam_1966_b1_s3_s2
+  g_putnam_1966_b1_s3 --> g_putnam_1966_b1_s3_s3
+  g_putnam_1966_b1_s4 --> g_putnam_1966_b1_s4_s1
+  g_putnam_1966_b1_s4 --> g_putnam_1966_b1_s4_s2
+  g_putnam_1966_b1_s4 --> g_putnam_1966_b1_s4_s3
+  g_putnam_1966_b1_s4 --> g_putnam_1966_b1_s4_s4
+  g_putnam_1966_b4 --> g_putnam_1966_b4_s1
+  g_putnam_1966_b4 --> g_putnam_1966_b4_s2
+  g_putnam_1966_b4 --> g_putnam_1966_b4_s3
   g_putnam_1967_a5 --> g_putnam_1967_a5_s1
   g_putnam_1967_a5 --> g_putnam_1967_a5_s2
   g_putnam_1967_a5 --> g_putnam_1967_a5_s3
@@ -164,11 +245,11 @@ flowchart LR
   g_sq_add_sq_eq_three_mul_sq_s4_s3 --> g_sq_add_sq_eq_three_mul_sq_s4_s3_s1
   g_sq_add_sq_eq_three_mul_sq_s4_s3 --> g_sq_add_sq_eq_three_mul_sq_s4_s3_s2
   g_sq_add_sq_eq_three_mul_sq_s4_s3 --> g_sq_add_sq_eq_three_mul_sq_s4_s3_s3
-  cluster_open(["open · 202"])
+  cluster_open(["open · 199"])
   class cluster_open open;
   cluster_translated(["translated · 9"])
   class cluster_translated translated;
-  cluster_proved(["proved · 2169"])
+  cluster_proved(["proved · 2182"])
   class cluster_proved proved;
   cluster_archived(["archived · 2199"])
   class cluster_archived unknown;
@@ -294,13 +375,19 @@ Legend: proved #c6f6d5 · open #e2e8f0 · blocked #feebc8 · flagged #fed7d7 · 
 | [`imo2025p4`](https://github.com/agenticsnz/unsorry/blob/main/goals/imo2025p4.lean) | open | 4 | — | — | — | — | — |
 | [`imo2025p5`](https://github.com/agenticsnz/unsorry/blob/main/goals/imo2025p5.lean) | open | 4 | — | — | — | — | — |
 | [`imo2025p6`](https://github.com/agenticsnz/unsorry/blob/main/goals/imo2025p6.lean) | open | 4 | — | — | — | — | — |
-| [`putnam-1962-a1`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1962-a1.lean) | open | 4 | — | — | — | — | — |
+| [`putnam-1962-a1-s1`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1962-a1-s1.lean) | open | 1 | — | — | — | — | — |
+| [`putnam-1962-a1-s2`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1962-a1-s2.lean) | open | 1 | — | — | — | — | — |
+| [`putnam-1962-a1-s3`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1962-a1-s3.lean) | open | 1 | — | — | — | — | — |
+| [`putnam-1962-a1-s4`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1962-a1-s4.lean) | open | 1 | — | — | — | — | — |
 | [`putnam-1962-a2`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1962-a2.lean) | open | 4 | — | — | — | — | — |
 | [`putnam-1962-a3`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1962-a3.lean) | open | 4 | — | — | — | — | — |
 | [`putnam-1962-a4`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1962-a4.lean) | open | 4 | — | — | — | — | — |
 | [`putnam-1962-a6`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1962-a6.lean) | open | 4 | — | — | — | — | — |
 | [`putnam-1962-b1`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1962-b1.lean) | open | 4 | — | — | — | — | — |
-| [`putnam-1962-b5`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1962-b5.lean) | open | 4 | — | — | — | — | — |
+| [`putnam-1962-b5-s1`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1962-b5-s1.lean) | open | 1 | — | — | — | — | — |
+| [`putnam-1962-b5-s2`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1962-b5-s2.lean) | open | 1 | — | — | — | — | — |
+| [`putnam-1962-b5-s3`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1962-b5-s3.lean) | open | 1 | — | — | — | — | — |
+| [`putnam-1962-b5-s4`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1962-b5-s4.lean) | open | 1 | — | — | — | — | — |
 | [`putnam-1962-b6`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1962-b6.lean) | open | 4 | — | — | — | — | — |
 | [`putnam-1963-a2`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1963-a2.lean) | open | 4 | — | — | — | — | — |
 | [`putnam-1963-a3`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1963-a3.lean) | open | 4 | — | — | — | — | — |
@@ -330,8 +417,6 @@ Legend: proved #c6f6d5 · open #e2e8f0 · blocked #feebc8 · flagged #fed7d7 · 
 | [`putnam-1965-b2`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1965-b2.lean) | open | 4 | — | — | — | — | — |
 | [`putnam-1965-b3`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1965-b3.lean) | open | 4 | — | — | — | — | — |
 | [`putnam-1965-b4`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1965-b4.lean) | open | 4 | — | — | — | — | — |
-| [`putnam-1965-b6-s2`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1965-b6-s2.lean) | open | 1 | — | — | — | — | — |
-| [`putnam-1965-b6-s3`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1965-b6-s3.lean) | open | 1 | — | — | — | — | — |
 | [`putnam-1965-b6-s4`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1965-b6-s4.lean) | open | 1 | — | — | — | — | — |
 | [`putnam-1966-a1-s1`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1966-a1-s1.lean) | open | 1 | — | — | — | — | — |
 | [`putnam-1966-a1-s2`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1966-a1-s2.lean) | open | 1 | — | — | — | — | — |
@@ -339,11 +424,18 @@ Legend: proved #c6f6d5 · open #e2e8f0 · blocked #feebc8 · flagged #fed7d7 · 
 | [`putnam-1966-a4`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1966-a4.lean) | open | 4 | — | — | — | — | — |
 | [`putnam-1966-a5`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1966-a5.lean) | open | 4 | — | — | — | — | — |
 | [`putnam-1966-a6`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1966-a6.lean) | open | 4 | — | — | — | — | — |
-| [`putnam-1966-b1-s3`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1966-b1-s3.lean) | open | 1 | — | — | — | — | — |
-| [`putnam-1966-b1-s4`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1966-b1-s4.lean) | open | 1 | — | — | — | — | — |
+| [`putnam-1966-b1-s3-s1`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1966-b1-s3-s1.lean) | open | 1 | — | — | — | — | — |
+| [`putnam-1966-b1-s3-s2`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1966-b1-s3-s2.lean) | open | 1 | — | — | — | — | — |
+| [`putnam-1966-b1-s3-s3`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1966-b1-s3-s3.lean) | open | 1 | — | — | — | — | — |
+| [`putnam-1966-b1-s4-s1`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1966-b1-s4-s1.lean) | open | 1 | — | — | — | — | — |
+| [`putnam-1966-b1-s4-s2`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1966-b1-s4-s2.lean) | open | 1 | — | — | — | — | — |
+| [`putnam-1966-b1-s4-s3`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1966-b1-s4-s3.lean) | open | 1 | — | — | — | — | — |
+| [`putnam-1966-b1-s4-s4`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1966-b1-s4-s4.lean) | open | 1 | — | — | — | — | — |
 | [`putnam-1966-b2`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1966-b2.lean) | open | 4 | — | — | — | — | — |
 | [`putnam-1966-b3`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1966-b3.lean) | open | 4 | — | — | — | — | — |
-| [`putnam-1966-b4`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1966-b4.lean) | open | 4 | — | — | — | — | — |
+| [`putnam-1966-b4-s1`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1966-b4-s1.lean) | open | 1 | — | — | — | — | — |
+| [`putnam-1966-b4-s2`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1966-b4-s2.lean) | open | 1 | — | — | — | — | — |
+| [`putnam-1966-b4-s3`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1966-b4-s3.lean) | open | 1 | — | — | — | — | — |
 | [`putnam-1966-b6`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1966-b6.lean) | open | 4 | — | — | — | — | — |
 | [`putnam-1967-a1`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1967-a1.lean) | open | 4 | — | — | — | — | — |
 | [`putnam-1967-a2`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1967-a2.lean) | open | 4 | — | — | — | — | — |
@@ -393,9 +485,14 @@ Legend: proved #c6f6d5 · open #e2e8f0 · blocked #feebc8 · flagged #fed7d7 · 
 | [`sum-two-cubes-zmod-seven-mem`](https://github.com/agenticsnz/unsorry/blob/main/goals/sum-two-cubes-zmod-seven-mem.lean) | open | 3 | — | — | — | — | — |
 | [`sum-two-squares-zmod-eight-ne-six`](https://github.com/agenticsnz/unsorry/blob/main/goals/sum-two-squares-zmod-eight-ne-six.lean) | open | 3 | — | — | — | — | — |
 | [`three-fourth-powers-zmod-sixteen-mem`](https://github.com/agenticsnz/unsorry/blob/main/goals/three-fourth-powers-zmod-sixteen-mem.lean) | open | 3 | — | — | — | — | — |
+| [`putnam-1962-a1`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1962-a1.lean) | blocked | 4 | — | — | — | — | — |
+| [`putnam-1962-b5`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1962-b5.lean) | blocked | 4 | — | — | — | — | — |
 | [`putnam-1965-b6`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1965-b6.lean) | blocked | 4 | — | — | — | — | — |
 | [`putnam-1966-a1`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1966-a1.lean) | blocked | 4 | — | — | — | — | — |
 | [`putnam-1966-b1`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1966-b1.lean) | blocked | 4 | — | — | — | — | — |
+| [`putnam-1966-b1-s3`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1966-b1-s3.lean) | blocked | 1 | — | — | — | — | — |
+| [`putnam-1966-b1-s4`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1966-b1-s4.lean) | blocked | 1 | — | — | — | — | — |
+| [`putnam-1966-b4`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1966-b4.lean) | blocked | 4 | — | — | — | — | — |
 | [`putnam-1967-a5`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1967-a5.lean) | blocked | 4 | — | — | — | — | — |
 | [`sq-add-sq-eq-three-mul-sq`](https://github.com/agenticsnz/unsorry/blob/main/goals/sq-add-sq-eq-three-mul-sq.lean) | blocked | 4 | — | — | — | — | — |
 | [`sq-add-sq-eq-three-mul-sq-s4`](https://github.com/agenticsnz/unsorry/blob/main/goals/sq-add-sq-eq-three-mul-sq-s4.lean) | blocked | 1 | — | — | — | — | — |
@@ -896,19 +993,19 @@ Legend: proved #c6f6d5 · open #e2e8f0 · blocked #feebc8 · flagged #fed7d7 · 
 | [`faulhaber-square-sum-coeff-twentythree`](https://github.com/agenticsnz/unsorry/blob/main/goals/faulhaber-square-sum-coeff-twentythree.lean) | proved | 1 | claude-web | chat-bit-01 · `ring` | adam91holt | [#5264](https://github.com/agenticsnz/unsorry/pull/5264) | 2026-06-23 |
 | [`faulhaber-square-sum-coeff-twentytwo`](https://github.com/agenticsnz/unsorry/blob/main/goals/faulhaber-square-sum-coeff-twentytwo.lean) | proved | 1 | claude-web | chat-bit-01 · `ring` | adam91holt | [#5265](https://github.com/agenticsnz/unsorry/pull/5265) | 2026-06-23 |
 | [`faulhaber-square-sum-coeff-two`](https://github.com/agenticsnz/unsorry/blob/main/goals/faulhaber-square-sum-coeff-two.lean) | proved | 1 | claude-web | chat-bit-01 · `ring` | adam91holt | [#5266](https://github.com/agenticsnz/unsorry/pull/5266) | 2026-06-23 |
-| [`gbinom-ap-k4-step3-dvd`](https://github.com/agenticsnz/unsorry/blob/main/goals/gbinom-ap-k4-step3-dvd.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2697](https://github.com/agenticsnz/unsorry/pull/2697) | 2026-06-19 |
-| [`gbinom-ap-k5-step2-dvd`](https://github.com/agenticsnz/unsorry/blob/main/goals/gbinom-ap-k5-step2-dvd.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2699](https://github.com/agenticsnz/unsorry/pull/2699) | 2026-06-19 |
-| [`gbinom-ap-k6-step2-dvd`](https://github.com/agenticsnz/unsorry/blob/main/goals/gbinom-ap-k6-step2-dvd.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2700](https://github.com/agenticsnz/unsorry/pull/2700) | 2026-06-19 |
-| [`gbinom-ap-k7-step2-dvd`](https://github.com/agenticsnz/unsorry/blob/main/goals/gbinom-ap-k7-step2-dvd.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2701](https://github.com/agenticsnz/unsorry/pull/2701) | 2026-06-19 |
-| [`gbinom-ap-k8-step2-dvd`](https://github.com/agenticsnz/unsorry/blob/main/goals/gbinom-ap-k8-step2-dvd.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2702](https://github.com/agenticsnz/unsorry/pull/2702) | 2026-06-19 |
+| [`gbinom-ap-k4-step3-dvd`](https://github.com/agenticsnz/unsorry/blob/main/goals/gbinom-ap-k4-step3-dvd.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2697](https://github.com/agenticsnz/unsorry/pull/2697) | 2026-06-19 |
+| [`gbinom-ap-k5-step2-dvd`](https://github.com/agenticsnz/unsorry/blob/main/goals/gbinom-ap-k5-step2-dvd.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2699](https://github.com/agenticsnz/unsorry/pull/2699) | 2026-06-19 |
+| [`gbinom-ap-k6-step2-dvd`](https://github.com/agenticsnz/unsorry/blob/main/goals/gbinom-ap-k6-step2-dvd.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2700](https://github.com/agenticsnz/unsorry/pull/2700) | 2026-06-19 |
+| [`gbinom-ap-k7-step2-dvd`](https://github.com/agenticsnz/unsorry/blob/main/goals/gbinom-ap-k7-step2-dvd.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2701](https://github.com/agenticsnz/unsorry/pull/2701) | 2026-06-19 |
+| [`gbinom-ap-k8-step2-dvd`](https://github.com/agenticsnz/unsorry/blob/main/goals/gbinom-ap-k8-step2-dvd.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2702](https://github.com/agenticsnz/unsorry/pull/2702) | 2026-06-19 |
 | [`gbinom-ap-k9-step2-dvd`](https://github.com/agenticsnz/unsorry/blob/main/goals/gbinom-ap-k9-step2-dvd.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | OceanLi | [#2703](https://github.com/agenticsnz/unsorry/pull/2703) | 2026-06-19 |
-| [`gbinom-consec-four-fact-dvd`](https://github.com/agenticsnz/unsorry/blob/main/goals/gbinom-consec-four-fact-dvd.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2692](https://github.com/agenticsnz/unsorry/pull/2692) | 2026-06-19 |
-| [`gbinom-consec-seven-fact-dvd`](https://github.com/agenticsnz/unsorry/blob/main/goals/gbinom-consec-seven-fact-dvd.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2693](https://github.com/agenticsnz/unsorry/pull/2693) | 2026-06-19 |
-| [`gbinom-consec-six-fact-dvd`](https://github.com/agenticsnz/unsorry/blob/main/goals/gbinom-consec-six-fact-dvd.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2694](https://github.com/agenticsnz/unsorry/pull/2694) | 2026-06-19 |
-| [`gbinom-falling-five-fact-dvd`](https://github.com/agenticsnz/unsorry/blob/main/goals/gbinom-falling-five-fact-dvd.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2695](https://github.com/agenticsnz/unsorry/pull/2695) | 2026-06-19 |
-| [`gbinom-falling-four-fact-dvd`](https://github.com/agenticsnz/unsorry/blob/main/goals/gbinom-falling-four-fact-dvd.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2696](https://github.com/agenticsnz/unsorry/pull/2696) | 2026-06-19 |
+| [`gbinom-consec-four-fact-dvd`](https://github.com/agenticsnz/unsorry/blob/main/goals/gbinom-consec-four-fact-dvd.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2692](https://github.com/agenticsnz/unsorry/pull/2692) | 2026-06-19 |
+| [`gbinom-consec-seven-fact-dvd`](https://github.com/agenticsnz/unsorry/blob/main/goals/gbinom-consec-seven-fact-dvd.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2693](https://github.com/agenticsnz/unsorry/pull/2693) | 2026-06-19 |
+| [`gbinom-consec-six-fact-dvd`](https://github.com/agenticsnz/unsorry/blob/main/goals/gbinom-consec-six-fact-dvd.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2694](https://github.com/agenticsnz/unsorry/pull/2694) | 2026-06-19 |
+| [`gbinom-falling-five-fact-dvd`](https://github.com/agenticsnz/unsorry/blob/main/goals/gbinom-falling-five-fact-dvd.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2695](https://github.com/agenticsnz/unsorry/pull/2695) | 2026-06-19 |
+| [`gbinom-falling-four-fact-dvd`](https://github.com/agenticsnz/unsorry/blob/main/goals/gbinom-falling-four-fact-dvd.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2696](https://github.com/agenticsnz/unsorry/pull/2696) | 2026-06-19 |
 | [`gbinom-falling-seven-fact-dvd`](https://github.com/agenticsnz/unsorry/blob/main/goals/gbinom-falling-seven-fact-dvd.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | OceanLi | [#2704](https://github.com/agenticsnz/unsorry/pull/2704) | 2026-06-19 |
-| [`gbinom-falling-six-fact-dvd`](https://github.com/agenticsnz/unsorry/blob/main/goals/gbinom-falling-six-fact-dvd.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2705](https://github.com/agenticsnz/unsorry/pull/2705) | 2026-06-19 |
+| [`gbinom-falling-six-fact-dvd`](https://github.com/agenticsnz/unsorry/blob/main/goals/gbinom-falling-six-fact-dvd.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2705](https://github.com/agenticsnz/unsorry/pull/2705) | 2026-06-19 |
 | [`gbinom-falling-three-fact-dvd`](https://github.com/agenticsnz/unsorry/blob/main/goals/gbinom-falling-three-fact-dvd.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | OceanLi | [#2706](https://github.com/agenticsnz/unsorry/pull/2706) | 2026-06-19 |
 | [`gbinom-poly-nmul2mulnp1mul2mulnm1`](https://github.com/agenticsnz/unsorry/blob/main/goals/gbinom-poly-nmul2mulnp1mul2mulnm1.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | OceanLi | [#2707](https://github.com/agenticsnz/unsorry/pull/2707) | 2026-06-19 |
 | [`gbinom-poly-nmulnp2mulnp4`](https://github.com/agenticsnz/unsorry/blob/main/goals/gbinom-poly-nmulnp2mulnp4.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | OceanLi | [#2708](https://github.com/agenticsnz/unsorry/pull/2708) | 2026-06-19 |
@@ -918,7 +1015,7 @@ Legend: proved #c6f6d5 · open #e2e8f0 · blocked #feebc8 · flagged #fed7d7 · 
 | [`gbinom-poly-np1mulnp2mul2mulnp3`](https://github.com/agenticsnz/unsorry/blob/main/goals/gbinom-poly-np1mulnp2mul2mulnp3.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | OceanLi | [#2713](https://github.com/agenticsnz/unsorry/pull/2713) | 2026-06-19 |
 | [`gbinom-sp-0-1-4-5`](https://github.com/agenticsnz/unsorry/blob/main/goals/gbinom-sp-0-1-4-5.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | OceanLi | [#2714](https://github.com/agenticsnz/unsorry/pull/2714) | 2026-06-19 |
 | [`gbinom-sp-0-1-5`](https://github.com/agenticsnz/unsorry/blob/main/goals/gbinom-sp-0-1-5.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | OceanLi | [#2715](https://github.com/agenticsnz/unsorry/pull/2715) | 2026-06-19 |
-| [`gbinom-sp-0-1-8`](https://github.com/agenticsnz/unsorry/blob/main/goals/gbinom-sp-0-1-8.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2716](https://github.com/agenticsnz/unsorry/pull/2716) | 2026-06-19 |
+| [`gbinom-sp-0-1-8`](https://github.com/agenticsnz/unsorry/blob/main/goals/gbinom-sp-0-1-8.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2716](https://github.com/agenticsnz/unsorry/pull/2716) | 2026-06-19 |
 | [`gbinom-sp-0-2-3-5`](https://github.com/agenticsnz/unsorry/blob/main/goals/gbinom-sp-0-2-3-5.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | OceanLi | [#2717](https://github.com/agenticsnz/unsorry/pull/2717) | 2026-06-19 |
 | [`gbinom-sp-0-2-7`](https://github.com/agenticsnz/unsorry/blob/main/goals/gbinom-sp-0-2-7.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | OceanLi | [#2718](https://github.com/agenticsnz/unsorry/pull/2718) | 2026-06-19 |
 | [`geometric-series-ratio-eight`](https://github.com/agenticsnz/unsorry/blob/main/goals/geometric-series-ratio-eight.lean) | proved | 1 | claude-web | chat-bit-01 · `ring` | adam91holt | [#5267](https://github.com/agenticsnz/unsorry/pull/5267) | 2026-06-23 |
@@ -970,6 +1067,7 @@ Legend: proved #c6f6d5 · open #e2e8f0 · blocked #feebc8 · flagged #fed7d7 · 
 | [`geometric-series-ratio-sixtyfive`](https://github.com/agenticsnz/unsorry/blob/main/goals/geometric-series-ratio-sixtyfive.lean) | proved | 1 | claude-web | chat-bit-01 · `ring` | Chris Barlow | [#5645](https://github.com/agenticsnz/unsorry/pull/5645) | 2026-06-24 |
 | [`geometric-series-ratio-sixtyfour`](https://github.com/agenticsnz/unsorry/blob/main/goals/geometric-series-ratio-sixtyfour.lean) | proved | 1 | claude-web | chat-bit-01 · `ring` | Chris Barlow | [#5646](https://github.com/agenticsnz/unsorry/pull/5646) | 2026-06-24 |
 | [`geometric-series-ratio-sixtynine`](https://github.com/agenticsnz/unsorry/blob/main/goals/geometric-series-ratio-sixtynine.lean) | proved | 1 | claude-web | chat-bit-01 · `ring` | Chris Barlow | [#5647](https://github.com/agenticsnz/unsorry/pull/5647) | 2026-06-24 |
+| [`geometric-series-ratio-sixtyone`](https://github.com/agenticsnz/unsorry/blob/main/goals/geometric-series-ratio-sixtyone.lean) | proved | 1 | claude-web | chat-bit-01 · `ring` | Chris Barlow | [#5648](https://github.com/agenticsnz/unsorry/pull/5648) | 2026-06-26 |
 | [`geometric-series-ratio-sixtyseven`](https://github.com/agenticsnz/unsorry/blob/main/goals/geometric-series-ratio-sixtyseven.lean) | proved | 1 | claude-web | chat-bit-01 · `ring` | Chris Barlow | [#5649](https://github.com/agenticsnz/unsorry/pull/5649) | 2026-06-24 |
 | [`geometric-series-ratio-sixtysix`](https://github.com/agenticsnz/unsorry/blob/main/goals/geometric-series-ratio-sixtysix.lean) | proved | 1 | claude-web | chat-bit-01 · `ring` | Chris Barlow | [#5650](https://github.com/agenticsnz/unsorry/pull/5650) | 2026-06-24 |
 | [`geometric-series-ratio-sixtythree`](https://github.com/agenticsnz/unsorry/blob/main/goals/geometric-series-ratio-sixtythree.lean) | proved | 1 | claude-web | chat-bit-01 · `ring` | Chris Barlow | [#5651](https://github.com/agenticsnz/unsorry/pull/5651) | 2026-06-24 |
@@ -999,8 +1097,8 @@ Legend: proved #c6f6d5 · open #e2e8f0 · blocked #feebc8 · flagged #fed7d7 · 
 | [`geometric-series-ratio-twentythree`](https://github.com/agenticsnz/unsorry/blob/main/goals/geometric-series-ratio-twentythree.lean) | proved | 1 | claude-web | chat-bit-01 · `ring` | Chris Barlow | [#5676](https://github.com/agenticsnz/unsorry/pull/5676) | 2026-06-24 |
 | [`geometric-series-ratio-twentytwo`](https://github.com/agenticsnz/unsorry/blob/main/goals/geometric-series-ratio-twentytwo.lean) | proved | 1 | claude-web | chat-bit-01 · `ring` | Chris Barlow | [#5677](https://github.com/agenticsnz/unsorry/pull/5677) | 2026-06-24 |
 | [`geometric-series-ratio-two`](https://github.com/agenticsnz/unsorry/blob/main/goals/geometric-series-ratio-two.lean) | proved | 1 | claude-web | chat-bit-01 · `ring` | Chris Barlow | [#5679](https://github.com/agenticsnz/unsorry/pull/5679) | 2026-06-24 |
-| [`geud-30-pow-69-sub-self`](https://github.com/agenticsnz/unsorry/blob/main/goals/geud-30-pow-69-sub-self.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2690](https://github.com/agenticsnz/unsorry/pull/2690) | 2026-06-19 |
-| [`geud-30-pow-77-sub-self`](https://github.com/agenticsnz/unsorry/blob/main/goals/geud-30-pow-77-sub-self.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2691](https://github.com/agenticsnz/unsorry/pull/2691) | 2026-06-19 |
+| [`geud-30-pow-69-sub-self`](https://github.com/agenticsnz/unsorry/blob/main/goals/geud-30-pow-69-sub-self.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2690](https://github.com/agenticsnz/unsorry/pull/2690) | 2026-06-19 |
+| [`geud-30-pow-77-sub-self`](https://github.com/agenticsnz/unsorry/blob/main/goals/geud-30-pow-77-sub-self.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2691](https://github.com/agenticsnz/unsorry/pull/2691) | 2026-06-19 |
 | [`geud-30-pow-five-sub-self`](https://github.com/agenticsnz/unsorry/blob/main/goals/geud-30-pow-five-sub-self.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | OceanLi | [#2719](https://github.com/agenticsnz/unsorry/pull/2719) | 2026-06-19 |
 | [`geud-42-pow-115-sub-self`](https://github.com/agenticsnz/unsorry/blob/main/goals/geud-42-pow-115-sub-self.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | chat-bit-01 | [#5905](https://github.com/agenticsnz/unsorry/pull/5905) | 2026-06-24 |
 | [`geud-42-pow-187-sub-self`](https://github.com/agenticsnz/unsorry/blob/main/goals/geud-42-pow-187-sub-self.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | chat-bit-01 | [#5906](https://github.com/agenticsnz/unsorry/pull/5906) | 2026-06-24 |
@@ -1009,109 +1107,109 @@ Legend: proved #c6f6d5 · open #e2e8f0 · blocked #feebc8 · flagged #fed7d7 · 
 | [`geud-6-pow-thirtynine-sub-self`](https://github.com/agenticsnz/unsorry/blob/main/goals/geud-6-pow-thirtynine-sub-self.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | OceanLi | [#2724](https://github.com/agenticsnz/unsorry/pull/2724) | 2026-06-19 |
 | [`geud-6-pow-twentyseven-sub-self`](https://github.com/agenticsnz/unsorry/blob/main/goals/geud-6-pow-twentyseven-sub-self.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | OceanLi | [#2725](https://github.com/agenticsnz/unsorry/pull/2725) | 2026-06-19 |
 | [`geud-66-pow-171-sub-self`](https://github.com/agenticsnz/unsorry/blob/main/goals/geud-66-pow-171-sub-self.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | OceanLi | [#2726](https://github.com/agenticsnz/unsorry/pull/2726) | 2026-06-19 |
-| [`gpow-diff-eleven-pow-twenty`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-diff-eleven-pow-twenty.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2771](https://github.com/agenticsnz/unsorry/pull/2771) | 2026-06-19 |
-| [`gpow-diff-twelve-pow-eight`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-diff-twelve-pow-eight.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2891](https://github.com/agenticsnz/unsorry/pull/2891) | 2026-06-19 |
-| [`gpow-diff-twelve-pow-eighteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-diff-twelve-pow-eighteen.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2892](https://github.com/agenticsnz/unsorry/pull/2892) | 2026-06-19 |
-| [`gpow-diff-twelve-pow-eleven`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-diff-twelve-pow-eleven.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2893](https://github.com/agenticsnz/unsorry/pull/2893) | 2026-06-19 |
-| [`gpow-diff-twelve-pow-fifteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-diff-twelve-pow-fifteen.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2894](https://github.com/agenticsnz/unsorry/pull/2894) | 2026-06-19 |
-| [`gpow-diff-twelve-pow-five`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-diff-twelve-pow-five.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2895](https://github.com/agenticsnz/unsorry/pull/2895) | 2026-06-19 |
-| [`gpow-diff-twelve-pow-four`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-diff-twelve-pow-four.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2897](https://github.com/agenticsnz/unsorry/pull/2897) | 2026-06-19 |
-| [`gpow-diff-twelve-pow-fourteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-diff-twelve-pow-fourteen.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2898](https://github.com/agenticsnz/unsorry/pull/2898) | 2026-06-19 |
-| [`gpow-diff-twelve-pow-nine`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-diff-twelve-pow-nine.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2899](https://github.com/agenticsnz/unsorry/pull/2899) | 2026-06-19 |
-| [`gpow-diff-twelve-pow-nineteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-diff-twelve-pow-nineteen.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2900](https://github.com/agenticsnz/unsorry/pull/2900) | 2026-06-19 |
-| [`gpow-diff-twelve-pow-seven`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-diff-twelve-pow-seven.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2901](https://github.com/agenticsnz/unsorry/pull/2901) | 2026-06-19 |
-| [`gpow-diff-twelve-pow-seventeen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-diff-twelve-pow-seventeen.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2903](https://github.com/agenticsnz/unsorry/pull/2903) | 2026-06-19 |
-| [`gpow-diff-twelve-pow-six`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-diff-twelve-pow-six.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2904](https://github.com/agenticsnz/unsorry/pull/2904) | 2026-06-19 |
-| [`gpow-diff-twelve-pow-sixteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-diff-twelve-pow-sixteen.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2905](https://github.com/agenticsnz/unsorry/pull/2905) | 2026-06-20 |
-| [`gpow-diff-twelve-pow-ten`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-diff-twelve-pow-ten.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2906](https://github.com/agenticsnz/unsorry/pull/2906) | 2026-06-20 |
-| [`gpow-diff-twelve-pow-thirteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-diff-twelve-pow-thirteen.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2907](https://github.com/agenticsnz/unsorry/pull/2907) | 2026-06-20 |
-| [`gpow-diff-twelve-pow-three`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-diff-twelve-pow-three.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2908](https://github.com/agenticsnz/unsorry/pull/2908) | 2026-06-20 |
-| [`gpow-diff-twelve-pow-twelve`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-diff-twelve-pow-twelve.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2909](https://github.com/agenticsnz/unsorry/pull/2909) | 2026-06-20 |
-| [`gpow-diff-twelve-pow-twenty`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-diff-twelve-pow-twenty.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2910](https://github.com/agenticsnz/unsorry/pull/2910) | 2026-06-20 |
-| [`gpow-diff-twelve-pow-two`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-diff-twelve-pow-two.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2911](https://github.com/agenticsnz/unsorry/pull/2911) | 2026-06-20 |
-| [`gpow-sum-eight-pow-eighteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eight-pow-eighteen.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2924](https://github.com/agenticsnz/unsorry/pull/2924) | 2026-06-20 |
-| [`gpow-sum-eight-pow-eleven`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eight-pow-eleven.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2926](https://github.com/agenticsnz/unsorry/pull/2926) | 2026-06-20 |
-| [`gpow-sum-eight-pow-fifteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eight-pow-fifteen.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2927](https://github.com/agenticsnz/unsorry/pull/2927) | 2026-06-20 |
-| [`gpow-sum-eight-pow-fourteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eight-pow-fourteen.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2928](https://github.com/agenticsnz/unsorry/pull/2928) | 2026-06-20 |
-| [`gpow-sum-eight-pow-nineteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eight-pow-nineteen.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2929](https://github.com/agenticsnz/unsorry/pull/2929) | 2026-06-20 |
-| [`gpow-sum-eight-pow-seventeen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eight-pow-seventeen.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2930](https://github.com/agenticsnz/unsorry/pull/2930) | 2026-06-20 |
-| [`gpow-sum-eight-pow-sixteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eight-pow-sixteen.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2931](https://github.com/agenticsnz/unsorry/pull/2931) | 2026-06-20 |
-| [`gpow-sum-eight-pow-ten`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eight-pow-ten.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2932](https://github.com/agenticsnz/unsorry/pull/2932) | 2026-06-20 |
-| [`gpow-sum-eight-pow-thirteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eight-pow-thirteen.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2933](https://github.com/agenticsnz/unsorry/pull/2933) | 2026-06-20 |
-| [`gpow-sum-eight-pow-twelve`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eight-pow-twelve.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2934](https://github.com/agenticsnz/unsorry/pull/2934) | 2026-06-20 |
-| [`gpow-sum-eight-pow-twenty`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eight-pow-twenty.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2935](https://github.com/agenticsnz/unsorry/pull/2935) | 2026-06-20 |
-| [`gpow-sum-eleven-pow-eight`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eleven-pow-eight.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2936](https://github.com/agenticsnz/unsorry/pull/2936) | 2026-06-20 |
-| [`gpow-sum-eleven-pow-eighteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eleven-pow-eighteen.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2937](https://github.com/agenticsnz/unsorry/pull/2937) | 2026-06-20 |
-| [`gpow-sum-eleven-pow-eleven`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eleven-pow-eleven.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2938](https://github.com/agenticsnz/unsorry/pull/2938) | 2026-06-20 |
-| [`gpow-sum-eleven-pow-fifteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eleven-pow-fifteen.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2939](https://github.com/agenticsnz/unsorry/pull/2939) | 2026-06-20 |
-| [`gpow-sum-eleven-pow-five`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eleven-pow-five.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2940](https://github.com/agenticsnz/unsorry/pull/2940) | 2026-06-20 |
-| [`gpow-sum-eleven-pow-four`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eleven-pow-four.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2942](https://github.com/agenticsnz/unsorry/pull/2942) | 2026-06-20 |
-| [`gpow-sum-eleven-pow-fourteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eleven-pow-fourteen.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2943](https://github.com/agenticsnz/unsorry/pull/2943) | 2026-06-20 |
-| [`gpow-sum-eleven-pow-nine`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eleven-pow-nine.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2944](https://github.com/agenticsnz/unsorry/pull/2944) | 2026-06-20 |
-| [`gpow-sum-eleven-pow-nineteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eleven-pow-nineteen.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2945](https://github.com/agenticsnz/unsorry/pull/2945) | 2026-06-20 |
-| [`gpow-sum-eleven-pow-seven`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eleven-pow-seven.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2946](https://github.com/agenticsnz/unsorry/pull/2946) | 2026-06-20 |
-| [`gpow-sum-eleven-pow-seventeen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eleven-pow-seventeen.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2947](https://github.com/agenticsnz/unsorry/pull/2947) | 2026-06-20 |
-| [`gpow-sum-eleven-pow-six`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eleven-pow-six.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2948](https://github.com/agenticsnz/unsorry/pull/2948) | 2026-06-20 |
-| [`gpow-sum-eleven-pow-sixteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eleven-pow-sixteen.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2949](https://github.com/agenticsnz/unsorry/pull/2949) | 2026-06-20 |
-| [`gpow-sum-eleven-pow-ten`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eleven-pow-ten.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2951](https://github.com/agenticsnz/unsorry/pull/2951) | 2026-06-20 |
-| [`gpow-sum-eleven-pow-thirteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eleven-pow-thirteen.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2952](https://github.com/agenticsnz/unsorry/pull/2952) | 2026-06-20 |
-| [`gpow-sum-eleven-pow-three`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eleven-pow-three.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2954](https://github.com/agenticsnz/unsorry/pull/2954) | 2026-06-20 |
-| [`gpow-sum-eleven-pow-twelve`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eleven-pow-twelve.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2955](https://github.com/agenticsnz/unsorry/pull/2955) | 2026-06-20 |
-| [`gpow-sum-eleven-pow-twenty`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eleven-pow-twenty.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2956](https://github.com/agenticsnz/unsorry/pull/2956) | 2026-06-20 |
-| [`gpow-sum-eleven-pow-two`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eleven-pow-two.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2957](https://github.com/agenticsnz/unsorry/pull/2957) | 2026-06-20 |
-| [`gpow-sum-five-pow-eighteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-five-pow-eighteen.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2958](https://github.com/agenticsnz/unsorry/pull/2958) | 2026-06-20 |
-| [`gpow-sum-five-pow-eleven`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-five-pow-eleven.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2960](https://github.com/agenticsnz/unsorry/pull/2960) | 2026-06-20 |
-| [`gpow-sum-five-pow-fifteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-five-pow-fifteen.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2961](https://github.com/agenticsnz/unsorry/pull/2961) | 2026-06-20 |
-| [`gpow-sum-five-pow-fourteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-five-pow-fourteen.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2963](https://github.com/agenticsnz/unsorry/pull/2963) | 2026-06-20 |
-| [`gpow-sum-five-pow-nineteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-five-pow-nineteen.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2964](https://github.com/agenticsnz/unsorry/pull/2964) | 2026-06-20 |
-| [`gpow-sum-five-pow-seventeen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-five-pow-seventeen.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2965](https://github.com/agenticsnz/unsorry/pull/2965) | 2026-06-20 |
-| [`gpow-sum-five-pow-sixteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-five-pow-sixteen.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2967](https://github.com/agenticsnz/unsorry/pull/2967) | 2026-06-20 |
-| [`gpow-sum-five-pow-ten`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-five-pow-ten.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2969](https://github.com/agenticsnz/unsorry/pull/2969) | 2026-06-20 |
-| [`gpow-sum-five-pow-thirteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-five-pow-thirteen.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2970](https://github.com/agenticsnz/unsorry/pull/2970) | 2026-06-20 |
-| [`gpow-sum-five-pow-twelve`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-five-pow-twelve.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2972](https://github.com/agenticsnz/unsorry/pull/2972) | 2026-06-20 |
-| [`gpow-sum-five-pow-twenty`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-five-pow-twenty.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2973](https://github.com/agenticsnz/unsorry/pull/2973) | 2026-06-20 |
-| [`gpow-sum-four-pow-eighteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-four-pow-eighteen.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2977](https://github.com/agenticsnz/unsorry/pull/2977) | 2026-06-20 |
-| [`gpow-sum-four-pow-eleven`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-four-pow-eleven.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2978](https://github.com/agenticsnz/unsorry/pull/2978) | 2026-06-20 |
-| [`gpow-sum-four-pow-fifteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-four-pow-fifteen.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2979](https://github.com/agenticsnz/unsorry/pull/2979) | 2026-06-20 |
-| [`gpow-sum-four-pow-fourteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-four-pow-fourteen.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2983](https://github.com/agenticsnz/unsorry/pull/2983) | 2026-06-20 |
-| [`gpow-sum-four-pow-nineteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-four-pow-nineteen.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2986](https://github.com/agenticsnz/unsorry/pull/2986) | 2026-06-20 |
-| [`gpow-sum-four-pow-seventeen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-four-pow-seventeen.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2989](https://github.com/agenticsnz/unsorry/pull/2989) | 2026-06-20 |
-| [`gpow-sum-four-pow-sixteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-four-pow-sixteen.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2991](https://github.com/agenticsnz/unsorry/pull/2991) | 2026-06-20 |
-| [`gpow-sum-four-pow-ten`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-four-pow-ten.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2992](https://github.com/agenticsnz/unsorry/pull/2992) | 2026-06-20 |
-| [`gpow-sum-four-pow-thirteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-four-pow-thirteen.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2993](https://github.com/agenticsnz/unsorry/pull/2993) | 2026-06-20 |
-| [`gpow-sum-four-pow-twelve`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-four-pow-twelve.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2995](https://github.com/agenticsnz/unsorry/pull/2995) | 2026-06-20 |
-| [`gpow-sum-four-pow-twenty`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-four-pow-twenty.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2996](https://github.com/agenticsnz/unsorry/pull/2996) | 2026-06-20 |
-| [`gpow-sum-nine-pow-eight`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-nine-pow-eight.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2998](https://github.com/agenticsnz/unsorry/pull/2998) | 2026-06-20 |
-| [`gpow-sum-nine-pow-eighteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-nine-pow-eighteen.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2999](https://github.com/agenticsnz/unsorry/pull/2999) | 2026-06-20 |
-| [`gpow-sum-nine-pow-eleven`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-nine-pow-eleven.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#3000](https://github.com/agenticsnz/unsorry/pull/3000) | 2026-06-20 |
-| [`gpow-sum-nine-pow-fifteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-nine-pow-fifteen.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#3001](https://github.com/agenticsnz/unsorry/pull/3001) | 2026-06-20 |
-| [`gpow-sum-nine-pow-five`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-nine-pow-five.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#3017](https://github.com/agenticsnz/unsorry/pull/3017) | 2026-06-20 |
-| [`gpow-sum-nine-pow-four`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-nine-pow-four.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#3026](https://github.com/agenticsnz/unsorry/pull/3026) | 2026-06-20 |
-| [`gpow-sum-nine-pow-fourteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-nine-pow-fourteen.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#3048](https://github.com/agenticsnz/unsorry/pull/3048) | 2026-06-20 |
-| [`gpow-sum-nine-pow-nine`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-nine-pow-nine.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#3063](https://github.com/agenticsnz/unsorry/pull/3063) | 2026-06-20 |
-| [`gpow-sum-nine-pow-nineteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-nine-pow-nineteen.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#3064](https://github.com/agenticsnz/unsorry/pull/3064) | 2026-06-20 |
-| [`gpow-sum-nine-pow-seven`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-nine-pow-seven.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#3065](https://github.com/agenticsnz/unsorry/pull/3065) | 2026-06-20 |
-| [`gpow-sum-nine-pow-seventeen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-nine-pow-seventeen.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#3066](https://github.com/agenticsnz/unsorry/pull/3066) | 2026-06-20 |
-| [`gpow-sum-nine-pow-six`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-nine-pow-six.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#3067](https://github.com/agenticsnz/unsorry/pull/3067) | 2026-06-20 |
-| [`gpow-sum-nine-pow-sixteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-nine-pow-sixteen.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#3068](https://github.com/agenticsnz/unsorry/pull/3068) | 2026-06-20 |
-| [`gpow-sum-nine-pow-ten`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-nine-pow-ten.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#3069](https://github.com/agenticsnz/unsorry/pull/3069) | 2026-06-20 |
-| [`gpow-sum-nine-pow-thirteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-nine-pow-thirteen.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#3072](https://github.com/agenticsnz/unsorry/pull/3072) | 2026-06-20 |
-| [`gpow-sum-nine-pow-three`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-nine-pow-three.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#3073](https://github.com/agenticsnz/unsorry/pull/3073) | 2026-06-20 |
-| [`gpow-sum-nine-pow-twelve`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-nine-pow-twelve.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#3075](https://github.com/agenticsnz/unsorry/pull/3075) | 2026-06-20 |
-| [`gpow-sum-nine-pow-twenty`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-nine-pow-twenty.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#3078](https://github.com/agenticsnz/unsorry/pull/3078) | 2026-06-20 |
-| [`gpow-sum-nine-pow-two`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-nine-pow-two.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#3080](https://github.com/agenticsnz/unsorry/pull/3080) | 2026-06-20 |
-| [`gpow-sum-one-pow-eighteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-one-pow-eighteen.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#3084](https://github.com/agenticsnz/unsorry/pull/3084) | 2026-06-20 |
-| [`gpow-sum-one-pow-eleven`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-one-pow-eleven.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#3086](https://github.com/agenticsnz/unsorry/pull/3086) | 2026-06-20 |
-| [`gpow-sum-one-pow-fifteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-one-pow-fifteen.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#3088](https://github.com/agenticsnz/unsorry/pull/3088) | 2026-06-20 |
-| [`gpow-sum-one-pow-fourteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-one-pow-fourteen.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#3098](https://github.com/agenticsnz/unsorry/pull/3098) | 2026-06-20 |
-| [`gpow-sum-one-pow-nineteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-one-pow-nineteen.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#3103](https://github.com/agenticsnz/unsorry/pull/3103) | 2026-06-20 |
-| [`gpow-sum-one-pow-seventeen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-one-pow-seventeen.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#3111](https://github.com/agenticsnz/unsorry/pull/3111) | 2026-06-20 |
-| [`gpow-sum-one-pow-sixteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-one-pow-sixteen.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#3114](https://github.com/agenticsnz/unsorry/pull/3114) | 2026-06-20 |
-| [`gpow-sum-one-pow-ten`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-one-pow-ten.lean) | proved | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#3115](https://github.com/agenticsnz/unsorry/pull/3115) | 2026-06-20 |
-| [`gpow-sum-one-pow-thirteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-one-pow-thirteen.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#3116](https://github.com/agenticsnz/unsorry/pull/3116) | 2026-06-20 |
-| [`gpow-sum-one-pow-twelve`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-one-pow-twelve.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#3129](https://github.com/agenticsnz/unsorry/pull/3129) | 2026-06-20 |
-| [`gpow-sum-one-pow-twenty`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-one-pow-twenty.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#3131](https://github.com/agenticsnz/unsorry/pull/3131) | 2026-06-20 |
-| [`gpow-sum-seven-pow-eighteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-seven-pow-eighteen.lean) | proved | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#3138](https://github.com/agenticsnz/unsorry/pull/3138) | 2026-06-20 |
+| [`gpow-diff-eleven-pow-twenty`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-diff-eleven-pow-twenty.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2771](https://github.com/agenticsnz/unsorry/pull/2771) | 2026-06-19 |
+| [`gpow-diff-twelve-pow-eight`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-diff-twelve-pow-eight.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2891](https://github.com/agenticsnz/unsorry/pull/2891) | 2026-06-19 |
+| [`gpow-diff-twelve-pow-eighteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-diff-twelve-pow-eighteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2892](https://github.com/agenticsnz/unsorry/pull/2892) | 2026-06-19 |
+| [`gpow-diff-twelve-pow-eleven`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-diff-twelve-pow-eleven.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2893](https://github.com/agenticsnz/unsorry/pull/2893) | 2026-06-19 |
+| [`gpow-diff-twelve-pow-fifteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-diff-twelve-pow-fifteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2894](https://github.com/agenticsnz/unsorry/pull/2894) | 2026-06-19 |
+| [`gpow-diff-twelve-pow-five`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-diff-twelve-pow-five.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2895](https://github.com/agenticsnz/unsorry/pull/2895) | 2026-06-19 |
+| [`gpow-diff-twelve-pow-four`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-diff-twelve-pow-four.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2897](https://github.com/agenticsnz/unsorry/pull/2897) | 2026-06-19 |
+| [`gpow-diff-twelve-pow-fourteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-diff-twelve-pow-fourteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2898](https://github.com/agenticsnz/unsorry/pull/2898) | 2026-06-19 |
+| [`gpow-diff-twelve-pow-nine`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-diff-twelve-pow-nine.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2899](https://github.com/agenticsnz/unsorry/pull/2899) | 2026-06-19 |
+| [`gpow-diff-twelve-pow-nineteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-diff-twelve-pow-nineteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2900](https://github.com/agenticsnz/unsorry/pull/2900) | 2026-06-19 |
+| [`gpow-diff-twelve-pow-seven`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-diff-twelve-pow-seven.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2901](https://github.com/agenticsnz/unsorry/pull/2901) | 2026-06-19 |
+| [`gpow-diff-twelve-pow-seventeen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-diff-twelve-pow-seventeen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2903](https://github.com/agenticsnz/unsorry/pull/2903) | 2026-06-19 |
+| [`gpow-diff-twelve-pow-six`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-diff-twelve-pow-six.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2904](https://github.com/agenticsnz/unsorry/pull/2904) | 2026-06-19 |
+| [`gpow-diff-twelve-pow-sixteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-diff-twelve-pow-sixteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2905](https://github.com/agenticsnz/unsorry/pull/2905) | 2026-06-20 |
+| [`gpow-diff-twelve-pow-ten`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-diff-twelve-pow-ten.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2906](https://github.com/agenticsnz/unsorry/pull/2906) | 2026-06-20 |
+| [`gpow-diff-twelve-pow-thirteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-diff-twelve-pow-thirteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2907](https://github.com/agenticsnz/unsorry/pull/2907) | 2026-06-20 |
+| [`gpow-diff-twelve-pow-three`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-diff-twelve-pow-three.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2908](https://github.com/agenticsnz/unsorry/pull/2908) | 2026-06-20 |
+| [`gpow-diff-twelve-pow-twelve`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-diff-twelve-pow-twelve.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2909](https://github.com/agenticsnz/unsorry/pull/2909) | 2026-06-20 |
+| [`gpow-diff-twelve-pow-twenty`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-diff-twelve-pow-twenty.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2910](https://github.com/agenticsnz/unsorry/pull/2910) | 2026-06-20 |
+| [`gpow-diff-twelve-pow-two`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-diff-twelve-pow-two.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2911](https://github.com/agenticsnz/unsorry/pull/2911) | 2026-06-20 |
+| [`gpow-sum-eight-pow-eighteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eight-pow-eighteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2924](https://github.com/agenticsnz/unsorry/pull/2924) | 2026-06-20 |
+| [`gpow-sum-eight-pow-eleven`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eight-pow-eleven.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2926](https://github.com/agenticsnz/unsorry/pull/2926) | 2026-06-20 |
+| [`gpow-sum-eight-pow-fifteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eight-pow-fifteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2927](https://github.com/agenticsnz/unsorry/pull/2927) | 2026-06-20 |
+| [`gpow-sum-eight-pow-fourteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eight-pow-fourteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2928](https://github.com/agenticsnz/unsorry/pull/2928) | 2026-06-20 |
+| [`gpow-sum-eight-pow-nineteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eight-pow-nineteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2929](https://github.com/agenticsnz/unsorry/pull/2929) | 2026-06-20 |
+| [`gpow-sum-eight-pow-seventeen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eight-pow-seventeen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2930](https://github.com/agenticsnz/unsorry/pull/2930) | 2026-06-20 |
+| [`gpow-sum-eight-pow-sixteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eight-pow-sixteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2931](https://github.com/agenticsnz/unsorry/pull/2931) | 2026-06-20 |
+| [`gpow-sum-eight-pow-ten`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eight-pow-ten.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2932](https://github.com/agenticsnz/unsorry/pull/2932) | 2026-06-20 |
+| [`gpow-sum-eight-pow-thirteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eight-pow-thirteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2933](https://github.com/agenticsnz/unsorry/pull/2933) | 2026-06-20 |
+| [`gpow-sum-eight-pow-twelve`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eight-pow-twelve.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2934](https://github.com/agenticsnz/unsorry/pull/2934) | 2026-06-20 |
+| [`gpow-sum-eight-pow-twenty`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eight-pow-twenty.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2935](https://github.com/agenticsnz/unsorry/pull/2935) | 2026-06-20 |
+| [`gpow-sum-eleven-pow-eight`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eleven-pow-eight.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2936](https://github.com/agenticsnz/unsorry/pull/2936) | 2026-06-20 |
+| [`gpow-sum-eleven-pow-eighteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eleven-pow-eighteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2937](https://github.com/agenticsnz/unsorry/pull/2937) | 2026-06-20 |
+| [`gpow-sum-eleven-pow-eleven`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eleven-pow-eleven.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2938](https://github.com/agenticsnz/unsorry/pull/2938) | 2026-06-20 |
+| [`gpow-sum-eleven-pow-fifteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eleven-pow-fifteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2939](https://github.com/agenticsnz/unsorry/pull/2939) | 2026-06-20 |
+| [`gpow-sum-eleven-pow-five`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eleven-pow-five.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2940](https://github.com/agenticsnz/unsorry/pull/2940) | 2026-06-20 |
+| [`gpow-sum-eleven-pow-four`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eleven-pow-four.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2942](https://github.com/agenticsnz/unsorry/pull/2942) | 2026-06-20 |
+| [`gpow-sum-eleven-pow-fourteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eleven-pow-fourteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2943](https://github.com/agenticsnz/unsorry/pull/2943) | 2026-06-20 |
+| [`gpow-sum-eleven-pow-nine`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eleven-pow-nine.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2944](https://github.com/agenticsnz/unsorry/pull/2944) | 2026-06-20 |
+| [`gpow-sum-eleven-pow-nineteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eleven-pow-nineteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2945](https://github.com/agenticsnz/unsorry/pull/2945) | 2026-06-20 |
+| [`gpow-sum-eleven-pow-seven`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eleven-pow-seven.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2946](https://github.com/agenticsnz/unsorry/pull/2946) | 2026-06-20 |
+| [`gpow-sum-eleven-pow-seventeen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eleven-pow-seventeen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2947](https://github.com/agenticsnz/unsorry/pull/2947) | 2026-06-20 |
+| [`gpow-sum-eleven-pow-six`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eleven-pow-six.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2948](https://github.com/agenticsnz/unsorry/pull/2948) | 2026-06-20 |
+| [`gpow-sum-eleven-pow-sixteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eleven-pow-sixteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2949](https://github.com/agenticsnz/unsorry/pull/2949) | 2026-06-20 |
+| [`gpow-sum-eleven-pow-ten`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eleven-pow-ten.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2951](https://github.com/agenticsnz/unsorry/pull/2951) | 2026-06-20 |
+| [`gpow-sum-eleven-pow-thirteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eleven-pow-thirteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2952](https://github.com/agenticsnz/unsorry/pull/2952) | 2026-06-20 |
+| [`gpow-sum-eleven-pow-three`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eleven-pow-three.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2954](https://github.com/agenticsnz/unsorry/pull/2954) | 2026-06-20 |
+| [`gpow-sum-eleven-pow-twelve`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eleven-pow-twelve.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2955](https://github.com/agenticsnz/unsorry/pull/2955) | 2026-06-20 |
+| [`gpow-sum-eleven-pow-twenty`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eleven-pow-twenty.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2956](https://github.com/agenticsnz/unsorry/pull/2956) | 2026-06-20 |
+| [`gpow-sum-eleven-pow-two`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-eleven-pow-two.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2957](https://github.com/agenticsnz/unsorry/pull/2957) | 2026-06-20 |
+| [`gpow-sum-five-pow-eighteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-five-pow-eighteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2958](https://github.com/agenticsnz/unsorry/pull/2958) | 2026-06-20 |
+| [`gpow-sum-five-pow-eleven`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-five-pow-eleven.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2960](https://github.com/agenticsnz/unsorry/pull/2960) | 2026-06-20 |
+| [`gpow-sum-five-pow-fifteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-five-pow-fifteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2961](https://github.com/agenticsnz/unsorry/pull/2961) | 2026-06-20 |
+| [`gpow-sum-five-pow-fourteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-five-pow-fourteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2963](https://github.com/agenticsnz/unsorry/pull/2963) | 2026-06-20 |
+| [`gpow-sum-five-pow-nineteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-five-pow-nineteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2964](https://github.com/agenticsnz/unsorry/pull/2964) | 2026-06-20 |
+| [`gpow-sum-five-pow-seventeen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-five-pow-seventeen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2965](https://github.com/agenticsnz/unsorry/pull/2965) | 2026-06-20 |
+| [`gpow-sum-five-pow-sixteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-five-pow-sixteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2967](https://github.com/agenticsnz/unsorry/pull/2967) | 2026-06-20 |
+| [`gpow-sum-five-pow-ten`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-five-pow-ten.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2969](https://github.com/agenticsnz/unsorry/pull/2969) | 2026-06-20 |
+| [`gpow-sum-five-pow-thirteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-five-pow-thirteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2970](https://github.com/agenticsnz/unsorry/pull/2970) | 2026-06-20 |
+| [`gpow-sum-five-pow-twelve`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-five-pow-twelve.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2972](https://github.com/agenticsnz/unsorry/pull/2972) | 2026-06-20 |
+| [`gpow-sum-five-pow-twenty`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-five-pow-twenty.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2973](https://github.com/agenticsnz/unsorry/pull/2973) | 2026-06-20 |
+| [`gpow-sum-four-pow-eighteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-four-pow-eighteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2977](https://github.com/agenticsnz/unsorry/pull/2977) | 2026-06-20 |
+| [`gpow-sum-four-pow-eleven`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-four-pow-eleven.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2978](https://github.com/agenticsnz/unsorry/pull/2978) | 2026-06-20 |
+| [`gpow-sum-four-pow-fifteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-four-pow-fifteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2979](https://github.com/agenticsnz/unsorry/pull/2979) | 2026-06-20 |
+| [`gpow-sum-four-pow-fourteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-four-pow-fourteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2983](https://github.com/agenticsnz/unsorry/pull/2983) | 2026-06-20 |
+| [`gpow-sum-four-pow-nineteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-four-pow-nineteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2986](https://github.com/agenticsnz/unsorry/pull/2986) | 2026-06-20 |
+| [`gpow-sum-four-pow-seventeen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-four-pow-seventeen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2989](https://github.com/agenticsnz/unsorry/pull/2989) | 2026-06-20 |
+| [`gpow-sum-four-pow-sixteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-four-pow-sixteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2991](https://github.com/agenticsnz/unsorry/pull/2991) | 2026-06-20 |
+| [`gpow-sum-four-pow-ten`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-four-pow-ten.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2992](https://github.com/agenticsnz/unsorry/pull/2992) | 2026-06-20 |
+| [`gpow-sum-four-pow-thirteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-four-pow-thirteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2993](https://github.com/agenticsnz/unsorry/pull/2993) | 2026-06-20 |
+| [`gpow-sum-four-pow-twelve`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-four-pow-twelve.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2995](https://github.com/agenticsnz/unsorry/pull/2995) | 2026-06-20 |
+| [`gpow-sum-four-pow-twenty`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-four-pow-twenty.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2996](https://github.com/agenticsnz/unsorry/pull/2996) | 2026-06-20 |
+| [`gpow-sum-nine-pow-eight`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-nine-pow-eight.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2998](https://github.com/agenticsnz/unsorry/pull/2998) | 2026-06-20 |
+| [`gpow-sum-nine-pow-eighteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-nine-pow-eighteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2999](https://github.com/agenticsnz/unsorry/pull/2999) | 2026-06-20 |
+| [`gpow-sum-nine-pow-eleven`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-nine-pow-eleven.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#3000](https://github.com/agenticsnz/unsorry/pull/3000) | 2026-06-20 |
+| [`gpow-sum-nine-pow-fifteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-nine-pow-fifteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#3001](https://github.com/agenticsnz/unsorry/pull/3001) | 2026-06-20 |
+| [`gpow-sum-nine-pow-five`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-nine-pow-five.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#3017](https://github.com/agenticsnz/unsorry/pull/3017) | 2026-06-20 |
+| [`gpow-sum-nine-pow-four`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-nine-pow-four.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#3026](https://github.com/agenticsnz/unsorry/pull/3026) | 2026-06-20 |
+| [`gpow-sum-nine-pow-fourteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-nine-pow-fourteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#3048](https://github.com/agenticsnz/unsorry/pull/3048) | 2026-06-20 |
+| [`gpow-sum-nine-pow-nine`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-nine-pow-nine.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#3063](https://github.com/agenticsnz/unsorry/pull/3063) | 2026-06-20 |
+| [`gpow-sum-nine-pow-nineteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-nine-pow-nineteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#3064](https://github.com/agenticsnz/unsorry/pull/3064) | 2026-06-20 |
+| [`gpow-sum-nine-pow-seven`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-nine-pow-seven.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#3065](https://github.com/agenticsnz/unsorry/pull/3065) | 2026-06-20 |
+| [`gpow-sum-nine-pow-seventeen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-nine-pow-seventeen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#3066](https://github.com/agenticsnz/unsorry/pull/3066) | 2026-06-20 |
+| [`gpow-sum-nine-pow-six`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-nine-pow-six.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#3067](https://github.com/agenticsnz/unsorry/pull/3067) | 2026-06-20 |
+| [`gpow-sum-nine-pow-sixteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-nine-pow-sixteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#3068](https://github.com/agenticsnz/unsorry/pull/3068) | 2026-06-20 |
+| [`gpow-sum-nine-pow-ten`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-nine-pow-ten.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#3069](https://github.com/agenticsnz/unsorry/pull/3069) | 2026-06-20 |
+| [`gpow-sum-nine-pow-thirteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-nine-pow-thirteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#3072](https://github.com/agenticsnz/unsorry/pull/3072) | 2026-06-20 |
+| [`gpow-sum-nine-pow-three`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-nine-pow-three.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#3073](https://github.com/agenticsnz/unsorry/pull/3073) | 2026-06-20 |
+| [`gpow-sum-nine-pow-twelve`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-nine-pow-twelve.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#3075](https://github.com/agenticsnz/unsorry/pull/3075) | 2026-06-20 |
+| [`gpow-sum-nine-pow-twenty`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-nine-pow-twenty.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#3078](https://github.com/agenticsnz/unsorry/pull/3078) | 2026-06-20 |
+| [`gpow-sum-nine-pow-two`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-nine-pow-two.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#3080](https://github.com/agenticsnz/unsorry/pull/3080) | 2026-06-20 |
+| [`gpow-sum-one-pow-eighteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-one-pow-eighteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#3084](https://github.com/agenticsnz/unsorry/pull/3084) | 2026-06-20 |
+| [`gpow-sum-one-pow-eleven`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-one-pow-eleven.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#3086](https://github.com/agenticsnz/unsorry/pull/3086) | 2026-06-20 |
+| [`gpow-sum-one-pow-fifteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-one-pow-fifteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#3088](https://github.com/agenticsnz/unsorry/pull/3088) | 2026-06-20 |
+| [`gpow-sum-one-pow-fourteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-one-pow-fourteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#3098](https://github.com/agenticsnz/unsorry/pull/3098) | 2026-06-20 |
+| [`gpow-sum-one-pow-nineteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-one-pow-nineteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#3103](https://github.com/agenticsnz/unsorry/pull/3103) | 2026-06-20 |
+| [`gpow-sum-one-pow-seventeen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-one-pow-seventeen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#3111](https://github.com/agenticsnz/unsorry/pull/3111) | 2026-06-20 |
+| [`gpow-sum-one-pow-sixteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-one-pow-sixteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#3114](https://github.com/agenticsnz/unsorry/pull/3114) | 2026-06-20 |
+| [`gpow-sum-one-pow-ten`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-one-pow-ten.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#3115](https://github.com/agenticsnz/unsorry/pull/3115) | 2026-06-20 |
+| [`gpow-sum-one-pow-thirteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-one-pow-thirteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#3116](https://github.com/agenticsnz/unsorry/pull/3116) | 2026-06-20 |
+| [`gpow-sum-one-pow-twelve`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-one-pow-twelve.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#3129](https://github.com/agenticsnz/unsorry/pull/3129) | 2026-06-20 |
+| [`gpow-sum-one-pow-twenty`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-one-pow-twenty.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#3131](https://github.com/agenticsnz/unsorry/pull/3131) | 2026-06-20 |
+| [`gpow-sum-seven-pow-eighteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-seven-pow-eighteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#3138](https://github.com/agenticsnz/unsorry/pull/3138) | 2026-06-20 |
 | [`gpow-sum-seven-pow-eleven`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-seven-pow-eleven.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#3178](https://github.com/agenticsnz/unsorry/pull/3178) | 2026-06-20 |
 | [`gpow-sum-seven-pow-fifteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-seven-pow-fifteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#3182](https://github.com/agenticsnz/unsorry/pull/3182) | 2026-06-20 |
 | [`gpow-sum-seven-pow-fourteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-seven-pow-fourteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#3205](https://github.com/agenticsnz/unsorry/pull/3205) | 2026-06-20 |
@@ -1372,10 +1470,12 @@ Legend: proved #c6f6d5 · open #e2e8f0 · blocked #feebc8 · flagged #fed7d7 · 
 | [`gself-pow-four-pow-twenty-add-pow-thirteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gself-pow-four-pow-twenty-add-pow-thirteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#4222](https://github.com/agenticsnz/unsorry/pull/4222) | 2026-06-21 |
 | [`gself-pow-four-pow-twenty-add-pow-twelve`](https://github.com/agenticsnz/unsorry/blob/main/goals/gself-pow-four-pow-twenty-add-pow-twelve.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#4223](https://github.com/agenticsnz/unsorry/pull/4223) | 2026-06-21 |
 | [`gself-pow-fourteen-add-pow-eleven`](https://github.com/agenticsnz/unsorry/blob/main/goals/gself-pow-fourteen-add-pow-eleven.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | chat-bit-01 | [#5936](https://github.com/agenticsnz/unsorry/pull/5936) | 2026-06-24 |
+| [`gself-pow-seventeen-add-pow-fourteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gself-pow-seventeen-add-pow-fourteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#5561](https://github.com/agenticsnz/unsorry/pull/5561) | 2026-06-26 |
 | [`gself-pow-three-pow-21-add-pow-eight`](https://github.com/agenticsnz/unsorry/blob/main/goals/gself-pow-three-pow-21-add-pow-eight.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#4318](https://github.com/agenticsnz/unsorry/pull/4318) | 2026-06-21 |
 | [`gself-pow-three-pow-21-add-pow-eighteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gself-pow-three-pow-21-add-pow-eighteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#4319](https://github.com/agenticsnz/unsorry/pull/4319) | 2026-06-21 |
 | [`gself-pow-three-pow-21-add-pow-eleven`](https://github.com/agenticsnz/unsorry/blob/main/goals/gself-pow-three-pow-21-add-pow-eleven.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#4320](https://github.com/agenticsnz/unsorry/pull/4320) | 2026-06-21 |
 | [`gself-pow-three-pow-21-add-pow-fifteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gself-pow-three-pow-21-add-pow-fifteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#4322](https://github.com/agenticsnz/unsorry/pull/4322) | 2026-06-21 |
+| [`gself-pow-three-pow-21-add-pow-five`](https://github.com/agenticsnz/unsorry/blob/main/goals/gself-pow-three-pow-21-add-pow-five.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#5450](https://github.com/agenticsnz/unsorry/pull/5450) | 2026-06-26 |
 | [`gself-pow-three-pow-21-add-pow-four`](https://github.com/agenticsnz/unsorry/blob/main/goals/gself-pow-three-pow-21-add-pow-four.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#4324](https://github.com/agenticsnz/unsorry/pull/4324) | 2026-06-21 |
 | [`gself-pow-three-pow-21-add-pow-fourteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/gself-pow-three-pow-21-add-pow-fourteen.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#4325](https://github.com/agenticsnz/unsorry/pull/4325) | 2026-06-21 |
 | [`gself-pow-three-pow-21-add-pow-nine`](https://github.com/agenticsnz/unsorry/blob/main/goals/gself-pow-three-pow-21-add-pow-nine.lean) | proved | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#4326](https://github.com/agenticsnz/unsorry/pull/4326) | 2026-06-21 |
@@ -2079,6 +2179,8 @@ Legend: proved #c6f6d5 · open #e2e8f0 · blocked #feebc8 · flagged #fed7d7 · 
 | [`putnam-1965-a1`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1965-a1.lean) | proved | 4 | rauxon-2 | Rauxon · `opus` | Rauxon | [#6268](https://github.com/agenticsnz/unsorry/pull/6268) | 2026-06-25 |
 | [`putnam-1965-b5`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1965-b5.lean) | proved | 4 | rauxon-2 | Rauxon · `opus` | Rauxon | [#6295](https://github.com/agenticsnz/unsorry/pull/6295) | 2026-06-25 |
 | [`putnam-1965-b6-s1`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1965-b6-s1.lean) | proved | 1 | rauxon-1 | Rauxon · `opus` | Rauxon | [#6630](https://github.com/agenticsnz/unsorry/pull/6630) | 2026-06-26 |
+| [`putnam-1965-b6-s2`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1965-b6-s2.lean) | proved | 1 | rauxon-1 | Rauxon · `opus` | Rauxon | [#6644](https://github.com/agenticsnz/unsorry/pull/6644) | 2026-06-26 |
+| [`putnam-1965-b6-s3`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1965-b6-s3.lean) | proved | 1 | rauxon-1 | Rauxon · `opus` | Rauxon | [#6651](https://github.com/agenticsnz/unsorry/pull/6651) | 2026-06-26 |
 | [`putnam-1966-a1-s3`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1966-a1-s3.lean) | proved | 1 | afnz-zbook-b336 | cgbarlow · `opus` | Chris Barlow | [#6646](https://github.com/agenticsnz/unsorry/pull/6646) | 2026-06-26 |
 | [`putnam-1966-a3`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1966-a3.lean) | proved | 4 | rauxon-2 | Rauxon · `opus` | Rauxon | [#6311](https://github.com/agenticsnz/unsorry/pull/6311) | 2026-06-25 |
 | [`putnam-1966-b1-s1`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1966-b1-s1.lean) | proved | 1 | rauxon-1 | Rauxon · `opus` | Rauxon | [#6505](https://github.com/agenticsnz/unsorry/pull/6505) | 2026-06-26 |
@@ -2594,9 +2696,19 @@ Legend: proved #c6f6d5 · open #e2e8f0 · blocked #feebc8 · flagged #fed7d7 · 
 | [`telescoping-square-sum-coeff-seventysix`](https://github.com/agenticsnz/unsorry/blob/main/goals/telescoping-square-sum-coeff-seventysix.lean) | proved | 1 | claude-web | chat-bit-01 · `ring` | Chris Barlow | [#6642](https://github.com/agenticsnz/unsorry/pull/6642) | 2026-06-26 |
 | [`telescoping-square-sum-coeff-seventythree`](https://github.com/agenticsnz/unsorry/blob/main/goals/telescoping-square-sum-coeff-seventythree.lean) | proved | 1 | claude-web | chat-bit-01 · `ring` | Chris Barlow | [#6643](https://github.com/agenticsnz/unsorry/pull/6643) | 2026-06-26 |
 | [`telescoping-square-sum-coeff-seventytwo`](https://github.com/agenticsnz/unsorry/blob/main/goals/telescoping-square-sum-coeff-seventytwo.lean) | proved | 1 | claude-web | chat-bit-01 · `ring` | Chris Barlow | [#6647](https://github.com/agenticsnz/unsorry/pull/6647) | 2026-06-26 |
-| [`telescoping-square-sum-coeff-six`](https://github.com/agenticsnz/unsorry/blob/main/goals/telescoping-square-sum-coeff-six.lean) | proved | 4 | claude-web | chat-bit-01 · `template-induction-ring` | Chris Barlow | [#6648](https://github.com/agenticsnz/unsorry/pull/6648) | 2026-06-26 |
+| [`telescoping-square-sum-coeff-six`](https://github.com/agenticsnz/unsorry/blob/main/goals/telescoping-square-sum-coeff-six.lean) | proved | 1 | claude-web | chat-bit-01 · `ring` | Chris Barlow | [#6648](https://github.com/agenticsnz/unsorry/pull/6648) | 2026-06-26 |
 | [`telescoping-square-sum-coeff-sixteen`](https://github.com/agenticsnz/unsorry/blob/main/goals/telescoping-square-sum-coeff-sixteen.lean) | proved | 1 | claude-web | chat-bit-01 · `ring` | Chris Barlow | [#6649](https://github.com/agenticsnz/unsorry/pull/6649) | 2026-06-26 |
 | [`telescoping-square-sum-coeff-sixty`](https://github.com/agenticsnz/unsorry/blob/main/goals/telescoping-square-sum-coeff-sixty.lean) | proved | 1 | claude-web | chat-bit-01 · `ring` | Chris Barlow | [#6650](https://github.com/agenticsnz/unsorry/pull/6650) | 2026-06-26 |
+| [`telescoping-square-sum-coeff-sixtyeight`](https://github.com/agenticsnz/unsorry/blob/main/goals/telescoping-square-sum-coeff-sixtyeight.lean) | proved | 1 | claude-web | chat-bit-01 · `ring` | Chris Barlow | [#6652](https://github.com/agenticsnz/unsorry/pull/6652) | 2026-06-26 |
+| [`telescoping-square-sum-coeff-sixtyfive`](https://github.com/agenticsnz/unsorry/blob/main/goals/telescoping-square-sum-coeff-sixtyfive.lean) | proved | 1 | claude-web | chat-bit-01 · `ring` | Chris Barlow | [#6653](https://github.com/agenticsnz/unsorry/pull/6653) | 2026-06-26 |
+| [`telescoping-square-sum-coeff-sixtyfour`](https://github.com/agenticsnz/unsorry/blob/main/goals/telescoping-square-sum-coeff-sixtyfour.lean) | proved | 1 | claude-web | chat-bit-01 · `ring` | Chris Barlow | [#6654](https://github.com/agenticsnz/unsorry/pull/6654) | 2026-06-26 |
+| [`telescoping-square-sum-coeff-sixtynine`](https://github.com/agenticsnz/unsorry/blob/main/goals/telescoping-square-sum-coeff-sixtynine.lean) | proved | 1 | claude-web | chat-bit-01 · `ring` | Chris Barlow | [#6655](https://github.com/agenticsnz/unsorry/pull/6655) | 2026-06-26 |
+| [`telescoping-square-sum-coeff-sixtyone`](https://github.com/agenticsnz/unsorry/blob/main/goals/telescoping-square-sum-coeff-sixtyone.lean) | proved | 1 | claude-web | chat-bit-01 · `ring` | Chris Barlow | [#6656](https://github.com/agenticsnz/unsorry/pull/6656) | 2026-06-26 |
+| [`telescoping-square-sum-coeff-sixtyseven`](https://github.com/agenticsnz/unsorry/blob/main/goals/telescoping-square-sum-coeff-sixtyseven.lean) | proved | 1 | claude-web | chat-bit-01 · `ring` | Chris Barlow | [#6657](https://github.com/agenticsnz/unsorry/pull/6657) | 2026-06-26 |
+| [`telescoping-square-sum-coeff-sixtysix`](https://github.com/agenticsnz/unsorry/blob/main/goals/telescoping-square-sum-coeff-sixtysix.lean) | proved | 1 | claude-web | chat-bit-01 · `ring` | Chris Barlow | [#6658](https://github.com/agenticsnz/unsorry/pull/6658) | 2026-06-26 |
+| [`telescoping-square-sum-coeff-sixtythree`](https://github.com/agenticsnz/unsorry/blob/main/goals/telescoping-square-sum-coeff-sixtythree.lean) | proved | 1 | claude-web | chat-bit-01 · `ring` | Chris Barlow | [#6659](https://github.com/agenticsnz/unsorry/pull/6659) | 2026-06-26 |
+| [`telescoping-square-sum-coeff-sixtytwo`](https://github.com/agenticsnz/unsorry/blob/main/goals/telescoping-square-sum-coeff-sixtytwo.lean) | proved | 1 | claude-web | chat-bit-01 · `ring` | Chris Barlow | [#6663](https://github.com/agenticsnz/unsorry/pull/6663) | 2026-06-26 |
+| [`telescoping-square-sum-coeff-ten`](https://github.com/agenticsnz/unsorry/blob/main/goals/telescoping-square-sum-coeff-ten.lean) | proved | 1 | claude-web | chat-bit-01 · `ring` | Chris Barlow | [#6664](https://github.com/agenticsnz/unsorry/pull/6664) | 2026-06-26 |
 | [`abc-nine-le-sum-times-pairsum`](https://github.com/agenticsnz/unsorry/blob/main/goals/abc-nine-le-sum-times-pairsum.lean) | archived | 3 | claude-rmt-001 | — | chat-bit-01 | [#1148](https://github.com/agenticsnz/unsorry/pull/1148) | 2026-06-17 |
 | [`abstract-regular-polyhedron-classification`](https://github.com/agenticsnz/unsorry/blob/main/goals/abstract-regular-polyhedron-classification.lean) | archived | 3 | — | — | — | — | 2026-06-13 |
 | [`abstract-regular-polyhedron-realizable-iff`](https://github.com/agenticsnz/unsorry/blob/main/goals/abstract-regular-polyhedron-realizable-iff.lean) | archived | 4 | claude-web | — | chat-bit-01 | [#2171](https://github.com/agenticsnz/unsorry/pull/2171) | 2026-06-18 |
@@ -3124,26 +3236,26 @@ Legend: proved #c6f6d5 · open #e2e8f0 · blocked #feebc8 · flagged #fed7d7 · 
 | [`gpow-sum-five-pow-four`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-five-pow-four.lean) | archived | 1 | mac-158f | ohdearquant · `sympy` | OceanLi | [#2417](https://github.com/agenticsnz/unsorry/pull/2417) | 2026-06-19 |
 | [`gpow-sum-five-pow-nine`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-five-pow-nine.lean) | archived | 1 | mac-158f | ohdearquant · `sympy` | OceanLi | [#2418](https://github.com/agenticsnz/unsorry/pull/2418) | 2026-06-19 |
 | [`gpow-sum-five-pow-seven`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-five-pow-seven.lean) | archived | 1 | mac-158f | ohdearquant · `sympy` | OceanLi | [#2419](https://github.com/agenticsnz/unsorry/pull/2419) | 2026-06-19 |
-| [`gpow-sum-five-pow-six`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-five-pow-six.lean) | archived | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2966](https://github.com/agenticsnz/unsorry/pull/2966) | 2026-06-20 |
-| [`gpow-sum-five-pow-three`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-five-pow-three.lean) | archived | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2971](https://github.com/agenticsnz/unsorry/pull/2971) | 2026-06-20 |
-| [`gpow-sum-five-pow-two`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-five-pow-two.lean) | archived | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2974](https://github.com/agenticsnz/unsorry/pull/2974) | 2026-06-20 |
-| [`gpow-sum-four-pow-eight`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-four-pow-eight.lean) | archived | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2975](https://github.com/agenticsnz/unsorry/pull/2975) | 2026-06-20 |
-| [`gpow-sum-four-pow-five`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-four-pow-five.lean) | archived | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2980](https://github.com/agenticsnz/unsorry/pull/2980) | 2026-06-20 |
-| [`gpow-sum-four-pow-four`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-four-pow-four.lean) | archived | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2982](https://github.com/agenticsnz/unsorry/pull/2982) | 2026-06-20 |
-| [`gpow-sum-four-pow-nine`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-four-pow-nine.lean) | archived | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2985](https://github.com/agenticsnz/unsorry/pull/2985) | 2026-06-20 |
-| [`gpow-sum-four-pow-seven`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-four-pow-seven.lean) | archived | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2987](https://github.com/agenticsnz/unsorry/pull/2987) | 2026-06-20 |
-| [`gpow-sum-four-pow-six`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-four-pow-six.lean) | archived | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2990](https://github.com/agenticsnz/unsorry/pull/2990) | 2026-06-20 |
-| [`gpow-sum-four-pow-three`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-four-pow-three.lean) | archived | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#2994](https://github.com/agenticsnz/unsorry/pull/2994) | 2026-06-20 |
-| [`gpow-sum-four-pow-two`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-four-pow-two.lean) | archived | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#2997](https://github.com/agenticsnz/unsorry/pull/2997) | 2026-06-20 |
-| [`gpow-sum-one-pow-eight`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-one-pow-eight.lean) | archived | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#3083](https://github.com/agenticsnz/unsorry/pull/3083) | 2026-06-20 |
-| [`gpow-sum-one-pow-five`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-one-pow-five.lean) | archived | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#3089](https://github.com/agenticsnz/unsorry/pull/3089) | 2026-06-20 |
-| [`gpow-sum-one-pow-four`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-one-pow-four.lean) | archived | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#3094](https://github.com/agenticsnz/unsorry/pull/3094) | 2026-06-20 |
-| [`gpow-sum-one-pow-nine`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-one-pow-nine.lean) | archived | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#3099](https://github.com/agenticsnz/unsorry/pull/3099) | 2026-06-20 |
-| [`gpow-sum-one-pow-seven`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-one-pow-seven.lean) | archived | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#3105](https://github.com/agenticsnz/unsorry/pull/3105) | 2026-06-20 |
-| [`gpow-sum-one-pow-six`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-one-pow-six.lean) | archived | 1 | mac-158f | cgbarlow · `sympy` | Chris Barlow | [#3112](https://github.com/agenticsnz/unsorry/pull/3112) | 2026-06-20 |
-| [`gpow-sum-one-pow-three`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-one-pow-three.lean) | archived | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#3123](https://github.com/agenticsnz/unsorry/pull/3123) | 2026-06-20 |
-| [`gpow-sum-one-pow-two`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-one-pow-two.lean) | archived | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#3134](https://github.com/agenticsnz/unsorry/pull/3134) | 2026-06-20 |
-| [`gpow-sum-seven-pow-eight`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-seven-pow-eight.lean) | archived | 1 | mac-158f | perttu · `sympy` | Perttu Isotalo | [#3137](https://github.com/agenticsnz/unsorry/pull/3137) | 2026-06-20 |
+| [`gpow-sum-five-pow-six`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-five-pow-six.lean) | archived | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2966](https://github.com/agenticsnz/unsorry/pull/2966) | 2026-06-20 |
+| [`gpow-sum-five-pow-three`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-five-pow-three.lean) | archived | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2971](https://github.com/agenticsnz/unsorry/pull/2971) | 2026-06-20 |
+| [`gpow-sum-five-pow-two`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-five-pow-two.lean) | archived | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2974](https://github.com/agenticsnz/unsorry/pull/2974) | 2026-06-20 |
+| [`gpow-sum-four-pow-eight`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-four-pow-eight.lean) | archived | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2975](https://github.com/agenticsnz/unsorry/pull/2975) | 2026-06-20 |
+| [`gpow-sum-four-pow-five`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-four-pow-five.lean) | archived | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2980](https://github.com/agenticsnz/unsorry/pull/2980) | 2026-06-20 |
+| [`gpow-sum-four-pow-four`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-four-pow-four.lean) | archived | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2982](https://github.com/agenticsnz/unsorry/pull/2982) | 2026-06-20 |
+| [`gpow-sum-four-pow-nine`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-four-pow-nine.lean) | archived | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2985](https://github.com/agenticsnz/unsorry/pull/2985) | 2026-06-20 |
+| [`gpow-sum-four-pow-seven`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-four-pow-seven.lean) | archived | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2987](https://github.com/agenticsnz/unsorry/pull/2987) | 2026-06-20 |
+| [`gpow-sum-four-pow-six`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-four-pow-six.lean) | archived | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2990](https://github.com/agenticsnz/unsorry/pull/2990) | 2026-06-20 |
+| [`gpow-sum-four-pow-three`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-four-pow-three.lean) | archived | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#2994](https://github.com/agenticsnz/unsorry/pull/2994) | 2026-06-20 |
+| [`gpow-sum-four-pow-two`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-four-pow-two.lean) | archived | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#2997](https://github.com/agenticsnz/unsorry/pull/2997) | 2026-06-20 |
+| [`gpow-sum-one-pow-eight`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-one-pow-eight.lean) | archived | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#3083](https://github.com/agenticsnz/unsorry/pull/3083) | 2026-06-20 |
+| [`gpow-sum-one-pow-five`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-one-pow-five.lean) | archived | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#3089](https://github.com/agenticsnz/unsorry/pull/3089) | 2026-06-20 |
+| [`gpow-sum-one-pow-four`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-one-pow-four.lean) | archived | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#3094](https://github.com/agenticsnz/unsorry/pull/3094) | 2026-06-20 |
+| [`gpow-sum-one-pow-nine`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-one-pow-nine.lean) | archived | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#3099](https://github.com/agenticsnz/unsorry/pull/3099) | 2026-06-20 |
+| [`gpow-sum-one-pow-seven`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-one-pow-seven.lean) | archived | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#3105](https://github.com/agenticsnz/unsorry/pull/3105) | 2026-06-20 |
+| [`gpow-sum-one-pow-six`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-one-pow-six.lean) | archived | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#3112](https://github.com/agenticsnz/unsorry/pull/3112) | 2026-06-20 |
+| [`gpow-sum-one-pow-three`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-one-pow-three.lean) | archived | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#3123](https://github.com/agenticsnz/unsorry/pull/3123) | 2026-06-20 |
+| [`gpow-sum-one-pow-two`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-one-pow-two.lean) | archived | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#3134](https://github.com/agenticsnz/unsorry/pull/3134) | 2026-06-20 |
+| [`gpow-sum-seven-pow-eight`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-seven-pow-eight.lean) | archived | 1 | mac-158f | ohdearquant · `sympy` | Perttu Isotalo | [#3137](https://github.com/agenticsnz/unsorry/pull/3137) | 2026-06-20 |
 | [`gpow-sum-seven-pow-five`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-seven-pow-five.lean) | archived | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#3191](https://github.com/agenticsnz/unsorry/pull/3191) | 2026-06-20 |
 | [`gpow-sum-seven-pow-four`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-seven-pow-four.lean) | archived | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#3200](https://github.com/agenticsnz/unsorry/pull/3200) | 2026-06-20 |
 | [`gpow-sum-seven-pow-nine`](https://github.com/agenticsnz/unsorry/blob/main/goals/gpow-sum-seven-pow-nine.lean) | archived | 1 | mac-158f | ohdearquant · `sympy` | Chris Barlow | [#3213](https://github.com/agenticsnz/unsorry/pull/3213) | 2026-06-20 |

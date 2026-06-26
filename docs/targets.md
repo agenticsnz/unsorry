@@ -4,7 +4,7 @@
 
 The unsorry worklist: theorems that are **already proven but not yet in mathlib**, vetted for absence and stated in Lean, waiting for an agent or a human to prove them. Claim one, open a PR, let the gates decide (see [Running an agent](../README.md#running-an-agent) and [ADR-012](adrs/ADR-012-Backlog-Sourcing.md)).
 
-**213 open · 4385 proved · 4605 total prove-goals.**
+**224 open · 4401 proved · 4637 total prove-goals.**
 
 | Goal | Status | Diff | Upstream | Source | Reference |
 |------|--------|:----:|----------|--------|-----------|
@@ -122,13 +122,19 @@ The unsorry worklist: theorems that are **already proven but not yet in mathlib*
 | `imo2025p4` — imo-v1 benchmark obligation IMO2025P4 | open | 4 | — | imo-v1 benchmark suite | github.com/jsm28/IMOLean |
 | `imo2025p5` — imo-v1 benchmark obligation IMO2025P5 | open | 4 | — | imo-v1 benchmark suite | github.com/jsm28/IMOLean |
 | `imo2025p6` — imo-v1 benchmark obligation IMO2025P6 | open | 4 | — | imo-v1 benchmark suite | github.com/jsm28/IMOLean |
-| `putnam-1962-a1` — putnam-v1 benchmark obligation putnam_1962_a1 | open | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
+| `putnam-1962-a1-s1` — putnam-1962-a1-s1 | open | 1 | — | — | — |
+| `putnam-1962-a1-s2` — putnam-1962-a1-s2 | open | 1 | — | — | — |
+| `putnam-1962-a1-s3` — putnam-1962-a1-s3 | open | 1 | — | — | — |
+| `putnam-1962-a1-s4` — putnam-1962-a1-s4 | open | 1 | — | — | — |
 | `putnam-1962-a2` — putnam-v1 benchmark obligation putnam_1962_a2 | open | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
 | `putnam-1962-a3` — putnam-v1 benchmark obligation putnam_1962_a3 | open | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
 | `putnam-1962-a4` — putnam-v1 benchmark obligation putnam_1962_a4 | open | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
 | `putnam-1962-a6` — putnam-v1 benchmark obligation putnam_1962_a6 | open | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
 | `putnam-1962-b1` — putnam-v1 benchmark obligation putnam_1962_b1 | open | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
-| `putnam-1962-b5` — putnam-v1 benchmark obligation putnam_1962_b5 | open | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
+| `putnam-1962-b5-s1` — putnam-1962-b5-s1 | open | 1 | — | — | — |
+| `putnam-1962-b5-s2` — putnam-1962-b5-s2 | open | 1 | — | — | — |
+| `putnam-1962-b5-s3` — putnam-1962-b5-s3 | open | 1 | — | — | — |
+| `putnam-1962-b5-s4` — putnam-1962-b5-s4 | open | 1 | — | — | — |
 | `putnam-1962-b6` — putnam-v1 benchmark obligation putnam_1962_b6 | open | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
 | `putnam-1963-a2` — putnam-v1 benchmark obligation putnam_1963_a2 | open | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
 | `putnam-1963-a3` — putnam-v1 benchmark obligation putnam_1963_a3 | open | 4 | — | putnam-v1 benchmark suite | github.com/trishullab/PutnamBench |
@@ -158,8 +164,6 @@ The unsorry worklist: theorems that are **already proven but not yet in mathlib*
 | `putnam-1965-b2` — putnam-v1 benchmark obligation putnam_1965_b2 | open | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
 | `putnam-1965-b3` — putnam-v1 benchmark obligation putnam_1965_b3 | open | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
 | `putnam-1965-b4` — putnam-v1 benchmark obligation putnam_1965_b4 | open | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
-| `putnam-1965-b6-s2` — putnam-1965-b6-s2 | open | 1 | — | — | — |
-| `putnam-1965-b6-s3` — putnam-1965-b6-s3 | open | 1 | — | — | — |
 | `putnam-1965-b6-s4` — putnam-1965-b6-s4 | open | 1 | — | — | — |
 | `putnam-1966-a1-s1` — putnam-1966-a1-s1 | open | 1 | — | — | — |
 | `putnam-1966-a1-s2` — putnam-1966-a1-s2 | open | 1 | — | — | — |
@@ -167,11 +171,18 @@ The unsorry worklist: theorems that are **already proven but not yet in mathlib*
 | `putnam-1966-a4` — putnam-v1 benchmark obligation putnam_1966_a4 | open | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
 | `putnam-1966-a5` — putnam-v1 benchmark obligation putnam_1966_a5 | open | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
 | `putnam-1966-a6` — putnam-v1 benchmark obligation putnam_1966_a6 | open | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
-| `putnam-1966-b1-s3` — putnam-1966-b1-s3 | open | 1 | — | — | — |
-| `putnam-1966-b1-s4` — putnam-1966-b1-s4 | open | 1 | — | — | — |
+| `putnam-1966-b1-s3-s1` — putnam-1966-b1-s3-s1 | open | 1 | — | — | — |
+| `putnam-1966-b1-s3-s2` — putnam-1966-b1-s3-s2 | open | 1 | — | — | — |
+| `putnam-1966-b1-s3-s3` — putnam-1966-b1-s3-s3 | open | 1 | — | — | — |
+| `putnam-1966-b1-s4-s1` — putnam-1966-b1-s4-s1 | open | 1 | — | — | — |
+| `putnam-1966-b1-s4-s2` — putnam-1966-b1-s4-s2 | open | 1 | — | — | — |
+| `putnam-1966-b1-s4-s3` — putnam-1966-b1-s4-s3 | open | 1 | — | — | — |
+| `putnam-1966-b1-s4-s4` — putnam-1966-b1-s4-s4 | open | 1 | — | — | — |
 | `putnam-1966-b2` — putnam-v1 benchmark obligation putnam_1966_b2 | open | 4 | — | putnam-v1 benchmark suite | github.com/trishullab/PutnamBench |
 | `putnam-1966-b3` — putnam-v1 benchmark obligation putnam_1966_b3 | open | 4 | — | putnam-v1 benchmark suite | github.com/trishullab/PutnamBench |
-| `putnam-1966-b4` — putnam-v1 benchmark obligation putnam_1966_b4 | open | 4 | — | putnam-v1 benchmark suite | github.com/trishullab/PutnamBench |
+| `putnam-1966-b4-s1` — putnam-1966-b4-s1 | open | 1 | — | — | — |
+| `putnam-1966-b4-s2` — putnam-1966-b4-s2 | open | 1 | — | — | — |
+| `putnam-1966-b4-s3` — putnam-1966-b4-s3 | open | 1 | — | — | — |
 | `putnam-1966-b6` — putnam-v1 benchmark obligation putnam_1966_b6 | open | 4 | — | putnam-v1 benchmark suite | github.com/trishullab/PutnamBench |
 | `putnam-1967-a1` — putnam-v1 benchmark obligation putnam_1967_a1 | open | 4 | — | putnam-v1 benchmark suite | github.com/trishullab/PutnamBench |
 | `putnam-1967-a2` — putnam-v1 benchmark obligation putnam_1967_a2 | open | 4 | — | putnam-v1 benchmark suite | github.com/trishullab/PutnamBench |
@@ -221,9 +232,14 @@ The unsorry worklist: theorems that are **already proven but not yet in mathlib*
 | `sum-two-cubes-zmod-seven-mem` — A sum of two integer cubes is never congruent to 3 or 4 modulo 7. | open | 3 | — | #400 Identity Engine (ADR-043) — power-residue family; promoted from candidate backlog (#610). | A sum of two integer cubes is never congruent to 3 or 4 modulo 7. Not a named mathlib lemma in this form. |
 | `sum-two-squares-zmod-eight-ne-six` — A sum of two integer squares is never congruent to 6 modulo 8. | open | 3 | — | #400 Identity Engine (ADR-043) — modular-arith family. | A sum of two integer squares is never congruent to 6 modulo 8. Not a named mathlib lemma in this form. |
 | `three-fourth-powers-zmod-sixteen-mem` — A sum of three integer fourth powers is always congruent to 0, 1, 2, or 3 modulo 16. | open | 3 | — | #400 Identity Engine (ADR-043) — power-residue family; promoted from candidate backlog. | A sum of three integer fourth powers is always congruent to 0, 1, 2, or 3 modulo 16. Not a named mathlib lemma in this form. |
+| `putnam-1962-a1` — putnam-v1 benchmark obligation putnam_1962_a1 | blocked | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
+| `putnam-1962-b5` — putnam-v1 benchmark obligation putnam_1962_b5 | blocked | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
 | `putnam-1965-b6` — putnam-v1 benchmark obligation putnam_1965_b6 | blocked | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
 | `putnam-1966-a1` — putnam-v1 benchmark obligation putnam_1966_a1 | blocked | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
 | `putnam-1966-b1` — putnam-v1 benchmark obligation putnam_1966_b1 | blocked | 4 | — | putnam-v1 benchmark suite | github.com/trishullab/PutnamBench |
+| `putnam-1966-b1-s3` — putnam-1966-b1-s3 | blocked | 1 | — | — | — |
+| `putnam-1966-b1-s4` — putnam-1966-b1-s4 | blocked | 1 | — | — | — |
+| `putnam-1966-b4` — putnam-v1 benchmark obligation putnam_1966_b4 | blocked | 4 | — | putnam-v1 benchmark suite | github.com/trishullab/PutnamBench |
 | `putnam-1967-a5` — putnam-v1 benchmark obligation putnam_1967_a5 | blocked | 4 | — | putnam-v1 benchmark suite | github.com/trishullab/PutnamBench |
 | `sq-add-sq-eq-three-mul-sq` — The Diophantine equation $x^2 + y^2 = 3z^2$ has only the trivial solution $x=y=z=0$ in integers. | blocked | 4 | — | elementary number theory | Classic infinite descent argument modulo 3 showing that $3 \mid x$ and $3 \mid y$, which leads to infinite descent. |
 | `sq-add-sq-eq-three-mul-sq-s4` — sq-add-sq-eq-three-mul-sq-s4 | blocked | 1 | — | — | — |
@@ -1060,6 +1076,7 @@ The unsorry worklist: theorems that are **already proven but not yet in mathlib*
 | `geometric-series-ratio-sixtyfive` — A geometric series with ratio 65 closed form: the finite sum over k in range n has the stated closed form. | proved | 1 | — | self-seeded finite-sum closed-form family. | proved by induction on n with `ring`. |
 | `geometric-series-ratio-sixtyfour` — A geometric series with ratio 64 closed form: the finite sum over k in range n has the stated closed form. | proved | 1 | — | self-seeded finite-sum closed-form family. | proved by induction on n with `ring`. |
 | `geometric-series-ratio-sixtynine` — A geometric series with ratio 69 closed form: the finite sum over k in range n has the stated closed form. | proved | 1 | — | self-seeded finite-sum closed-form family. | proved by induction on n with `ring`. |
+| `geometric-series-ratio-sixtyone` — A geometric series with ratio 61 closed form: the finite sum over k in range n has the stated closed form. | proved | 1 | — | self-seeded finite-sum closed-form family. | proved by induction on n with `ring`. |
 | `geometric-series-ratio-sixtyseven` — A geometric series with ratio 67 closed form: the finite sum over k in range n has the stated closed form. | proved | 1 | — | self-seeded finite-sum closed-form family. | proved by induction on n with `ring`. |
 | `geometric-series-ratio-sixtysix` — A geometric series with ratio 66 closed form: the finite sum over k in range n has the stated closed form. | proved | 1 | — | self-seeded finite-sum closed-form family. | proved by induction on n with `ring`. |
 | `geometric-series-ratio-sixtythree` — A geometric series with ratio 63 closed form: the finite sum over k in range n has the stated closed form. | proved | 1 | — | self-seeded finite-sum closed-form family. | proved by induction on n with `ring`. |
@@ -2098,6 +2115,7 @@ The unsorry worklist: theorems that are **already proven but not yet in mathlib*
 | `gself-pow-seventeen-add-pow-fifteen` — n to the 1 divides n to the 17 plus n to the 15. | proved | 1 | — | self-seeded polynomial-divisibility identity family. | n to the 1 divides n to the 17 plus n to the 15. Provable by exhibiting the cofactor and `ring`. |
 | `gself-pow-seventeen-add-pow-five` — n to the 1 divides n to the 17 plus n to the 5. | proved | 1 | — | self-seeded polynomial-divisibility identity family. | n to the 1 divides n to the 17 plus n to the 5. Provable by exhibiting the cofactor and `ring`. |
 | `gself-pow-seventeen-add-pow-four` — n to the 1 divides n to the 17 plus n to the 4. | proved | 1 | — | self-seeded polynomial-divisibility identity family. | n to the 1 divides n to the 17 plus n to the 4. Provable by exhibiting the cofactor and `ring`. |
+| `gself-pow-seventeen-add-pow-fourteen` — n to the 1 divides n to the 17 plus n to the 14. | proved | 1 | — | self-seeded polynomial-divisibility identity family. | n to the 1 divides n to the 17 plus n to the 14. Provable by exhibiting the cofactor and `ring`. |
 | `gself-pow-seventeen-add-pow-nine` — n to the 1 divides n to the 17 plus n to the 9. | proved | 1 | — | self-seeded polynomial-divisibility identity family. | n to the 1 divides n to the 17 plus n to the 9. Provable by exhibiting the cofactor and `ring`. |
 | `gself-pow-seventeen-add-pow-seven` — n to the 1 divides n to the 17 plus n to the 7. | proved | 1 | — | self-seeded polynomial-divisibility identity family. | n to the 1 divides n to the 17 plus n to the 7. Provable by exhibiting the cofactor and `ring`. |
 | `gself-pow-seventeen-add-pow-six` — n to the 1 divides n to the 17 plus n to the 6. | proved | 1 | — | self-seeded polynomial-divisibility identity family. | n to the 1 divides n to the 17 plus n to the 6. Provable by exhibiting the cofactor and `ring`. |
@@ -2148,6 +2166,7 @@ The unsorry worklist: theorems that are **already proven but not yet in mathlib*
 | `gself-pow-three-pow-21-add-pow-eighteen` — n to the 3 divides n to the 21 plus n to the 18. | proved | 1 | — | self-seeded polynomial-divisibility identity family. | n to the 3 divides n to the 21 plus n to the 18. Provable by exhibiting the cofactor and `ring`. |
 | `gself-pow-three-pow-21-add-pow-eleven` — n to the 3 divides n to the 21 plus n to the 11. | proved | 1 | — | self-seeded polynomial-divisibility identity family. | n to the 3 divides n to the 21 plus n to the 11. Provable by exhibiting the cofactor and `ring`. |
 | `gself-pow-three-pow-21-add-pow-fifteen` — n to the 3 divides n to the 21 plus n to the 15. | proved | 1 | — | self-seeded polynomial-divisibility identity family. | n to the 3 divides n to the 21 plus n to the 15. Provable by exhibiting the cofactor and `ring`. |
+| `gself-pow-three-pow-21-add-pow-five` — n to the 3 divides n to the 21 plus n to the 5. | proved | 1 | — | self-seeded polynomial-divisibility identity family. | n to the 3 divides n to the 21 plus n to the 5. Provable by exhibiting the cofactor and `ring`. |
 | `gself-pow-three-pow-21-add-pow-four` — n to the 3 divides n to the 21 plus n to the 4. | proved | 1 | — | self-seeded polynomial-divisibility identity family. | n to the 3 divides n to the 21 plus n to the 4. Provable by exhibiting the cofactor and `ring`. |
 | `gself-pow-three-pow-21-add-pow-fourteen` — n to the 3 divides n to the 21 plus n to the 14. | proved | 1 | — | self-seeded polynomial-divisibility identity family. | n to the 3 divides n to the 21 plus n to the 14. Provable by exhibiting the cofactor and `ring`. |
 | `gself-pow-three-pow-21-add-pow-nine` — n to the 3 divides n to the 21 plus n to the 9. | proved | 1 | — | self-seeded polynomial-divisibility identity family. | n to the 3 divides n to the 21 plus n to the 9. Provable by exhibiting the cofactor and `ring`. |
@@ -3758,6 +3777,8 @@ The unsorry worklist: theorems that are **already proven but not yet in mathlib*
 | `putnam-1965-a1` — putnam-v1 benchmark obligation putnam_1965_a1 | proved | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
 | `putnam-1965-b5` — putnam-v1 benchmark obligation putnam_1965_b5 | proved | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
 | `putnam-1965-b6-s1` — putnam-1965-b6-s1 | proved | 1 | — | — | — |
+| `putnam-1965-b6-s2` — putnam-1965-b6-s2 | proved | 1 | — | — | — |
+| `putnam-1965-b6-s3` — putnam-1965-b6-s3 | proved | 1 | — | — | — |
 | `putnam-1966-a1-s3` — putnam-1966-a1-s3 | proved | 1 | — | — | — |
 | `putnam-1966-a3` — putnam-v1 benchmark obligation putnam_1966_a3 | proved | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
 | `putnam-1966-b1-s1` — putnam-1966-b1-s1 | proved | 1 | — | — | — |
@@ -4587,9 +4608,20 @@ The unsorry worklist: theorems that are **already proven but not yet in mathlib*
 | `telescoping-square-sum-coeff-seventyseven` — A telescoping power-sum closed form (coefficient 77, exponent 2): the finite sum over k in range n equals 77·n^2. | proved | 1 | — | self-seeded telescoping finite-sum identity family. | follows from (k+1)^2 − k^2 telescoping; proved by induction on n. |
 | `telescoping-square-sum-coeff-seventysix` — A telescoping power-sum closed form (coefficient 76, exponent 2): the finite sum over k in range n equals 76·n^2. | proved | 1 | — | self-seeded telescoping finite-sum identity family. | follows from (k+1)^2 − k^2 telescoping; proved by induction on n. |
 | `telescoping-square-sum-coeff-seventythree` — A telescoping power-sum closed form (coefficient 73, exponent 2): the finite sum over k in range n equals 73·n^2. | proved | 1 | — | self-seeded telescoping finite-sum identity family. | follows from (k+1)^2 − k^2 telescoping; proved by induction on n. |
-| `telescoping-square-sum-coeff-six` — A telescoping power-sum closed form (coefficient 6, exponent 2): the finite sum over k in range n equals 6·n^2. | proved | 4 | — | self-seeded telescoping finite-sum identity family. | follows from (k+1)^2 − k^2 telescoping; proved by induction on n. |
+| `telescoping-square-sum-coeff-seventytwo` — A telescoping power-sum closed form (coefficient 72, exponent 2): the finite sum over k in range n equals 72·n^2. | proved | 1 | — | self-seeded telescoping finite-sum identity family. | follows from (k+1)^2 − k^2 telescoping; proved by induction on n. |
+| `telescoping-square-sum-coeff-six` — A telescoping power-sum closed form (coefficient 6, exponent 2): the finite sum over k in range n equals 6·n^2. | proved | 1 | — | self-seeded telescoping finite-sum identity family. | follows from (k+1)^2 − k^2 telescoping; proved by induction on n. |
 | `telescoping-square-sum-coeff-sixteen` — A telescoping power-sum closed form (coefficient 16, exponent 2): the finite sum over k in range n equals 16·n^2. | proved | 1 | — | self-seeded telescoping finite-sum identity family. | follows from (k+1)^2 − k^2 telescoping; proved by induction on n. |
 | `telescoping-square-sum-coeff-sixty` — A telescoping power-sum closed form (coefficient 60, exponent 2): the finite sum over k in range n equals 60·n^2. | proved | 1 | — | self-seeded telescoping finite-sum identity family. | follows from (k+1)^2 − k^2 telescoping; proved by induction on n. |
+| `telescoping-square-sum-coeff-sixtyeight` — A telescoping power-sum closed form (coefficient 68, exponent 2): the finite sum over k in range n equals 68·n^2. | proved | 1 | — | self-seeded telescoping finite-sum identity family. | follows from (k+1)^2 − k^2 telescoping; proved by induction on n. |
+| `telescoping-square-sum-coeff-sixtyfive` — A telescoping power-sum closed form (coefficient 65, exponent 2): the finite sum over k in range n equals 65·n^2. | proved | 1 | — | self-seeded telescoping finite-sum identity family. | follows from (k+1)^2 − k^2 telescoping; proved by induction on n. |
+| `telescoping-square-sum-coeff-sixtyfour` — A telescoping power-sum closed form (coefficient 64, exponent 2): the finite sum over k in range n equals 64·n^2. | proved | 1 | — | self-seeded telescoping finite-sum identity family. | follows from (k+1)^2 − k^2 telescoping; proved by induction on n. |
+| `telescoping-square-sum-coeff-sixtynine` — A telescoping power-sum closed form (coefficient 69, exponent 2): the finite sum over k in range n equals 69·n^2. | proved | 1 | — | self-seeded telescoping finite-sum identity family. | follows from (k+1)^2 − k^2 telescoping; proved by induction on n. |
+| `telescoping-square-sum-coeff-sixtyone` — A telescoping power-sum closed form (coefficient 61, exponent 2): the finite sum over k in range n equals 61·n^2. | proved | 1 | — | self-seeded telescoping finite-sum identity family. | follows from (k+1)^2 − k^2 telescoping; proved by induction on n. |
+| `telescoping-square-sum-coeff-sixtyseven` — A telescoping power-sum closed form (coefficient 67, exponent 2): the finite sum over k in range n equals 67·n^2. | proved | 1 | — | self-seeded telescoping finite-sum identity family. | follows from (k+1)^2 − k^2 telescoping; proved by induction on n. |
+| `telescoping-square-sum-coeff-sixtysix` — A telescoping power-sum closed form (coefficient 66, exponent 2): the finite sum over k in range n equals 66·n^2. | proved | 1 | — | self-seeded telescoping finite-sum identity family. | follows from (k+1)^2 − k^2 telescoping; proved by induction on n. |
+| `telescoping-square-sum-coeff-sixtythree` — A telescoping power-sum closed form (coefficient 63, exponent 2): the finite sum over k in range n equals 63·n^2. | proved | 1 | — | self-seeded telescoping finite-sum identity family. | follows from (k+1)^2 − k^2 telescoping; proved by induction on n. |
+| `telescoping-square-sum-coeff-sixtytwo` — A telescoping power-sum closed form (coefficient 62, exponent 2): the finite sum over k in range n equals 62·n^2. | proved | 1 | — | self-seeded telescoping finite-sum identity family. | follows from (k+1)^2 − k^2 telescoping; proved by induction on n. |
+| `telescoping-square-sum-coeff-ten` — A telescoping power-sum closed form (coefficient 10, exponent 2): the finite sum over k in range n equals 10·n^2. | proved | 1 | — | self-seeded telescoping finite-sum identity family. | follows from (k+1)^2 − k^2 telescoping; proved by induction on n. |
 | `tenth-power-mod-eleven-mem` — Every tenth power is congruent to only 0 or 1 modulo the prime 11 (Fermat's little theorem boundary case). | proved | 1 | — | #400 Identity Engine (ADR-043) — power-residue family; promoted from candidate backlog (#610). | Every tenth power is congruent to only 0 or 1 modulo the prime 11 (Fermat's little theorem boundary case). Not a named mathlib lemma in this form. |
 | `thirty-dvd-pow-five-sub-self` — For every integer n, 30 ∣ n⁵ − n (Fermat: 2,3,5 each divide n⁵−n). | proved | 2 | — | Classic elementary number theory (library-growth batch, #400 plan Phase 3). | For every integer n, 30 ∣ n⁵ − n (Fermat: 2,3,5 each divide n⁵−n). mathlib has `ZMod.pow_card` (Fermat) but not these specific named divisibility lemmas. |
 | `three-cubes-div-nine` — For every natural n, 9 divides n^3 + (n+1)^3 + (n+2)^3; the sum of any three consecutive cubes is divisible by 9. | proved | 2 | — | classic identities | Classic introductory number-theory / olympiad exercise; Engel, Problem-Solving Strategies (divisibility chapter); Sierpiński, Elementary Theory of Numbers (PWN/North-Holland, 1988). |
