@@ -22,8 +22,12 @@ on:
         default: "true"
 
 concurrency:
+  # cancel-in-progress: false so the frequent Gate-A-completion triggers COALESCE
+  # (one running + one pending) instead of the merge firehose repeatedly cancelling
+  # the in-flight sweep before it can close anything — it was completing only ~10%
+  # of runs. Matches dropped-gate / stale-branch / finalization-recovery janitors.
   group: superseded-pr-janitor
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 permissions:
   contents: read
