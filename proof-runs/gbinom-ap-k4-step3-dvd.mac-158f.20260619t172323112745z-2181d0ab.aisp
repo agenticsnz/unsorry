@@ -1,7 +1,7 @@
 𝔸5.1.run.gbinom-ap-k4-step3-dvd.mac-158f.20260619t172323112745z-2181d0ab@2026-06-19
 γ≔unsorry.proof.run
 ⟦Ω:Run⟧{id≜20260619t172323112745z-2181d0ab; goal≜gbinom-ap-k4-step3-dvd; agent≜mac-158f; outcome≜proved}
-⟦Π:Provenance⟧{solver≜perttu; provider≜python; model≜sympy}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜python; model≜sympy}
 ⟦Γ:Goal⟧{goal≜gbinom-ap-k4-step3-dvd}
 ⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-19T17:23:23Z}
 ⟦Σ:Artifact⟧{sha≜a9b96da2386bfc0f4f47c4e401d10b73317326e39b0884c8b9ba30b274ac5dcb}

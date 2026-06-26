@@ -3,16 +3,16 @@
   "sourcers": [
     {
       "avatar_url": "https://github.com/cgbarlow.png?size=96",
-      "difficulty_points": 5007,
+      "difficulty_points": 5122,
       "display_name": "Chris Barlow",
       "earliest_sourced": "2026-06-10",
       "git_author": "Chris Barlow <cgbarlow@gmail.com>",
       "github": "cgbarlow",
-      "latest_sourced": "2026-06-25",
-      "open": 215,
+      "latest_sourced": "2026-06-26",
+      "open": 208,
       "profile_url": "https://github.com/cgbarlow",
-      "proved": 1880,
-      "sourced_goals": 3604,
+      "proved": 1995,
+      "sourced_goals": 3719,
       "sourcer": "cgbarlow"
     },
     {
@@ -45,31 +45,45 @@
     },
     {
       "avatar_url": null,
-      "difficulty_points": 192,
+      "difficulty_points": 193,
       "display_name": "adam91holt",
       "earliest_sourced": "2026-06-14",
       "git_author": "adam91holt <mail@adamholt.co.nz>",
       "github": null,
-      "latest_sourced": "2026-06-23",
+      "latest_sourced": "2026-06-26",
       "open": 0,
       "profile_url": null,
-      "proved": 102,
-      "sourced_goals": 192,
+      "proved": 103,
+      "sourced_goals": 193,
       "sourcer": null
     },
     {
       "avatar_url": "https://github.com/chat-bit-01.png?size=96",
-      "difficulty_points": 41,
+      "difficulty_points": 42,
       "display_name": "chat-bit-01",
       "earliest_sourced": "2026-06-19",
       "git_author": "chat-bit-01 <chatuser55@gmail.com>",
       "github": "chat-bit-01",
-      "latest_sourced": "2026-06-24",
+      "latest_sourced": "2026-06-26",
       "open": 0,
       "profile_url": "https://github.com/chat-bit-01",
-      "proved": 20,
-      "sourced_goals": 41,
+      "proved": 21,
+      "sourced_goals": 42,
       "sourcer": "chat-bit-01"
+    },
+    {
+      "avatar_url": null,
+      "difficulty_points": 15,
+      "display_name": "Rauxon",
+      "earliest_sourced": "2026-06-26",
+      "git_author": "Rauxon <github@graham.dragonhold.org>",
+      "github": null,
+      "latest_sourced": "2026-06-26",
+      "open": 15,
+      "profile_url": null,
+      "proved": 0,
+      "sourced_goals": 15,
+      "sourcer": null
     },
     {
       "avatar_url": null,
@@ -87,8 +101,8 @@
     }
   ],
   "totals": {
-    "difficulty_points": 5943,
-    "sourced_goals": 4531,
-    "sourcers": 6
+    "difficulty_points": 6075,
+    "sourced_goals": 4663,
+    "sourcers": 7
   }
 }

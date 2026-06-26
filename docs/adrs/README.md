@@ -2,7 +2,7 @@
 
 # Architecture Decision Records
 
-Index of the 100 ADRs in this directory, generated from the `ADR-*.md` headers and kept in sync by the `adr-index` workflow. See [ADR-001](ADR-001-Adopt-Development-Protocols.md) and [the development protocols](../protocols.md) for the WH(Y) format and process.
+Index of the 105 ADRs in this directory, generated from the `ADR-*.md` headers and kept in sync by the `adr-index` workflow. See [ADR-001](ADR-001-Adopt-Development-Protocols.md) and [the development protocols](../protocols.md) for the WH(Y) format and process.
 
 | ADR | Title | Status | Date |
 |-----|-------|--------|------|
@@ -102,7 +102,12 @@ Index of the 100 ADRs in this directory, generated from the `ADR-*.md` headers a
 | [ADR-096](ADR-096-Phase3-Scoped-Export-Independent-Checker.md) | Phase 3 — Declaration-Scoped Export + Independent Checker as a Kernel-Diverse Anchor | Proposed | 2026-06-25 |
 | [ADR-097](ADR-097-Phase3b-Nanoda-Replaces-Gate-A-Axiom-Audit.md) | Phase 3b — Replace the Gate A Axiom Audit with the nanoda Scoped-Export Check (p=1 preserved) | Proposed | 2026-06-25 |
 | [ADR-098](ADR-098-Leaderboard-Freshness-Alarm.md) | Leaderboard Freshness Alarm + Refresh Timeout (defence-in-depth) | Accepted | 2026-06-25 |
+| [ADR-099](ADR-099-Per-Suite-Mathlib-Pin-For-Benchmark-Ingestion.md) | Per-Suite Mathlib Pin for Benchmark Suite Ingestion & Verification | Proposed | 2026-06-25 |
+| [ADR-099](ADR-099-Reattribute-Agent-Owned-Pipeline-Solver.md) | Re-attribute Agent-Owned Pipeline Solver to the Pipeline Owner | Accepted | 2026-06-26 |
 | [ADR-100](ADR-100-Auto-Install-Lake-Toolchain.md) | Client-Side Swarm Scripts Auto-Install the Lean Build Tool (`lake`) | Proposed | 2026-06-25 |
 | [ADR-101](ADR-101-Incremental-Leaderboard-Regen.md) | Per-Generation Leaderboard Regen (directory-scoped attribution + memoised loaders) | Accepted | 2026-06-25 |
 | [ADR-102](ADR-102-OpenAI-Prove-Text-Extraction-Fallback.md) | OpenAI `--prove` Text-Extraction Fallback | Accepted | 2026-06-14 |
 | [ADR-103](ADR-103-Validator-Role-Creditable-Distributed-Verification.md) | Validator Role — Creditable, Distributed, Reproducible Verification | Proposed | 2026-06-22 |
+| [ADR-104](ADR-104-Phase3c-Sampled-Leanchecker-Replay.md) | Phase 3c — Sample the Leanchecker Kernel Replay at p < 1 with nanoda as the Every-Proof Kernel (amends ADR-049) | Proposed — **design banked, NOT for enablement yet** (see §Enablement gates) | 2026-06-26 |
+| [ADR-105](ADR-105-Finalization-Recovery-Janitor.md) | Recover stranded mergeable prove PRs (auto-merge enrolment backstop + cancellation-failed gate recovery) | Proposed | 2026-06-26 |
+| [ADR-106](ADR-106-Difficulty-Aware-Dispatch.md) | Deprioritise low-difficulty template proofs in the queue dispatcher | Proposed | 2026-06-26 |

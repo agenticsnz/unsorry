@@ -1,6 +1,6 @@
 {
   "generated_by": "python3 -m tools.adr_index --write",
-  "count": 100,
+  "count": 105,
   "adrs": [
     {
       "id": "ADR-001",
@@ -771,6 +771,22 @@
       "file": "ADR-098-Leaderboard-Freshness-Alarm.md"
     },
     {
+      "id": "ADR-099",
+      "number": 99,
+      "title": "Per-Suite Mathlib Pin for Benchmark Suite Ingestion & Verification",
+      "status": "Proposed",
+      "date": "2026-06-25",
+      "file": "ADR-099-Per-Suite-Mathlib-Pin-For-Benchmark-Ingestion.md"
+    },
+    {
+      "id": "ADR-099",
+      "number": 99,
+      "title": "Re-attribute Agent-Owned Pipeline Solver to the Pipeline Owner",
+      "status": "Accepted",
+      "date": "2026-06-26",
+      "file": "ADR-099-Reattribute-Agent-Owned-Pipeline-Solver.md"
+    },
+    {
       "id": "ADR-100",
       "number": 100,
       "title": "Client-Side Swarm Scripts Auto-Install the Lean Build Tool (`lake`)",
@@ -801,6 +817,30 @@
       "status": "Proposed",
       "date": "2026-06-22",
       "file": "ADR-103-Validator-Role-Creditable-Distributed-Verification.md"
+    },
+    {
+      "id": "ADR-104",
+      "number": 104,
+      "title": "Phase 3c — Sample the Leanchecker Kernel Replay at p < 1 with nanoda as the Every-Proof Kernel (amends ADR-049)",
+      "status": "Proposed — **design banked, NOT for enablement yet** (see §Enablement gates)",
+      "date": "2026-06-26",
+      "file": "ADR-104-Phase3c-Sampled-Leanchecker-Replay.md"
+    },
+    {
+      "id": "ADR-105",
+      "number": 105,
+      "title": "Recover stranded mergeable prove PRs (auto-merge enrolment backstop + cancellation-failed gate recovery)",
+      "status": "Proposed",
+      "date": "2026-06-26",
+      "file": "ADR-105-Finalization-Recovery-Janitor.md"
+    },
+    {
+      "id": "ADR-106",
+      "number": 106,
+      "title": "Deprioritise low-difficulty template proofs in the queue dispatcher",
+      "status": "Proposed",
+      "date": "2026-06-26",
+      "file": "ADR-106-Difficulty-Aware-Dispatch.md"
     }
   ]
 }
