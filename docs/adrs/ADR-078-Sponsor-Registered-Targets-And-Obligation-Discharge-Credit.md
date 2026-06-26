@@ -6,7 +6,7 @@
 | **Initiative** | Aim the board at the swarm plan's Phase 2: credit progress on real, sponsor-registered proof targets, not standalone atoms |
 | **Proposed By** | Ocean (@ohdearquant), drafted by Leo |
 | **Date** | 2026-06-20 |
-| **Status** | Proposed |
+| **Status** | Accepted |
 
 ## Context
 
@@ -73,3 +73,10 @@ Ocean is ready to register the first one. He will open-source the full Lion proo
 | Status | Approver | Date |
 |--------|----------|------|
 | Proposed | Ocean (@ohdearquant) | 2026-06-20 |
+| Accepted | Chris Barlow (founder, #5643) | 2026-06-24 |
+
+> **Ratification note (#5643).** The mechanism is accepted. The numeric completion-bonus
+> weight `B` and the dual-track sunset remain **deferred placeholders** in SPEC-078-A (§6),
+> to be set with a worked example before any organic-board change ships (§55). The benchmark
+> track (ADR-092) uses per-obligation credit on a segregated `cohort:benchmark` and does not
+> depend on `B`.

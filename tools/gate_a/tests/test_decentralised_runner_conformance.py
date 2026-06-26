@@ -36,6 +36,8 @@ import pytest
 
 from tools.gate_a.parallel_modules import (
     FULL_REPLAY_PATHS,
+    audit_shard,
+    compute_audit_targets,
     forces_full_replay,
     import_graph,
     module_names,
@@ -124,6 +126,41 @@ def test_leanchecker_receives_only_local_module_names_never_artifacts(tmp_path: 
         assert not t.endswith((".olean", ".lean")), f"artifact path reached leanchecker: {t!r}"
         assert "/" not in t and "\\" not in t, f"path-like target reached leanchecker: {t!r}"
         assert t in local_modules, f"target {t!r} is not a locally-derived library module"
+
+
+def test_audit_shard_feeds_only_local_module_names_never_artifacts(tmp_path: Path):
+    """SPEC-049-A §2 / SPEC-091-A §2.3 (ADR-091). A sharded audit leg must feed
+    ``axiom_audit`` only module names derived from the locally-rebuilt library/goal
+    tree — never a contributor-supplied artifact. No module list crosses a job
+    boundary; each shard re-derives its slice from source, so the auditor's inputs
+    stay locally-derived even under sharding."""
+    _write_lib(tmp_path, {"A": [], "B": ["A"], "ABinding": ["A"]})
+    local_modules = set(module_names(tmp_path, "library"))
+    audited: list[str] = []
+
+    def runner(argv, **_kwargs):
+        argv = tuple(argv)
+        if argv[0] == "git" and "diff" in argv:
+            return completed(argv, stdout="library/Unsorry/A.lean\n")
+        if argv[:3] == ("lake", "exe", "axiom_audit"):
+            audited.extend(a for a in argv[3:] if a != "--allow-sorry")
+        return completed(argv, stdout="[]")
+
+    assert audit_shard(tmp_path, 0, 1, tmp_path / "shard.json", runner, base="origin/main") == 0
+    assert audited, "a changed module must produce a non-empty audit set"
+    for target in audited:
+        assert not target.endswith((".olean", ".lean")), f"artifact reached the auditor: {target!r}"
+        assert "/" not in target and "\\" not in target, f"path-like audit target: {target!r}"
+        assert target in local_modules, f"target {target!r} is not a locally-derived module"
+
+
+def test_audit_shard_untrusted_diff_fails_closed_to_full(tmp_path: Path):
+    """SPEC-049-A §2 / SPEC-091-A §2.5. An untrusted diff (git unavailable) makes a
+    sharded audit fall back to the FULL scope — never an empty/partial accept."""
+    _write_lib(tmp_path, {"A": [], "B": ["A"]})
+    full = compute_audit_targets(tmp_path, "deadbeef", _diff_runner("", git_rc=128))
+    assert full.mode == "full"
+    assert set(full.library) == {"Unsorry.A", "Unsorry.B"}
 
 
 def test_untrusted_diff_fails_closed_to_full_recheck(tmp_path: Path):
@@ -229,3 +266,39 @@ def test_phase1_restored_dependency_olean_has_explicit_provenance_check():
 )
 def test_phase1_unchanged_module_olean_rebuilds_byte_identically():
     raise AssertionError("determinism is a Lean-layer property; see skip reason")
+
+
+# --- ADR-097 / SPEC-097-A §6: nanoda audit-replacement cutover is wired sound ---
+
+def test_gate_a_aggregator_requires_nanoda_and_keeps_replay_p1():
+    """The required `gate-a` aggregator must require gate-a-nanoda AND gate-a-replay
+    on the active path (replay keeps p=1 — ADR-097 does NOT amend the kernel oracle)."""
+    text = _workflow_text()
+    assert "gate-a-nanoda:$NANODA_RESULT" in text, "aggregator must require the nanoda check"
+    assert "gate-a-replay:$REPLAY_RESULT" in text, "aggregator must still require the leanchecker replay (p=1)"
+
+
+def test_gate_a_audit_runs_only_as_nanoda_fallback():
+    """The real axiom_audit must be GATED on nanoda not covering — i.e. it runs only
+    on the non-leaf fallback, and the aggregator requires it only then (fail-closed:
+    a covered leaf is gated by nanoda; anything else falls back to the audit)."""
+    text = _workflow_text()
+    assert "needs.gate_a_nanoda.outputs.covered != 'true'" in text, \
+        "audit jobs must be conditional on nanoda NOT covering"
+    # the aggregator requires the audit only when nanoda did not cover
+    assert 'if [ "$NANODA_COVERED" != "true" ]; then' in text, \
+        "aggregator must require the audit only on the nanoda-not-covered fallback"
+
+
+def test_nanoda_is_pinned_not_master_head():
+    """nanoda must be built from a PINNED commit, never master HEAD (ADR-096 gate 2):
+    no `git clone … nanoda_lib.git` without a pinned SHA in setup.sh or the workflows."""
+    import re
+    setup = (REPO_ROOT / "tools" / "independent_check" / "setup.sh").read_text(encoding="utf-8")
+    assert "NANODA_COMMIT=" in setup, "setup.sh must pin a NANODA_COMMIT"
+    # a shallow clone of nanoda_lib WITHOUT a pinned checkout is forbidden
+    for path in (REPO_ROOT / "tools" / "independent_check" / "setup.sh",
+                 REPO_ROOT / ".github" / "workflows" / "export-checker-pilot.yml"):
+        t = path.read_text(encoding="utf-8")
+        assert not re.search(r"clone --depth 1 https://github\.com/ammkrn/nanoda_lib\.git", t), \
+            f"{path.name}: nanoda must be fetched at a pinned commit, not cloned at HEAD"

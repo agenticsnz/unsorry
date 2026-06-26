@@ -1,9 +1,9 @@
 # SPEC-081-A: `skeleton-validate` — Curated-Package Intake Validator
 
-Implements: [ADR-081](../ADR-081-Problem-Admission-And-Intake-Pipeline.md) · Status: Draft · Updated: 2026-06-20
+Implements: [ADR-081](../ADR-081-Problem-Admission-And-Intake-Pipeline.md) · Status: Accepted · Updated: 2026-06-24
 
-> **DRAFT** — design spec accompanying draft ADR-081. Build only once ADR-080
-> (admissibility policy) and ADR-081 (intake contract) are ratified.
+> **Accepted** — ADR-080 (admissibility policy) and ADR-081 (intake contract) are ratified
+> (#5643); build proceeds (M2–M3).
 >
 > **Dovetail with ADR-078 (Leo / #3232).** ADR-078 closes by asking for exactly
 > this artifact — *"the target-registry format, the registration-time full-battery

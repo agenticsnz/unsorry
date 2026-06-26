@@ -1,0 +1,5 @@
+import Mathlib
+
+theorem brualdi_ch11_5 (n : ℕ) (h_n: n ≥ 2) (G : SimpleGraph (Fin n)) [DecidableRel G.Adj] :
+    ∃ v1 v2, v1 ≠ v2 ∧ G.degree v1 = G.degree v2 := by
+  sorry

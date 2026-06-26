@@ -32,10 +32,13 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y shellcheck
       - name: shellcheck
         if: steps.admission.outputs.admitted == 'true'
-        run: shellcheck swarm/agent.sh swarm/supervise.sh swarm/sourcing.sh swarm/run.sh
+        run: shellcheck swarm/agent.sh swarm/supervise.sh swarm/sourcing.sh swarm/run.sh swarm/lib/ensure_lake.sh swarm/lib/tests/test_ensure_lake.sh
       - name: bash syntax check
         if: steps.admission.outputs.admitted == 'true'
-        run: bash -n swarm/agent.sh && bash -n swarm/supervise.sh && bash -n swarm/sourcing.sh && bash -n swarm/run.sh
+        run: bash -n swarm/agent.sh && bash -n swarm/supervise.sh && bash -n swarm/sourcing.sh && bash -n swarm/run.sh && bash -n swarm/lib/ensure_lake.sh
+      - name: ensure_lake self-test
+        if: steps.admission.outputs.admitted == 'true'
+        run: ./swarm/lib/tests/test_ensure_lake.sh
       - name: agent self-test
         if: steps.admission.outputs.admitted == 'true'
         run: ./swarm/agent.sh --self-test

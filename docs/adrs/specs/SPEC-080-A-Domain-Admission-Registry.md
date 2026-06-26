@@ -1,9 +1,9 @@
 # SPEC-080-A: Domain-Admission Registry and the Gating Predicate
 
-Implements: [ADR-080](../ADR-080-Platform-Generalisation-And-Domain-Neutrality.md) · Status: Draft · Updated: 2026-06-20
+Implements: [ADR-080](../ADR-080-Platform-Generalisation-And-Domain-Neutrality.md) · Status: Accepted · Updated: 2026-06-24
 
-> **DRAFT.** ADR-080 is a mission-scope policy for founder ratification; this spec is
-> its *enforcement mechanism* — how the gating invariant becomes machine-checkable.
+> **Accepted** (ADR-080 ratified, #5643). This spec is the *enforcement mechanism* — how
+> the gating invariant becomes machine-checkable (registry + predicate, built in M2).
 
 ## What this adds
 
