@@ -1,0 +1,124 @@
+# Recover stranded *mergeable* prove PRs the swarm's finalization step missed.
+#
+# Gate A/B compute keeps up with load, but completed work strands AFTER the
+# checks. This janitor closes two coverage gaps the others don't (ADR-105):
+#
+#   1. ARM — a SAME-repo prove PR whose auto-merge was never armed at creation
+#      (the enrol step hit a token error) sits green-but-unmerged. fork-automerge
+#      -enabler only arms CROSS-repo PRs; this arms the same-repo ones it skips.
+#   2. RERUN — a gate-a that FAILED only because a sub-job was CANCELLED (the
+#      concurrency cancel-in-progress killed a leg → cover cascaded to failure)
+#      is recoverable; re-run exactly those. A genuine check failure or a failed
+#      admission policy is left alone (tools.repo.finalization_recovery).
+#
+# Triggers: workflow_run on gate-a (the real driver — fires dozens/hour, every
+# completion is a wakeup that rescans EVERY open PR) + schedule backstop + manual.
+# Same posture as dropped-gate-janitor: GitHub drops cron under load, so the
+# event-driven trigger is primary.
+#
+# Token: arming works with GITHUB_TOKEN, but a rerun + the eventual auto-merge are
+# attributed to a real actor only under REFRESH_TOKEN (admin PAT/App token, #417),
+# which also lets post-merge refresh workflows fire. Without it: report-only.
+name: finalization-recovery-janitor
+
+on:
+  workflow_run:
+    workflows: ["gate-a"]
+    types: [completed]
+  schedule:
+    # Backstop only — workflow_run above is the real driver (cron drops under load).
+    - cron: "37 * * * *"
+  workflow_dispatch:
+    inputs:
+      apply:
+        description: "Set false for a dry-run (report only)"
+        default: "true"
+
+concurrency:
+  # cancel-in-progress: false so the frequent workflow_run triggers COALESCE
+  # (one running + one pending, older pending dropped) instead of a newer run
+  # cancelling the in-flight sweep — same fix as dropped-gate-janitor.
+  group: finalization-recovery-janitor
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pull-requests: write
+  actions: write   # gh run rerun
+
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          ref: main # only need the tools/ module; state is read via the API
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.12"
+      - name: Detect refresh token (#417)
+        id: tok
+        env:
+          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+        run: |
+          [ -n "${REFRESH_TOKEN}" ] && echo "present=true" >> "$GITHUB_OUTPUT" || echo "present=false" >> "$GITHUB_OUTPUT"
+
+      - name: Arm auto-merge on unenrolled same-repo prove PRs
+        env:
+          GH_TOKEN: ${{ secrets.REFRESH_TOKEN || github.token }}
+          APPLY: ${{ (steps.tok.outputs.present == 'true' && github.event.inputs.apply != 'false') && '1' || '' }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          mapfile -t ARM < <(gh pr list --repo "$REPO" --state open --limit 400 \
+            --json number,title,isCrossRepository,isDraft,autoMergeRequest,mergeStateStatus,files \
+            | python3 -m tools.repo.finalization_recovery arm --limit 30)
+          echo "arm candidates: ${#ARM[@]}"
+          for n in "${ARM[@]:-}"; do
+            [ -z "$n" ] && continue
+            if [ -z "${APPLY}" ]; then echo "  would arm #$n"; continue; fi
+            # --auto arms a not-yet-green PR; a PR already CLEAN rejects --auto
+            # ("in clean status") so fall through to a direct squash merge.
+            if gh pr merge "$n" --repo "$REPO" --auto --squash 2>/dev/null; then
+              echo "  armed #$n"
+            elif gh pr merge "$n" --repo "$REPO" --squash 2>/dev/null; then
+              echo "  merged #$n (was already clean)"
+            else
+              echo "  #$n not armable yet (left for next run)"
+            fi
+          done
+
+      - name: Re-run gate-a runs that failed only via job cancellation
+        env:
+          GH_TOKEN: ${{ secrets.REFRESH_TOKEN || github.token }}
+          APPLY: ${{ (steps.tok.outputs.present == 'true' && github.event.inputs.apply != 'false') && '1' || '' }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          rerun=0; cap=15
+          # Process substitution (not a pipe) so the loop runs in THIS shell —
+          # otherwise the rerun counter + cap break would be lost in a subshell.
+          # Only mergeable, non-draft PRs whose gate-a is in a failed state qualify.
+          while read -r n sha; do
+              [ "$rerun" -ge "$cap" ] && break
+              rid=$(gh api "repos/$REPO/actions/workflows/gate-a.yml/runs?head_sha=$sha" \
+                    --jq '.workflow_runs | sort_by(.created_at) | last | select(.conclusion=="failure") | .id' 2>/dev/null || true)
+              [ -z "$rid" ] && continue
+              recoverable=$(gh api "repos/$REPO/actions/runs/$rid/jobs?per_page=100" \
+                    --jq '[.jobs[] | {name,conclusion}]' 2>/dev/null \
+                    | python3 -m tools.repo.finalization_recovery is-cancellation || echo false)
+              [ "$recoverable" != "true" ] && continue
+              if [ -z "${APPLY}" ]; then echo "  would rerun gate-a for #$n (run $rid, cancellation cascade)"; rerun=$((rerun+1)); continue; fi
+              if gh run rerun "$rid" --repo "$REPO" 2>/dev/null; then
+                gh pr merge "$n" --repo "$REPO" --auto --squash 2>/dev/null || true
+                echo "  reran gate-a for #$n (run $rid) + armed"
+                rerun=$((rerun+1))
+              fi
+          done < <(gh pr list --repo "$REPO" --state open --limit 400 \
+                     --json number,headRefOid,mergeable,isDraft \
+                     -q '.[] | select(.isDraft==false and .mergeable=="MERGEABLE") | "\(.number) \(.headRefOid)"')
+          echo "rerun actions taken/dry: $rerun (cap $cap)"
+
+      - name: No REFRESH_TOKEN — report-only notice (#417)
+        if: steps.tok.outputs.present != 'true'
+        run: echo "::warning::REFRESH_TOKEN unset — finalization-recovery ran report-only (arming/rerun need the admin PAT/App token so the merge + rerun attribute to a real actor and fire downstream workflows)."

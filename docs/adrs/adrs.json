@@ -1,6 +1,6 @@
 {
   "generated_by": "python3 -m tools.adr_index --write",
-  "count": 103,
+  "count": 104,
   "adrs": [
     {
       "id": "ADR-001",
@@ -825,6 +825,14 @@
       "status": "Proposed — **design banked, NOT for enablement yet** (see §Enablement gates)",
       "date": "2026-06-26",
       "file": "ADR-104-Phase3c-Sampled-Leanchecker-Replay.md"
+    },
+    {
+      "id": "ADR-105",
+      "number": 105,
+      "title": "Recover stranded mergeable prove PRs (auto-merge enrolment backstop + cancellation-failed gate recovery)",
+      "status": "Proposed",
+      "date": "2026-06-26",
+      "file": "ADR-105-Finalization-Recovery-Janitor.md"
     }
   ]
 }

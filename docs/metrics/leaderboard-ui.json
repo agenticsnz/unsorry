@@ -4,8 +4,8 @@
       "attempt_yield": 1.0,
       "avatar_url": "https://github.com/ohdearquant.png?size=96",
       "badges": {
-        "difficulty": 2039,
-        "proofs": 2036,
+        "difficulty": 2040,
+        "proofs": 2037,
         "success_rate_percent": 100.0
       },
       "credit_source_summary": "explicit + inferred",
@@ -13,12 +13,12 @@
         "explicit-solver",
         "inferred-git-add-author"
       ],
-      "credited_proofs": 2036,
-      "difficulty_points": 2039,
+      "credited_proofs": 2037,
+      "difficulty_points": 2040,
       "dispatch_points": 0.0,
       "dispatch_proofs": 0,
       "display_name": "@ohdearquant",
-      "explicit_solver_proofs": 2035,
+      "explicit_solver_proofs": 2036,
       "failed_attempts": 0,
       "github": "ohdearquant",
       "inferred_git_proofs": 1,
@@ -26,18 +26,18 @@
       "profile_url": "https://github.com/ohdearquant",
       "rank": 1,
       "run_success_rate": 1.0,
-      "runs": 823,
-      "score": 254800,
+      "runs": 824,
+      "score": 254925,
       "solver": "ohdearquant",
-      "successes": 823,
-      "verified_proofs": 2036
+      "successes": 824,
+      "verified_proofs": 2037
     },
     {
       "attempt_yield": 1.0,
       "avatar_url": "https://github.com/chat-bit-01.png?size=96",
       "badges": {
-        "difficulty": 2327,
-        "proofs": 1996,
+        "difficulty": 2334,
+        "proofs": 2003,
         "success_rate_percent": 100.0
       },
       "credit_source_summary": "explicit + inferred",
@@ -45,12 +45,12 @@
         "explicit-solver",
         "inferred-git-add-author"
       ],
-      "credited_proofs": 1996,
-      "difficulty_points": 2327,
-      "dispatch_points": 18.0,
-      "dispatch_proofs": 20,
+      "credited_proofs": 2003,
+      "difficulty_points": 2334,
+      "dispatch_points": 18.9,
+      "dispatch_proofs": 21,
       "display_name": "@chat-bit-01",
-      "explicit_solver_proofs": 1749,
+      "explicit_solver_proofs": 1756,
       "failed_attempts": 0,
       "github": "chat-bit-01",
       "inferred_git_proofs": 247,
@@ -59,10 +59,10 @@
       "rank": 2,
       "run_success_rate": 1.0,
       "runs": 4,
-      "score": 284400,
+      "score": 285365,
       "solver": "chat-bit-01",
       "successes": 4,
-      "verified_proofs": 1996
+      "verified_proofs": 2003
     },
     {
       "attempt_yield": null,
@@ -110,8 +110,8 @@
       ],
       "credited_proofs": 120,
       "difficulty_points": 216,
-      "dispatch_points": 2614.5,
-      "dispatch_proofs": 2905,
+      "dispatch_points": 2620.8,
+      "dispatch_proofs": 2912,
       "display_name": "@cgbarlow",
       "explicit_solver_proofs": 73,
       "failed_attempts": 299,
@@ -122,7 +122,7 @@
       "rank": 4,
       "run_success_rate": 0.0538,
       "runs": 279,
-      "score": 286050,
+      "score": 286680,
       "solver": "cgbarlow",
       "successes": 15,
       "verified_proofs": 120
@@ -284,21 +284,21 @@
       "verified_proofs": 1
     }
   ],
-  "generated_at": "2026-06-26T01:45:55Z",
+  "generated_at": "2026-06-26T02:21:26Z",
   "generated_from": "docs/metrics/community-stats.json",
   "historical_contributors": [
     {
       "attribution_source": "git-add-author",
       "avatar_url": "https://github.com/cgbarlow.png?size=96",
-      "difficulty_points": 3351,
+      "difficulty_points": 3358,
       "display_name": "Chris Barlow",
       "github": "cgbarlow",
-      "index_files_added": 3025,
+      "index_files_added": 3032,
       "missing_solver_provenance": 47,
       "profile_url": "https://github.com/cgbarlow",
       "rank": 1,
       "solver_credit": false,
-      "solver_provenance_proofs": 2978
+      "solver_provenance_proofs": 2985
     },
     {
       "attribution_source": "git-add-author",
@@ -316,15 +316,15 @@
     {
       "attribution_source": "git-add-author",
       "avatar_url": "https://github.com/chat-bit-01.png?size=96",
-      "difficulty_points": 615,
+      "difficulty_points": 616,
       "display_name": "chat-bit-01",
       "github": "chat-bit-01",
-      "index_files_added": 288,
+      "index_files_added": 289,
       "missing_solver_provenance": 247,
       "profile_url": "https://github.com/chat-bit-01",
       "rank": 3,
       "solver_credit": false,
-      "solver_provenance_proofs": 41
+      "solver_provenance_proofs": 42
     },
     {
       "attribution_source": "git-add-author",
@@ -409,14 +409,14 @@
     {
       "provider_model": "python / sympy",
       "run_success_rate": 1.0,
-      "runs": 823,
-      "verified_proofs": 2034
+      "runs": 824,
+      "verified_proofs": 2035
     },
     {
       "provider_model": "lean / ring",
       "run_success_rate": null,
       "runs": 0,
-      "verified_proofs": 1093
+      "verified_proofs": 1100
     },
     {
       "provider_model": "lean / decide",
@@ -494,19 +494,19 @@
   "schema_version": 1,
   "score_policy": "rank by score desc; score = difficulty_points * 100 + credited_proofs * 25 + dispatch_points * 100 (dispatch_points = 0.9 flat for each proof PR you opened/landed for another contributor; self-dispatch excluded — the system does not run without dispatchers)",
   "summary": {
-    "attributed_proofs": 4082,
+    "attributed_proofs": 4090,
     "attribution_gap_count": 308,
     "credited_contributors": 9,
-    "credited_proofs": 4390,
-    "explicit_solver_proofs": 4082,
-    "git_attributed_index_files": 4390,
+    "credited_proofs": 4398,
+    "explicit_solver_proofs": 4090,
+    "git_attributed_index_files": 4398,
     "historical_contributors": 9,
     "historical_unknown_proofs": 308,
     "inferred_git_proofs": 308,
-    "proof_run_coverage": 0.1966,
-    "terminal_runs": 1219,
+    "proof_run_coverage": 0.1965,
+    "terminal_runs": 1220,
     "uncredited_proofs": 0,
-    "verified_proofs": 4390
+    "verified_proofs": 4398
   },
   "timelines": {
     "default": "merge",
@@ -1902,9 +1902,14 @@
         "t": "2026-06-26T00:00:00Z"
       },
       {
-        "cumulative_proofs": 4400,
-        "proofs": 16,
+        "cumulative_proofs": 4401,
+        "proofs": 17,
         "t": "2026-06-26T01:00:00Z"
+      },
+      {
+        "cumulative_proofs": 4408,
+        "proofs": 7,
+        "t": "2026-06-26T02:00:00Z"
       }
     ],
     "solve": [
@@ -1954,32 +1959,32 @@
         "t": "2026-06-18"
       },
       {
-        "cumulative_proofs": 3083,
-        "proofs": 1793,
+        "cumulative_proofs": 3084,
+        "proofs": 1794,
         "t": "2026-06-19"
       },
       {
-        "cumulative_proofs": 3090,
+        "cumulative_proofs": 3091,
         "proofs": 7,
         "t": "2026-06-20"
       },
       {
-        "cumulative_proofs": 4230,
-        "proofs": 1140,
+        "cumulative_proofs": 4238,
+        "proofs": 1147,
         "t": "2026-06-23"
       },
       {
-        "cumulative_proofs": 4368,
+        "cumulative_proofs": 4376,
         "proofs": 138,
         "t": "2026-06-24"
       },
       {
-        "cumulative_proofs": 4399,
+        "cumulative_proofs": 4407,
         "proofs": 31,
         "t": "2026-06-25"
       },
       {
-        "cumulative_proofs": 4402,
+        "cumulative_proofs": 4410,
         "proofs": 3,
         "t": "2026-06-26"
       }
