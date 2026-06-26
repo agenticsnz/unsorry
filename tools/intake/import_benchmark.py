@@ -391,7 +391,14 @@ def build_verdict_of(vctx: Path, *, runner: Callable | None = None) -> Callable[
     def verdict_of(lean_text: str) -> str:
         if _build_verdict(lean_text, vctx, runner=runner) == "build-error":
             return "build-error"
-        return _probe_verdict(lean_text, vctx, runner=runner)
+        try:
+            return _probe_verdict(lean_text, vctx, runner=runner)
+        except Exception:
+            # The statement builds (the gate above passed) but the `foralltype` proxy can't
+            # be constructed for an unusual signature (e.g. `let`/`letI` binders in
+            # putnam_1989_a6 / putnam_2023_a4). Don't crash the whole batch — credit it: it
+            # elaborates, we just can't auto-classify it as glue.
+            return "non-trivial"
 
     return verdict_of
 

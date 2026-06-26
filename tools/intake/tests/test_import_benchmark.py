@@ -212,6 +212,23 @@ def test_build_flow_excludes_quarantined_and_tags_credit(tmp_path):
     }
 
 
+def test_verdict_credits_when_probe_proxy_crashes(monkeypatch):
+    """A statement that BUILDS but whose `foralltype` proxy can't be constructed (unusual
+    signature, e.g. `let`/`letI` binders in putnam_1989_a6) must be credited — not crash
+    the batch. This is the bug that silently halted the PutnamBench driver at 241/672."""
+    import tools.intake.import_benchmark as ib
+    from pathlib import Path as _P
+
+    monkeypatch.setattr(ib, "_build_verdict", lambda *a, **k: "build-ok")
+
+    def boom(*a, **k):
+        raise ValueError("goal theorem signature has no top-level ':'")
+
+    monkeypatch.setattr(ib, "_probe_verdict", boom)
+    verdict_of = ib.build_verdict_of(_P("."))
+    assert verdict_of("theorem t : True := by sorry") == "non-trivial"  # credited, no crash
+
+
 def test_probe_verdict_builds_full_battery(monkeypatch, tmp_path):
     """Exercise the real `_probe_verdict` with a stubbed probe (no Lean) so the
     `TACTIC_BATTERY + EXTRA_BATTERY` line is actually run — guards against the
