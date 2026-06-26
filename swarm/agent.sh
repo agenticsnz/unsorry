@@ -176,6 +176,12 @@ Environment:
   UNSORRY_DISPATCH_LIMIT
                     Max queued proof branches --dispatch-queue opens per run
                     (default: 1; --once also limits to one)
+  UNSORRY_BATCH_SIZE
+                    ADR-107 batch verification: combine up to this many
+                    independent queued proof branches into ONE Gate A run so the
+                    mathlib env-load is amortised across them (default: 1 = one
+                    PR per proof, batching off). A batch is one governor
+                    admission; recovery is the batch-recovery-janitor
   UNSORRY_GOVERNOR_WAIT
                     Seconds to sleep before polling again when the governor is
                     closed or no work is available (default: 300; --once exits)
@@ -2012,6 +2018,12 @@ dispatch_queue() {
   fetch_main_ref || true
   local open_pr_goals
   open_pr_goals=" $(dispatch_open_pr_goals | tr '\n' ' ') "
+  # ADR-107: when batching is on, also dedup against goals already covered by an
+  # OPEN batch PR so no redundant singleton opens for a batched goal. Gated on
+  # UNSORRY_BATCH_SIZE>1 so the default singleton path is byte-for-byte unchanged.
+  if [ "${UNSORRY_BATCH_SIZE:-1}" -gt 1 ]; then
+    open_pr_goals="$open_pr_goals$(dispatch_open_batch_goals | tr '\n' ' ') "
+  fi
   while IFS= read -r branch; do
     [ -n "$branch" ] || continue
     branch="${branch#origin/}"
@@ -2058,6 +2070,142 @@ dispatch_queue() {
     [ "$dispatched" -ge "$limit" ] && break
   done < <(queued_branch_refs | fair_dispatch_order)
   [ "$failures" -eq 0 ]
+}
+
+# ------------------------------------------------------------- ADR-107 batching
+# Combine K independent queued prove branches into ONE Gate A run so the dominant
+# per-PR mathlib env-load is paid once for K proofs (D1b, #5683). Off by default
+# (UNSORRY_BATCH_SIZE=1); the pure selection/dedup/recovery logic is unit-tested in
+# tools/dispatch/batch.py — these are the thin git/gh shells.
+
+# Goals already covered by an OPEN batch PR (prove-batch(…)), read from its
+# Batch-Goals: manifest. Unioned into the dispatcher's dedup set so a batched goal
+# never also gets a singleton. Best-effort: a gh error yields nothing (dedup then
+# misses, risking only a redundant singleton that first-merge-wins reaps).
+dispatch_open_batch_goals() {
+  gh pr list --state open --limit 1000 --json title,body 2>/dev/null \
+    | python3 -m tools.dispatch.batch manifest-goals 2>/dev/null
+}
+
+# The batch PR body: human context + the machine-readable Batch-Goals: manifest
+# (the dedup source of truth while the PR is open) + each constituent prove title.
+batch_pr_body() {
+  local n="$1" manifest="$2"; shift 2
+  local b titles=""
+  for b in "$@"; do
+    titles="$titles- \`$(git log -1 --format=%s "origin/${b#origin/}" 2>/dev/null)\`"$'\n'
+  done
+  # shellcheck disable=SC2016  # literal backticks + \n: this is a markdown PR body, not shell expansion
+  printf 'Batch verification (ADR-107, D1b): %s independent proofs combined into one Gate A run so the mathlib env-load is amortised across them. Gate A re-verifies every proof from scratch (lake build + nanoda per leaf + replay per olean); no proof trusts another (ADR-049). Enrolled with a merge commit (not squash) so each `prove(<goal>)` lands in main history for leaderboard attribution.\n\n%s\n\nProofs:\n%s' \
+    "$n" "$manifest" "$titles"
+}
+
+_cleanup_batch_worktree() {
+  local wt="$1" branch="$2"
+  git worktree remove --force "$wt" >/dev/null 2>&1 || true
+  git branch -q -D "$branch" >/dev/null 2>&1 || true
+  rm -rf "${wt%/*}" 2>/dev/null || true
+}
+
+# Assemble the given queued/prove branches into one batch/prove/<hash> PR.
+# Cherry-picks each disjoint ADD-only prove commit (never conflicts; preserves the
+# prove(<goal>) subject+author so the leaderboard's merge_times/git_add_authors
+# resolve every batched proof), Gate-B-validates the combined tree, pushes, opens
+# ONE PR enrolled with `--merge` (NOT squash — keeps each proof commit reachable in
+# main history). Constituent branches are left intact (recovery redispatches them
+# singly on a genuine failure). Returns non-zero on any assembly error, leaving the
+# branches for singleton dispatch.
+assemble_and_dispatch_batch() {
+  local -a branches=("$@")
+  local meta branch manifest title body wt n=0 b rc=0
+  meta="$(printf '%s\n' "${branches[@]}" | python3 -m tools.dispatch.batch meta)" || return 1
+  branch="$(printf '%s\n' "$meta" | sed -n '1p')"
+  manifest="$(printf '%s\n' "$meta" | sed -n '2p')"
+  [ -n "$branch" ] || return 1
+  if queued_branch_has_pr "$branch"; then
+    log "batch: a PR for $branch already exists — skipping"
+    return 0
+  fi
+  wt="$(mktemp -d)/wt"
+  if ! git worktree add -q -B "$branch" "$wt" origin/main; then
+    log "batch: worktree add for $branch failed"
+    rm -rf "${wt%/*}" 2>/dev/null || true
+    return 1
+  fi
+  for b in "${branches[@]}"; do
+    b="${b#origin/}"
+    if ! git -C "$wt" cherry-pick "origin/$b" >/dev/null 2>&1; then
+      log "batch: cherry-pick of $b conflicted — aborting batch $branch"
+      git -C "$wt" cherry-pick --abort >/dev/null 2>&1 || true
+      _cleanup_batch_worktree "$wt" "$branch"
+      return 1
+    fi
+    n=$((n + 1))
+  done
+  if ! python3 -m tools.gate_b validate "$wt" >/dev/null; then
+    log "batch: combined tree fails Gate B — aborting batch $branch"
+    _cleanup_batch_worktree "$wt" "$branch"
+    return 1
+  fi
+  if [ "$DRY_RUN" -eq 1 ]; then
+    log "dry-run: would dispatch batch $branch with $n proofs ($manifest)"
+    _cleanup_batch_worktree "$wt" "$branch"
+    return 0
+  fi
+  if ! git -C "$wt" push -q origin "$branch"; then
+    log "batch: push of $branch failed"
+    _cleanup_batch_worktree "$wt" "$branch"
+    return 1
+  fi
+  title="prove-batch($n): amortised verification of $n proofs (ADR-107)"
+  body="$(batch_pr_body "$n" "$manifest" "${branches[@]}")"
+  (
+    cd "$wt" || exit 1
+    gh pr create --base main --head "$branch" --title "$title" --body "$body" \
+      && gh pr merge --auto --merge "$branch"
+  ) || rc=1
+  _cleanup_batch_worktree "$wt" "$branch"
+  [ "$rc" -eq 0 ] && log "dispatched batch $branch with $n proofs"
+  return "$rc"
+}
+
+# One batch PR per pass, assembled from the highest-priority eligible queued
+# branches (a batch is ONE governor admission). Gated on UNSORRY_BATCH_SIZE>1.
+# Non-fatal: any failure logs and returns 0 so singleton dispatch still proceeds;
+# the remaining/ineligible branches fall through to dispatch_queue, which dedups
+# against this batch via dispatch_open_batch_goals.
+dispatch_batch_pass() {
+  [ "${UNSORRY_BATCH_SIZE:-1}" -gt 1 ] || return 0
+  fetch_queued_prove_branches || return 0
+  fetch_main_ref || true
+  if ! submission_governor_allows; then
+    log "batch: governor paused — no batch this pass"
+    return 0
+  fi
+  local exclude_file
+  exclude_file="$(mktemp)"
+  { dispatch_open_pr_goals; dispatch_open_batch_goals; } 2>/dev/null | sort -u > "$exclude_file"
+  local -a picked
+  mapfile -t picked < <(queued_branch_refs | fair_dispatch_order \
+    | python3 -m tools.dispatch.batch select --max "$UNSORRY_BATCH_SIZE" --exclude-file "$exclude_file" 2>/dev/null)
+  rm -f "$exclude_file"
+  [ "${#picked[@]}" -ge 2 ] || return 0   # <2 batchable branches — singletons handle it
+  # ADR-071 fresh re-check: drop any pick taken (merged/PR'd) since selection.
+  local -a final=()
+  local b g
+  for b in "${picked[@]}"; do
+    b="${b#origin/}"
+    g="${b#queued/prove/}"; g="${g%%/*}"
+    if goal_taken_fresh "$g"; then
+      log "batch: dropping $g — taken since selection"
+      continue
+    fi
+    final+=("$b")
+  done
+  [ "${#final[@]}" -ge 2 ] || return 0
+  assemble_and_dispatch_batch "${final[@]}" \
+    || log "batch: assembly failed — branches remain for singleton dispatch"
+  return 0
 }
 
 # ----------------------------------------------------------------- the cycle
@@ -5990,6 +6138,81 @@ test_fair_dispatch_order_survives_early_reader_close() {
   rm -f "$errfile"
 }
 
+test_dispatch_open_batch_goals_parses_manifests() {
+  # ADR-107: dispatch_open_batch_goals extracts goals ONLY from open prove-batch(…)
+  # PRs' Batch-Goals: manifest. A regular prove PR (even one mentioning Batch-Goals)
+  # contributes nothing — the title prefix is the discriminator.
+  gh() {
+    printf '%s' '[{"title":"prove(solo): x","body":"Batch-Goals: solo"},{"title":"prove-batch(2): amortised","body":"intro\n\nBatch-Goals: ga gb\n\nfooter"}]'
+  }
+  local out
+  out="$(dispatch_open_batch_goals | sort | tr '\n' ' ')"
+  unset -f gh
+  [ "$out" = "ga gb " ] \
+    || { log "  expected 'ga gb' from the batch manifest only, got '$out'"; return 1; }
+}
+
+test_batch_dedup_skips_batched_goal() {
+  # ADR-107: with batching ON, dispatch_queue dedups its singletons against goals
+  # already in an open batch PR, so no redundant singleton opens for a batched goal.
+  local ONCE=0 DRY_RUN=0 UNSORRY_DISPATCH_LIMIT=10 UNSORRY_BATCH_SIZE=2 sent="" rc
+  fetch_queued_prove_branches() { return 0; }
+  fetch_main_ref() { return 0; }
+  queued_branch_refs() {
+    printf 'origin/queued/prove/gb/agent-a-1111\n'
+    printf 'origin/queued/prove/g1/agent-b-2222\n'
+  }
+  goal_already_proved() { return 1; }
+  dispatch_open_pr_goals() { return 0; }
+  dispatch_open_batch_goals() { printf 'gb\n'; }   # gb is already in an open batch PR
+  queued_branch_has_pr() { return 1; }
+  submission_governor_allows() { return 0; }
+  goal_taken_fresh() { return 1; }
+  dispatch_queued_proof_branch() { printf -v sent '%s%s\n' "$sent" "$1"; return 0; }
+  dispatch_queue
+  rc=$?
+  unset -f fetch_queued_prove_branches fetch_main_ref queued_branch_refs \
+    goal_already_proved dispatch_open_pr_goals dispatch_open_batch_goals \
+    queued_branch_has_pr submission_governor_allows goal_taken_fresh \
+    dispatch_queued_proof_branch
+  [ "$rc" -eq 0 ] || { log "  dispatch_queue returned $rc"; return 1; }
+  printf '%s' "$sent" | grep -q '^queued/prove/g1/' \
+    || { log "  expected g1 dispatched, got '$sent'"; return 1; }
+  ! printf '%s' "$sent" | grep -q '^queued/prove/gb/' \
+    || { log "  gb is in an open batch — must NOT singleton-dispatch, got '$sent'"; return 1; }
+}
+
+test_batch_dedup_inactive_at_size_one() {
+  # ADR-107: at the default UNSORRY_BATCH_SIZE=1 the batch-dedup augmentation is NOT
+  # consulted — dispatch_queue is byte-for-byte its old self (gb dispatches as a
+  # normal singleton). A file marker (survives the command-subst subshell) proves
+  # dispatch_open_batch_goals is never called.
+  local ONCE=0 DRY_RUN=0 UNSORRY_DISPATCH_LIMIT=10 UNSORRY_BATCH_SIZE=1 sent="" rc marker
+  marker="$(mktemp)"
+  fetch_queued_prove_branches() { return 0; }
+  fetch_main_ref() { return 0; }
+  queued_branch_refs() { printf 'origin/queued/prove/gb/agent-a-1111\n'; }
+  goal_already_proved() { return 1; }
+  dispatch_open_pr_goals() { return 0; }
+  dispatch_open_batch_goals() { echo called >> "$marker"; printf 'gb\n'; }
+  queued_branch_has_pr() { return 1; }
+  submission_governor_allows() { return 0; }
+  goal_taken_fresh() { return 1; }
+  dispatch_queued_proof_branch() { printf -v sent '%s%s\n' "$sent" "$1"; return 0; }
+  dispatch_queue
+  rc=$?
+  unset -f fetch_queued_prove_branches fetch_main_ref queued_branch_refs \
+    goal_already_proved dispatch_open_pr_goals dispatch_open_batch_goals \
+    queued_branch_has_pr submission_governor_allows goal_taken_fresh \
+    dispatch_queued_proof_branch
+  local called_size; called_size="$(wc -c < "$marker")"; rm -f "$marker"
+  [ "$rc" -eq 0 ] || { log "  dispatch_queue returned $rc"; return 1; }
+  [ "$called_size" -eq 0 ] \
+    || { log "  dispatch_open_batch_goals must not run at UNSORRY_BATCH_SIZE=1"; return 1; }
+  printf '%s' "$sent" | grep -q '^queued/prove/gb/' \
+    || { log "  gb must dispatch as a normal singleton at size 1, got '$sent'"; return 1; }
+}
+
 run_self_tests() {
   local tests=(
     test_agent_id_generation
@@ -6076,6 +6299,9 @@ run_self_tests() {
     test_dispatch_skips_taken_midpass
     test_dispatch_solver_fairness
     test_fair_dispatch_order_survives_early_reader_close
+    test_dispatch_open_batch_goals_parses_manifests
+    test_batch_dedup_skips_batched_goal
+    test_batch_dedup_inactive_at_size_one
     test_demote_open_prove_records_telemetry_only
     test_floored_recompose_noop_records_telemetry_only
     test_render_decomp_gateb
@@ -6361,6 +6587,7 @@ main() {
     UNSORRY_MAX_GATE_A_IN_FLIGHT="${UNSORRY_MAX_GATE_A_IN_FLIGHT:-8}"
     UNSORRY_GOVERNOR_SCAN_LIMIT="${UNSORRY_GOVERNOR_SCAN_LIMIT:-200}"
     UNSORRY_DISPATCH_LIMIT="${UNSORRY_DISPATCH_LIMIT:-1}"
+    UNSORRY_BATCH_SIZE="${UNSORRY_BATCH_SIZE:-1}"
     UNSORRY_GOVERNOR_WAIT="${UNSORRY_GOVERNOR_WAIT:-300}"
     case "$UNSORRY_SUBMISSION_GOVERNOR" in
       0|1) ;;
@@ -6370,9 +6597,14 @@ main() {
     validate_integer_knob UNSORRY_MAX_GATE_A_IN_FLIGHT "$UNSORRY_MAX_GATE_A_IN_FLIGHT" 1
     validate_integer_knob UNSORRY_GOVERNOR_SCAN_LIMIT "$UNSORRY_GOVERNOR_SCAN_LIMIT"
     validate_integer_knob UNSORRY_DISPATCH_LIMIT "$UNSORRY_DISPATCH_LIMIT"
+    validate_integer_knob UNSORRY_BATCH_SIZE "$UNSORRY_BATCH_SIZE"
     validate_integer_knob UNSORRY_GOVERNOR_WAIT "$UNSORRY_GOVERNOR_WAIT"
     gh auth status >/dev/null 2>&1 || die_config "gh is not authenticated"
     while :; do
+      # ADR-107: assemble a batch PR first (when enabled), then singleton-dispatch
+      # the remainder. Batching is one governor admission for K proofs; dispatch_queue
+      # dedups its singletons against the open batch via dispatch_open_batch_goals.
+      [ "$UNSORRY_BATCH_SIZE" -gt 1 ] && dispatch_batch_pass
       dispatch_queue || exit 1
       [ "$ONCE" -eq 1 ] && exit 0
       [ "$UNSORRY_GOVERNOR_WAIT" -gt 0 ] || exit 0

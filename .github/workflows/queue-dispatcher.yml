@@ -93,4 +93,9 @@ jobs:
           # behavior), which would silently defeat UNSORRY_DISPATCH_LIMIT.
           UNSORRY_DISPATCH_LIMIT: ${{ github.event.inputs.limit || '10' }}
           UNSORRY_GOVERNOR_WAIT: "0"
+          # ADR-107 batch verification: combine up to N independent queued proofs
+          # into one Gate A run (amortise the mathlib env-load). Default 1 = off;
+          # raise the repo variable to enable. Pushing the batch branch + opening
+          # the PR use the REFRESH_TOKEN checkout credentials (admin PAT).
+          UNSORRY_BATCH_SIZE: ${{ vars.UNSORRY_BATCH_SIZE || '1' }}
         run: ./swarm/agent.sh --dispatch-queue
