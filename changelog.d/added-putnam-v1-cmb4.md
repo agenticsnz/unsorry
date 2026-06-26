@@ -1,1 +1,1 @@
-Added putnam-v1 native-pin batch: +32 obligations -> 241 (#5643, #6381).
+Added putnam-v1 native-pin batch: +16 obligations -> 334 (#5643, #6381).
