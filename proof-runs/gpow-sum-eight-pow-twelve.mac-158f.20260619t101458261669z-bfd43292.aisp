@@ -1,7 +1,7 @@
 𝔸5.1.run.gpow-sum-eight-pow-twelve.mac-158f.20260619t101458261669z-bfd43292@2026-06-19
 γ≔unsorry.proof.run
 ⟦Ω:Run⟧{id≜20260619t101458261669z-bfd43292; goal≜gpow-sum-eight-pow-twelve; agent≜mac-158f; outcome≜proved}
-⟦Π:Provenance⟧{solver≜cgbarlow; provider≜python; model≜sympy}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜python; model≜sympy}
 ⟦Γ:Goal⟧{goal≜gpow-sum-eight-pow-twelve}
 ⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-19T10:14:58Z}
 ⟦Σ:Artifact⟧{sha≜0a08bf73e060194e0cf65528d202465ac1bfd75c62ff030c035d258ce571807f}

@@ -1,7 +1,7 @@
 𝔸5.1.run.geud-30-pow-77-sub-self.mac-158f.20260619t171645212171z-e7ac48bd@2026-06-19
 γ≔unsorry.proof.run
 ⟦Ω:Run⟧{id≜20260619t171645212171z-e7ac48bd; goal≜geud-30-pow-77-sub-self; agent≜mac-158f; outcome≜proved}
-⟦Π:Provenance⟧{solver≜perttu; provider≜python; model≜sympy}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜python; model≜sympy}
 ⟦Γ:Goal⟧{goal≜geud-30-pow-77-sub-self}
 ⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-19T17:16:45Z}
 ⟦Σ:Artifact⟧{sha≜36014069352a324692af68a7ec37b2b1ef22dfee288b1fdfbde3d76ea78cea42}

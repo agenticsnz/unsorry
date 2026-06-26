@@ -22,7 +22,7 @@ makes the result Gate-B-clean.
 Usage:
   python3 -m tools.sourcing.gen_triples --slug <kebab-id> \\
       --lean-sig '<signature after the theorem name>' \\
-      --statement '<one-line English statement>' --difficulty <0-5> \\
+      --statement '<one-line English statement>' --difficulty <0-9> \\
       --source '<...>' --reference '<...>' --absence '<...>' \\
       --triviality '<...>' --decomposition '<...>' \\
       [--aff -20] [--date YYYY-MM-DD] [--root .] [--validate] [--force]
@@ -58,11 +58,14 @@ def valid_slug(slug: str) -> bool:
     return bool(_SLUG_RE.match(slug)) and "." not in slug
 
 
-def render_lean(slug: str, sig: str) -> str:
+def render_lean(slug: str, sig: str, preamble: str = "") -> str:
     """The canonical sorry-stub: `import Mathlib`, a blank line, the theorem, and
     a two-space `sorry`. `sig` is everything after the theorem name (binders +
-    `:` + proposition), e.g. ``(n : ℕ) : 0 < n + 1``."""
-    return f"import Mathlib\n\ntheorem {snake(slug)} {sig.strip()} := by\n  sorry\n"
+    `:` + proposition), e.g. ``(n : ℕ) : 0 < n + 1``. `preamble` is optional
+    companion declarations (e.g. an ``abbrev <name>_solution`` the theorem
+    references) inserted between the import and the theorem."""
+    pre = f"{preamble.strip()}\n\n" if preamble.strip() else ""
+    return f"import Mathlib\n\n{pre}theorem {snake(slug)} {sig.strip()} := by\n  sorry\n"
 
 
 def render_aisp(slug: str, difficulty: int, date: str, aff: int) -> str:
@@ -138,6 +141,7 @@ def write_triple(
     aff: int = -20,
     date: str | None = None,
     force: bool = False,
+    preamble: str = "",
 ) -> list[Path]:
     """Write the three files; return their paths. Refuses to clobber an existing
     goal unless ``force`` (ADR-018 immutability — a changed statement gets a new
@@ -146,8 +150,8 @@ def write_triple(
         raise TripleError(
             f"invalid slug {slug!r}: must match [a-z0-9][a-z0-9-]* with no dots"
         )
-    if not 0 <= difficulty <= 5:
-        raise TripleError(f"difficulty {difficulty} out of range 0–5")
+    if not 0 <= difficulty <= 9:
+        raise TripleError(f"difficulty {difficulty} out of range 0–9")
     date = date or datetime.now(timezone.utc).strftime("%Y-%m-%d")
     if not re.match(r"^\d{4}-\d{2}-\d{2}$", date):
         raise TripleError(f"date {date!r} is not YYYY-MM-DD")
@@ -165,7 +169,7 @@ def write_triple(
 
     lean_path.parent.mkdir(parents=True, exist_ok=True)
     backlog_path.parent.mkdir(parents=True, exist_ok=True)
-    lean_path.write_text(render_lean(slug, lean_sig), encoding="utf-8")
+    lean_path.write_text(render_lean(slug, lean_sig, preamble), encoding="utf-8")
     aisp_path.write_text(render_aisp(slug, difficulty, date, aff), encoding="utf-8")
     backlog_path.write_text(
         render_backlog(

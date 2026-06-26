@@ -26,7 +26,8 @@ concurrency:
   cancel-in-progress: false
 
 permissions:
-  contents: write
+  contents: write       # delete refs
+  pull-requests: read   # read PR state for the merged-branch prune
 
 jobs:
   janitor:
@@ -41,5 +42,18 @@ jobs:
       - name: Delete stale queued-proof branches
         run: |
           python3 -m tools.repo.stale_branches \
+            --limit "${{ github.event.inputs.limit || '500' }}" \
+            ${{ (github.event.inputs.apply == 'false') && ' ' || '--apply' }}
+      # Complement: queued/prove branches are pruned by goal status above; this
+      # prunes the PR-bearing branches (feature/, fix/, docs/, …) whose PR is
+      # already merged/closed and that linger because delete_branch_on_merge is off
+      # (squash-merge leaves the branch a non-ancestor of main, so --merged can't
+      # see it). Protected refs (main/claims/gh-pages/queued/*) are never touched.
+      - name: Delete branches of merged/closed PRs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 -m tools.repo.merged_pr_branches \
+            --repo "${{ github.repository }}" \
             --limit "${{ github.event.inputs.limit || '500' }}" \
             ${{ (github.event.inputs.apply == 'false') && ' ' || '--apply' }}
