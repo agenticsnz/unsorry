@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜gpow-sum-one-pow-thirteen
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/gpow-sum-one-pow-thirteen.md
+  src≜packages/unsorry-archive-0087/backlog/gpow-sum-one-pow-thirteen.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/gpow-sum-one-pow-thirteen.lean
+  lean≜packages/unsorry-archive-0087/goals/gpow-sum-one-pow-thirteen.lean
   sha≜04edce58d934c8bd1df30a7fc569cce34b2916293a23578696017bf32f3395a4
   aff≜0
 }
