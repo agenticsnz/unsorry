@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜gpow-diff-twelve-pow-eight
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/gpow-diff-twelve-pow-eight.md
+  src≜packages/unsorry-archive-0087/backlog/gpow-diff-twelve-pow-eight.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/gpow-diff-twelve-pow-eight.lean
+  lean≜packages/unsorry-archive-0087/goals/gpow-diff-twelve-pow-eight.lean
   sha≜a3624b0ec8818fea94ffb76a6dbc64e84e7e5f7fc54a261c4f1ee4b742f11dc4
   aff≜0
 }
