@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜gpow-sum-six-pow-eleven
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/gpow-sum-six-pow-eleven.md
+  src≜packages/unsorry-archive-0089/backlog/gpow-sum-six-pow-eleven.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/gpow-sum-six-pow-eleven.lean
+  lean≜packages/unsorry-archive-0089/goals/gpow-sum-six-pow-eleven.lean
   sha≜f36bbf597803447af9be19d9476b2ed6bd2c1c649c87c5c36244fc9b28a72f0f
   aff≜0
 }
