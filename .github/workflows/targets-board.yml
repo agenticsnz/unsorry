@@ -30,6 +30,11 @@ on:
       - "backlog/**"
       - "tools/sourcing/targets_board.py"
       - ".github/workflows/targets-board.yml"
+  # Backstop only (ADR-108): flushes the final pre-quiet batch the debounce guard
+  # may skip. GitHub throttles cron to ~1×/hr, so this is a safety net — push
+  # stays primary.
+  schedule:
+    - cron: "*/15 * * * *"
   workflow_dispatch:
 
 # Coalesce bursts of merges into one refresh; never cancel a push mid-commit.
@@ -63,6 +68,14 @@ jobs:
           else
             echo "present=false" >> "$GITHUB_OUTPUT"
           fi
+      - name: Debounce — skip a push refresh that already landed recently (ADR-108)
+        id: debounce
+        if: github.event_name == 'push'
+        run: |
+          python3 -m tools.repo.refresh_debounce \
+            --subject "docs: refresh targets board" \
+            --window-seconds "${{ vars.UNSORRY_REFRESH_DEBOUNCE_SECONDS || '600' }}" \
+            >> "$GITHUB_OUTPUT"
       - name: Check for board drift (ADR-012 / ADR-036)
         id: check
         run: |
@@ -72,7 +85,7 @@ jobs:
             echo "stale=true" >> "$GITHUB_OUTPUT"
           fi
       - name: Regenerate once, then push with cheap retries on drift
-        if: steps.check.outputs.stale == 'true' && steps.tok.outputs.present == 'true'
+        if: steps.check.outputs.stale == 'true' && steps.tok.outputs.present == 'true' && steps.debounce.outputs.skip != 'true'
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"

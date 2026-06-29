@@ -62,8 +62,16 @@ jobs:
         if: steps.tok.outputs.present == 'true'
         with:
           python-version: "3.12"
+      - name: Debounce — skip a push refresh that already landed recently (ADR-108)
+        id: debounce
+        if: github.event_name == 'push' && steps.tok.outputs.present == 'true'
+        run: |
+          python3 -m tools.repo.refresh_debounce \
+            --subject "chore: relabel template proofs" \
+            --window-seconds "${{ vars.UNSORRY_REFRESH_DEBOUNCE_SECONDS || '600' }}" \
+            >> "$GITHUB_OUTPUT"
       - name: Relabel + commit on change
-        if: steps.tok.outputs.present == 'true'
+        if: steps.tok.outputs.present == 'true' && steps.debounce.outputs.skip != 'true'
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
