@@ -1,6 +1,6 @@
 {
   "generated_by": "python3 -m tools.adr_index --write",
-  "count": 111,
+  "count": 112,
   "adrs": [
     {
       "id": "ADR-001",
@@ -865,6 +865,14 @@
       "status": "Proposed",
       "date": "2026-06-29",
       "file": "ADR-108-Debounce-Housekeeping-Refresh-Firehose.md"
+    },
+    {
+      "id": "ADR-109",
+      "number": 109,
+      "title": "Contention-aware prove-PR quota + un-strand quota-closed branches (amends ADR-054)",
+      "status": "Proposed",
+      "date": "2026-06-29",
+      "file": "ADR-109-Contention-Aware-Prove-PR-Quota.md"
     },
     {
       "id": "ADR-110",
