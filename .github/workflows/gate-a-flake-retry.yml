@@ -1,0 +1,69 @@
+# Bounded auto-retry for PRs left BLOCKED by a *flaked* required gate.
+#
+# The dropped-gate janitor (dropped-gate-janitor.yml) rescues gates that were
+# never DISPATCHED (zero check-runs); it deliberately leaves a gate that RAN and
+# FAILED alone. But Gate A's replay is a full-Mathlib Lean job and occasionally
+# flakes (runner eviction, cache miss, timeout): it fails for an infra reason,
+# and because auto-merge is enabled but nothing re-runs a *failed* gate, the PR
+# sits BLOCKED indefinitely though the proof is sound and a re-run would pass.
+# (2026-06-29: seven sound mac-158f difficulty-1 proofs sat BLOCKED ~63 h on a
+# flaked gate-a-replay; a re-run made every one pass and auto-merge.)
+#
+# This is the complement to the janitor: it re-runs the FAILED JOBS of a flaked
+# required gate, BOUNDED by the workflow run's run_attempt — after --max-attempts
+# a genuinely failing proof stops being retried and stays BLOCKED (surfaced for a
+# human) rather than looping. See tools/repo/flaky_gate_retry.py for the
+# conservative guards (auto-merge-off / draft / pending / too-fresh / attempt-cap
+# are all left alone).
+#
+# Triggers: workflow_run on gate-a (primary) + schedule (backstop) + manual. Like
+# the janitor it rescans EVERY open PR each run, so any gate-a completion is a
+# good wakeup — event-driven beats a dropped cron.
+#
+# Unlike the janitor (whose update-branch needs a non-default token to dispatch
+# events), `gh run rerun` re-executes an EXISTING run, which the default
+# GITHUB_TOKEN can do with `actions: write` — the re-run reports on the same head
+# SHA and auto-merge re-evaluates. So no secret and no report-only degrade.
+name: gate-a-flake-retry
+
+on:
+  workflow_run:
+    workflows: ["gate-a"]
+    types: [completed]
+  schedule:
+    # Hourly backstop only — the workflow_run trigger is the real driver.
+    - cron: "41 * * * *"
+  workflow_dispatch:
+    inputs:
+      apply:
+        description: "Set false for a dry-run (report only)"
+        default: "true"
+
+concurrency:
+  # cancel-in-progress: false so frequent workflow_run triggers COALESCE rather
+  # than a newer run cancelling the in-flight sweep before it finishes.
+  group: gate-a-flake-retry
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pull-requests: read
+  actions: write # rerun a flaked gate's workflow run
+
+jobs:
+  retry:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          ref: main # only need the tools/ module; the tool reads state via the API
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.12"
+      - name: Re-run PRs blocked by a flaked required gate (bounded)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 -m tools.repo.flaky_gate_retry \
+            --repo "${{ github.repository }}" \
+            ${{ github.event.inputs.apply != 'false' && '--apply' || '' }}
