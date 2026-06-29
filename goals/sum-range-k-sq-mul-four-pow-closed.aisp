@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-k-sq-mul-four-pow-closed
   phase≜prove
-  status≜proved
-  difficulty≜2
+  status≜archived
+  difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-k-sq-mul-four-pow-closed.md
+  src≜packages/unsorry-archive-0015/backlog/sum-range-k-sq-mul-four-pow-closed.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-k-sq-mul-four-pow-closed.lean
+  lean≜packages/unsorry-archive-0015/goals/sum-range-k-sq-mul-four-pow-closed.lean
   sha≜6a0b48a54987a68777d7d499414c318e20433465c6c6bfbfa63de61738e2bcd6
   aff≜-9
 }

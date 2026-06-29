@@ -1,0 +1,8 @@
+𝔸5.1.lemma.3c3fdc1f3b29@2026-06-17
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜3c3fdc1f3b293076259c750a2a60fc883742678a04f328098a118c10790b9329; goal≜sum-even-index-triangular-closed-form; name≜sum_even_index_triangular_closed_form}
+⟦Σ:Source⟧{src≜goals/sum-even-index-triangular-closed-form.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜python; model≜sympy; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-pentagonal-running-eq-pyramidal@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-pentagonal-running-eq-pyramidal
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-pentagonal-running-eq-pyramidal.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-pentagonal-running-eq-pyramidal.lean
+  sha≜bf9a03b0ca1183978c74091e93df3eb87ebd6abaea55e17277fbc0f446a05dcb
+  aff≜-10
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

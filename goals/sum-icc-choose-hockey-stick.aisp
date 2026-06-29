@@ -3,17 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-icc-choose-hockey-stick
   phase≜prove
-  status≜blocked
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-icc-choose-hockey-stick.md
+  src≜packages/unsorry-archive-0037/backlog/sum-icc-choose-hockey-stick.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-icc-choose-hockey-stick.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0037/goals/sum-icc-choose-hockey-stick.lean
+  sha≜f128fc953731afc7c997b7e7b72d186a5c18732d98955051beb56edfa07d7536
+  aff≜1
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

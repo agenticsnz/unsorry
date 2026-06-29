@@ -1,0 +1,16 @@
+--- /dev/null
++++ b/Mathlib/Unsorry/SumTwoSquaresZmodFourNeThree.lean
+@@ -0,0 +1,13 @@
++/-
++Copyright (c) 2026 Chris Barlow. All rights reserved.
++Released under Apache 2.0 license as described in the file LICENSE.
++Authors: Chris Barlow
++-/
++import Mathlib.Data.ZMod.Basic
++import Mathlib.Tactic.Ring
++
++theorem sum_two_squares_zmod_four_ne_three (a b : ℤ) : (((a ^ 2 + b ^ 2 : ℤ)) : ZMod 4) ≠ 3 := by
++  have key : ∀ x y : ZMod 4, x ^ 2 + y ^ 2 ≠ 3 := by decide
++  have hcast : ((a ^ 2 + b ^ 2 : ℤ) : ZMod 4) = (a : ZMod 4) ^ 2 + (b : ZMod 4) ^ 2 := by
++    push_cast; ring
++  rw [hcast]; exact key _ _

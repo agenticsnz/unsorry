@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜pred-dvd-square-sub-one
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/pred-dvd-square-sub-one.md
+  src≜packages/unsorry-archive-0016/backlog/pred-dvd-square-sub-one.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/pred-dvd-square-sub-one.lean
+  lean≜packages/unsorry-archive-0016/goals/pred-dvd-square-sub-one.lean
   sha≜f239ab47251cc6bb287433cd286f57802932d8294e98226d23633cf7f99bb870
   aff≜0
 }

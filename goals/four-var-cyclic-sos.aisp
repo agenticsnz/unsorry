@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜four-var-cyclic-sos
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/four-var-cyclic-sos.md
+  src≜packages/unsorry-archive-0010/backlog/four-var-cyclic-sos.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/four-var-cyclic-sos.lean
+  lean≜packages/unsorry-archive-0010/goals/four-var-cyclic-sos.lean
   sha≜1f2bafdbacab46ed5f7e120bdb3ee3fb9d00bed758c0a091d26e4e87aaf34f56
   aff≜-9
 }

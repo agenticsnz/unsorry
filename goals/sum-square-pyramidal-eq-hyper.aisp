@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-square-pyramidal-eq-hyper
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-square-pyramidal-eq-hyper.md
+  src≜packages/unsorry-archive-0039/backlog/sum-square-pyramidal-eq-hyper.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-square-pyramidal-eq-hyper.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0039/goals/sum-square-pyramidal-eq-hyper.lean
+  sha≜fe6468043073a8b39970775f9782ac6b30ff4bf0b37d89805ead6c1b28b11f58
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

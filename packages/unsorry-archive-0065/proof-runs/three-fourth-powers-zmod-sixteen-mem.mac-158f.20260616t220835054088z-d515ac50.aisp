@@ -1,0 +1,8 @@
+𝔸5.1.run.three-fourth-powers-zmod-sixteen-mem.mac-158f.20260616t220835054088z-d515ac50@2026-06-16
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260616t220835054088z-d515ac50; goal≜three-fourth-powers-zmod-sixteen-mem; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜python; model≜sympy}
+⟦Γ:Goal⟧{goal≜three-fourth-powers-zmod-sixteen-mem}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-16T22:08:35Z}
+⟦Σ:Artifact⟧{sha≜e0f893f714c3cadb672a4874cee030885a5e78bb72306caeb524554bb4ffb3ee}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

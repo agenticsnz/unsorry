@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-icc-recip-step-four-pair-eq-n-div@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-icc-recip-step-four-pair-eq-n-div
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-icc-recip-step-four-pair-eq-n-div.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-icc-recip-step-four-pair-eq-n-div.lean
+  sha≜5a65077ccb9aec1f1838bb5866fee065e620c52a9f5684485ad5946241c0aa26
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

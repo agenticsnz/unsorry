@@ -13,6 +13,7 @@ from __future__ import annotations
 #: (href, label) for each site page, in nav order — the single source of truth.
 NAV_ITEMS: tuple[tuple[str, str], ...] = (
     ("index.html", "Home"),
+    ("showcase.html", "Showcase"),
     ("leaderboard.html", "Leaderboard"),
     ("proofs-contributors-visualisation.html", "Proof graph"),
     ("queue.html", "Queue"),
@@ -26,8 +27,10 @@ INACTIVE_CLASS = (
 )
 
 #: The `<nav>` wrapper class used by the generated card pages (inset + bottom rule).
+#: ``flex-wrap`` so the link row wraps to a second line on narrow viewports rather
+#: than spilling past the card edge (mobile UX; the list grew to five items).
 CARD_WRAPPER_CLASS = (
-    "flex items-center gap-1 px-6 md:px-10 py-3 text-sm font-medium "
+    "flex flex-wrap items-center gap-1 px-6 md:px-10 py-3 text-sm font-medium "
     "border-b border-slate-100"
 )
 

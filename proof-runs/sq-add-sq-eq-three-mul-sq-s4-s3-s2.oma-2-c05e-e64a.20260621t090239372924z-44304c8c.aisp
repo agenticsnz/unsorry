@@ -1,0 +1,9 @@
+𝔸5.1.run.sq-add-sq-eq-three-mul-sq-s4-s3-s2.oma-2-c05e-e64a.20260621t090239372924z-44304c8c@2026-06-21
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260621t090239372924z-44304c8c; goal≜sq-add-sq-eq-three-mul-sq-s4-s3-s2; agent≜oma-2-c05e-e64a; outcome≜failed}
+⟦Π:Provenance⟧{solver≜perttu; provider≜claude; model≜opus; effort≜max}
+⟦Γ:Goal⟧{goal≜sq-add-sq-eq-three-mul-sq-s4-s3-s2}
+⟦Λ:Metrics⟧{attempts≜3; solve_s≜648; ended≜2026-06-21T09:02:39Z; lessons≜3}
+⟦Σ:Artifact⟧{sha≜∅}
+⟦Δ:Lesson⟧{sig≜error: library/Unsorry/SqAddSqEqThreeMulSqS4S3S2.lean:2:45: Unknown identifier `ℤ` Note: It is not possible to treat `ℤ` as an implicitly bound variable here because the `autoImplicit` option is set to `false`. Hint: Perhaps you meant `Int` in place of `ℤ`: [apply] `Int` error: l}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

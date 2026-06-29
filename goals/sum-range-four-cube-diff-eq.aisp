@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-four-cube-diff-eq
   phase≜prove
-  status≜proved
-  difficulty≜2
+  status≜archived
+  difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-four-cube-diff-eq.md
+  src≜packages/unsorry-archive-0015/backlog/sum-range-four-cube-diff-eq.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-four-cube-diff-eq.lean
+  lean≜packages/unsorry-archive-0015/goals/sum-range-four-cube-diff-eq.lean
   sha≜5bac78d7fea6116966679c2cbb77572bce73fc52db5a3cd1fd3fc3229d66bd77
   aff≜-9
 }

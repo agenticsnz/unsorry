@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sq-mod-nine
   phase≜prove
-  status≜proved
-  difficulty≜2
+  status≜archived
+  difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sq-mod-nine.md
+  src≜packages/unsorry-archive-0012/backlog/sq-mod-nine.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sq-mod-nine.lean
+  lean≜packages/unsorry-archive-0012/goals/sq-mod-nine.lean
   sha≜c4275df6f58c871b8a42c51868fb3ed99b6822d7a3404159b212467b5ff868cf
   aff≜-9
 }

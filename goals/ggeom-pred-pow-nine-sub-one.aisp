@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜ggeom-pred-pow-nine-sub-one
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/ggeom-pred-pow-nine-sub-one.md
+  src≜packages/unsorry-archive-0017/backlog/ggeom-pred-pow-nine-sub-one.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/ggeom-pred-pow-nine-sub-one.lean
+  lean≜packages/unsorry-archive-0017/goals/ggeom-pred-pow-nine-sub-one.lean
   sha≜798b57ee4a27dff905570d051bd1bf6f4fec08db0bbcca61def335ee33b6b85c
   aff≜0
 }

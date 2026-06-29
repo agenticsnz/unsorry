@@ -1,0 +1,20 @@
+𝔸5.1.goal.gpow-sum-six-pow-two@2026-06-19
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gpow-sum-six-pow-two
+  phase≜prove
+  status≜archived
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜packages/unsorry-archive-0037/backlog/gpow-sum-six-pow-two.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜packages/unsorry-archive-0037/goals/gpow-sum-six-pow-two.lean
+  sha≜4e915b441201d54503a390bdc44d3c349cf5124085364fb6a36647c99c28ad77
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
