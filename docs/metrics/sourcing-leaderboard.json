@@ -9,9 +9,9 @@
       "git_author": "Chris Barlow <cgbarlow@gmail.com>",
       "github": "cgbarlow",
       "latest_sourced": "2026-06-29",
-      "open": 211,
+      "open": 210,
       "profile_url": "https://github.com/cgbarlow",
-      "proved": 1370,
+      "proved": 1371,
       "sourced_goals": 3928,
       "sourcer": "cgbarlow"
     },
@@ -87,6 +87,20 @@
     },
     {
       "avatar_url": null,
+      "difficulty_points": 7,
+      "display_name": "unsorry-batch",
+      "earliest_sourced": "2026-06-29",
+      "git_author": "unsorry-batch <unsorry-batch@users.noreply.github.com>",
+      "github": null,
+      "latest_sourced": "2026-06-29",
+      "open": 0,
+      "profile_url": null,
+      "proved": 7,
+      "sourced_goals": 7,
+      "sourcer": null
+    },
+    {
+      "avatar_url": null,
       "difficulty_points": 4,
       "display_name": "Chris Barlow",
       "earliest_sourced": "2026-06-24",
@@ -101,8 +115,8 @@
     }
   ],
   "totals": {
-    "difficulty_points": 6274,
-    "sourced_goals": 4872,
-    "sourcers": 7
+    "difficulty_points": 6281,
+    "sourced_goals": 4879,
+    "sourcers": 8
   }
 }
