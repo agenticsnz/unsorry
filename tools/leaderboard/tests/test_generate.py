@@ -154,6 +154,36 @@ def test_historical_entries_are_unknown_not_guessed(tmp_path):
     assert ui_payload(tmp_path)["contributors"] == []
 
 
+def test_unaliased_git_author_is_uncredited_not_null_github(tmp_path):
+    # #6975 / ADR-107: a proof with no solver≜ whose git author has NO
+    # contributor-aliases entry (e.g. the `unsorry-batch` bot committer) must NOT
+    # surface as a credited contributor with github: null — that unlinkable row
+    # 500s the leaderboard frontend. It is left UNCREDITED (counted in
+    # uncredited_proofs). To credit such work, alias the git author instead.
+    _git(tmp_path, "init")
+    _goal(tmp_path, "orphan-goal", 4)
+    _index(tmp_path, "b" * 64, "orphan-goal")
+    _git(tmp_path, "add", "goals", "library/index")
+    _git(
+        tmp_path,
+        "commit",
+        "-m",
+        "batched proof",
+        author="unsorry-batch <unsorry-batch@users.noreply.github.com>",
+    )
+    # deliberately NO _alias(...) for unsorry-batch — it has no GitHub handle
+
+    stats = base_stats(tmp_path)
+    assert stats["credited_contributors"] == []
+    assert all(row["github"] is not None for row in stats["credited_contributors"])
+
+    payload = ui_payload(tmp_path)
+    assert payload["contributors"] == []
+    assert all(c["github"] is not None for c in payload["contributors"])
+    assert payload["summary"]["credited_proofs"] == 0
+    assert payload["summary"]["uncredited_proofs"] == 1
+
+
 def test_git_add_author_is_historical_visibility_not_solver_credit(tmp_path):
     _git(tmp_path, "init")
     _goal(tmp_path, "old-goal", 4)

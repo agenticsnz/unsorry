@@ -539,6 +539,15 @@ def credited_contributors(
             git_author = author.key
             source = "inferred-git-add-author"
 
+        # Never emit a credited contributor we cannot resolve to a GitHub profile
+        # (no solver≜ AND the git author has no contributor-aliases entry — e.g. a
+        # bot committer like `unsorry-batch`). A `github: null` row is unlinkable
+        # and 500s every downstream consumer (the #6975 leaderboard crash). Leave
+        # the proof UNCREDITED instead (it still counts in `uncredited_proofs`); to
+        # credit such work, add the git author to contributor-aliases.json.
+        if github is None:
+            continue
+
         row = rows.setdefault(
             key,
             {
