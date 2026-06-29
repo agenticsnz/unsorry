@@ -1,0 +1,8 @@
+𝔸5.1.run.gpow-sum-seven-pow-fourteen.mac-158f.20260619t101303412406z-74f23d37@2026-06-19
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260619t101303412406z-74f23d37; goal≜gpow-sum-seven-pow-fourteen; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜python; model≜sympy}
+⟦Γ:Goal⟧{goal≜gpow-sum-seven-pow-fourteen}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-19T10:13:03Z}
+⟦Σ:Artifact⟧{sha≜6dd66bc707c93e10c7d3deb5bcfc96fb1defac5a7802e10820d61b66763de138}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

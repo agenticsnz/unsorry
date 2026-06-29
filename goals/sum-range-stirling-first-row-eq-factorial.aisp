@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-stirling-first-row-eq-factorial
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-stirling-first-row-eq-factorial.md
+  src≜packages/unsorry-archive-0038/backlog/sum-range-stirling-first-row-eq-factorial.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-stirling-first-row-eq-factorial.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0038/goals/sum-range-stirling-first-row-eq-factorial.lean
+  sha≜fdd18fade9604d510736c4301c616e5ce45f938c309c2ea0e0500993cc0867db
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

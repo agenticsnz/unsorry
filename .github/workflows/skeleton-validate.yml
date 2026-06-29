@@ -1,0 +1,87 @@
+name: skeleton-validate
+
+on:
+  pull_request:
+
+jobs:
+  detect:
+    runs-on: ubuntu-latest
+    outputs:
+      intake: ${{ steps.filter.outputs.intake }}
+      targets: ${{ steps.filter.outputs.targets }}
+      admitted: ${{ steps.admission.outputs.admitted }}
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - id: filter
+        uses: dorny/paths-filter@d1c1ffe0248fe513906c8e24db8ea791d46f8590 # v3.0.3
+        with:
+          filters: |
+            intake:
+              - '.github/workflows/skeleton-validate.yml'
+              - 'tools/intake/**'
+              - 'tools/governance/**'
+              - 'tools/gate_b/**'
+            targets:
+              - '.github/workflows/skeleton-validate.yml'
+              - 'targets/**'
+      - id: admission
+        env:
+          CREATED_AT: ${{ github.event.pull_request.created_at }}
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          python3 -m tools.repo.pr_admission env \
+            --created-at "$CREATED_AT" \
+            --head-ref "$HEAD_REF" \
+            --title "$TITLE" >> "$GITHUB_OUTPUT"
+
+  skeleton-validate:
+    # The ADR-081 curated-package intake gate (SPEC-081-A). Runs the structural
+    # checks 1-5 (hermetic, stdlib-only, mirroring Gate B's exit 0/1/2) on every
+    # registered target package, and the intake-validator test suite when the tool
+    # itself changes. Checks 6-7 (`--build`: Lean top-statement type-check +
+    # credited/glue classification) need the package's pinned verifier context and
+    # run where Lean is available; each obligation's elaboration is separately
+    # covered when its top-level goal lands and the UnsorryGoals package builds, and
+    # the importer self-validates at ingest. The job always reports (short-circuits
+    # vacuously) so a required check never waits on an "expected" run.
+    needs: detect
+    runs-on: ubuntu-latest
+    steps:
+      - name: Short-circuit (no intake/targets paths)
+        if: needs.detect.outputs.admitted != 'true' || (needs.detect.outputs.intake != 'true' && needs.detect.outputs.targets != 'true')
+        run: echo "No skeleton-validate-relevant paths touched — passes vacuously."
+
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        if: needs.detect.outputs.admitted == 'true' && (needs.detect.outputs.intake == 'true' || needs.detect.outputs.targets == 'true')
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        if: needs.detect.outputs.admitted == 'true' && (needs.detect.outputs.intake == 'true' || needs.detect.outputs.targets == 'true')
+        with:
+          python-version: "3.12"
+      - name: Install test dependency
+        if: needs.detect.outputs.admitted == 'true' && needs.detect.outputs.intake == 'true'
+        run: pip install pytest
+      - name: Intake + governance test suites (SPEC-081-A / SPEC-080-A)
+        if: needs.detect.outputs.admitted == 'true' && needs.detect.outputs.intake == 'true'
+        run: pytest tools/intake tools/governance -q
+      - name: skeleton-validate each registered target package
+        if: needs.detect.outputs.admitted == 'true' && needs.detect.outputs.targets == 'true'
+        run: |
+          set -uo pipefail
+          shopt -s nullglob
+          fail=0
+          found=0
+          for pkg in targets/*/; do
+            [ -f "${pkg}skeleton.aisp" ] || continue
+            found=1
+            echo "::group::skeleton-validate ${pkg}"
+            if python3 -m tools.intake.skeleton_validate "${pkg%/}" --strict; then
+              echo "  ADMIT"
+            else
+              echo "::error::skeleton-validate REJECTED ${pkg}"
+              fail=1
+            fi
+            echo "::endgroup::"
+          done
+          [ "$found" -eq 1 ] || echo "no targets/<suite>/ packages found — nothing to validate"
+          exit "$fail"

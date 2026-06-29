@@ -1,0 +1,8 @@
+𝔸5.1.lemma.b9e7ff857eb4@2026-06-19
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜b9e7ff857eb4536569b19e8d5411a9375e776f1a64d3f3329e725f4573ff6fa8; goal≜gpow-sum-three-pow-twelve; name≜gpow_sum_three_pow_twelve}
+⟦Σ:Source⟧{src≜goals/gpow-sum-three-pow-twelve.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜python; model≜sympy; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

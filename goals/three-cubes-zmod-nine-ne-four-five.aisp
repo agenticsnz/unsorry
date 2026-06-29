@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜three-cubes-zmod-nine-ne-four-five
   phase≜prove
-  status≜proved
-  difficulty≜2
+  status≜archived
+  difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/three-cubes-zmod-nine-ne-four-five.md
+  src≜packages/unsorry-archive-0014/backlog/three-cubes-zmod-nine-ne-four-five.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/three-cubes-zmod-nine-ne-four-five.lean
+  lean≜packages/unsorry-archive-0014/goals/three-cubes-zmod-nine-ne-four-five.lean
   sha≜2409680ea477c6bc5e5c267ee371bd04c2683a7385057f76bcd72135ab8e1fe0
   aff≜-9
 }

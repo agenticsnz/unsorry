@@ -1,0 +1,20 @@
+𝔸5.1.goal.sq-mod-thirteen-mem@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sq-mod-thirteen-mem
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/sq-mod-thirteen-mem.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sq-mod-thirteen-mem.lean
+  sha≜7434554182080f10b89138d2bbb3aa69747e8a34cd38e5c8fa4926d4bd541511
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

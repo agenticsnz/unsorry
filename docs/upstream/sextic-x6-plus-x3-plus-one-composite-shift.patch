@@ -1,0 +1,12 @@
+--- /dev/null
++++ b/Mathlib/Unsorry/SexticX6PlusX3PlusOneCompositeShift.lean
+@@ -0,0 +1,9 @@
++/-
++Copyright (c) 2026 Chris Barlow. All rights reserved.
++Released under Apache 2.0 license as described in the file LICENSE.
++Authors: Chris Barlow
++-/
++import Mathlib.Tactic.Ring
++
++theorem sextic_x6_plus_x3_plus_one_dvd_pow_nine_sub_one (n : ℤ) : (n ^ 6 + n ^ 3 + 1) ∣ (n ^ 9 - 1) :=
++  ⟨n ^ 3 - 1, by ring⟩

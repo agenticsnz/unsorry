@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-two-squares-zmod-eight-ne-six
   phase≜prove
-  status≜open
-  difficulty≜3
+  status≜archived
+  difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-two-squares-zmod-eight-ne-six.md
+  src≜packages/unsorry-archive-0065/backlog/sum-two-squares-zmod-eight-ne-six.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-two-squares-zmod-eight-ne-six.lean
-  sha≜∅
-  aff≜-10
+  lean≜packages/unsorry-archive-0065/goals/sum-two-squares-zmod-eight-ne-six.lean
+  sha≜6e6a334e2b5dc614505d33873fb8146f6a270d7809c507c8455a8c858f894b9e
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

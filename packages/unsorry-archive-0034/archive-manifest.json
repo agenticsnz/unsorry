@@ -1,0 +1,155 @@
+{
+  "block_id": "unsorry-archive-0034",
+  "target_size": 40,
+  "proof_count": 34,
+  "status": "frozen",
+  "source_commit": "e94e6fb4e4b34d2503f4d943d7d15e9b93364712",
+  "validation_commit": null,
+  "pins": {
+    "lean_toolchain": "leanprover/lean4:v4.30.0",
+    "mathlib": "v4.30.0"
+  },
+  "notes": [
+    "ADR-041 proof archive block 0034.",
+    "Whole decomposition trees + standalone proved goals only (invariant A).",
+    "Active goal records remain as archived metadata pointing at this package."
+  ],
+  "goals": [
+    {
+      "goal": "sum-one-div-three-k-plus-one-mul-three-k-plus-four",
+      "module": "Unsorry.SumOneDivThreeKPlusOneMulThreeKPlusFour"
+    },
+    {
+      "goal": "sum-range-choose-sq-eq-central",
+      "module": "Unsorry.SumRangeChooseSqEqCentral"
+    },
+    {
+      "goal": "sum-heptagonal-numbers-closed-form",
+      "module": "Unsorry.SumHeptagonalNumbersClosedForm"
+    },
+    {
+      "goal": "sum-hexagonal-numbers-closed-form",
+      "module": "Unsorry.SumHexagonalNumbersClosedForm"
+    },
+    {
+      "goal": "sum-icc-eight-k-div-odd-sq-pair-telescope",
+      "module": "Unsorry.SumIccEightKDivOddSqPairTelescope"
+    },
+    {
+      "goal": "sum-octagonal-running-closed-form",
+      "module": "Unsorry.SumOctagonalRunningClosedForm"
+    },
+    {
+      "goal": "sum-octahedral-centered-squares",
+      "module": "Unsorry.SumOctahedralCenteredSquares"
+    },
+    {
+      "goal": "sum-odd-gnomon-squares-closed-form",
+      "module": "Unsorry.SumOddGnomonSquaresClosedForm"
+    },
+    {
+      "goal": "sum-odd-squares-faulhaber",
+      "module": "Unsorry.SumOddSquaresFaulhaber"
+    },
+    {
+      "goal": "sum-pentagonal-running-eq-pyramidal",
+      "module": "Unsorry.SumPentagonalRunningEqPyramidal"
+    },
+    {
+      "goal": "sum-pronic-eq-thrice-tetrahedral",
+      "module": "Unsorry.SumPronicEqThriceTetrahedral"
+    },
+    {
+      "goal": "sum-range-catalan-mul-catalan-eq-catalan-succ",
+      "module": "Unsorry.SumRangeCatalanMulCatalanEqCatalanSucc"
+    },
+    {
+      "goal": "sum-range-choose-mul-choose-three-eq",
+      "module": "Unsorry.SumRangeChooseMulChooseThreeEq"
+    },
+    {
+      "goal": "sum-range-choose-mul-succ-choose-eq",
+      "module": "Unsorry.SumRangeChooseMulSuccChooseEq"
+    },
+    {
+      "goal": "sum-range-choose-mul-succ-choose-succ-eq-central-shift",
+      "module": "Unsorry.SumRangeChooseMulSuccChooseSuccEqCentralShift"
+    },
+    {
+      "goal": "sum-range-comp-mul-choose-sq-eq",
+      "module": "Unsorry.SumRangeCompMulChooseSqEq"
+    },
+    {
+      "goal": "sum-icc-four-div-four-k-sub-one-four-k-add-three-telescope",
+      "module": "Unsorry.SumIccFourDivFourKSubOneFourKAddThreeTelescope"
+    },
+    {
+      "goal": "sum-icc-k-sq-add-one-mul-factorial-eq-prod",
+      "module": "Unsorry.SumIccKSqAddOneMulFactorialEqProd"
+    },
+    {
+      "goal": "sum-icc-k-sq-add-one-mul-factorial-eq-pronic-factorial",
+      "module": "Unsorry.SumIccKSqAddOneMulFactorialEqPronicFactorial"
+    },
+    {
+      "goal": "sum-icc-recip-step-four-pair-eq-n-div",
+      "module": "Unsorry.SumIccRecipStepFourPairEqNDiv"
+    },
+    {
+      "goal": "sum-icc-three-k-sub-one-mul-two-pow-pred-closed",
+      "module": "Unsorry.SumIccThreeKSubOneMulTwoPowPredClosed"
+    },
+    {
+      "goal": "sum-icc-id-mul-two-pow-pred",
+      "module": "Unsorry.SumIccIdMulTwoPowPred"
+    },
+    {
+      "goal": "sum-icc-k-sub-one-div-factorial-eq-one-sub",
+      "module": "Unsorry.SumIccKSubOneDivFactorialEqOneSub"
+    },
+    {
+      "goal": "sum-id-mul-triangular-closed-form",
+      "module": "Unsorry.SumIdMulTriangularClosedForm"
+    },
+    {
+      "goal": "gzmod-104-pow-eighteen-sub-pow-six",
+      "module": "Unsorry.Gzmod104PowEighteenSubPowSix"
+    },
+    {
+      "goal": "gzmod-104-pow-fifteen-sub-pow-three",
+      "module": "Unsorry.Gzmod104PowFifteenSubPowThree"
+    },
+    {
+      "goal": "gzmod-104-pow-nineteen-sub-pow-seven",
+      "module": "Unsorry.Gzmod104PowNineteenSubPowSeven"
+    },
+    {
+      "goal": "gzmod-104-pow-seventeen-sub-pow-five",
+      "module": "Unsorry.Gzmod104PowSeventeenSubPowFive"
+    },
+    {
+      "goal": "gzmod-104-pow-sixteen-sub-pow-four",
+      "module": "Unsorry.Gzmod104PowSixteenSubPowFour"
+    },
+    {
+      "goal": "gzmod-112-pow-eighteen-sub-pow-six",
+      "module": "Unsorry.Gzmod112PowEighteenSubPowSix"
+    },
+    {
+      "goal": "gzmod-112-pow-nineteen-sub-pow-seven",
+      "module": "Unsorry.Gzmod112PowNineteenSubPowSeven"
+    },
+    {
+      "goal": "gzmod-112-pow-seventeen-sub-pow-five",
+      "module": "Unsorry.Gzmod112PowSeventeenSubPowFive"
+    },
+    {
+      "goal": "gzmod-112-pow-sixteen-sub-pow-four",
+      "module": "Unsorry.Gzmod112PowSixteenSubPowFour"
+    },
+    {
+      "goal": "gzmod-120-pow-eight-sub-pow-four",
+      "module": "Unsorry.Gzmod120PowEightSubPowFour"
+    }
+  ]
+}

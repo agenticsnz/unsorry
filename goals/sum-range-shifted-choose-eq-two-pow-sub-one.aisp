@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-shifted-choose-eq-two-pow-sub-one
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-shifted-choose-eq-two-pow-sub-one.md
+  src≜packages/unsorry-archive-0038/backlog/sum-range-shifted-choose-eq-two-pow-sub-one.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-shifted-choose-eq-two-pow-sub-one.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0038/goals/sum-range-shifted-choose-eq-two-pow-sub-one.lean
+  sha≜652da5852ede46b51fde662a5c2c3f97746dcde4771e1762ac595f37fff0706c
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

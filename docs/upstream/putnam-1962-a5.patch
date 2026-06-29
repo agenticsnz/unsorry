@@ -1,0 +1,23 @@
+--- /dev/null
++++ b/Mathlib/Unsorry/Putnam1962A5.lean
+@@ -0,0 +1,20 @@
++/-
++Copyright (c) 2026 Chris Barlow. All rights reserved.
++Released under Apache 2.0 license as described in the file LICENSE.
++Authors: Chris Barlow
++-/
++import Mathlib
++
++theorem putnam_1962_a5 : ∀ n ≥ 2, putnam_1962_a5_solution n = ∑ k ∈ Finset.Icc 1 n, Nat.choose n k * k^2 := by
++  intro n hn
++  show n * (n + 1) * 2 ^ (n - 2) = ∑ k ∈ Finset.Icc 1 n, Nat.choose n k * k ^ 2
++  rw [putnam_1962_a5_sum_eq n]
++  have hpow : (2 : ℕ) ^ n = 2 ^ (n - 2) * 4 := by
++    conv_lhs => rw [show n = (n - 2) + 2 from by omega]
++    rw [pow_add]
++    norm_num
++  have hcancel : 4 * (∑ i ∈ Finset.range (n + 1), i ^ 2 * n.choose i)
++      = 4 * (n * (n + 1) * 2 ^ (n - 2)) := by
++    rw [Putnam1962A5Aux.core n, hpow]
++    ring
++  exact (Nat.eq_of_mul_eq_mul_left (by norm_num) hcancel).symm

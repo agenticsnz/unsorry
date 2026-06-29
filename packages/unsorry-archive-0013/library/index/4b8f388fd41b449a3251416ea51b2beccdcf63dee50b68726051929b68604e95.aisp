@@ -1,0 +1,8 @@
+𝔸5.1.lemma.4b8f388fd41b@2026-06-16
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜4b8f388fd41b449a3251416ea51b2beccdcf63dee50b68726051929b68604e95; goal≜sum-pentagonal-eq; name≜sum_pentagonal_eq}
+⟦Σ:Source⟧{src≜goals/sum-pentagonal-eq.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜python; model≜sympy; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

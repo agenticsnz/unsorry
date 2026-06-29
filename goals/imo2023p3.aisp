@@ -1,0 +1,20 @@
+𝔸5.1.goal.imo2023p3@2026-06-24
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜imo2023p3
+  phase≜prove
+  status≜open
+  difficulty≜4
+}
+⟦Σ:Source⟧{
+  src≜backlog/imo2023p3.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/imo2023p3.lean
+  sha≜∅
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

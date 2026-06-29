@@ -1,0 +1,20 @@
+𝔸5.1.goal.gzmod-64-pow-twentyfive-sub-pow-nine@2026-06-18
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gzmod-64-pow-twentyfive-sub-pow-nine
+  phase≜prove
+  status≜archived
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜packages/unsorry-archive-0062/backlog/gzmod-64-pow-twentyfive-sub-pow-nine.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜packages/unsorry-archive-0062/goals/gzmod-64-pow-twentyfive-sub-pow-nine.lean
+  sha≜8cb226324e680a605643a6cebc01ea1f3e14ec2ec203a61de975e162616db051
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

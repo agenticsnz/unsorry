@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜diff-two-squares-zmod-sixteen-ne-two-six
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/diff-two-squares-zmod-sixteen-ne-two-six.md
+  src≜packages/unsorry-archive-0011/backlog/diff-two-squares-zmod-sixteen-ne-two-six.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/diff-two-squares-zmod-sixteen-ne-two-six.lean
+  lean≜packages/unsorry-archive-0011/goals/diff-two-squares-zmod-sixteen-ne-two-six.lean
   sha≜94d7917eb7c5ffbe6d391ab634f8d5d4236d38df94b8606bdee25802217e9ee3
   aff≜-9
 }

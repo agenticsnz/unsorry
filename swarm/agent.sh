@@ -34,6 +34,12 @@ PROTOCOL_FILE="swarm/protocol.aisp"
 TRANSLATE_PROMPT_FILE="swarm/prompts/translate.md"
 EVIDENCE_LINE="⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩"
 
+# Shared bootstrap for the Lean build tool: `ensure_lake` puts elan on PATH and
+# installs it if `lake` is missing (ADR-100, SPEC-100-A). Sourced relative to this
+# script so it resolves regardless of the caller's cwd.
+# shellcheck source=swarm/lib/ensure_lake.sh
+. "$(dirname "${BASH_SOURCE[0]}")/lib/ensure_lake.sh"
+
 # ------------------------------------------------------------------- logging
 
 log() {
@@ -98,6 +104,10 @@ Environment:
   UNSORRY_FORK      Set to 1 to force fork-native mode (ADR-068); otherwise it is
                     auto-detected when origin is a fork of UNSORRY_UPSTREAM
   UNSORRY_UPSTREAM  Canonical repo a fork submits to (default: agenticsnz/unsorry)
+  UNSORRY_FORK_SHARDS
+                    Fork-mode goal-selection shards K (ADR-076; default 8). Each
+                    fork prefers goals in cksum(agent)%K so independent forks pick
+                    different goals (advisory; falls through when its slice is dry)
   UNSORRY_SOLVER    GitHub handle credited for verified proofs (default: gh api user)
   UNSORRY_SOLVER_NAME, UNSORRY_SOLVER_EMAIL
                     Override the git commit author/committer the harness uses
@@ -118,6 +128,13 @@ Environment:
                     pins every attempt; else unset; dropped fail-soft when the
                     installed claude lacks --effort)
   UNSORRY_WORKDIR   Claims worktree + metrics.jsonl home (default: ~/.unsorry/work)
+  UNSORRY_GOAL_LOCK_DIR
+                    Fork-mode goal-lock dir shared by co-located provers so they
+                    don't all grind the same goal (ADR-068; default:
+                    ~/.unsorry/goal-locks). MUST be a path common to every
+                    co-located prover — if they run as different users or with
+                    isolated homes, point this at a shared path or the lock is a
+                    no-op. Ignored outside fork mode
   UNSORRY_NO_ISOLATE
                     Set to 1 to run the swarm loop in the launch dir instead of
                     relocating into a per-agent worktree (ADR-042). The launch
@@ -159,6 +176,12 @@ Environment:
   UNSORRY_DISPATCH_LIMIT
                     Max queued proof branches --dispatch-queue opens per run
                     (default: 1; --once also limits to one)
+  UNSORRY_BATCH_SIZE
+                    ADR-107 batch verification: combine up to this many
+                    independent queued proof branches into ONE Gate A run so the
+                    mathlib env-load is amortised across them (default: 1 = one
+                    PR per proof, batching off). A batch is one governor
+                    admission; recovery is the batch-recovery-janitor
   UNSORRY_GOVERNOR_WAIT
                     Seconds to sleep before polling again when the governor is
                     closed or no work is available (default: 300; --once exits)
@@ -178,6 +201,11 @@ Environment:
                     Pause coordinated --prove when queued + in-progress Gate A
                     workflow runs reach this count (default: 8; set -1 to
                     disable this limit)
+  UNSORRY_MAX_GOALS_IN_FLIGHT
+                    Per-contributor fairness cap: pause claiming new goals when
+                    this agent already holds this many goals in flight (its own
+                    queued-but-unmerged prove branches), so one fleet cannot
+                    queue the whole pool and starve others (default: 25)
   UNSORRY_GOVERNOR_SCAN_LIMIT
                     Max PR/runs rows fetched per governor query (default: 200)
 EOF
@@ -1022,14 +1050,35 @@ utc_today() {
 }
 
 # <short-hostname>-<4 hex> (ADR-007), sanitised to the contract Id grammar.
-generate_agent_id() {
-  local host hex
+# Normalised short hostname used as the agent-id prefix. Factored out so the
+# generator and the copied-identity self-heal (resolve_agent_id) agree exactly.
+local_host() {
+  local host
   host="$(hostname -s 2>/dev/null || hostname)"
   host="$(printf '%s' "$host" | tr '[:upper:]' '[:lower:]' \
     | tr -c 'a-z0-9-' '-' | tr -s '-' | sed -e 's/^-*//' -e 's/-*$//')"
   [ -n "$host" ] || host="agent"
+  printf '%s' "$host"
+}
+
+generate_agent_id() {
+  local hex
   hex="$(od -An -N2 -tx1 /dev/urandom | tr -d ' \n')"
-  printf '%s-%s\n' "$host" "$hex"
+  printf '%s-%s\n' "$(local_host)" "$hex"
+}
+
+# Pure: does <id> look like an auto-generated id for <host>? Used to detect a
+# COPIED ~/.unsorry/agent-id (one generated on another machine). Only ids in the
+# generated `<host>-<4 hex>` shape are judged; a custom-shaped id (suffix not
+# 4 hex) is treated as a deliberate operator choice and left alone. Returns 0
+# (local / leave it) or 1 (foreign / regenerate).
+agent_id_host_matches() {
+  local id="$1" host="$2" suffix="${1##*-}"
+  case "$suffix" in
+    [0-9a-f][0-9a-f][0-9a-f][0-9a-f]) ;;
+    *) return 0 ;;
+  esac
+  [ "${id%-*}" = "$host" ]
 }
 
 # Unique feature-branch name: feature/goal-<goal>-<kind>-<AGENT_ID>-<6 hex>.
@@ -1146,6 +1195,17 @@ resolve_agent_id() {
     id="$UNSORRY_AGENT_ID"
   elif [ -f "$id_file" ]; then
     id="$(tr -d ' \t\n' < "$id_file")"
+    # Self-heal a COPIED identity: the default id encodes this host, so a persisted
+    # id whose host-prefix is not this machine's was generated elsewhere (a cloned
+    # ~/.unsorry/agent-id from someone's setup). Sharing one swarm id mis-credits
+    # proofs and collides on claims, so regenerate a local one. An explicitly
+    # EXPORTED UNSORRY_AGENT_ID is honoured above and never auto-changed.
+    if ! agent_id_host_matches "$id" "$(local_host)"; then
+      local fresh; fresh="$(generate_agent_id)"
+      log "agent identity '$id' was generated on another machine (this host is '$(local_host)') — regenerating '$fresh' (copied ~/.unsorry/agent-id; export UNSORRY_AGENT_ID to override)"
+      id="$fresh"
+      printf '%s\n' "$id" > "$id_file"
+    fi
   else
     id="$(generate_agent_id)"
     mkdir -p "$(dirname "$id_file")"
@@ -1165,6 +1225,42 @@ resolve_solver() {
   [[ "$solver" =~ ^[A-Za-z0-9]([A-Za-z0-9-]{0,37}[A-Za-z0-9])?$ ]] \
     || die_config "UNSORRY_SOLVER '$solver' is not a valid GitHub handle"
   SOLVER="$solver"
+}
+
+# Credit-integrity guard (proof attribution). resolve_solver trusts UNSORRY_SOLVER
+# verbatim, so a config that hard-codes someone else's handle credits THEM for
+# every proof this machine produces — observed in practice as several contributors
+# funnelling leaderboard credit to one handle via a shared config. This is the
+# universal prover chokepoint: run.sh guards before launch, but supervise.sh and a
+# direct agent.sh call do not — and it re-runs on every #428 re-exec, so a freshly
+# updated harness enforces it even on a long-lived loop. Pure decision (no I/O),
+# exercised hermetically by --self-test; echoes one of ok | ack | block | unknown.
+#   solver: resolved $SOLVER (resolve_solver already validated it non-empty)
+#   login : gh-resolved login (empty -> unknown; cannot compare, e.g. offline)
+#   ack   : $UNSORRY_SOLVER_OK (truthy -> a mismatch is a deliberate override)
+solver_credit_decision() {
+  local solver="$1" login="$2" ack="$3"
+  [ -z "$login" ] && { echo unknown; return; }
+  [ "${solver,,}" = "${login,,}" ] && { echo ok; return; }
+  case "$ack" in
+    1|true|TRUE|yes|YES|on|ON) echo ack ;;
+    *) echo block ;;
+  esac
+}
+
+# Resolve the login and act on the decision before any proving. A `block` is a
+# configuration error (exit 2 → supervise.sh treats it as fatal, no retry loop),
+# so a mis-credited prover never silently runs.
+guard_solver_credit() {
+  local login decision
+  login="$(gh api user --jq .login 2>/dev/null || true)"
+  decision="$(solver_credit_decision "$SOLVER" "$login" "${UNSORRY_SOLVER_OK:-}")"
+  case "$decision" in
+    ok) : ;;
+    unknown) log "WARNING: could not resolve your GitHub login (offline / gh not authenticated) — proof credit unverified; proofs will be credited to '$SOLVER'." ;;
+    ack) log "WARNING: proofs will be credited to '$SOLVER', NOT your GitHub login '$login' (UNSORRY_SOLVER_OK=1 — deliberate override)." ;;
+    block) die_config "proof credit would go to '$SOLVER', but your GitHub account is '$login' — every proof this machine produces would be mis-credited on the leaderboard, not credited to you. Fix: export UNSORRY_SOLVER=$login (or unset it to default to your login). Deliberately proving under another handle, e.g. an org? export UNSORRY_SOLVER_OK=1." ;;
+  esac
 }
 
 # ADR-029 / SPEC-029-A: author the harness's own commits (proof PRs, claims,
@@ -1294,6 +1390,52 @@ fork_pr_head_ref() {
   local branch="$1"
   if [ "$FORK_MODE" = 1 ]; then printf '%s:%s\n' "$FORK_OWNER" "$branch"
   else printf '%s\n' "$branch"; fi
+}
+
+# ADR-076 sharded fork goal selection (Phase-2 step 2c). cksum is CRC-32 and
+# portable (Linux + macOS), so every machine maps a given string to the SAME
+# shard — that cross-machine stability is what lets two uncoordinated forks
+# prefer disjoint slices. Bucket 0..K-1.
+fork_shard() {
+  local s="$1" k="$2" h
+  h="$(printf '%s' "$s" | cksum | cut -d' ' -f1)"
+  printf '%s\n' "$(( h % k ))"
+}
+
+# The shard count K (UNSORRY_FORK_SHARDS, default 8); a non-positive-integer
+# value degrades to the default rather than erroring (selection must not die on
+# a misconfigured advisory knob).
+fork_shard_count() {
+  local k="${UNSORRY_FORK_SHARDS:-8}"
+  case "$k" in ''|*[!0-9]*) k=8 ;; esac
+  [ "$k" -ge 1 ] || k=8
+  printf '%s\n' "$k"
+}
+
+# ADR-076: reorder a ranked candidate list (stdin) so goals in THIS agent's shard
+# come first, the rest after — each group in input (rank) order, so the ADR-010
+# affinity/gap priority is preserved within the shard and across the fall-through
+# tail. Pure (stdin + args), hermetically testable.
+shard_reorder() {
+  local agent="$1" k="$2" mine cand
+  mine="$(fork_shard "$agent" "$k")"
+  local -a in=() out=()
+  while IFS= read -r cand; do
+    [ -n "$cand" ] || continue
+    if [ "$(fork_shard "$cand" "$k")" = "$mine" ]; then in+=("$cand"); else out+=("$cand"); fi
+  done
+  printf '%s\n' ${in[@]+"${in[@]}"} ${out[@]+"${out[@]}"}
+}
+
+# ADR-076: in fork mode, shard-reorder the candidate stream so independent
+# cross-fork provers prefer different goals (advisory; no coordination). A
+# pass-through on the canonical path — selection there is byte-for-byte unchanged.
+fork_maybe_shard() {
+  if [ "$FORK_MODE" = 1 ]; then
+    shard_reorder "$AGENT_ID" "$(fork_shard_count)"
+  else
+    cat
+  fi
 }
 
 require_main_checkout() {
@@ -1452,6 +1594,141 @@ ensure_agent_worktree() {
   fi
 }
 
+# Multi-runner safety (ADR-042): pick an agent identity not already held by a LIVE
+# co-located runner, so N runners spawned on one host get DISTINCT ids + worktrees
+# instead of silently sharing one worktree/claim and all working the same goal
+# (observed when a wrapper forks several runners). The lock is a mkdir'd directory
+# holding the owner PID; a directory whose PID is dead is stale and reclaimed
+# (self-healing across crashes — no flock, so it works on macOS too). The base id
+# is reused whenever free (claim continuity across restarts); only a *live*
+# collision forks a random-suffixed id. Sets AGENT_ID to the acquired identity.
+claim_agent_identity() {
+  local workdir="$1" base="$2" id="$2" lockdir owner attempt=0
+  while :; do
+    lockdir="$workdir/agent-main-$id.lock"
+    if mkdir "$lockdir" 2>/dev/null; then
+      printf '%s\n' "$$" > "$lockdir/pid"
+      AGENT_ID="$id"
+      return 0
+    fi
+    owner="$(cat "$lockdir/pid" 2>/dev/null)"
+    if [ "$owner" = "$$" ]; then AGENT_ID="$id"; return 0; fi
+    if [ -z "$owner" ] || ! kill -0 "$owner" 2>/dev/null; then
+      rm -rf "$lockdir" 2>/dev/null   # stale (dead owner) -> reclaim the base id
+      continue
+    fi
+    attempt=$((attempt + 1))
+    [ "$attempt" -gt 64 ] && die_config "no free agent identity under '$base' after 64 tries"
+    id="$base-$(od -An -N2 -tx1 /dev/urandom | tr -d ' \n')"
+  done
+}
+
+# ADR-068 follow-up (the #3140 author's flagged gap): fork mode is claimless, so
+# co-located fork provers — sharing one host but each with its own fork checkout,
+# UNSORRY_AGENT_ID and UNSORRY_WORKDIR — have no claims branch to dedup against
+# and, because _rank() is fully deterministic, every one of them independently
+# picks the SAME top goal and grinds it in parallel. A fork-local goal lock fixes
+# that: at selection an agent skips any goal a LIVE sibling already locked. The
+# lock dir MUST be shared across the co-located provers (NOT under a per-agent
+# UNSORRY_WORKDIR, which is distinct per prover), so it lives at a path common to
+# them: UNSORRY_GOAL_LOCK_DIR, default ~/.unsorry/goal-locks — shared by all
+# provers that run as the same user (the default keys off $HOME). Provers with
+# isolated homes (different Unix users / containers) must set it to a common
+# path. Same primitive as claim_agent_identity: a mkdir'd directory holding the
+# owner identity (atomic, no flock, macOS-safe); a dead owner is self-healing —
+# the next prover reclaims it, so a crashed prover needs no manual cleanup. The
+# owner is recorded as "<pid> <starttime>" (not a bare PID) so a PID reused after
+# a reboot cannot masquerade as the original holder. This is purely a fork-mode
+# coordination layer: the canonical claims path (claim_goal / release_claim,
+# ADR-004) is upstream-only and left completely untouched.
+
+# Per-machine lock dir, resolved once. Shared by all co-located provers that run
+# as the SAME user (the default keys off $HOME) — that sharing is the whole point,
+# a per-agent dir would never collide. Provers with isolated homes (different Unix
+# users / containers) MUST point UNSORRY_GOAL_LOCK_DIR at a common path or the
+# lock silently does nothing (see usage()).
+goal_lock_dir() {
+  printf '%s\n' "${UNSORRY_GOAL_LOCK_DIR:-$HOME/.unsorry/goal-locks}"
+}
+
+# A PID alone is not a stable owner identity: ~/.unsorry/goal-locks is on
+# persistent disk and survives reboots, after which the OS reuses PIDs from 1 —
+# a leftover lock whose recorded PID now belongs to an unrelated live process
+# would read as "live" and strand the goal forever (no TTL, no reaper). So the
+# lock records "<pid> <starttime>" and liveness requires BOTH kill -0 AND a
+# start-time match, which a reused PID cannot satisfy. ps -o lstart= is portable
+# (Linux + macOS, matching this primitive's flock-free macOS-safe contract);
+# empty start-time (kernel thread / race) degrades gracefully to the PID check.
+goal_lock_token() {
+  printf '%s %s\n' "$1" "$(ps -o lstart= -p "$1" 2>/dev/null | tr -s ' ')"
+}
+
+# True if the owner token "<pid> <starttime>" names a live process that is still
+# the same process that took the lock (defeats PID reuse across a reboot).
+goal_lock_owner_live() {
+  local token="$1" pid
+  pid="${token%% *}"
+  [ -n "$pid" ] || return 1
+  kill -0 "$pid" 2>/dev/null || return 1
+  # Re-derive the current token for that PID; a reused PID yields a different
+  # start-time and so fails this match. If we recorded no start-time, fall back
+  # to the bare kill -0 result above.
+  [ "$token" = "$(goal_lock_token "$pid")" ] || [ "$token" = "$pid " ] || [ "$token" = "$pid" ]
+}
+
+# Try to take the fork-local lock for <goal>. No-op success outside fork mode.
+# Returns 0 when acquired (or already held by us), 1 when a LIVE sibling holds it
+# (caller skips to the next ranked goal). A stale lock (dead owner) is reclaimed.
+acquire_goal_lock() {
+  [ "$FORK_MODE" = 1 ] || return 0
+  local goal="$1" dir lockdir owner mine
+  dir="$(goal_lock_dir)"
+  if ! mkdir -p "$dir" 2>/dev/null; then
+    # best-effort: never block proving on a lock-dir failure, but make the
+    # degraded coordination visible — siblings may now duplicate this goal.
+    log "warning: cannot create goal-lock dir '$dir' — fork dedup disabled this cycle (ADR-068)"
+    return 0
+  fi
+  lockdir="$dir/goal-$goal.lock"
+  mine="$(goal_lock_token "$$")"
+  while :; do
+    if mkdir "$lockdir" 2>/dev/null; then
+      printf '%s\n' "$mine" > "$lockdir/pid"
+      return 0
+    fi
+    owner="$(cat "$lockdir/pid" 2>/dev/null)"
+    if [ "${owner%% *}" = "$$" ]; then return 0; fi   # already ours -> idempotent
+    if [ -z "$owner" ]; then
+      # An empty pid is the brief window between a sibling's mkdir and its pid
+      # write, OR a truly stale lock. Re-read once before reclaiming so we never
+      # rm -rf a lock an in-progress acquirer is about to own (the read-after-
+      # mkdir race the claim_goal/ADR-072 recheck guards against, same reasoning).
+      owner="$(cat "$lockdir/pid" 2>/dev/null)"
+    fi
+    if [ -z "$owner" ] || ! goal_lock_owner_live "$owner"; then
+      # Stale (dead owner / reused PID). Reclaim atomically: rename the stale dir
+      # aside so two simultaneous reclaimers cannot both rm a third prover's fresh
+      # lock — only the mv winner deletes, the losers loop and re-mkdir cleanly.
+      mv "$lockdir" "$lockdir.stale.$$.$RANDOM" 2>/dev/null && rm -rf "$lockdir".stale.* 2>/dev/null
+      continue
+    fi
+    return 1   # a live sibling owns it -> skip this goal
+  done
+}
+
+# Release a fork-local goal lock we own. No-op outside fork mode or if not ours
+# (a sibling's lock is never removed). Called on every cycle-exit path, mirroring
+# release_claim; a missed release is self-healed by the next prover's PID check.
+release_goal_lock() {
+  [ "$FORK_MODE" = 1 ] || return 0
+  local goal="$1" lockdir owner
+  lockdir="$(goal_lock_dir)/goal-$goal.lock"
+  [ -d "$lockdir" ] || return 0
+  owner="$(cat "$lockdir/pid" 2>/dev/null)"
+  [ "${owner%% *}" = "$$" ] && rm -rf "$lockdir" 2>/dev/null
+  return 0
+}
+
 # ADR-042: relocate the running agent into its own worktree before any work, so
 # the operator's launch dir is never synced/built/claimed in (they can edit
 # proofs and the harness there freely) and two agents on one host don't share a
@@ -1469,10 +1746,17 @@ relocate_into_agent_worktree() {
 
   local workdir wt
   workdir="${UNSORRY_WORKDIR:-$HOME/.unsorry/work}"
+  mkdir -p "$workdir" || die_config "cannot create UNSORRY_WORKDIR '$workdir'"
   [ -n "${AGENT_ID:-}" ] || resolve_agent_id
+  # Multi-runner safety: claim a distinct identity if a live sibling already holds
+  # this one, then carry it forward so the re-exec (and all claims/worktrees) use
+  # the SAME acquired id. An explicit UNSORRY_AGENT_WORKTREE override opts out.
+  if [ -z "${UNSORRY_AGENT_WORKTREE:-}" ]; then
+    claim_agent_identity "$workdir" "$AGENT_ID"
+    export UNSORRY_AGENT_ID="$AGENT_ID"
+  fi
   wt="${UNSORRY_AGENT_WORKTREE:-$workdir/agent-main-$AGENT_ID}"
 
-  mkdir -p "$workdir" || die_config "cannot create UNSORRY_WORKDIR '$workdir'"
   ensure_agent_worktree "$wt"
 
   log "relocating into isolated agent worktree $wt (ADR-042); launch dir left untouched"
@@ -1541,7 +1825,19 @@ submit_pr_tree() {
     return 1
   fi
   git -C "$prwt" add "$@" || return 1
-  git -C "$prwt" commit -q -m "$title" || return 1
+  # ADR-096: same independent-check verdict carry as queue_pr_tree — as a commit
+  # trailer (audit) and, since this path opens the PR in-process, appended to the
+  # PR body directly.
+  local -a ic_trailer=()
+  case "$title" in
+    prove\(*)
+      if [ -n "${INDEPENDENT_CHECK_VERDICT:-}" ]; then
+        ic_trailer=(-m "Independent-Check: $INDEPENDENT_CHECK_VERDICT")
+        body="$body"$'\n\n'"_Independent check (advisory, ADR-096): ${INDEPENDENT_CHECK_VERDICT}_"
+      fi
+      ;;
+  esac
+  git -C "$prwt" commit -q -m "$title" "${ic_trailer[@]}" || return 1
   # The proof branch is pushed to `origin` in both modes — origin is the canonical
   # repo on the write-access path, and the contributor's own fork in fork mode.
   git -C "$prwt" push -q origin "$branch" || return 1
@@ -1573,19 +1869,57 @@ queue_pr_tree() {
     return 1
   fi
   git -C "$prwt" add "$@" || return 1
-  git -C "$prwt" commit -q -m "$title" || return 1
+  # ADR-096: carry the advisory independent-check verdict to the dispatcher as a
+  # commit trailer (only on a prove commit, only when the check ran). The
+  # dispatcher reads it back from the branch and surfaces it on the PR. The title
+  # (commit subject) is unchanged, so the prove-title contract still holds.
+  local -a ic_trailer=()
+  case "$title" in
+    prove\(*) [ -n "${INDEPENDENT_CHECK_VERDICT:-}" ] && ic_trailer=(-m "Independent-Check: $INDEPENDENT_CHECK_VERDICT") ;;
+  esac
+  git -C "$prwt" commit -q -m "$title" "${ic_trailer[@]}" || return 1
   git -C "$prwt" push -q origin "$branch" || return 1
   return 0
+}
+
+# ADR-096: extract the advisory independent-check verdict trailer (if any) from a
+# branch's tip commit, as a one-line PR-body addendum. Empty when absent.
+independent_check_pr_note() {
+  local ref="$1" v
+  v="$(git log -1 --format=%b "$ref" 2>/dev/null | sed -n 's/^Independent-Check: //p' | head -1)"
+  [ -n "$v" ] && printf '\n\n_Independent check (advisory, ADR-096): %s_' "$v"
 }
 
 fetch_queued_prove_branches() {
   git fetch -q origin '+refs/heads/queued/prove/*:refs/remotes/origin/queued/prove/*'
 }
 
+# Pure decision helper (ADR-109): given the PR-list JSON for a branch and a
+# back-off (seconds), count the PRs that should BLOCK re-dispatch. An OPEN or
+# MERGED PR always blocks. A CLOSED PR blocks if it was closed for a reason OTHER
+# than the per-contributor quota, OR if it was quota-closed (label
+# over-author-quota) within the back-off window. A quota-closed PR PAST the
+# back-off does NOT block — the goal "returns to the pool" and re-dispatches, so a
+# transient quota close can no longer strand a branch forever (the #6751
+# deadlock). Exercised hermetically by --self-test.
+_blocking_pr_count() {
+  local json="$1" backoff="$2"
+  printf '%s' "$json" | jq --argjson backoff "$backoff" '[.[] | select(
+      (.state == "OPEN") or (.state == "MERGED")
+      or ((.state == "CLOSED") and (
+          ((.labels | map(.name) | index("over-author-quota")) | not)
+          or ((.closedAt | fromdate) > (now - $backoff))
+      ))
+    )] | length'
+}
+
 queued_branch_has_pr() {
-  local branch="$1" count
-  count="$(gh pr list --state all --head "$branch" --json number --jq 'length' 2>/dev/null)" \
+  local branch="$1" json count backoff="${UNSORRY_QUOTA_RETRY_BACKOFF_S:-3600}"
+  [[ "$backoff" =~ ^[0-9]+$ ]] || backoff=3600
+  json="$(gh pr list --state all --head "$branch" --json state,labels,closedAt 2>/dev/null)" \
     || return 1
+  [ -n "$json" ] || return 1
+  count="$(_blocking_pr_count "$json" "$backoff" 2>/dev/null)" || return 1
   [ "$count" -gt 0 ]
 }
 
@@ -1602,6 +1936,7 @@ dispatch_queued_proof_branch() {
   name="${title#*: }"
   name="${name% by *}"
   body="Queued proof dispatch (ADR-058, SPEC-007-A): branch \`$branch\` was produced by coordinated \`--prove\` in \`UNSORRY_SUBMIT_MODE=queue\` after local verification passed. The dispatcher opened this PR only after the submission governor admitted more verifier work. New library proof: \`$name\` for goal \`$goal\`."
+  body="$body$(independent_check_pr_note "$remote_ref")"
   if [ "$DRY_RUN" -eq 1 ]; then
     printf 'dry-run: would dispatch queued branch %s as "%s"\n' "$branch" "$title"
     return 0
@@ -1630,6 +1965,35 @@ goal_already_proved() {
 
 queued_branch_refs() {
   git for-each-ref --format='%(refname:short)' refs/remotes/origin/queued/prove
+}
+
+# ADR-075: re-order the queued branches by a per-solver round-robin so one
+# high-volume contributor cannot starve the rest. `git for-each-ref` returns
+# refs lexically by name, i.e. by goal — so a contributor whose ~1,585 machine
+# -named `g…` goals sort to the front (the @ohdearquant case) monopolises every
+# governed dispatch slot while a contributor whose goals sort late (@ruvnet's
+# `s…` cluster sat at queue ranks 1850–2002 of 2003) never drains. Round-robin
+# gives every *active* solver one branch per round (max-min fairness): small
+# backlogs clear promptly, the large one drains at the same per-round rate.
+#
+# Soundness is untouched — this only reorders; dedup (ADR-064/071), the governor
+# (ADR-058) and Gate A still decide what merges. Solver per branch is read from
+# the authoritative queue board (`docs/queue.json` on origin/main, which resolves
+# `solver≜`/git-author provenance, ADR-066) — note a re-routed branch is authored
+# by the operator, so the board's provenance, not the commit author, is the only
+# correct solver key. A branch absent from the board (pushed since the last board
+# refresh) falls back to its agent-id token; an unreadable board degrades to the
+# prior lexical order. Reads refs on stdin, emits them reordered on stdout,
+# verbatim. Disable with `UNSORRY_FAIR_DISPATCH=0` (reverts to lexical).
+fair_dispatch_order() {
+  [ "${UNSORRY_FAIR_DISPATCH:-1}" = 0 ] && { cat; return 0; }
+  # ADR-075 per-solver round-robin + ADR-106 difficulty deprioritisation, in the
+  # unit-tested module tools/dispatch/fair_order.py (reads refs on stdin, emits
+  # them reordered). Both reorderings are pure and reversible (UNSORRY_FAIR_DISPATCH
+  # =0 reverts to lexical here; UNSORRY_DIFFICULTY_DISPATCH=0 reverts to fairness-
+  # only inside the module). The module handles the early-reader-close (EPIPE) of
+  # the dispatch loop, the queue-board read, and the token-key fallback.
+  python3 -m tools.dispatch.fair_order
 }
 
 # ADR-071: a final fresh "is this goal already taken?" check, run immediately
@@ -1676,6 +2040,12 @@ dispatch_queue() {
   fetch_main_ref || true
   local open_pr_goals
   open_pr_goals=" $(dispatch_open_pr_goals | tr '\n' ' ') "
+  # ADR-107: when batching is on, also dedup against goals already covered by an
+  # OPEN batch PR so no redundant singleton opens for a batched goal. Gated on
+  # UNSORRY_BATCH_SIZE>1 so the default singleton path is byte-for-byte unchanged.
+  if [ "${UNSORRY_BATCH_SIZE:-1}" -gt 1 ]; then
+    open_pr_goals="$open_pr_goals$(dispatch_open_batch_goals | tr '\n' ' ') "
+  fi
   while IFS= read -r branch; do
     [ -n "$branch" ] || continue
     branch="${branch#origin/}"
@@ -1720,8 +2090,233 @@ dispatch_queue() {
       failures=$((failures + 1))
     fi
     [ "$dispatched" -ge "$limit" ] && break
-  done < <(queued_branch_refs)
+  done < <(queued_branch_refs | fair_dispatch_order)
   [ "$failures" -eq 0 ]
+}
+
+# ------------------------------------------------------------- ADR-107 batching
+# Combine K independent queued prove branches into ONE Gate A run so the dominant
+# per-PR mathlib env-load is paid once for K proofs (D1b, #5683). Off by default
+# (UNSORRY_BATCH_SIZE=1); the pure selection/dedup/recovery logic is unit-tested in
+# tools/dispatch/batch.py — these are the thin git/gh shells.
+
+# Goals already covered by an OPEN batch PR (prove-batch(…)), read from its
+# Batch-Goals: manifest. Unioned into the dispatcher's dedup set so a batched goal
+# never also gets a singleton. Best-effort: a gh error yields nothing (dedup then
+# misses, risking only a redundant singleton that first-merge-wins reaps).
+dispatch_open_batch_goals() {
+  gh pr list --state open --limit 1000 --json title,body 2>/dev/null \
+    | python3 -m tools.dispatch.batch manifest-goals 2>/dev/null
+}
+
+# The batch PR body: human context + the machine-readable Batch-Goals: manifest
+# (the dedup source of truth while the PR is open) + each constituent prove title.
+batch_pr_body() {
+  local n="$1" manifest="$2"
+  # shellcheck disable=SC2016  # literal backticks: this is a markdown PR body, not shell expansion
+  printf 'Batch verification (ADR-107, D1b): %s independent proofs combined into one Gate A run so the mathlib env-load is amortised across them. Gate A re-verifies every proof from scratch (lake build + nanoda per leaf + replay per olean); no proof trusts another (ADR-049). Enrolled with a merge commit (not squash) so each `prove(<goal>)` constituent commit lands in main history for leaderboard attribution.\n\n%s\n' \
+    "$n" "$manifest"
+}
+
+_cleanup_batch_worktree() {
+  local wt="$1" branch="$2"
+  git worktree remove --force "$wt" >/dev/null 2>&1 || true
+  git branch -q -D "$branch" >/dev/null 2>&1 || true
+  rm -rf "${wt%/*}" 2>/dev/null || true
+}
+
+# owner/repo for the GitHub API (inferred from origin; the dispatcher is non-fork).
+batch_repo_nwo() { gh repo view --json nameWithOwner -q .nameWithOwner 2>/dev/null; }
+
+# The NET files a queued branch adds vs main — its proof files — via the GitHub
+# compare API (server-side merge-base / 3-dot diff). This is the ONLY robust way to
+# get just the proof on the dispatcher's shallow checkout: a local 3-dot diff needs
+# a merge-base (absent at depth 1) and cherry-pick breaks on branches that merged
+# main in (a merge commit replays main's whole delta → conflicts). The compare API
+# handles every branch shape and never lists main's own deletions, so the proof can
+# never resurrect archived files. Prints added/modified paths, one per line.
+batch_net_files() {
+  local repo="$1" branch="$2"
+  # A pruned/raced-out branch (goal proved + branch deleted) makes compare return a
+  # 404 whose JSON body `gh --jq` can leak to stdout. Filter to valid path lines so a
+  # 404 yields EMPTY (→ the constituent is skipped) instead of a bogus pathspec.
+  gh api "repos/$repo/compare/main...$branch" --paginate \
+    --jq '.files[] | select(.status=="added" or .status=="modified") | .filename' 2>/dev/null \
+    | grep -E '^[A-Za-z0-9._/-]+$' || true
+}
+
+# Build the batch worktree at $wt on $branch (from origin/main) by laying down each
+# constituent's NET proof files (batch_net_files) checked out from its branch TREE
+# (present even on a shallow clone), then committing them under a `prove(<goal>):`
+# subject so the leaderboard's merge_times still buckets each proof by merge time.
+# No cherry-pick — so it is correct for branches that merged main in — and it only
+# ever ADDS the proof's own files, so it cannot resurrect deleted/archived content.
+# Any error aborts (the batch is abandoned; branches fall back to singleton
+# dispatch). `batch_net_files` is overridable for hermetic tests.
+build_batch_worktree() {
+  local wt="$1" branch="$2"; shift 2
+  local -a branches=("$@")
+  local b goal repo
+  repo="$(batch_repo_nwo)" || true
+  git worktree add -q -B "$branch" "$wt" origin/main || { log "batch: worktree add for $branch failed"; return 1; }
+  for b in "${branches[@]}"; do
+    b="${b#origin/}"
+    goal="${b#queued/prove/}"; goal="${goal%%/*}"
+    local -a files=()
+    mapfile -t files < <(batch_net_files "$repo" "$b")
+    # A constituent can RACE OUT mid-pass — its goal proved and branch pruned by a
+    # concurrent dispatcher (empty/404 net files), or it otherwise fails to apply.
+    # SKIP it and keep the rest rather than abandon the whole batch. The goals that
+    # DO land are printed to stdout (the only stdout here — log() goes to stderr) and
+    # become the PR's dedup manifest, so a skipped goal stays singleton-eligible.
+    if [ "${#files[@]}" -eq 0 ]; then
+      log "batch: no net proof files for $goal (proved/pruned mid-pass?) — skipping it"
+      continue
+    fi
+    # NB the explicit committer identity: the queue-dispatcher runs on an Actions
+    # checkout with NO git user configured (singletons never commit there — they open
+    # PRs from pre-committed branches), so a bare `git commit` dies "Author identity
+    # unknown" and silently drops every constituent. The authoritative proof
+    # attribution is the library/index `solver≜` record (carried verbatim), so a
+    # generic committer here is correct and matches the bot-driven singleton path.
+    if ! git -C "$wt" checkout "origin/$b" -- "${files[@]}" 2>/dev/null \
+       || ! git -C "$wt" add -- "${files[@]}" 2>/dev/null \
+       || ! git -C "$wt" -c user.name="unsorry-batch" -c user.email="unsorry-batch@users.noreply.github.com" \
+            commit -q -m "prove($goal): batched proof (ADR-107)" 2>/dev/null; then
+      log "batch: could not lay down $goal — skipping it"
+      git -C "$wt" reset -q --hard 2>/dev/null || true
+      continue
+    fi
+    printf '%s\n' "$goal"
+  done
+  return 0
+}
+
+assemble_and_dispatch_batch() {
+  local -a branches=("$@")
+  local meta branch manifest title body wt n rc=0 succeeded
+  meta="$(printf '%s\n' "${branches[@]}" | python3 -m tools.dispatch.batch meta)" || return 1
+  branch="$(printf '%s\n' "$meta" | sed -n '1p')"
+  [ -n "$branch" ] || return 1
+  if queued_branch_has_pr "$branch"; then
+    log "batch: a PR for $branch already exists — skipping"
+    return 0
+  fi
+  wt="$(mktemp -d)/wt"
+  # build_batch_worktree creates the worktree (persists on disk) and prints the goals
+  # that actually assembled; the manifest is built from THOSE, not the selected set,
+  # so a raced-out constituent never strands behind the dedup.
+  succeeded="$(build_batch_worktree "$wt" "$branch" "${branches[@]}")"
+  n="$(printf '%s\n' "$succeeded" | grep -c .)"
+  if [ "$n" -lt 2 ]; then
+    log "batch: fewer than 2 proofs assembled cleanly (got $n) — abandoning; branches fall back to singleton dispatch"
+    _cleanup_batch_worktree "$wt" "$branch"
+    return 1
+  fi
+  manifest="Batch-Goals: $(printf '%s\n' "$succeeded" | grep -v '^$' | sort -u | tr '\n' ' ')"
+  if ! python3 -m tools.gate_b validate "$wt" >/dev/null; then
+    log "batch: combined tree fails Gate B — aborting batch $branch"
+    _cleanup_batch_worktree "$wt" "$branch"
+    return 1
+  fi
+  if [ "$DRY_RUN" -eq 1 ]; then
+    log "dry-run: would dispatch batch $branch with $n proofs ($manifest)"
+    _cleanup_batch_worktree "$wt" "$branch"
+    return 0
+  fi
+  if ! git -C "$wt" push -q origin "$branch"; then
+    log "batch: push of $branch failed"
+    _cleanup_batch_worktree "$wt" "$branch"
+    return 1
+  fi
+  title="prove-batch($n): amortised verification of $n proofs (ADR-107)"
+  body="$(batch_pr_body "$n" "$manifest")"
+  (
+    cd "$wt" || exit 1
+    gh pr create --base main --head "$branch" --title "$title" --body "$body" \
+      && gh pr merge --auto --merge "$branch"
+  ) || rc=1
+  _cleanup_batch_worktree "$wt" "$branch"
+  [ "$rc" -eq 0 ] && log "dispatched batch $branch with $n proofs"
+  return "$rc"
+}
+
+# Assemble ONE batch PR from the highest-priority eligible queued branches (a
+# batch is ONE governor admission). Gated on UNSORRY_BATCH_SIZE>1. Non-fatal: any
+# failure logs and returns 0 so singleton dispatch still proceeds; the remaining/
+# ineligible branches fall through to dispatch_queue, which dedups against open
+# batches via dispatch_open_batch_goals. Sets the global BATCH_DISPATCHED=1 iff it
+# actually opened a batch this call (so dispatch_batch_passes can loop), else 0.
+# $1 (optional): a pass-scoped file of goals already batched THIS pass — excluded
+# from selection (ADR-113) so the A1 multi-batch loop never re-selects a goal
+# whose just-opened batch PR is not yet visible to dispatch_open_batch_goals
+# (GitHub read-after-write lag).
+dispatch_batch_pass() {
+  BATCH_DISPATCHED=0
+  local pass_exclude="${1:-}"
+  [ "${UNSORRY_BATCH_SIZE:-1}" -gt 1 ] || return 0
+  fetch_queued_prove_branches || return 0
+  fetch_main_ref || true
+  if ! submission_governor_allows; then
+    log "batch: governor paused — no batch this pass"
+    return 0
+  fi
+  local exclude_file
+  exclude_file="$(mktemp)"
+  { dispatch_open_pr_goals; dispatch_open_batch_goals
+    [ -n "$pass_exclude" ] && cat "$pass_exclude"; } 2>/dev/null | sort -u > "$exclude_file"
+  local -a picked
+  mapfile -t picked < <(queued_branch_refs | fair_dispatch_order \
+    | python3 -m tools.dispatch.batch select --max "$UNSORRY_BATCH_SIZE" --exclude-file "$exclude_file" 2>/dev/null)
+  rm -f "$exclude_file"
+  log "batch: pass start (size=$UNSORRY_BATCH_SIZE) — selected ${#picked[@]} candidate branch(es)"
+  if [ "${#picked[@]}" -lt 2 ]; then
+    log "batch: fewer than 2 batchable branches this pass — leaving the rest to singleton dispatch"
+    return 0
+  fi
+  # ADR-071 fresh re-check: drop any pick taken (merged/PR'd) since selection.
+  local -a final=() final_goals=()
+  local b g
+  for b in "${picked[@]}"; do
+    b="${b#origin/}"
+    g="${b#queued/prove/}"; g="${g%%/*}"
+    if goal_taken_fresh "$g"; then
+      log "batch: dropping $g — taken since selection"
+      continue
+    fi
+    final+=("$b"); final_goals+=("$g")
+  done
+  [ "${#final[@]}" -ge 2 ] || return 0
+  if assemble_and_dispatch_batch "${final[@]}"; then
+    BATCH_DISPATCHED=1
+    # Record the just-batched goals so the next loop iteration won't re-select
+    # them before the new batch PR is visible to dispatch_open_batch_goals.
+    [ -n "$pass_exclude" ] && printf '%s\n' "${final_goals[@]}" >> "$pass_exclude"
+  else
+    log "batch: assembly failed — branches remain for singleton dispatch"
+  fi
+  return 0
+}
+
+# A1/A2 (ADR-113, amends ADR-107): fill EVERY free Gate-A slot with batches before
+# any singleton. Loop dispatch_batch_pass until it stops opening batches (governor
+# paused → gate full, or fewer than 2 batchable branches remain), capped at
+# UNSORRY_MAX_BATCHES_PER_PASS as a runaway backstop. A pass-scoped exclude file
+# dedups batched goals across iterations against read-after-write lag. Singletons
+# (dispatch_queue) then handle only the <2-batchable remainder, so the dominant
+# mathlib env-load is amortised over K proofs per slot instead of spent per proof.
+dispatch_batch_passes() {
+  [ "${UNSORRY_BATCH_SIZE:-1}" -gt 1 ] || return 0
+  local pass_exclude rounds=0
+  pass_exclude="$(mktemp)"
+  while [ "$rounds" -lt "${UNSORRY_MAX_BATCHES_PER_PASS:-8}" ]; do
+    dispatch_batch_pass "$pass_exclude"
+    [ "${BATCH_DISPATCHED:-0}" -eq 1 ] || break
+    rounds=$((rounds + 1))
+  done
+  rm -f "$pass_exclude"
+  [ "$rounds" -gt 0 ] && log "batch: opened $rounds batch PR(s) this pass"
+  return 0
 }
 
 # ----------------------------------------------------------------- the cycle
@@ -1783,7 +2378,8 @@ validate_integer_knob() {
 # pause reason when the agent must not start new claim/PR-producing work; prints
 # nothing when admission is allowed.
 submission_governor_reason() {
-  local freeze="$1" open_prove="$2" gate_a_in_flight="$3" max_open="$4" max_gate="$5"
+  local freeze="$1" open_prove="$2" gate_a_in_flight="$3" max_open="$4" max_gate="$5" \
+        inflight="${6:-}" max_inflight="${7:-}"
   if env_truthy "$freeze"; then
     echo "submission freeze is active"
     return 0
@@ -1794,6 +2390,15 @@ submission_governor_reason() {
   fi
   if [ "$max_gate" -ge 0 ] && [ "$gate_a_in_flight" -ge "$max_gate" ]; then
     echo "Gate A queued+in-progress runs $gate_a_in_flight >= limit $max_gate"
+    return 0
+  fi
+  # Per-contributor fairness cap: an agent already holding this many goals in
+  # flight (its own queued-but-unmerged prove branches) must let them
+  # dispatch/merge before claiming more, so one fleet cannot queue the entire
+  # goal pool and starve other contributors. Empty/negative max disables it.
+  if [[ "$max_inflight" =~ ^[0-9]+$ ]] && [[ "$inflight" =~ ^[0-9]+$ ]] \
+     && [ "$inflight" -ge "$max_inflight" ]; then
+    echo "this agent holds $inflight goals in flight >= cap $max_inflight"
     return 0
   fi
   return 1
@@ -1816,12 +2421,23 @@ count_gate_a_runs() {
 # Fail closed on GitHub API errors: if the operator cannot see queue pressure,
 # the safe response during a flood is to avoid opening more proof PRs. This only
 # applies to coordinated --prove; --prove-local remains fully local.
+# Goals this agent is holding in flight = its own queued-but-unmerged prove
+# branches (a merged branch is deleted, so a present one is unmerged). Used by the
+# per-contributor fairness cap. Prints the count, or nothing if it cannot be read
+# (the governor then leaves the cap unenforced — fail-open).
+count_agent_inflight() {
+  fetch_queued_prove_branches >/dev/null 2>&1 || return 1
+  local n
+  n="$(queued_branch_refs 2>/dev/null | grep -cE "/${AGENT_ID}-[0-9a-f]+$")" || true
+  printf '%s\n' "${n:-0}"
+}
+
 submission_governor_allows() {
   [ "$PROVE" -eq 1 ] || return 0
   [ "$DRY_RUN" -eq 1 ] && return 0
   [ "${UNSORRY_SUBMISSION_GOVERNOR:-1}" = 0 ] && return 0
 
-  local open_prove queued in_progress gate_a_total reason
+  local open_prove queued in_progress gate_a_total reason inflight
   if ! open_prove="$(count_open_prove_prs 2>/dev/null)"; then
     log "submission governor paused: could not read open proof PR count"
     return 1
@@ -1839,11 +2455,16 @@ submission_governor_allows() {
   [[ "$in_progress" =~ ^[0-9]+$ ]] || { log "submission governor paused: invalid in-progress Gate A count '$in_progress'"; return 1; }
   gate_a_total=$((queued + in_progress))
 
-  if reason="$(submission_governor_reason "$UNSORRY_SUBMISSION_FREEZE" "$open_prove" "$gate_a_total" "$UNSORRY_MAX_OPEN_PROVE_PRS" "$UNSORRY_MAX_GATE_A_IN_FLIGHT")"; then
-    log "submission governor paused: $reason (open_prove_prs=$open_prove gate_a_queued=$queued gate_a_in_progress=$in_progress)"
+  # Per-contributor fairness cap (UNSORRY_MAX_GOALS_IN_FLIGHT, default 25). Unknown
+  # count (fetch failed) leaves it unenforced rather than blocking a live agent.
+  inflight="$(count_agent_inflight 2>/dev/null)"
+  [[ "$inflight" =~ ^[0-9]+$ ]] || inflight=""
+
+  if reason="$(submission_governor_reason "$UNSORRY_SUBMISSION_FREEZE" "$open_prove" "$gate_a_total" "$UNSORRY_MAX_OPEN_PROVE_PRS" "$UNSORRY_MAX_GATE_A_IN_FLIGHT" "$inflight" "${UNSORRY_MAX_GOALS_IN_FLIGHT:-25}")"; then
+    log "submission governor paused: $reason (open_prove_prs=$open_prove gate_a_queued=$queued gate_a_in_progress=$in_progress agent_in_flight=${inflight:-?})"
     return 1
   fi
-  log "submission governor open: open_prove_prs=$open_prove gate_a_queued=$queued gate_a_in_progress=$in_progress"
+  log "submission governor open: open_prove_prs=$open_prove gate_a_queued=$queued gate_a_in_progress=$in_progress agent_in_flight=${inflight:-?}"
   return 0
 }
 
@@ -2501,11 +3122,23 @@ seed_library_cache() {
 #   1. lake build UnsorryLibrary --wfail   (zero-sorry, zero-warning bar)
 #   2. lake exe axiom_audit Unsorry.<camel> (whitelist only, NO --allow-sorry)
 #   3. python3 -m tools.gate_a.check_library_options <root>/library
+# ADR-099 / SPEC-099-A §3: the suite verifier context for a goal, as the tab-separated
+# line `toolchain<TAB>mathlib<TAB>verify_dir<TAB>build_target`, or empty when the goal is
+# not a registered benchmark obligation. A benchmark goal proves at its SUITE's pin in
+# the suite's _verify lake project (already in this checkout), not the repo-wide pin.
+suite_context_for_goal() {
+  python3 -m tools.intake.suite_context "$1" --root "$2" 2>/dev/null
+}
+
 prove_local_verify() {
-  local root="$1" camel="$2"
+  local root="$1" camel="$2" lib_target="${3:-UnsorryLibrary}" do_audit="${4:-1}"
+  # ``library`` is relative to <root>: the repo root for an organic goal, the suite
+  # _verify project for a benchmark goal. The repo axiom_audit exe is absent in a suite
+  # package, so do_audit=0 there — Gate A's gate-a-benchmark leg (--wfail + forbidden
+  # tokens) verifies at the suite pin instead (ADR-099 §2).
   ( cd "$root" \
-    && lake build UnsorryLibrary --wfail \
-    && lake exe axiom_audit "Unsorry.$camel" \
+    && lake build "$lib_target" --wfail \
+    && { [ "$do_audit" != 1 ] || lake exe axiom_audit "Unsorry.$camel"; } \
     && python3 -m tools.gate_a.check_library_options library ) >/dev/null 2>&1
 }
 
@@ -2525,18 +3158,35 @@ run_proof() {
   PROOF_SOLVE_SECONDS=""
   PROOF_LAST_ERROR=""
   PROOF_LESSONS_USED=""
+  INDEPENDENT_CHECK_VERDICT=""
   proof_started="$(date +%s)"
   name="$(py_helper lean-name "$prwt/goals/$goal.lean")" || return 1
   stmt="$(py_helper lean-stmt "$prwt/goals/$goal.lean")" || return 1
-  target="library/Unsorry/$camel.lean"
-  binding="library/Unsorry/${camel}Binding.lean"
+  # ADR-099 / SPEC-099-A §3: a benchmark goal proves at its SUITE's pin in the suite
+  # verifier context (targets/<suite>/_verify — a lake project pinned to the suite's
+  # toolchain+mathlib, already committed in this checkout), not the repo-wide pin.
+  # Organic goals leave every variable at its repo default (empty context), so their
+  # path below is byte-identical to before.
+  local lib_rel="library" lib_target="UnsorryLibrary" do_audit=1 build_dir="$prwt" sctx vdir
+  sctx="$(suite_context_for_goal "$goal" "$prwt")"
+  if [ -n "$sctx" ]; then
+    vdir="$(printf '%s' "$sctx" | cut -f3)"
+    lib_rel="$vdir/library"
+    lib_target="$(printf '%s' "$sctx" | cut -f4)"
+    do_audit=0
+    build_dir="$prwt/$vdir"
+    log "benchmark goal $goal → proving at the suite pin in $vdir (target $lib_target); repo axiom_audit skipped — Gate A's gate-a-benchmark leg verifies at the suite pin (ADR-099)"
+  fi
+  target="$lib_rel/Unsorry/$camel.lean"
+  binding="$lib_rel/Unsorry/${camel}Binding.lean"
   # The PR worktree is a fresh checkout with no .lake (it is gitignored), so
-  # the mathlib oleans are absent and `lake build UnsorryLibrary --wfail` would
-  # otherwise recompile all of mathlib from source and blow the attempt budget
-  # (observed in phase1-run-001). Restore the prebuilt cache once, up front.
+  # the mathlib oleans are absent and `lake build … --wfail` would otherwise
+  # recompile all of mathlib from source and blow the attempt budget (observed in
+  # phase1-run-001). Restore the prebuilt cache once, up front, in the build dir
+  # (the suite _verify project for a benchmark goal — its own pin's cache).
   # Best-effort: a warm global cache makes this a ~20s no-op; on failure the
   # build still works, just slowly, so we warn rather than abort.
-  if ! ( cd "$prwt" && lake exe cache get ) >/dev/null 2>&1; then
+  if ! ( cd "$build_dir" && lake exe cache get ) >/dev/null 2>&1; then
     log "warning: 'lake exe cache get' failed in the prove worktree for $goal — verification may be slow"
   fi
   # cache get restores only *mathlib* oleans; the project's own UnsorryLibrary
@@ -2639,21 +3289,129 @@ Fix the module so both pass. Write the corrected $target."
     # theorem inhabits the GOAL's exact type. Built by prove_local_verify's
     # --wfail build below (and by Gate A in CI), so a proof of a weakened or
     # vacuous statement under the goal's name fails here, not just in review.
-    write_binding_module "$prwt" "$goal" "$camel" || { err="(could not emit binding obligation)"; continue; }
-    if prove_local_verify "$prwt" "$camel"; then
+    write_binding_module "$prwt" "$goal" "$camel" "$lib_rel" || { err="(could not emit binding obligation)"; continue; }
+    if prove_local_verify "$build_dir" "$camel" "$lib_target" "$do_audit"; then
+      # ADR-074/096 import-narrowing + kernel-diverse confirm are repo-pin-only
+      # best-effort/advisory passes; skip them for a benchmark goal (its module
+      # lives in the suite package, at the suite pin) — they never gate the proof.
+      if [ -z "$sctx" ]; then
+        minimize_proof_imports "$prwt" "$camel"   # ADR-074: best-effort, never fails the proof
+        independent_check_advisory "$prwt" "$camel"  # ADR-096: best-effort kernel-diverse confirm, never fails the proof
+      fi
       PROOF_SOLVE_SECONDS=$(( $(date +%s) - proof_started ))
       log "proof of $goal verified locally — statement bound (attempt $attempt)"
       return 0
     fi
     log "local verification of $goal failed (attempt $attempt)"
-    err="$( ( cd "$prwt" && lake build UnsorryLibrary --wfail \
-      && lake exe axiom_audit "Unsorry.$camel" ) 2>&1 | tail -n 40 )"
+    err="$( ( cd "$build_dir" && lake build "$lib_target" --wfail \
+      && { [ "$do_audit" != 1 ] || lake exe axiom_audit "Unsorry.$camel"; } ) 2>&1 | tail -n 40 )"
   done
   PROOF_SOLVE_SECONDS=$(( $(date +%s) - proof_started ))
   # ADR-024: the final attempt's verifier output becomes this run's lesson,
   # consumed by write_proof_run_record on the failed/decomposed outcome.
   PROOF_LAST_ERROR="$err"
   return 1
+}
+
+# ADR-074: after a proof verifies, try a deterministically narrower import set and
+# re-verify; on ANY failure restore the original file byte-for-byte. Best-effort by
+# design — narrowing can never reject a sound proof, it only shrinks the mathlib
+# closure that Gate A's build / kernel replay / axiom audit must load (~2x faster
+# audit when it applies, #2397). Gated by UNSORRY_MIN_IMPORTS (default 1; set 0 to
+# disable). tools.proof.min_imports prints the narrowed module (rc 0) or nothing
+# (rc 1 when there is no known narrowing for this proof).
+minimize_proof_imports() {
+  [ "${UNSORRY_MIN_IMPORTS:-1}" = "1" ] || return 0
+  local prwt="$1" camel="$2"
+  local rel="library/Unsorry/$camel.lean"
+  local target="$prwt/$rel"
+  [ -f "$target" ] || return 0
+  local narrowed bak
+  narrowed="$(mktemp)" || return 0
+  if ! ( cd "$prwt" && python3 -m tools.proof.min_imports "$rel" ) > "$narrowed" 2>/dev/null \
+     || [ ! -s "$narrowed" ]; then
+    rm -f "$narrowed"; return 0
+  fi
+  bak="$(mktemp)" || { rm -f "$narrowed"; return 0; }
+  cp "$target" "$bak"
+  cp "$narrowed" "$target"
+  if prove_local_verify "$prwt" "$camel" >/dev/null 2>&1; then
+    log "narrowed imports for $camel — re-verified (ADR-074)"
+  else
+    cp "$bak" "$target"
+    log "narrowed imports for $camel did not build — kept import Mathlib (ADR-074)"
+  fi
+  rm -f "$narrowed" "$bak"
+  return 0
+}
+
+# ADR-096 Phase 3a: advisory kernel-diverse independent check. Opt-in via
+# UNSORRY_INDEPENDENT_CHECK (default off), NON-GATING. After a proof verifies
+# locally, re-check it with an independent Lean kernel (nanoda) over a
+# declaration-scoped lean4export of the proved theorem — a second-kernel
+# confirmation. ADVISORY ONLY: it admits nothing and is strictly subordinate to
+# ADR-049's p=1 Lean gate (which still runs in CI regardless). It NEVER fails the
+# prove loop — if the tools (LEAN4EXPORT_BIN / NANODA_BIN) are absent or the check
+# errors, it logs and returns 0. A nanoda disagreement is surfaced as a warning,
+# never a block. Mirrors minimize_proof_imports's best-effort pattern.
+independent_check_advisory() {
+  env_truthy "${UNSORRY_INDEPENDENT_CHECK:-}" || return 0
+  local prwt="$1" camel="$2"
+  local l4e="${LEAN4EXPORT_BIN:-}" nan="${NANODA_BIN:-}"
+  if [ -z "$l4e" ] || [ -z "$nan" ] || [ ! -x "$nan" ]; then
+    log "independent-check: requested but lean4export/nanoda unavailable (set LEAN4EXPORT_BIN and an executable NANODA_BIN) — skipping (ADR-096)"
+    return 0
+  fi
+  local out
+  out="$( ( cd "$prwt" && python3 -m tools.independent_check \
+            --module "Unsorry.$camel" \
+            --lean4export-cmd "lake env $l4e" --nanoda-cmd "$nan" ) 2>&1 )" || true
+  [ -n "$out" ] && log "$out"
+  # Capture the one-line verdict (drop the "independent-check: <module> " prefix
+  # and any ::warning:: noise) so the proof commit can carry it to the PR.
+  local verdict
+  verdict="$(printf '%s\n' "$out" | sed -n 's/^independent-check: [^ ]* //p' | head -1)"
+  [ -n "$verdict" ] && INDEPENDENT_CHECK_VERDICT="$verdict"
+  return 0
+}
+
+# ADR-096: the verdict rides the proof commit as an `Independent-Check:` trailer
+# and the dispatcher surfaces it on the PR via independent_check_pr_note. A commit
+# WITHOUT the trailer yields an empty note (a normal proof shows nothing extra).
+test_independent_check_pr_note_roundtrip() {
+  local d; d="$(mktemp -d)" || return 1
+  ( git -C "$d" init -q \
+    && git -C "$d" -c user.email=t@t -c user.name=t commit -q --allow-empty \
+         -m "prove(g): foo by a" -m "Independent-Check: nanoda=ok decls=3965 target=✓ 0.4s" ) \
+    || { rm -rf "$d"; log "  setup failed"; return 1; }
+  local note
+  note="$(cd "$d" && independent_check_pr_note HEAD)"
+  case "$note" in
+    *"advisory, ADR-096"*"nanoda=ok decls=3965 target=✓"*) ;;
+    *) rm -rf "$d"; log "  trailer not surfaced: [$note]"; return 1 ;;
+  esac
+  # a plain prove commit (no trailer) → empty note
+  ( git -C "$d" -c user.email=t@t -c user.name=t commit -q --allow-empty -m "prove(g2): bar by a" )
+  note="$(cd "$d" && independent_check_pr_note HEAD)"
+  rm -rf "$d"
+  [ -z "$note" ] || { log "  expected empty note for a plain proof, got [$note]"; return 1; }
+  return 0
+}
+
+# ADR-096: the independent check is opt-in and never breaks proving. Off by
+# default → no-op exit 0; on but tools absent → skip (no python invoked) exit 0.
+test_independent_check_advisory_opt_in() {
+  local ran=0
+  python3() { ran=1; return 0; }  # tripwire: must NOT be invoked in either case
+  # default (unset) → no-op, returns 0, python untouched
+  ( unset UNSORRY_INDEPENDENT_CHECK; independent_check_advisory /tmp/x Foo ) \
+    || { log "  default-off should return 0"; unset -f python3; return 1; }
+  # on, but NANODA_BIN absent → skips gracefully, returns 0, python untouched
+  ( UNSORRY_INDEPENDENT_CHECK=1 LEAN4EXPORT_BIN='' NANODA_BIN='' independent_check_advisory /tmp/x Foo ) \
+    || { log "  on-but-tools-absent should return 0"; unset -f python3; return 1; }
+  [ "$ran" = 0 ] || { log "  python must not run without the tools present"; unset -f python3; return 1; }
+  unset -f python3
+  return 0
 }
 
 # ADR-011 / SPEC-011-A: write library/Unsorry/<Camel>Binding.lean — a kernel
@@ -2663,7 +3421,7 @@ Fix the module so both pass. Write the corrected $target."
 # insertion; a weaker/vacuous one does not). Built under --wfail, so the kernel
 # itself performs the defeq binding — no metaprogram, no name clash.
 write_binding_module() {
-  local prwt="$1" goal="$2" camel="$3" name ftype opens
+  local prwt="$1" goal="$2" camel="$3" lib_rel="${4:-library}" name ftype opens
   name="$(py_helper lean-name "$prwt/goals/$goal.lean")" || return 1
   ftype="$(py_helper lean-foralltype "$prwt/goals/$goal.lean")" || return 1
   # The goal's own `open` commands travel with the type (a statement written
@@ -2682,7 +3440,7 @@ write_binding_module() {
     # type-checking, not lints.
     printf 'set_option linter.unusedVariables false in\n'
     printf 'theorem %s_binding_check : %s := %s\n' "$name" "$ftype" "$name"
-  } > "$prwt/library/Unsorry/${camel}Binding.lean"
+  } > "$prwt/$lib_rel/Unsorry/${camel}Binding.lean"
 }
 
 # Persist one terminal proof-run fact in the same PR as its durable outcome.
@@ -2751,9 +3509,20 @@ check_in_proof() {
   name="$(py_helper lean-name "$prwt/goals/$goal.lean")" || return 1
   sha="$(py_helper lean-sha "$prwt/goals/$goal.lean")" || return 1
 
-  mkdir -p "$prwt/library/index" || return 1
+  # ADR-099 / SPEC-099-A §3: a benchmark proof lives in its suite's _verify package
+  # (kernel-verified at the suite pin), not the repo library — route the index +
+  # binding + staged tree accordingly. Organic goals stay byte-identical (empty sctx).
+  local lib_rel="library" stage_root="library" sctx vdir
+  sctx="$(suite_context_for_goal "$goal" "$prwt")"
+  if [ -n "$sctx" ]; then
+    vdir="$(printf '%s' "$sctx" | cut -f3)"
+    lib_rel="$vdir/library"
+    stage_root="$(printf '%s' "$vdir" | cut -d/ -f1)"  # "targets"
+  fi
+
+  mkdir -p "$prwt/$lib_rel/index" || return 1
   py_helper render-index "$sha" "$goal" "$name" "${provenance[@]}" \
-    > "$prwt/library/index/$sha.aisp" || return 1
+    > "$prwt/$lib_rel/index/$sha.aisp" || return 1
   write_proof_run_record "$prwt" "$goal" proved "$sha" || return 1
   py_helper rewrite-goal "$prwt/goals/$goal.aisp" proved "$sha" || return 1
   # ⊕ a merge reinforces the goal's pattern (+1 affinity, ADR-010); folds
@@ -2762,20 +3531,20 @@ check_in_proof() {
   # The self-check binding (run_proof) is not committed: Gate A REGENERATES the
   # binding obligation from the goal so a contributor cannot weaken or omit it
   # (ADR-011, SPEC-011-A). Remove it from the PR tree.
-  rm -f "$prwt/library/Unsorry/${camel}Binding.lean"
+  rm -f "$prwt/$lib_rel/Unsorry/${camel}Binding.lean"
 
   branch="$(git -C "$prwt" rev-parse --abbrev-ref HEAD)" || return 1
   title="prove($goal): $name by $AGENT_ID"
-  body="Automated Phase-1 proof of goal \`$goal\` by agent \`$AGENT_ID\` (ADR-006, ADR-007, SPEC-007-A). New library module \`library/Unsorry/$camel.lean\` re-states and proves \`$name\`; built with \`lake build UnsorryLibrary --wfail\` and audited with \`lake exe axiom_audit Unsorry.$camel\` (whitelist only). Index entry keyed by the content address of the goal's Lean statement."
+  body="Automated Phase-1 proof of goal \`$goal\` by agent \`$AGENT_ID\` (ADR-006, ADR-007, SPEC-007-A). New library module \`$lib_rel/Unsorry/$camel.lean\` re-states and proves \`$name\`; built with \`lake build --wfail\` at the suite/repo pin. Index entry keyed by the content address of the goal's Lean statement."
   if [ "$UNSORRY_SUBMIT_MODE" = queue ]; then
-    queue_pr_tree "$prwt" "$branch" "$title" library goals proof-runs || return 1
+    queue_pr_tree "$prwt" "$branch" "$title" "$stage_root" goals proof-runs || return 1
     emit_event proved "$goal"
     emit_event queued "$goal"
     log "queued verified proof branch $branch for $goal (sha ${sha:0:12})"
     return 0
   fi
 
-  submit_pr_tree "$prwt" "$branch" "$title" "$body" library goals proof-runs || return 1
+  submit_pr_tree "$prwt" "$branch" "$title" "$body" "$stage_root" goals proof-runs || return 1
   emit_event proved "$goal"
   emit_event pr-opened "$goal"
   log "opened auto-merge prove PR for $goal (sha ${sha:0:12})"
@@ -2808,6 +3577,14 @@ prove_goal() {
   git branch -q -D "$branch" >/dev/null 2>&1 || true
 
   release_claim "$goal" || true
+  # ADR-068: drop the fork-local goal lock taken at selection so the next prover
+  # (or this one) can re-surface the goal. Co-located with release_claim, this
+  # frees it on the work-path exits below (success, decompose, demote, infra/
+  # error); the EARLY `return 1` setup failures above (camel-name/branch/
+  # open_pr_worktree) are covered by the belt-and-braces release in the cycle
+  # loop (after prove_goal returns) — between them every exit is covered. No-op
+  # outside fork mode; release is idempotent and only removes a lock we own.
+  release_goal_lock "$goal"
   if [ "$ok" -eq 1 ]; then
     return 0
   fi
@@ -3127,6 +3904,120 @@ test_agent_id_generation() {
   py_helper is-id "$id" || { log "  '$id' violates the contract Id grammar"; return 1; }
 }
 
+test_claim_agent_identity_multi_runner() {
+  # Nest under the suite sandbox (auto-removed by the run_self_test EXIT trap) and
+  # never `rm -rf` a path ourselves — a bare `mktemp -d` + manual cleanup here was
+  # the #3140 agent-lint regression on Linux CI.
+  local d live dead
+  d="$(mktemp -d "$SESSION_TMP/multirun.XXXXXX")" || return 1
+  # free identity -> base id is taken
+  AGENT_ID=""; claim_agent_identity "$d" "host-aa11"
+  [ "$AGENT_ID" = "host-aa11" ] || { log "  free id not taken: '$AGENT_ID'"; return 1; }
+  # a LIVE sibling holding the id -> caller must fork a distinct suffixed id
+  sleep 30 & live=$!
+  mkdir -p "$d/agent-main-host-bb22.lock"; printf '%s\n' "$live" > "$d/agent-main-host-bb22.lock/pid"
+  AGENT_ID=""; claim_agent_identity "$d" "host-bb22"
+  kill "$live" 2>/dev/null; wait "$live" 2>/dev/null
+  case "$AGENT_ID" in
+    host-bb22) log "  live collision was NOT forked"; return 1 ;;
+    host-bb22-*) : ;;
+    *) log "  forked id malformed: '$AGENT_ID'"; return 1 ;;
+  esac
+  # a STALE lock (dead owner) -> base id reclaimed
+  sleep 30 & dead=$!; kill "$dead" 2>/dev/null; wait "$dead" 2>/dev/null
+  mkdir -p "$d/agent-main-host-cc33.lock"; printf '%s\n' "$dead" > "$d/agent-main-host-cc33.lock/pid"
+  AGENT_ID=""; claim_agent_identity "$d" "host-cc33"
+  [ "$AGENT_ID" = "host-cc33" ] || { log "  stale lock not reclaimed: '$AGENT_ID'"; return 1; }
+}
+
+test_fork_goal_lock() {
+  # ADR-068 fork-local goal lock. Hermetic: temp dirs + a real backgrounded PID
+  # for liveness, no network/lake/claude. Nest under the suite sandbox (the
+  # run_self_test EXIT trap removes it) — never rm -rf a path of our own (the
+  # #3140 agent-lint regression). FORK_MODE drives the lock on; outside it both
+  # helpers are no-ops, so the canonical claims path is untouched.
+  local FORK_MODE=1 UNSORRY_GOAL_LOCK_DIR live
+  UNSORRY_GOAL_LOCK_DIR="$(mktemp -d "$SESSION_TMP/goallock.XXXXXX")" || return 1
+
+  # The owner is recorded as "<pid> <starttime>" (PID-reuse hardening), so assert
+  # on the leading PID field, not the whole token.
+  local pidfield
+  # free goal -> acquired, owner pid recorded.
+  acquire_goal_lock g-free || { log "  free goal was not acquired"; return 1; }
+  [ -d "$UNSORRY_GOAL_LOCK_DIR/goal-g-free.lock" ] \
+    || { log "  acquire did not create the lock dir"; return 1; }
+  pidfield="$(cut -d' ' -f1 "$UNSORRY_GOAL_LOCK_DIR/goal-g-free.lock/pid" 2>/dev/null)"
+  [ "$pidfield" = "$$" ] || { log "  lock pid is not ours"; return 1; }
+  # re-acquiring our own lock is idempotent (success).
+  acquire_goal_lock g-free || { log "  re-acquire of own lock failed"; return 1; }
+
+  # a LIVE sibling holding the goal -> we must skip (rc 1) and not touch the lock.
+  # Fixture the token exactly as acquire would (pid + matching start-time).
+  sleep 30 & live=$!
+  mkdir -p "$UNSORRY_GOAL_LOCK_DIR/goal-g-busy.lock"
+  goal_lock_token "$live" > "$UNSORRY_GOAL_LOCK_DIR/goal-g-busy.lock/pid"
+  if acquire_goal_lock g-busy; then
+    kill "$live" 2>/dev/null; wait "$live" 2>/dev/null
+    log "  live-owner collision was NOT skipped"; return 1
+  fi
+  pidfield="$(cut -d' ' -f1 "$UNSORRY_GOAL_LOCK_DIR/goal-g-busy.lock/pid" 2>/dev/null)"
+  [ "$pidfield" = "$live" ] \
+    || { kill "$live" 2>/dev/null; wait "$live" 2>/dev/null
+         log "  skip clobbered a live sibling's lock"; return 1; }
+
+  # PID-reuse defense: a live PID but a MISMATCHED start-time (the reboot-then-
+  # reuse scenario) must read as STALE and be reclaimed, not honoured as live.
+  mkdir -p "$UNSORRY_GOAL_LOCK_DIR/goal-g-reused.lock"
+  printf '%s 999\n' "$live" > "$UNSORRY_GOAL_LOCK_DIR/goal-g-reused.lock/pid"
+  acquire_goal_lock g-reused \
+    || { kill "$live" 2>/dev/null; wait "$live" 2>/dev/null
+         log "  reused-pid (start-time mismatch) lock not reclaimed"; return 1; }
+  pidfield="$(cut -d' ' -f1 "$UNSORRY_GOAL_LOCK_DIR/goal-g-reused.lock/pid" 2>/dev/null)"
+  [ "$pidfield" = "$$" ] \
+    || { kill "$live" 2>/dev/null; wait "$live" 2>/dev/null
+         log "  reused-pid lock not re-owned by us"; return 1; }
+  kill "$live" 2>/dev/null; wait "$live" 2>/dev/null
+
+  # a STALE lock (dead owner) -> reclaimed (rc 0, pid becomes ours).
+  local dead; sleep 30 & dead=$!; kill "$dead" 2>/dev/null; wait "$dead" 2>/dev/null
+  mkdir -p "$UNSORRY_GOAL_LOCK_DIR/goal-g-stale.lock"
+  printf '%s\n' "$dead" > "$UNSORRY_GOAL_LOCK_DIR/goal-g-stale.lock/pid"
+  acquire_goal_lock g-stale || { log "  stale lock not reclaimed"; return 1; }
+  pidfield="$(cut -d' ' -f1 "$UNSORRY_GOAL_LOCK_DIR/goal-g-stale.lock/pid" 2>/dev/null)"
+  [ "$pidfield" = "$$" ] || { log "  reclaimed lock pid is not ours"; return 1; }
+
+  # release frees our lock; a sibling's lock is never removed by our release.
+  release_goal_lock g-free
+  [ ! -e "$UNSORRY_GOAL_LOCK_DIR/goal-g-free.lock" ] \
+    || { log "  release did not remove our lock"; return 1; }
+  mkdir -p "$UNSORRY_GOAL_LOCK_DIR/goal-g-other.lock"
+  printf '%s\n' "999999" > "$UNSORRY_GOAL_LOCK_DIR/goal-g-other.lock/pid"
+  release_goal_lock g-other
+  [ -e "$UNSORRY_GOAL_LOCK_DIR/goal-g-other.lock" ] \
+    || { log "  release removed a lock we do not own"; return 1; }
+  # releasing a goal we never locked is a safe no-op (covers the early-return /
+  # loop-level belt-and-braces release for a goal whose lock was never taken).
+  release_goal_lock g-never || { log "  release of an unheld goal errored"; return 1; }
+
+  # outside fork mode both helpers are inert (canonical claims path untouched).
+  local FORK_MODE=0
+  acquire_goal_lock g-nofork || { log "  non-fork acquire returned failure"; return 1; }
+  [ ! -e "$UNSORRY_GOAL_LOCK_DIR/goal-g-nofork.lock" ] \
+    || { log "  non-fork acquire created a lock"; return 1; }
+}
+
+test_agent_id_host_matches() {
+  # generated shape, prefix == host -> local (0)
+  agent_id_host_matches "oma-2-a3f9" "oma-2" || { log "  local id judged foreign"; return 1; }
+  agent_id_host_matches "mac-158f" "mac"     || { log "  local id judged foreign (2)"; return 1; }
+  # generated shape, prefix != host -> foreign (1): the copied-config case
+  if agent_id_host_matches "mac-158f" "oma-2"; then log "  copied id judged local"; return 1; fi
+  if agent_id_host_matches "oma-2-a3f9" "mac"; then log "  copied id judged local (2)"; return 1; fi
+  # custom-shaped id (suffix not 4 hex) -> intentional, left alone (0)
+  agent_id_host_matches "myfleet-prod" "oma-2" || { log "  custom id judged foreign"; return 1; }
+  agent_id_host_matches "myfleet" "oma-2"      || { log "  hyphenless id judged foreign"; return 1; }
+}
+
 test_agent_id_validation() {
   local good bad
   for good in agent-alpha box-1a2b a0; do
@@ -3153,6 +4044,25 @@ test_solver_resolution() {
   unset -f gh
   [ "$SOLVER" = github-user ] \
     || { log "  authenticated GitHub solver was not resolved"; return 1; }
+}
+
+test_solver_credit_decision() {
+  local got
+  while IFS='|' read -r solver login ack want; do
+    [ -z "$want" ] && continue
+    got="$(solver_credit_decision "$solver" "$login" "$ack")"
+    [ "$got" = "$want" ] \
+      || { log "  credit(solver='$solver' login='$login' ack='$ack'): want $want got $got"; return 1; }
+  done <<'CASES'
+alice|alice||ok
+Alice|alice||ok
+alice|Alice||ok
+bob|alice||block
+bob|alice|1|ack
+bob|alice|yes|ack
+bob|||unknown
+CASES
+  return 0
 }
 
 test_git_identity_resolution() {
@@ -4881,6 +5791,32 @@ test_seed_library_cache() {
   return "$rc"
 }
 
+# ADR-099 / SPEC-099-A §3: a benchmark goal resolves to its suite's verifier context
+# (toolchain/mathlib/_verify/target); an organic goal resolves to empty so the prove
+# path keeps the repo pin. Exercises the run_proof / check_in_proof routing seam.
+test_suite_context_for_goal() {
+  local root rc=0 out
+  root="$(mktemp -d)"
+  mkdir -p "$root/targets/minif2f-v1"
+  {
+    printf '𝔸5.1.skeleton.minif2f-v1@2026-06-25\n'
+    printf 'γ≔unsorry.skeleton\n'
+    printf '⟦Μ:Manifest⟧{top≜minif2f-v1-suite;supplier≜acme;domain≜math;toolchain≜leanprover/lean4:v4.24.0;mathlib≜rev24}\n'
+    printf '⟦Σ:Subs⟧{sub₁≜⟨id≜minif2f-a,sha≜%s⟩}\n' "$(printf 'a%.0s' $(seq 64))"
+    printf '⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩\n'
+  } > "$root/targets/minif2f-v1/skeleton.aisp"
+  # a registered obligation → resolves to the suite verifier context
+  out="$(suite_context_for_goal "minif2f-a" "$root")"
+  case "$out" in
+    "leanprover/lean4:v4.24.0"$'\t'"rev24"$'\t'"targets/minif2f-v1/_verify"$'\t'"Minif2fV1") ;;
+    *) log "  benchmark goal context wrong: [$out]"; rc=1 ;;
+  esac
+  # an organic goal → empty (keeps the repo pin path)
+  [ -z "$(suite_context_for_goal "some-organic-goal" "$root")" ] || { log "  organic goal not empty"; rc=1; }
+  rm -rf "$root"
+  return "$rc"
+}
+
 test_open_pr_claim_guard() {
   local rc
   # ADR-017: an open prove PR for exactly this goal → skip it (rc 0). gh is
@@ -4935,6 +5871,52 @@ test_fork_pr_head_ref() {
   FORK_MODE=1 FORK_OWNER=alice
   got="$(fork_pr_head_ref prove/g/agent-x)"
   [ "$got" = "alice:prove/g/agent-x" ] || { log "  fork head: '$got'"; return 1; }
+  return 0
+}
+
+test_fork_shard() {
+  # ADR-076: deterministic, in range, default-on bad K.
+  local a b
+  a="$(fork_shard hello 8)"; b="$(fork_shard hello 8)"
+  [ "$a" = "$b" ] || { log "  fork_shard not deterministic ($a/$b)"; return 1; }
+  if [ "$a" -lt 0 ] || [ "$a" -ge 8 ]; then log "  fork_shard out of range: $a"; return 1; fi
+  ( UNSORRY_FORK_SHARDS=garbage; [ "$(fork_shard_count)" = 8 ] ) \
+    || { log "  bad K did not default to 8"; return 1; }
+  ( UNSORRY_FORK_SHARDS=0; [ "$(fork_shard_count)" = 8 ] ) \
+    || { log "  K=0 did not default to 8"; return 1; }
+  ( UNSORRY_FORK_SHARDS=4; [ "$(fork_shard_count)" = 4 ] ) \
+    || { log "  valid K not honoured"; return 1; }
+  return 0
+}
+
+test_shard_reorder() {
+  # In-shard goals come first (rank order preserved within each group), the rest
+  # after; with K=1 every goal is in-shard so order is unchanged; empty is safe.
+  local agent=agent-x k=8 mine out
+  mine="$(fork_shard "$agent" "$k")"
+  # Build a list with a known in-shard and out-of-shard goal so we can assert the
+  # partition without hardcoding cksum values.
+  local g list="" in_goal="" out_goal=""
+  for g in g1 g2 g3 g4 g5 g6 g7 g8 g9 g10; do
+    if [ "$(fork_shard "$g" "$k")" = "$mine" ]; then [ -z "$in_goal" ] && in_goal="$g"; \
+    else [ -z "$out_goal" ] && out_goal="$g"; fi
+    list="$list$g"$'\n'
+  done
+  if [ -z "$in_goal" ] || [ -z "$out_goal" ]; then
+    log "  fixture lacked both in- and out-of-shard goals"; return 1
+  fi
+  out="$(printf '%s' "$list" | shard_reorder "$agent" "$k")"
+  # Every in-shard goal must appear before every out-of-shard goal.
+  local in_pos out_pos
+  in_pos="$(printf '%s\n' "$out" | grep -nxF "$in_goal" | cut -d: -f1)"
+  out_pos="$(printf '%s\n' "$out" | grep -nxF "$out_goal" | cut -d: -f1)"
+  [ "$in_pos" -lt "$out_pos" ] || { log "  in-shard $in_goal ($in_pos) not before out $out_goal ($out_pos)"; return 1; }
+  # K=1 ⇒ no reorder (every goal in-shard, rank order intact).
+  out="$(printf 'a\nb\nc\n' | shard_reorder agent-x 1)"
+  [ "$out" = "$(printf 'a\nb\nc')" ] || { log "  K=1 changed order: '$out'"; return 1; }
+  # Empty input is safe.
+  out="$(printf '' | shard_reorder agent-x 8)"
+  [ -z "$out" ] || { log "  empty input produced output: '$out'"; return 1; }
   return 0
 }
 
@@ -5027,6 +6009,20 @@ test_submission_governor_reason() {
     log "  disabled thresholds still paused"
     return 1
   fi
+  # per-contributor in-flight cap (args 6,7)
+  got="$(submission_governor_reason 0 0 0 40 20 25 25)"
+  [ "$got" = "this agent holds 25 goals in flight >= cap 25" ] \
+    || { log "  in-flight cap mismatch: '$got'"; return 1; }
+  if submission_governor_reason 0 0 0 40 20 10 25 >/dev/null; then
+    log "  under in-flight cap still paused"; return 1
+  fi
+  # cap omitted (5-arg form) or unreadable count must not pause
+  if submission_governor_reason 0 0 0 40 20 >/dev/null; then
+    log "  omitted in-flight args paused"; return 1
+  fi
+  if submission_governor_reason 0 0 0 40 20 "" 25 >/dev/null; then
+    log "  unreadable in-flight count paused"; return 1
+  fi
 }
 
 test_submission_governor_allows_with_stubbed_gh() {
@@ -5037,6 +6033,10 @@ test_submission_governor_allows_with_stubbed_gh() {
   local UNSORRY_MAX_OPEN_PROVE_PRS=40
   local UNSORRY_MAX_GATE_A_IN_FLIGHT=20
   local UNSORRY_GOVERNOR_SCAN_LIMIT=200
+  # keep this test focused on the open-PR / Gate A thresholds: stub the
+  # per-contributor in-flight count to a benign value (its own logic is covered
+  # by test_submission_governor_reason).
+  count_agent_inflight() { echo 0; }
 
   gh() {
     case "$1 $2 $3" in
@@ -5068,7 +6068,31 @@ test_submission_governor_allows_with_stubbed_gh() {
 
   UNSORRY_SUBMISSION_GOVERNOR=0
   submission_governor_allows \
-    || { log "  disabled governor did not allow"; return 1; }
+    || { unset -f count_agent_inflight; log "  disabled governor did not allow"; return 1; }
+  unset -f count_agent_inflight
+}
+
+test_queued_branch_has_pr_quota_retryable() {
+  # ADR-109 un-strand: a quota-closed PR (over-author-quota) past the back-off
+  # must NOT block re-dispatch, but other closes / open / merged / fresh quota
+  # closes must. Drives the real jq via _blocking_pr_count on canned gh JSON.
+  local UNSORRY_QUOTA_RETRY_BACKOFF_S=0
+  gh() { printf '%s' '[{"state":"CLOSED","labels":[{"name":"over-author-quota"}],"closedAt":"2000-01-01T00:00:00Z"}]'; }
+  if queued_branch_has_pr b; then unset -f gh; log "  quota-closed past back-off should be retryable"; return 1; fi
+  gh() { printf '%s' '[{"state":"CLOSED","labels":[{"name":"swarm:prove"}],"closedAt":"2000-01-01T00:00:00Z"}]'; }
+  if ! queued_branch_has_pr b; then unset -f gh; log "  non-quota closed PR should block"; return 1; fi
+  gh() { printf '%s' '[{"state":"OPEN","labels":[],"closedAt":null}]'; }
+  if ! queued_branch_has_pr b; then unset -f gh; log "  open PR should block"; return 1; fi
+  gh() { printf '%s' '[{"state":"MERGED","labels":[],"closedAt":"2000-01-01T00:00:00Z"}]'; }
+  if ! queued_branch_has_pr b; then unset -f gh; log "  merged PR should block"; return 1; fi
+  # Within the back-off window, a quota close still blocks (anti-churn).
+  UNSORRY_QUOTA_RETRY_BACKOFF_S=999999999999
+  gh() { printf '%s' '[{"state":"CLOSED","labels":[{"name":"over-author-quota"}],"closedAt":"2000-01-01T00:00:00Z"}]'; }
+  if ! queued_branch_has_pr b; then unset -f gh; log "  quota-closed within back-off should block (anti-churn)"; return 1; fi
+  # No PRs at all → not blocking (free to dispatch).
+  gh() { printf '%s' '[]'; }
+  if queued_branch_has_pr b; then unset -f gh; log "  no PRs should not block"; return 1; fi
+  unset -f gh
 }
 
 test_queued_branch_claim_guard() {
@@ -5177,9 +6201,243 @@ test_dispatch_skips_taken_midpass() {
     || { log "  expected 0 dispatches (g1 taken mid-pass), got '$sent'"; return 1; }
 }
 
+test_dispatch_solver_fairness() {
+  # ADR-075: dispatch order is a per-solver round-robin (by agent-id token when a
+  # branch is not in the board), not lexical-by-goal, so a minority backlog is not
+  # starved behind a high-volume one. Five branches from token "big" (goals that
+  # sort first) and one from "small" (a goal that sorts last): with a dispatch
+  # limit of 2, the round-robin must still dispatch the lone "small" branch — under
+  # the old lexical order limit=2 would take two "big" goals and never reach it.
+  local ONCE=0 DRY_RUN=0 UNSORRY_DISPATCH_LIMIT=2 sent="" sent_lex="" rc
+  unset UNSORRY_FAIR_DISPATCH
+  fetch_queued_prove_branches() { return 0; }
+  fetch_main_ref() { return 0; }
+  queued_branch_refs() {
+    printf 'origin/queued/prove/abig1/big-1111\n'
+    printf 'origin/queued/prove/abig2/big-2222\n'
+    printf 'origin/queued/prove/abig3/big-3333\n'
+    printf 'origin/queued/prove/abig4/big-4444\n'
+    printf 'origin/queued/prove/abig5/big-5555\n'
+    printf 'origin/queued/prove/zsmall/small-9999\n'
+  }
+  goal_already_proved() { return 1; }
+  dispatch_open_pr_goals() { return 0; }
+  queued_branch_has_pr() { return 1; }
+  submission_governor_allows() { return 0; }
+  goal_taken_fresh() { return 1; }
+  dispatch_queued_proof_branch() { printf -v sent '%s%s\n' "$sent" "$1"; return 0; }
+  dispatch_queue
+  rc=$?
+  # Toggle off -> lexical fall-through: the same limit dispatches two "big" goals
+  # and never the "small" one, proving the round-robin is what surfaces it.
+  UNSORRY_FAIR_DISPATCH=0
+  dispatch_queued_proof_branch() { printf -v sent_lex '%s%s\n' "$sent_lex" "$1"; return 0; }
+  dispatch_queue
+  unset UNSORRY_FAIR_DISPATCH
+  unset -f fetch_queued_prove_branches fetch_main_ref queued_branch_refs \
+    goal_already_proved dispatch_open_pr_goals queued_branch_has_pr \
+    submission_governor_allows goal_taken_fresh dispatch_queued_proof_branch
+  [ "$rc" -eq 0 ] || { log "  dispatch_queue returned $rc"; return 1; }
+  printf '%s' "$sent" | grep -q '^queued/prove/zsmall/' \
+    || { log "  fair order must dispatch the starved 'small' branch within the limit, got '$sent'"; return 1; }
+  [ "$(printf '%s' "$sent" | grep -cv '^$')" -eq 2 ] \
+    || { log "  expected 2 dispatches under the limit, got '$sent'"; return 1; }
+  ! printf '%s' "$sent_lex" | grep -q '^queued/prove/zsmall/' \
+    || { log "  toggle off should fall back to lexical (no 'small' within limit), got '$sent_lex'"; return 1; }
+}
+
+test_fair_dispatch_order_survives_early_reader_close() {
+  # dispatch_queue stops reading fair_dispatch_order's output the moment it hits
+  # its dispatch limit or the submission governor pauses (agent.sh dispatch_queue),
+  # closing the pipe under the reordering python. The python must exit cleanly on
+  # the resulting EPIPE, NOT dump a BrokenPipeError traceback to stderr — that
+  # traceback reads as a crash in run.sh's logs even though dispatch succeeded.
+  # Feed far more refs than a pipe buffer can hold so the writer is still emitting
+  # when the reader closes, take exactly one line, and assert no traceback leaked.
+  # Command substitution waits for the whole pipeline, so the python has fully
+  # exited (and flushed its stderr) before we inspect errfile — no race.
+  local errfile first
+  errfile="$(mktemp)"
+  first="$(yes 'origin/queued/prove/gpipe/agent-x-0' | head -n 20000 \
+            | fair_dispatch_order 2>"$errfile" | head -n 1)" || true
+  if [ "$first" != 'origin/queued/prove/gpipe/agent-x-0' ]; then
+    log "  fair_dispatch_order did not emit the expected first ref, got '$first'"
+    rm -f "$errfile"; return 1
+  fi
+  if grep -qE 'BrokenPipeError|Traceback' "$errfile"; then
+    log "  fair_dispatch_order leaked a broken-pipe traceback on early reader close:"
+    log "    $(tr '\n' ' ' < "$errfile")"
+    rm -f "$errfile"; return 1
+  fi
+  rm -f "$errfile"
+}
+
+test_dispatch_open_batch_goals_parses_manifests() {
+  # ADR-107: dispatch_open_batch_goals extracts goals ONLY from open prove-batch(…)
+  # PRs' Batch-Goals: manifest. A regular prove PR (even one mentioning Batch-Goals)
+  # contributes nothing — the title prefix is the discriminator.
+  gh() {
+    printf '%s' '[{"title":"prove(solo): x","body":"Batch-Goals: solo"},{"title":"prove-batch(2): amortised","body":"intro\n\nBatch-Goals: ga gb\n\nfooter"}]'
+  }
+  local out
+  out="$(dispatch_open_batch_goals | sort | tr '\n' ' ')"
+  unset -f gh
+  [ "$out" = "ga gb " ] \
+    || { log "  expected 'ga gb' from the batch manifest only, got '$out'"; return 1; }
+}
+
+test_dispatch_batch_loop_multiple() {
+  # A1 (ADR-113): the batch loop keeps opening batches until one stops, so a
+  # homogeneous flood drains via batches rather than crowding the gate with
+  # 1-proof singletons.
+  local UNSORRY_BATCH_SIZE=8 UNSORRY_MAX_BATCHES_PER_PASS=8 calls=0
+  dispatch_batch_pass() { calls=$((calls + 1)); [ "$calls" -le 3 ] && BATCH_DISPATCHED=1 || BATCH_DISPATCHED=0; return 0; }
+  dispatch_batch_passes
+  unset -f dispatch_batch_pass
+  [ "$calls" -eq 4 ] || { log "  expected 4 calls (3 batches + 1 stop), got $calls"; return 1; }
+}
+
+test_dispatch_batch_loop_caps() {
+  # The runaway backstop caps batches per pass even if the gate never reports full.
+  local UNSORRY_BATCH_SIZE=8 UNSORRY_MAX_BATCHES_PER_PASS=2 calls=0
+  dispatch_batch_pass() { calls=$((calls + 1)); BATCH_DISPATCHED=1; return 0; }
+  dispatch_batch_passes
+  unset -f dispatch_batch_pass
+  [ "$calls" -eq 2 ] || { log "  expected cap of 2 calls, got $calls"; return 1; }
+}
+
+test_dispatch_batch_loop_disabled_at_size_one() {
+  # At the default batch size 1 the loop is a no-op (singleton path unchanged).
+  local UNSORRY_BATCH_SIZE=1 calls=0
+  dispatch_batch_pass() { calls=$((calls + 1)); BATCH_DISPATCHED=1; return 0; }
+  dispatch_batch_passes
+  unset -f dispatch_batch_pass
+  [ "$calls" -eq 0 ] || { log "  expected 0 calls at size 1, got $calls"; return 1; }
+}
+
+test_batch_dedup_skips_batched_goal() {
+  # ADR-107: with batching ON, dispatch_queue dedups its singletons against goals
+  # already in an open batch PR, so no redundant singleton opens for a batched goal.
+  local ONCE=0 DRY_RUN=0 UNSORRY_DISPATCH_LIMIT=10 UNSORRY_BATCH_SIZE=2 sent="" rc
+  fetch_queued_prove_branches() { return 0; }
+  fetch_main_ref() { return 0; }
+  queued_branch_refs() {
+    printf 'origin/queued/prove/gb/agent-a-1111\n'
+    printf 'origin/queued/prove/g1/agent-b-2222\n'
+  }
+  goal_already_proved() { return 1; }
+  dispatch_open_pr_goals() { return 0; }
+  dispatch_open_batch_goals() { printf 'gb\n'; }   # gb is already in an open batch PR
+  queued_branch_has_pr() { return 1; }
+  submission_governor_allows() { return 0; }
+  goal_taken_fresh() { return 1; }
+  dispatch_queued_proof_branch() { printf -v sent '%s%s\n' "$sent" "$1"; return 0; }
+  dispatch_queue
+  rc=$?
+  unset -f fetch_queued_prove_branches fetch_main_ref queued_branch_refs \
+    goal_already_proved dispatch_open_pr_goals dispatch_open_batch_goals \
+    queued_branch_has_pr submission_governor_allows goal_taken_fresh \
+    dispatch_queued_proof_branch
+  [ "$rc" -eq 0 ] || { log "  dispatch_queue returned $rc"; return 1; }
+  printf '%s' "$sent" | grep -q '^queued/prove/g1/' \
+    || { log "  expected g1 dispatched, got '$sent'"; return 1; }
+  ! printf '%s' "$sent" | grep -q '^queued/prove/gb/' \
+    || { log "  gb is in an open batch — must NOT singleton-dispatch, got '$sent'"; return 1; }
+}
+
+test_batch_dedup_inactive_at_size_one() {
+  # ADR-107: at the default UNSORRY_BATCH_SIZE=1 the batch-dedup augmentation is NOT
+  # consulted — dispatch_queue is byte-for-byte its old self (gb dispatches as a
+  # normal singleton). A file marker (survives the command-subst subshell) proves
+  # dispatch_open_batch_goals is never called.
+  local ONCE=0 DRY_RUN=0 UNSORRY_DISPATCH_LIMIT=10 UNSORRY_BATCH_SIZE=1 sent="" rc marker
+  marker="$(mktemp)"
+  fetch_queued_prove_branches() { return 0; }
+  fetch_main_ref() { return 0; }
+  queued_branch_refs() { printf 'origin/queued/prove/gb/agent-a-1111\n'; }
+  goal_already_proved() { return 1; }
+  dispatch_open_pr_goals() { return 0; }
+  dispatch_open_batch_goals() { echo called >> "$marker"; printf 'gb\n'; }
+  queued_branch_has_pr() { return 1; }
+  submission_governor_allows() { return 0; }
+  goal_taken_fresh() { return 1; }
+  dispatch_queued_proof_branch() { printf -v sent '%s%s\n' "$sent" "$1"; return 0; }
+  dispatch_queue
+  rc=$?
+  unset -f fetch_queued_prove_branches fetch_main_ref queued_branch_refs \
+    goal_already_proved dispatch_open_pr_goals dispatch_open_batch_goals \
+    queued_branch_has_pr submission_governor_allows goal_taken_fresh \
+    dispatch_queued_proof_branch
+  local called_size; called_size="$(wc -c < "$marker")"; rm -f "$marker"
+  [ "$rc" -eq 0 ] || { log "  dispatch_queue returned $rc"; return 1; }
+  [ "$called_size" -eq 0 ] \
+    || { log "  dispatch_open_batch_goals must not run at UNSORRY_BATCH_SIZE=1"; return 1; }
+  printf '%s' "$sent" | grep -q '^queued/prove/gb/' \
+    || { log "  gb must dispatch as a normal singleton at size 1, got '$sent'"; return 1; }
+}
+
+test_batch_build_worktree_shallow_safe() {
+  # ADR-107: batch assembly must work on the dispatcher's SHALLOW checkout even when
+  # a queued branch MERGED main in (tip is a merge commit — the real shape that broke
+  # cherry-pick by replaying main's whole delta), and must NOT resurrect files main
+  # has since deleted/archived. build_batch_worktree lays down each branch's NET proof
+  # files (batch_net_files, the GitHub compare API in prod) checked out from the branch
+  # tree. Stub batch_net_files to the proof's file; use a file:// origin so --depth is
+  # honoured (it is ignored for local-path clones).
+  local tmp ci rc=0 resurrected=1 hasproof=0 hascommit=0 succ=""
+  tmp="$(mktemp -d)"
+  (
+    set -e
+    cd "$tmp"
+    git init -q --bare origin.git
+    git clone -q origin.git w
+    cd w
+    git config user.email t@t; git config user.name t
+    mkdir -p library/Unsorry goals
+    echo old > library/Unsorry/Archived.lean
+    echo statement > goals/gx.lean
+    git add -A; git commit -qm base; git push -q origin HEAD:main
+    git checkout -q -b queued/prove/gx/agent-x
+    echo proof > library/Unsorry/Gx.lean
+    git add -A; git commit -qm "prove(gx): gx by agent-x"
+    git checkout -q main
+    git rm -q library/Unsorry/Archived.lean
+    echo m1 > m1; git add -A; git commit -qm "archive Archived.lean + move main"; git push -q origin main
+    git checkout -q queued/prove/gx/agent-x
+    git merge -q --no-edit main         # the solver merges updated main in (merge-commit tip)
+    git push -q origin queued/prove/gx/agent-x
+  ) || { log "  fixture build failed"; rm -rf "$tmp"; return 1; }
+  ci="$tmp/ci"
+  if ! git clone -q --depth=1 --branch main "file://$tmp/origin.git" "$ci" 2>/dev/null; then
+    log "  shallow clone failed"; rm -rf "$tmp"; return 1
+  fi
+  test -f "$ci/.git/shallow" || { log "  test clone was not shallow — invalid fixture"; rm -rf "$tmp"; return 1; }
+  git -C "$ci" fetch -q --depth=1 origin '+refs/heads/queued/prove/*:refs/remotes/origin/queued/prove/*'
+  batch_net_files() { printf 'library/Unsorry/Gx.lean\n'; }   # stub the compare-API resolver
+  # Run with NO ambient git identity (GIT_CONFIG_*=/dev/null + no local user.* on the
+  # clone) — exactly the Actions-runner state — so this fails unless build_batch_worktree
+  # sets its own committer identity for the batch commit.
+  succ="$( cd "$ci" && GIT_CONFIG_GLOBAL=/dev/null GIT_CONFIG_SYSTEM=/dev/null \
+           build_batch_worktree ".bwt" "batch/test" queued/prove/gx/agent-x )" || rc=$?
+  unset -f batch_net_files
+  [ -f "$ci/.bwt/library/Unsorry/Gx.lean" ] && hasproof=1
+  [ -f "$ci/.bwt/library/Unsorry/Archived.lean" ] || resurrected=0
+  ( cd "$ci/.bwt" 2>/dev/null && git log -1 --format=%s | grep -q '^prove(gx):' ) && hascommit=1
+  git -C "$ci" worktree remove --force .bwt >/dev/null 2>&1 || true
+  rm -rf "$tmp"
+  [ "$rc" -eq 0 ] || { log "  build_batch_worktree failed on a shallow merge-commit branch (rc=$rc)"; return 1; }
+  [ "$succ" = gx ] || { log "  expected succeeded-goals stdout 'gx', got '$succ'"; return 1; }
+  [ "$hasproof" -eq 1 ] || { log "  proof Gx.lean missing from the assembled batch"; return 1; }
+  [ "$hascommit" -eq 1 ] || { log "  expected a prove(gx): constituent commit (for leaderboard merge_times)"; return 1; }
+  [ "$resurrected" -eq 0 ] || { log "  UNSOUND: deleted Archived.lean was resurrected by the batch assembly"; return 1; }
+}
+
 run_self_tests() {
   local tests=(
     test_agent_id_generation
+    test_agent_id_host_matches
+    test_claim_agent_identity_multi_runner
+    test_fork_goal_lock
     test_agent_id_validation
     test_solver_resolution
     test_git_identity_resolution
@@ -5189,6 +6447,7 @@ run_self_tests() {
     test_sweep_detection
     test_goal_rewrite
     test_seed_library_cache
+    test_suite_context_for_goal
     test_convergence_rewrite
     test_record_validation
     test_require_main_checkout
@@ -5196,6 +6455,7 @@ run_self_tests() {
     test_fetch_retry_delay
     test_git_fetch_retry
     test_harness_is_stale
+    test_solver_credit_decision
     test_relocate_into_worktree_noop
     test_require_main_checkout_isolated
     test_ensure_agent_worktree
@@ -5246,17 +6506,31 @@ run_self_tests() {
     test_open_pr_claim_guard
     test_parse_github_nwo
     test_fork_pr_head_ref
+    test_fork_shard
+    test_shard_reorder
     test_detect_fork_mode
     test_fork_claimless
     test_fork_open_pr_dedup_targets_upstream
     test_submission_governor_reason
     test_submission_governor_allows_with_stubbed_gh
+    test_queued_branch_has_pr_quota_retryable
     test_queued_branch_claim_guard
     test_dispatch_goal_dedup
     test_dispatch_skips_taken_midpass
+    test_dispatch_solver_fairness
+    test_fair_dispatch_order_survives_early_reader_close
+    test_dispatch_open_batch_goals_parses_manifests
+    test_dispatch_batch_loop_multiple
+    test_dispatch_batch_loop_caps
+    test_dispatch_batch_loop_disabled_at_size_one
+    test_batch_dedup_skips_batched_goal
+    test_batch_dedup_inactive_at_size_one
+    test_batch_build_worktree_shallow_safe
     test_demote_open_prove_records_telemetry_only
     test_floored_recompose_noop_records_telemetry_only
     test_render_decomp_gateb
+    test_independent_check_advisory_opt_in
+    test_independent_check_pr_note_roundtrip
   )
   local failures=0 t
   for t in "${tests[@]}"; do
@@ -5292,6 +6566,10 @@ PROOF_MODEL_USED=""
 PROOF_EFFORT_USED=""
 PROOF_ATTEMPTS_USED=""
 PROOF_SOLVE_SECONDS=""
+# ADR-096: the advisory independent-check verdict for the current proof (empty
+# when the check did not run). Set by independent_check_advisory, attached as a
+# commit trailer on the proof commit so the dispatcher can surface it on the PR.
+INDEPENDENT_CHECK_VERDICT=""
 
 # ADR-068 fork-native contribution mode. A contributor with no write access to
 # the canonical upstream runs the prover from a fork: it proves CLAIMLESS (no
@@ -5402,13 +6680,14 @@ select_prove_candidates() {
   # An explicit --goal is an override of auto-selection: pass it as --force so a
   # named-but-sub-viable goal is still surfaced (ids are space-free, validated
   # by is-id, so the unquoted expansion splits into exactly two args).
+  # ADR-076: fork mode shard-reorders the ranked list (advisory; cat otherwise).
   while IFS= read -r cand; do
     [ -n "$cand" ] || continue
     goal_in_scope "$cand" || continue
     [ -n "${HANDLED[$cand]:-}" ] && continue
     printf '%s\n' "$cand"
   done < <(py_helper prove-candidates goals "$CLAIMS_WT/claims" library "$AGENT_ID" "" \
-             ${GOAL_FILTER:+--force "$GOAL_FILTER"})
+             ${GOAL_FILTER:+--force "$GOAL_FILTER"}) | fork_maybe_shard
 }
 
 # Local smoke has no claims or coordination. Reuse the production prove ranking
@@ -5457,7 +6736,7 @@ select_recovery_candidates() {
     goal_in_scope "$cand" || continue
     [ -n "${HANDLED[$cand]:-}" ] && continue
     printf '%s\n' "$cand"
-  done < <(py_helper recovery-candidates goals "$CLAIMS_WT/claims" library "$AGENT_ID")
+  done < <(py_helper recovery-candidates goals "$CLAIMS_WT/claims" library "$AGENT_ID") | fork_maybe_shard
 }
 
 # Walk a newline-separated candidate list (highest priority first), skipping
@@ -5479,10 +6758,21 @@ claim_from_pool() {
       log "skipping $cand — a queued prove branch is waiting for dispatch"
       continue
     fi
+    # ADR-068 fork-local goal lock: in fork mode claim_goal is a claimless no-op,
+    # so a mkdir-lock on a per-machine path is the only dedup between co-located
+    # provers. Skip past any goal a LIVE sibling already locked (no-op otherwise),
+    # mirroring the "in flight" skips above. Released by prove_goal on every exit.
+    if [ "$PROVE" -eq 1 ] && ! acquire_goal_lock "$cand"; then
+      log "skipping $cand — locked by a co-located fork prover (ADR-068)"
+      continue
+    fi
     if claim_goal "$cand"; then
       CLAIMED_GOAL="$cand"
       return 0
     fi
+    # Claim race lost (non-fork path only — claim_goal cannot fail in fork mode):
+    # drop the goal lock we just took so it does not strand this candidate.
+    release_goal_lock "$cand"
   done <<< "$pool"
   return 0
 }
@@ -5521,6 +6811,8 @@ main() {
     UNSORRY_MAX_GATE_A_IN_FLIGHT="${UNSORRY_MAX_GATE_A_IN_FLIGHT:-8}"
     UNSORRY_GOVERNOR_SCAN_LIMIT="${UNSORRY_GOVERNOR_SCAN_LIMIT:-200}"
     UNSORRY_DISPATCH_LIMIT="${UNSORRY_DISPATCH_LIMIT:-1}"
+    UNSORRY_BATCH_SIZE="${UNSORRY_BATCH_SIZE:-1}"
+    UNSORRY_MAX_BATCHES_PER_PASS="${UNSORRY_MAX_BATCHES_PER_PASS:-8}"
     UNSORRY_GOVERNOR_WAIT="${UNSORRY_GOVERNOR_WAIT:-300}"
     case "$UNSORRY_SUBMISSION_GOVERNOR" in
       0|1) ;;
@@ -5530,9 +6822,16 @@ main() {
     validate_integer_knob UNSORRY_MAX_GATE_A_IN_FLIGHT "$UNSORRY_MAX_GATE_A_IN_FLIGHT" 1
     validate_integer_knob UNSORRY_GOVERNOR_SCAN_LIMIT "$UNSORRY_GOVERNOR_SCAN_LIMIT"
     validate_integer_knob UNSORRY_DISPATCH_LIMIT "$UNSORRY_DISPATCH_LIMIT"
+    validate_integer_knob UNSORRY_BATCH_SIZE "$UNSORRY_BATCH_SIZE"
+    validate_integer_knob UNSORRY_MAX_BATCHES_PER_PASS "$UNSORRY_MAX_BATCHES_PER_PASS" 1
     validate_integer_knob UNSORRY_GOVERNOR_WAIT "$UNSORRY_GOVERNOR_WAIT"
     gh auth status >/dev/null 2>&1 || die_config "gh is not authenticated"
     while :; do
+      # ADR-107 + ADR-113: open as many batch PRs as the gate budget allows FIRST
+      # (A1/A2), then singleton-dispatch only the <2-batchable remainder. Each batch
+      # is one governor admission for K proofs; dispatch_queue dedups its singletons
+      # against open batches via dispatch_open_batch_goals.
+      dispatch_batch_passes
       dispatch_queue || exit 1
       [ "$ONCE" -eq 1 ] && exit 0
       [ "$UNSORRY_GOVERNOR_WAIT" -gt 0 ] || exit 0
@@ -5592,7 +6891,7 @@ main() {
     # launching a provider; retain the caller's remaining PATH entries.
     PATH="/opt/homebrew/bin:/usr/local/bin:$HOME/.elan/bin:$PATH"
     export PATH
-    require_cmd lake
+    ensure_lake || die_config "the Lean build tool 'lake' is required and could not be installed automatically"
     case "$UNSORRY_PROVIDER" in
       claude) require_cmd claude ;;
       codex) require_cmd codex ;;
@@ -5706,8 +7005,10 @@ main() {
     esac
     gh auth status >/dev/null 2>&1 || die_config "gh is not authenticated"
     [ "$PROVE" -eq 1 ] && resolve_solver
+    [ "$PROVE" -eq 1 ] && guard_solver_credit
     [ "$PROVE" -eq 1 ] && resolve_git_identity
-    [ "$PROVE" -eq 1 ] && require_cmd lake  # prove verify builds locally
+    # prove verify builds locally — install lake (elan) if it is missing
+    [ "$PROVE" -eq 1 ] && { ensure_lake || die_config "the Lean build tool 'lake' is required and could not be installed automatically"; }
   fi
 
   local effort_disp="${UNSORRY_EFFORT:-default}"
@@ -5813,6 +7114,16 @@ main() {
     if [ "$PROVE" -eq 1 ]; then
       prc=0
       prove_goal "$goal" || prc=$?
+      # ADR-068: release the fork-local goal lock here, in the loop, so it is
+      # dropped for EVERY prove_goal return — including the early `return 1`
+      # setup failures (camel-name, branch, open_pr_worktree) that exit before
+      # prove_goal's own release_claim/release_goal_lock line. Without this a
+      # transient worktree-add failure would strand the lock for the whole life
+      # of this (still-live) prover, blocking every co-located sibling off the
+      # goal — the inverse of the dedup this fix exists to provide. Belt-and-
+      # braced with the in-prove_goal release, mirroring how the translate arm
+      # also release_claim's at loop level; release_goal_lock is idempotent.
+      release_goal_lock "$goal"
       if [ "$prc" -eq 2 ]; then
         # ADR-016: the CLI cannot run (quota, auth, network). Every further
         # cycle would fail identically and poison the queue — stop cleanly.

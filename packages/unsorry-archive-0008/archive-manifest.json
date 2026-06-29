@@ -1,0 +1,179 @@
+{
+  "block_id": "unsorry-archive-0008",
+  "target_size": 40,
+  "proof_count": 40,
+  "status": "frozen",
+  "source_commit": "bd6e826771a24226e999855dd45238988eb6eda5",
+  "validation_commit": null,
+  "pins": {
+    "lean_toolchain": "leanprover/lean4:v4.30.0",
+    "mathlib": "v4.30.0"
+  },
+  "notes": [
+    "ADR-041 proof archive block 0008.",
+    "Whole decomposition trees + standalone proved goals only (invariant A).",
+    "Active goal records remain as archived metadata pointing at this package."
+  ],
+  "goals": [
+    {
+      "goal": "realization-determines-counts",
+      "module": "Unsorry.RealizationDeterminesCounts"
+    },
+    {
+      "goal": "dvd-thirtytwo-odd-pow-eight-sub-one",
+      "module": "Unsorry.DvdThirtytwoOddPowEightSubOne"
+    },
+    {
+      "goal": "fib-prod-cross-shift-nat-int",
+      "module": "Unsorry.FibProdCrossShiftNatInt"
+    },
+    {
+      "goal": "gcd-5n3-7n4-eq-one",
+      "module": "Unsorry.Gcd5n37n4EqOne"
+    },
+    {
+      "goal": "gcd-6n5-4n3-eq-one",
+      "module": "Unsorry.Gcd6n54n3EqOne"
+    },
+    {
+      "goal": "gcd-6n5-6n11-eq-one",
+      "module": "Unsorry.Gcd6n56n11EqOne"
+    },
+    {
+      "goal": "gcd-factorial-succ-eq-factorial",
+      "module": "Unsorry.GcdFactorialSuccEqFactorial"
+    },
+    {
+      "goal": "gcd-fib-add-two-eq-gcd-fib-succ",
+      "module": "Unsorry.GcdFibAddTwoEqGcdFibSucc"
+    },
+    {
+      "goal": "gcd-n-add-six-dvd-six",
+      "module": "Unsorry.GcdNAddSixDvdSix"
+    },
+    {
+      "goal": "gcd-n-factorial-succ-eq-one",
+      "module": "Unsorry.GcdNFactorialSuccEqOne"
+    },
+    {
+      "goal": "gcd-n1-n7-dvd-six",
+      "module": "Unsorry.GcdN1N7DvdSix"
+    },
+    {
+      "goal": "gcd-n2-2n5-eq-one",
+      "module": "Unsorry.GcdN22n5EqOne"
+    },
+    {
+      "goal": "gcd-n2-n4-dvd-two",
+      "module": "Unsorry.GcdN2N4DvdTwo"
+    },
+    {
+      "goal": "gcd-n2-n6-dvd-four",
+      "module": "Unsorry.GcdN2N6DvdFour"
+    },
+    {
+      "goal": "gcd-n2-n8-dvd-six",
+      "module": "Unsorry.GcdN2N8DvdSix"
+    },
+    {
+      "goal": "gcd-n2p1-n2p3-dvd-two",
+      "module": "Unsorry.GcdN2p1N2p3DvdTwo"
+    },
+    {
+      "goal": "gcd-n3-2n7-eq-one",
+      "module": "Unsorry.GcdN32n7EqOne"
+    },
+    {
+      "goal": "gcd-n3p1-np1-eq-np1",
+      "module": "Unsorry.GcdN3p1Np1EqNp1"
+    },
+    {
+      "goal": "gcd-n4p1-n2p1-dvd-two",
+      "module": "Unsorry.GcdN4p1N2p1DvdTwo"
+    },
+    {
+      "goal": "gcd-np1-2np1-eq-one",
+      "module": "Unsorry.GcdNp12np1EqOne"
+    },
+    {
+      "goal": "gcd-np1-n2p1-dvd-two",
+      "module": "Unsorry.GcdNp1N2p1DvdTwo"
+    },
+    {
+      "goal": "gcd-nsq1-n1-dvd-two",
+      "module": "Unsorry.GcdNsq1N1DvdTwo"
+    },
+    {
+      "goal": "gcd-nsq1-nsq3-dvd-two",
+      "module": "Unsorry.GcdNsq1Nsq3DvdTwo"
+    },
+    {
+      "goal": "gcd-quad-factored-n1-eq-n1",
+      "module": "Unsorry.GcdQuadFactoredN1EqN1"
+    },
+    {
+      "goal": "gcd-sq-n-sq-n-one",
+      "module": "Unsorry.GcdSqNSqNOne"
+    },
+    {
+      "goal": "gcd-three-pow-succ-three-pow-add-one",
+      "module": "Unsorry.GcdThreePowSuccThreePowAddOne"
+    },
+    {
+      "goal": "gcd-threen-n7-dvd-twentyone",
+      "module": "Unsorry.GcdThreenN7DvdTwentyone"
+    },
+    {
+      "goal": "gcd-two-pow-add-one-sub-one-dvd-two",
+      "module": "Unsorry.GcdTwoPowAddOneSubOneDvdTwo"
+    },
+    {
+      "goal": "gcd-twon-n5-dvd-ten",
+      "module": "Unsorry.GcdTwonN5DvdTen"
+    },
+    {
+      "goal": "lucas-succ-add-lucas-pred-eq-five-mul-fib",
+      "module": "Unsorry.LucasSuccAddLucasPredEqFiveMulFib"
+    },
+    {
+      "goal": "ninth-power-mod-nineteen-mem",
+      "module": "Unsorry.NinthPowerModNineteenMem"
+    },
+    {
+      "goal": "pair-sum-sq-ge-three-abc-sum",
+      "module": "Unsorry.PairSumSqGeThreeAbcSum"
+    },
+    {
+      "goal": "pairwise-product-sum-sq-ge-three-abc-sum",
+      "module": "Unsorry.PairwiseProductSumSqGeThreeAbcSum"
+    },
+    {
+      "goal": "pell-brahmagupta-composition-generic-d",
+      "module": "Unsorry.PellBrahmaguptaCompositionGenericD"
+    },
+    {
+      "goal": "pell-d10-fundamental-ladder-step-preserves",
+      "module": "Unsorry.PellD10FundamentalLadderStepPreserves"
+    },
+    {
+      "goal": "pell-d11-ladder-step-preserves",
+      "module": "Unsorry.PellD11LadderStepPreserves"
+    },
+    {
+      "goal": "pell-d12-ladder-step-preserves",
+      "module": "Unsorry.PellD12LadderStepPreserves"
+    },
+    {
+      "goal": "pell-d13-ladder-step-preserves",
+      "module": "Unsorry.PellD13LadderStepPreserves"
+    },
+    {
+      "goal": "pell-d14-ladder-step-preserves",
+      "module": "Unsorry.PellD14LadderStepPreserves"
+    },
+    {
+      "goal": "pell-d15-ladder-step-preserves",
+      "module": "Unsorry.PellD15LadderStepPreserves"
+    }
+  ]
+}
