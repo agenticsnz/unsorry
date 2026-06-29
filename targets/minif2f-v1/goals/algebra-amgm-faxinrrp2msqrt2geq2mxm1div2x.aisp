@@ -1,0 +1,20 @@
+𝔸5.1.goal.algebra-amgm-faxinrrp2msqrt2geq2mxm1div2x@2026-06-24
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜algebra-amgm-faxinrrp2msqrt2geq2mxm1div2x
+  phase≜prove
+  status≜open
+  difficulty≜4
+}
+⟦Σ:Source⟧{
+  src≜backlog/algebra-amgm-faxinrrp2msqrt2geq2mxm1div2x.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/algebra-amgm-faxinrrp2msqrt2geq2mxm1div2x.lean
+  sha≜∅
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -1,0 +1,20 @@
+𝔸5.1.goal.gpow-sum-seven-pow-ten@2026-06-19
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gpow-sum-seven-pow-ten
+  phase≜prove
+  status≜archived
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜packages/unsorry-archive-0089/backlog/gpow-sum-seven-pow-ten.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜packages/unsorry-archive-0089/goals/gpow-sum-seven-pow-ten.lean
+  sha≜437e64b89939ba7e1c53ece12c6b4dab360abc2c1912114227aa3c43c2076c78
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

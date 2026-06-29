@@ -1,8 +1,0 @@
-𝔸5.1.lemma.9704ec30efec@2026-06-17
-γ≔unsorry.lemma.index
-⟦Ω:Lemma⟧{sha≜9704ec30efec1708e8db3d94c5b5182c1110e5f9cfdda1db042e1de95699c8ae; goal≜sum-oblong-eq; name≜sum_oblong_eq}
-⟦Σ:Source⟧{src≜goals/sum-oblong-eq.lean}
-⟦Γ:Tags⟧{tags≜⟨⟩}
-⟦Λ:Meta⟧{use≜0; aff≜0}
-⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜claude; model≜template-sum-induction; attempts≜1}
-⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

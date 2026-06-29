@@ -1,0 +1,155 @@
+{
+  "block_id": "unsorry-archive-0047",
+  "target_size": 40,
+  "proof_count": 34,
+  "status": "frozen",
+  "source_commit": "d0065725a1d4e3f3b8314f535dd0571a2bc34c9f",
+  "validation_commit": null,
+  "pins": {
+    "lean_toolchain": "leanprover/lean4:v4.30.0",
+    "mathlib": "v4.30.0"
+  },
+  "notes": [
+    "ADR-041 proof archive block 0047.",
+    "Whole decomposition trees + standalone proved goals only (invariant A).",
+    "Active goal records remain as archived metadata pointing at this package."
+  ],
+  "goals": [
+    {
+      "goal": "gpow-sum-two-pow-two",
+      "module": "Unsorry.GpowSumTwoPowTwo"
+    },
+    {
+      "goal": "gpow-sum-two-pow-three",
+      "module": "Unsorry.GpowSumTwoPowThree"
+    },
+    {
+      "goal": "gpow-sum-two-pow-four",
+      "module": "Unsorry.GpowSumTwoPowFour"
+    },
+    {
+      "goal": "gpow-sum-two-pow-five",
+      "module": "Unsorry.GpowSumTwoPowFive"
+    },
+    {
+      "goal": "gpow-sum-two-pow-six",
+      "module": "Unsorry.GpowSumTwoPowSix"
+    },
+    {
+      "goal": "gpow-sum-two-pow-seven",
+      "module": "Unsorry.GpowSumTwoPowSeven"
+    },
+    {
+      "goal": "gpow-sum-two-pow-eight",
+      "module": "Unsorry.GpowSumTwoPowEight"
+    },
+    {
+      "goal": "gpow-sum-two-pow-nine",
+      "module": "Unsorry.GpowSumTwoPowNine"
+    },
+    {
+      "goal": "gpow-sum-three-pow-two",
+      "module": "Unsorry.GpowSumThreePowTwo"
+    },
+    {
+      "goal": "gpow-sum-three-pow-three",
+      "module": "Unsorry.GpowSumThreePowThree"
+    },
+    {
+      "goal": "gpow-sum-three-pow-four",
+      "module": "Unsorry.GpowSumThreePowFour"
+    },
+    {
+      "goal": "gpow-sum-three-pow-five",
+      "module": "Unsorry.GpowSumThreePowFive"
+    },
+    {
+      "goal": "gpow-sum-three-pow-six",
+      "module": "Unsorry.GpowSumThreePowSix"
+    },
+    {
+      "goal": "gpow-sum-three-pow-seven",
+      "module": "Unsorry.GpowSumThreePowSeven"
+    },
+    {
+      "goal": "gpow-sum-three-pow-eight",
+      "module": "Unsorry.GpowSumThreePowEight"
+    },
+    {
+      "goal": "gpow-sum-three-pow-nine",
+      "module": "Unsorry.GpowSumThreePowNine"
+    },
+    {
+      "goal": "gpow-sum-seven-pow-eight",
+      "module": "Unsorry.GpowSumSevenPowEight"
+    },
+    {
+      "goal": "gpow-sum-seven-pow-nine",
+      "module": "Unsorry.GpowSumSevenPowNine"
+    },
+    {
+      "goal": "gself-pow-seven-add-pow-two",
+      "module": "Unsorry.GselfPowSevenAddPowTwo"
+    },
+    {
+      "goal": "gself-pow-seven-add-pow-three",
+      "module": "Unsorry.GselfPowSevenAddPowThree"
+    },
+    {
+      "goal": "gself-pow-seven-add-pow-four",
+      "module": "Unsorry.GselfPowSevenAddPowFour"
+    },
+    {
+      "goal": "gself-pow-seven-add-pow-five",
+      "module": "Unsorry.GselfPowSevenAddPowFive"
+    },
+    {
+      "goal": "gself-pow-seven-add-pow-six",
+      "module": "Unsorry.GselfPowSevenAddPowSix"
+    },
+    {
+      "goal": "gself-pow-eight-add-pow-two",
+      "module": "Unsorry.GselfPowEightAddPowTwo"
+    },
+    {
+      "goal": "gself-pow-eight-add-pow-three",
+      "module": "Unsorry.GselfPowEightAddPowThree"
+    },
+    {
+      "goal": "gself-pow-eight-add-pow-four",
+      "module": "Unsorry.GselfPowEightAddPowFour"
+    },
+    {
+      "goal": "gself-pow-eight-add-pow-five",
+      "module": "Unsorry.GselfPowEightAddPowFive"
+    },
+    {
+      "goal": "gself-pow-eight-add-pow-six",
+      "module": "Unsorry.GselfPowEightAddPowSix"
+    },
+    {
+      "goal": "gself-pow-eight-add-pow-seven",
+      "module": "Unsorry.GselfPowEightAddPowSeven"
+    },
+    {
+      "goal": "gself-pow-nine-add-pow-two",
+      "module": "Unsorry.GselfPowNineAddPowTwo"
+    },
+    {
+      "goal": "gself-pow-nine-add-pow-three",
+      "module": "Unsorry.GselfPowNineAddPowThree"
+    },
+    {
+      "goal": "gself-pow-nine-add-pow-five",
+      "module": "Unsorry.GselfPowNineAddPowFive"
+    },
+    {
+      "goal": "gself-pow-nine-add-pow-six",
+      "module": "Unsorry.GselfPowNineAddPowSix"
+    },
+    {
+      "goal": "gself-pow-nine-add-pow-seven",
+      "module": "Unsorry.GselfPowNineAddPowSeven"
+    }
+  ]
+}

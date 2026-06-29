@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-odd-index-choose-eq-two-pow
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-odd-index-choose-eq-two-pow.md
+  src≜packages/unsorry-archive-0037/backlog/sum-range-odd-index-choose-eq-two-pow.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-odd-index-choose-eq-two-pow.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0037/goals/sum-range-odd-index-choose-eq-two-pow.lean
+  sha≜b8f2154b234183ec574a37537031d791872eea52a167902e32f3fa94fa880360
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -1,0 +1,20 @@
+𝔸5.1.goal.gzmod-480-pow-22-sub-pow-fourteen@2026-06-19
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gzmod-480-pow-22-sub-pow-fourteen
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/gzmod-480-pow-22-sub-pow-fourteen.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/gzmod-480-pow-22-sub-pow-fourteen.lean
+  sha≜3cfc936c48b6565d1068a23e8a3968e20c4491b3f74ac92e3e8dd48368ace1e6
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

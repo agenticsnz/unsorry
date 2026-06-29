@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-sq-norm-sq-le-twice-sum-fourth@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-sq-norm-sq-le-twice-sum-fourth
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-sq-norm-sq-le-twice-sum-fourth.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-sq-norm-sq-le-twice-sum-fourth.lean
+  sha≜972f6b0fd588e63a6c747afca037e4b8bbdbaeb834f7622a1c0076db5ca330e5
+  aff≜-10
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -1,0 +1,20 @@
+𝔸5.1.goal.gcd-two-pow-add-one-sub-one-dvd-two@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gcd-two-pow-add-one-sub-one-dvd-two
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/gcd-two-pow-add-one-sub-one-dvd-two.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/gcd-two-pow-add-one-sub-one-dvd-two.lean
+  sha≜136bf4677a9f6f4b6dd70cb52f9794a2c4869d8a033d7b6663a8fe019113075a
+  aff≜-10
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

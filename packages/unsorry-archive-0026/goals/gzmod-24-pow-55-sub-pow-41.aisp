@@ -1,0 +1,20 @@
+𝔸5.1.goal.gzmod-24-pow-55-sub-pow-41@2026-06-19
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gzmod-24-pow-55-sub-pow-41
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/gzmod-24-pow-55-sub-pow-41.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/gzmod-24-pow-55-sub-pow-41.lean
+  sha≜950dd539e3b94053f415a93f040df3da19ae20977d44ca42ad6767492438e18b
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

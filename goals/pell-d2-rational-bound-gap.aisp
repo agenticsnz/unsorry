@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜pell-d2-rational-bound-gap
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/pell-d2-rational-bound-gap.md
+  src≜packages/unsorry-archive-0011/backlog/pell-d2-rational-bound-gap.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/pell-d2-rational-bound-gap.lean
+  lean≜packages/unsorry-archive-0011/goals/pell-d2-rational-bound-gap.lean
   sha≜44f0a937e3a75a9233d5a52342162844e3e90a7c99211e0a7ba37ca25042983f
   aff≜-9
 }

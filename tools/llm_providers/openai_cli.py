@@ -33,7 +33,7 @@ _TARGET_LINE_RE = re.compile(
 
 
 def extract_lean_module(content: str) -> str:
-    """Derive a Lean module from a model's free-text answer (ADR-041).
+    """Derive a Lean module from a model's free-text answer (ADR-102).
 
     Preference order: the first ```lean fenced block, then the first fenced block
     of any language, then the whole trimmed content. Returns the module source
@@ -135,7 +135,7 @@ def process_conversation(provider: OpenAIProvider, prompt: str, model: str, work
     When `target` is set (the prove path) and the tool loop ends without the
     target module having been written by a Write/Edit tool call, fall back to
     extracting the Lean module from the model's final text and writing it there
-    (ADR-041). This lets proof-specialised models that emit Lean as text — rather
+    (ADR-102). This lets proof-specialised models that emit Lean as text — rather
     than as OpenAI function calls — drive `--prove`.
 
     Raises OpenAIError on a transport/HTTP failure (instead of returning the
@@ -277,7 +277,7 @@ Always produce valid Lean 4 syntax."""
                     "content": result,
                 })
 
-    # Text-extraction fallback (ADR-041). Only on the prove path, and only when
+    # Text-extraction fallback (ADR-102). Only on the prove path, and only when
     # the tool loop did not produce the target file. agent.sh's
     # prepare_proof_attempt() removes the target before every attempt, so its
     # presence here means a Write/Edit tool call created it — the tool path wins
@@ -306,7 +306,7 @@ def main():
     parser.add_argument("--workdir", help="Working directory for file operations")
     parser.add_argument("--target", help="Prove target module path (relative to workdir); "
                                          "the text-extraction fallback writes here when the "
-                                         "model emits no Write tool call (ADR-041). Defaults to "
+                                         "model emits no Write tool call (ADR-102). Defaults to "
                                          "the path parsed from the prove prompt.")
     parser.add_argument("--tools", help="Comma-separated list of allowed tools")
     parser.add_argument("--allowedTools", dest="allowed_tools", help="Allowed tools (alias)")

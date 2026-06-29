@@ -1,0 +1,155 @@
+{
+  "block_id": "unsorry-archive-0088",
+  "target_size": 40,
+  "proof_count": 34,
+  "status": "frozen",
+  "source_commit": "18509e1e9e221da0c15690ee006d64658327c338",
+  "validation_commit": null,
+  "pins": {
+    "lean_toolchain": "leanprover/lean4:v4.30.0",
+    "mathlib": "v4.30.0"
+  },
+  "notes": [
+    "ADR-041 proof archive block 0088.",
+    "Whole decomposition trees + standalone proved goals only (invariant A).",
+    "Active goal records remain as archived metadata pointing at this package."
+  ],
+  "goals": [
+    {
+      "goal": "gpow-sum-two-pow-fourteen",
+      "module": "Unsorry.GpowSumTwoPowFourteen"
+    },
+    {
+      "goal": "gpow-sum-two-pow-fifteen",
+      "module": "Unsorry.GpowSumTwoPowFifteen"
+    },
+    {
+      "goal": "gpow-sum-two-pow-sixteen",
+      "module": "Unsorry.GpowSumTwoPowSixteen"
+    },
+    {
+      "goal": "gpow-sum-two-pow-seventeen",
+      "module": "Unsorry.GpowSumTwoPowSeventeen"
+    },
+    {
+      "goal": "gpow-sum-two-pow-eighteen",
+      "module": "Unsorry.GpowSumTwoPowEighteen"
+    },
+    {
+      "goal": "gpow-sum-two-pow-nineteen",
+      "module": "Unsorry.GpowSumTwoPowNineteen"
+    },
+    {
+      "goal": "gpow-sum-two-pow-twenty",
+      "module": "Unsorry.GpowSumTwoPowTwenty"
+    },
+    {
+      "goal": "gpow-sum-three-pow-ten",
+      "module": "Unsorry.GpowSumThreePowTen"
+    },
+    {
+      "goal": "gpow-sum-three-pow-eleven",
+      "module": "Unsorry.GpowSumThreePowEleven"
+    },
+    {
+      "goal": "gpow-sum-three-pow-twelve",
+      "module": "Unsorry.GpowSumThreePowTwelve"
+    },
+    {
+      "goal": "gpow-sum-three-pow-thirteen",
+      "module": "Unsorry.GpowSumThreePowThirteen"
+    },
+    {
+      "goal": "gpow-sum-three-pow-fourteen",
+      "module": "Unsorry.GpowSumThreePowFourteen"
+    },
+    {
+      "goal": "gpow-sum-three-pow-fifteen",
+      "module": "Unsorry.GpowSumThreePowFifteen"
+    },
+    {
+      "goal": "gpow-sum-three-pow-sixteen",
+      "module": "Unsorry.GpowSumThreePowSixteen"
+    },
+    {
+      "goal": "gpow-sum-three-pow-seventeen",
+      "module": "Unsorry.GpowSumThreePowSeventeen"
+    },
+    {
+      "goal": "gpow-sum-three-pow-eighteen",
+      "module": "Unsorry.GpowSumThreePowEighteen"
+    },
+    {
+      "goal": "gpow-sum-three-pow-nineteen",
+      "module": "Unsorry.GpowSumThreePowNineteen"
+    },
+    {
+      "goal": "gpow-sum-three-pow-twenty",
+      "module": "Unsorry.GpowSumThreePowTwenty"
+    },
+    {
+      "goal": "gpow-sum-four-pow-ten",
+      "module": "Unsorry.GpowSumFourPowTen"
+    },
+    {
+      "goal": "gpow-sum-four-pow-eleven",
+      "module": "Unsorry.GpowSumFourPowEleven"
+    },
+    {
+      "goal": "gpow-sum-four-pow-twelve",
+      "module": "Unsorry.GpowSumFourPowTwelve"
+    },
+    {
+      "goal": "gpow-sum-four-pow-thirteen",
+      "module": "Unsorry.GpowSumFourPowThirteen"
+    },
+    {
+      "goal": "gpow-sum-four-pow-fourteen",
+      "module": "Unsorry.GpowSumFourPowFourteen"
+    },
+    {
+      "goal": "gpow-sum-four-pow-fifteen",
+      "module": "Unsorry.GpowSumFourPowFifteen"
+    },
+    {
+      "goal": "gpow-sum-four-pow-sixteen",
+      "module": "Unsorry.GpowSumFourPowSixteen"
+    },
+    {
+      "goal": "gpow-sum-four-pow-seventeen",
+      "module": "Unsorry.GpowSumFourPowSeventeen"
+    },
+    {
+      "goal": "gpow-sum-four-pow-eighteen",
+      "module": "Unsorry.GpowSumFourPowEighteen"
+    },
+    {
+      "goal": "gpow-sum-four-pow-nineteen",
+      "module": "Unsorry.GpowSumFourPowNineteen"
+    },
+    {
+      "goal": "gpow-sum-four-pow-twenty",
+      "module": "Unsorry.GpowSumFourPowTwenty"
+    },
+    {
+      "goal": "gpow-sum-five-pow-ten",
+      "module": "Unsorry.GpowSumFivePowTen"
+    },
+    {
+      "goal": "gpow-sum-five-pow-eleven",
+      "module": "Unsorry.GpowSumFivePowEleven"
+    },
+    {
+      "goal": "gpow-sum-five-pow-twelve",
+      "module": "Unsorry.GpowSumFivePowTwelve"
+    },
+    {
+      "goal": "gpow-sum-five-pow-thirteen",
+      "module": "Unsorry.GpowSumFivePowThirteen"
+    },
+    {
+      "goal": "gpow-sum-five-pow-fourteen",
+      "module": "Unsorry.GpowSumFivePowFourteen"
+    }
+  ]
+}
