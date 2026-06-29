@@ -1,0 +1,20 @@
+𝔸5.1.goal.sophie-germain-plus-factor-dvd@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sophie-germain-plus-factor-dvd
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/sophie-germain-plus-factor-dvd.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sophie-germain-plus-factor-dvd.lean
+  sha≜bcd581becc34fad4b0dd7ab92a20fe02742e234b89e4b6ab7d96b2158a83c07e
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -71,7 +71,8 @@ def test_refuses_to_clobber_without_force(tmp_path):
 def test_rejects_bad_slug_and_difficulty(tmp_path):
     with pytest.raises(TripleError, match="invalid slug"):
         write_triple(tmp_path, "Bad.Slug", date="2026-06-16", **_COMMON)
-    bad = dict(_COMMON, difficulty=7)
+    # ADR-095 widened the band to 0–9, so 7 is now valid; 10 is still out of range.
+    bad = dict(_COMMON, difficulty=10)
     with pytest.raises(TripleError, match="out of range"):
         write_triple(tmp_path, "nat-succ-pos", date="2026-06-16", **bad)
 

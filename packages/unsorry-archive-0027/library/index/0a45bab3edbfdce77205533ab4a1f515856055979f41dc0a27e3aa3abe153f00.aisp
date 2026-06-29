@@ -1,0 +1,8 @@
+𝔸5.1.lemma.0a45bab3edbf@2026-06-19
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜0a45bab3edbfdce77205533ab4a1f515856055979f41dc0a27e3aa3abe153f00; goal≜gzmod-12-pow-64-sub-pow-two; name≜gzmod_12_pow_64_sub_pow_two}
+⟦Σ:Source⟧{src≜goals/gzmod-12-pow-64-sub-pow-two.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜python; model≜sympy; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -53,6 +53,30 @@ active module count). `gate_a_prepare` and `gate_a_audit` therefore run with
 60. The durable bound on cold-build time is ADR-041 archiving (keeping the active set small), not
 a larger timeout.
 
+## Cold-volume fallback (cross-runner)
+
+The Namespace `.lake` cache volume (ADR-046) is **per physical runner**. Measured 2026-06-22: in a
+single run `gate-a-prepare` mounted a warm 20 GB `.lake` (`cache-hit=true`) while `gate-a-audit`,
+on a different pool runner, mounted an empty 4 KB one (`cache-hit=false`) and cold-rebuilt the whole
+library — hitting the 45-min timeout. The volume is not reliably shared to the downstream jobs, so
+"sometimes fast, sometimes 45 min" tracks whether a job happens to land on a warm runner.
+
+mathlib survives this (it has its own content-addressed binary cache, fetched via `lake exe cache
+get`); the **library oleans** (`.lake/build`, ~320 MB compressed) had no cross-runner fallback on
+Namespace, so a cold downstream runner rebuilt them from scratch. To close that gap:
+
+- `gate-a-prepare` **saves** `.lake/build` to the GitHub `actions/cache` after its `--wfail` build,
+  gated to `github.ref == 'refs/heads/main'` and a Namespace profile (`actions/cache/save`). One
+  ~320 MB entry per `main` commit, LRU-evicted; bounded, not per-PR.
+- `gate-a-audit` and `gate-a-replay` **restore** it (`actions/cache/restore`, restore-only — never
+  write, so no PR-driven churn) **only when the Namespace volume missed**
+  (`steps.ns_lake_cache.outputs.cache-hit != 'true'`), with a `restore-keys` fallback to the latest
+  `main` build. A cold downstream runner then does a cheap incremental over the restored oleans
+  instead of a ~21-min cold rebuild.
+
+The 45-min timeouts are unchanged: once the downstream jobs reliably restore the library oleans,
+the build is incremental and the timeout never binds.
+
 ## Soundness invariants (unchanged)
 
 - Lake's content-hash traces recompile any module whose source changed — identical to local

@@ -1,0 +1,1 @@
+The attribution sweep now re-credits `mac-158f` (ohdearquant's Python/sympy template pipeline) proofs to their pipeline owner instead of whoever landed the dispatched PR (ADR-099), correcting ~254 records that over-credited the landers with proof+difficulty points they only dispatched. Self-healing on the hourly sweep.

@@ -1,0 +1,20 @@
+𝔸5.1.goal.gzmod-420-pow-eighteen-sub-pow-six@2026-06-18
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gzmod-420-pow-eighteen-sub-pow-six
+  phase≜prove
+  status≜archived
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜packages/unsorry-archive-0054/backlog/gzmod-420-pow-eighteen-sub-pow-six.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜packages/unsorry-archive-0054/goals/gzmod-420-pow-eighteen-sub-pow-six.lean
+  sha≜a65d5c0fa5ddc2d9b9d2ab105a752950b71c6f1d6ba423146497b71e68750760
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

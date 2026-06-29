@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-range-pascal-diagonal-eq-choose@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-range-pascal-diagonal-eq-choose
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-range-pascal-diagonal-eq-choose.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-range-pascal-diagonal-eq-choose.lean
+  sha≜ad8ab918c9f7e0b2e00af4c9e85aa0a858a17c58f507308655600edbe1aae22f
+  aff≜-10
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

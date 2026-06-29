@@ -1,0 +1,8 @@
+𝔸5.1.run.sum-icc-recip-step-four-pair-eq-n-div.codex-0005.20260617t112312209601z-30f34965@2026-06-17
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260617t112312209601z-30f34965; goal≜sum-icc-recip-step-four-pair-eq-n-div; agent≜codex-0005; outcome≜proved}
+⟦Π:Provenance⟧{solver≜adam91holt; provider≜codex; effort≜medium}
+⟦Γ:Goal⟧{goal≜sum-icc-recip-step-four-pair-eq-n-div}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜194; ended≜2026-06-17T11:23:12Z; lessons≜0}
+⟦Σ:Artifact⟧{sha≜5a65077ccb9aec1f1838bb5866fee065e620c52a9f5684485ad5946241c0aa26}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

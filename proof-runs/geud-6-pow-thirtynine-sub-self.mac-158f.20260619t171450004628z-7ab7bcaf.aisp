@@ -1,0 +1,8 @@
+𝔸5.1.run.geud-6-pow-thirtynine-sub-self.mac-158f.20260619t171450004628z-7ab7bcaf@2026-06-19
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260619t171450004628z-7ab7bcaf; goal≜geud-6-pow-thirtynine-sub-self; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜python; model≜sympy}
+⟦Γ:Goal⟧{goal≜geud-6-pow-thirtynine-sub-self}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-19T17:14:50Z}
+⟦Σ:Artifact⟧{sha≜c595ae88d6dcd8f4a476f53a09287bcc2617980472cc4d067802d3822c464e07}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

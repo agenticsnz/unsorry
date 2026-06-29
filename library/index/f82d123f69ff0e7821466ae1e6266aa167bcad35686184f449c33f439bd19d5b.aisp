@@ -1,0 +1,8 @@
+𝔸5.1.lemma.f82d123f69ff@2026-06-24
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜f82d123f69ff0e7821466ae1e6266aa167bcad35686184f449c33f439bd19d5b; goal≜sum-two-squares-zmod-sixteen-ne-twelve; name≜sum_two_squares_zmod_sixteen_ne_twelve}
+⟦Σ:Source⟧{src≜goals/sum-two-squares-zmod-sixteen-ne-twelve.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜chat-bit-01; agent≜claude-web; provider≜lean; model≜decide; attempts≜1}
+⟦Ε⟧⟨δ≜0.40;τ≜◊⁺⟩

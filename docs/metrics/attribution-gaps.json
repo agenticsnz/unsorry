@@ -22,21 +22,6 @@
     },
     {
       "alias_mapped": true,
-      "date": "2026-06-14",
-      "difficulty": 1,
-      "display_name": "chat-bit-01",
-      "git_add_commit": "91742dae23d480010d5297ecb5c31eb824203679",
-      "git_add_date": "2026-06-14",
-      "git_author": "chat-bit-01 <chatuser55@gmail.com>",
-      "git_author_name": "chat-bit-01",
-      "goal": "nesbitt-inequality-s2",
-      "mapped_github": "chat-bit-01",
-      "path": "library/index/c825189d82bd965f2f4b82bc256e324bc03f7af5755e13aab5046ef0fec9092f.aisp",
-      "review_status": "candidate",
-      "sha": "c825189d82bd965f2f4b82bc256e324bc03f7af5755e13aab5046ef0fec9092f"
-    },
-    {
-      "alias_mapped": true,
       "date": "2026-06-12",
       "difficulty": 1,
       "display_name": "Chris Barlow",
@@ -4594,14 +4579,59 @@
       "path": "packages/unsorry-archive-0014/library/index/f451c1454a323c201ec57e4a746906564e583bc938c8426fb1ed4ab4ad0249de.aisp",
       "review_status": "candidate",
       "sha": "f451c1454a323c201ec57e4a746906564e583bc938c8426fb1ed4ab4ad0249de"
+    },
+    {
+      "alias_mapped": true,
+      "date": "2026-06-17",
+      "difficulty": 3,
+      "display_name": "chat-bit-01",
+      "git_add_commit": "40632e56b649fdac6d24e5b45d3af2f12541fd71",
+      "git_add_date": "2026-06-19",
+      "git_author": "chat-bit-01 <chatuser55@gmail.com>",
+      "git_author_name": "chat-bit-01",
+      "goal": "quartic-four-var-ge-four-prod",
+      "mapped_github": "chat-bit-01",
+      "path": "packages/unsorry-archive-0020/library/index/46cd32405d4d519f8d4b49604fcd0b5bf49e1881b256b52f779add1fe2d8b80a.aisp",
+      "review_status": "candidate",
+      "sha": "46cd32405d4d519f8d4b49604fcd0b5bf49e1881b256b52f779add1fe2d8b80a"
+    },
+    {
+      "alias_mapped": true,
+      "date": "2026-06-17",
+      "difficulty": 3,
+      "display_name": "chat-bit-01",
+      "git_add_commit": "a0a46e96a2faebeb68214f59ae690f7632588470",
+      "git_add_date": "2026-06-19",
+      "git_author": "chat-bit-01 <chatuser55@gmail.com>",
+      "git_author_name": "chat-bit-01",
+      "goal": "three-quartic-ge-sum-times-cubes",
+      "mapped_github": "chat-bit-01",
+      "path": "packages/unsorry-archive-0020/library/index/53e47df75f953fff54b7a78941f83325c18a944ad1652deea67301e8cd2ebfaf.aisp",
+      "review_status": "candidate",
+      "sha": "53e47df75f953fff54b7a78941f83325c18a944ad1652deea67301e8cd2ebfaf"
+    },
+    {
+      "alias_mapped": true,
+      "date": "2026-06-14",
+      "difficulty": 1,
+      "display_name": "chat-bit-01",
+      "git_add_commit": "91742dae23d480010d5297ecb5c31eb824203679",
+      "git_add_date": "2026-06-14",
+      "git_author": "chat-bit-01 <chatuser55@gmail.com>",
+      "git_author_name": "chat-bit-01",
+      "goal": "nesbitt-inequality-s2",
+      "mapped_github": "chat-bit-01",
+      "path": "packages/unsorry-archive-0033/library/index/c825189d82bd965f2f4b82bc256e324bc03f7af5755e13aab5046ef0fec9092f.aisp",
+      "review_status": "candidate",
+      "sha": "c825189d82bd965f2f4b82bc256e324bc03f7af5755e13aab5046ef0fec9092f"
     }
   ],
   "schema_version": 1,
   "source": "git-add-author",
   "summary": {
-    "git_attributed_missing_solver": 306,
-    "mapped_missing_solver": 306,
-    "missing_solver_provenance": 306,
+    "git_attributed_missing_solver": 308,
+    "mapped_missing_solver": 308,
+    "missing_solver_provenance": 308,
     "unmapped_missing_solver": 0
   }
 }

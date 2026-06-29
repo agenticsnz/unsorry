@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-range-cube-sym-choose-sq-eq-zero@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-range-cube-sym-choose-sq-eq-zero
+  phase≜prove
+  status≜proved
+  difficulty≜4
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-range-cube-sym-choose-sq-eq-zero.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-range-cube-sym-choose-sq-eq-zero.lean
+  sha≜18e21a900c01000b4f0f40a064df68da1c2aed7613d5143d79c12ba53a46c14d
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
