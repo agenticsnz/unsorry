@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-centered-triangular-running-closed-form@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-centered-triangular-running-closed-form
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-centered-triangular-running-closed-form.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-centered-triangular-running-closed-form.lean
+  sha≜5162f8d42050c86104b476978f4779e081981ea7f94699690e3c6f913ac7701b
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

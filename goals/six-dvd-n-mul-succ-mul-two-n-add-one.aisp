@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜six-dvd-n-mul-succ-mul-two-n-add-one
   phase≜prove
-  status≜proved
-  difficulty≜2
+  status≜archived
+  difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/six-dvd-n-mul-succ-mul-two-n-add-one.md
+  src≜packages/unsorry-archive-0012/backlog/six-dvd-n-mul-succ-mul-two-n-add-one.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/six-dvd-n-mul-succ-mul-two-n-add-one.lean
+  lean≜packages/unsorry-archive-0012/goals/six-dvd-n-mul-succ-mul-two-n-add-one.lean
   sha≜9843066dc7b5ec7eeb7a68cb5f62dcda376b146f400a6639b8923bf119aeccd8
   aff≜-19
 }

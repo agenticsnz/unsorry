@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜square-triangular-pell-link
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/square-triangular-pell-link.md
+  src≜packages/unsorry-archive-0013/backlog/square-triangular-pell-link.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/square-triangular-pell-link.lean
+  lean≜packages/unsorry-archive-0013/goals/square-triangular-pell-link.lean
   sha≜c37b7073632bceee02f90c4790c6a20713e0e1ad433f56935fd24df413144ff1
   aff≜-9
 }

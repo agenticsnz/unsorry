@@ -1,0 +1,20 @@
+𝔸5.1.goal.gself-pow-three-pow-27-add-pow-twenty@2026-06-19
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gself-pow-three-pow-27-add-pow-twenty
+  phase≜prove
+  status≜archived
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜packages/unsorry-archive-0080/backlog/gself-pow-three-pow-27-add-pow-twenty.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜packages/unsorry-archive-0080/goals/gself-pow-three-pow-27-add-pow-twenty.lean
+  sha≜c18a97e0e6a209ba3b483d06ee999f86d049de6f54d66889b508de44ad3c6739
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

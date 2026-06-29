@@ -1,0 +1,12 @@
+--- /dev/null
++++ b/Mathlib/Unsorry/QuarticX4PlusX2PlusOneDvdByMinusFactor.lean
+@@ -0,0 +1,9 @@
++/-
++Copyright (c) 2026 Chris Barlow. All rights reserved.
++Released under Apache 2.0 license as described in the file LICENSE.
++Authors: Chris Barlow
++-/
++import Mathlib.Tactic.Ring
++
++theorem quartic_x4_plus_x2_plus_one_dvd_by_minus_factor (x : ℤ) : (x ^ 2 - x + 1) ∣ (x ^ 4 + x ^ 2 + 1) :=
++  ⟨x ^ 2 + x + 1, by ring⟩

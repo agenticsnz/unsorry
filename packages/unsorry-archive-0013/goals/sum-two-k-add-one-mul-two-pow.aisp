@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-two-k-add-one-mul-two-pow@2026-06-14
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-two-k-add-one-mul-two-pow
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-two-k-add-one-mul-two-pow.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-two-k-add-one-mul-two-pow.lean
+  sha≜b36a9fac479d65c270de7f73ee08225994f2d304e455fc34d3128da0eaae615e
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

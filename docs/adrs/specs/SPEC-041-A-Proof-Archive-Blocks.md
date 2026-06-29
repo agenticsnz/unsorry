@@ -226,8 +226,39 @@ between cuts. Two implications:
   **not** run git or open the PR: validate per §8 step 5, then open the retire PR by hand. The
   scheduled/threshold auto-trigger is implemented by `tools/archive/auto_cut.sh` +
   the `auto-archive` workflow (hourly + `workflow_dispatch`): when active
-  proved-not-archived ≥ a ceiling (default 40) and no archive PR is open, it cuts
+  proved-not-archived ≥ a ceiling (default 20) and no archive PR is open, it cuts
   one block, validates (Gate B active + package, ADR-018 immutability, zero-docs),
   and opens an auto-merge retire PR. Bounding the active set this way keeps Gate A
   full-replay / `lake build --wfail` under memory — the durable fix for the
   exit-137 OOM on a high proof-inflow repo.
+
+## 10. Why the active set must stay small — build performance
+
+Archiving is not only about memory; it is the primary lever on **Gate A wall-clock**.
+Every Gate A job (`gate-a-prepare`, `gate-a-audit`, `gate-a-replay`) runs
+`lake build UnsorryLibrary --wfail` over the **whole active library**, and its time
+scales with the active module count. Measured on the trusted runner with a warm
+cache: an active library of **457 modules** took **~233 s** for the `--wfail`
+library build alone (≈100 modules recompiled, the rest cache-replayed) — repeated
+in each Gate A stage. Draining the active set to a few dozen modules cuts that to
+seconds. Archived proofs are *not* rebuilt or replayed (ADR-048: provenance +
+packaging only), so they leave the build entirely.
+
+**Bulk sweep.** When the active set has grown large (e.g. a backlog accumulated
+faster than the hourly auto-archive could cut it), drain it in one pass instead of
+waiting ~one block per cron tick:
+
+```bash
+SRC=$(git rev-parse origin/main); TC=$(tr -d '[:space:]' < lean-toolchain)
+ML=$(python3 -c 'import json,glob;m=sorted(glob.glob("packages/unsorry-archive-*/archive-manifest.json"));print(json.load(open(m[-1]))["pins"]["mathlib"])')
+git checkout -B feat/bulk-archive-sweep origin/main
+while python3 -m tools.archive.apply --source-commit "$SRC" --toolchain "$TC" --mathlib "$ML" 2>&1 | grep -qv "no eligible"; do :; done
+# then validate per §8 step 5 and open ONE retire PR
+```
+
+This loops `tools.archive.apply` (oldest-first, whole-trees only, §8 invariant A)
+until no eligible whole-tree goal remains, producing one block per cut. Validate
+exactly as a single cut (Gate B on the active tree **and** each new package as its
+own tree; `check_goal_immutability`; zero generated-doc delta) and open one retire
+PR. The newest proofs that are not part of a complete archivable tree stay active;
+auto-archive (§9, ceiling 20) then maintains the small active set.

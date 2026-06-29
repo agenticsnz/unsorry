@@ -1,0 +1,20 @@
+𝔸5.1.goal.gzmod-42-pow-seven-sub-pow-one@2026-06-17
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gzmod-42-pow-seven-sub-pow-one
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/gzmod-42-pow-seven-sub-pow-one.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/gzmod-42-pow-seven-sub-pow-one.lean
+  sha≜fbca7bd534cd184897ff7da9b00e1e7568e4e8a032caccdcb7879c3837ac8321
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

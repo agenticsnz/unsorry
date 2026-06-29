@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜pell-d5-positive-from-negative-square
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/pell-d5-positive-from-negative-square.md
+  src≜packages/unsorry-archive-0009/backlog/pell-d5-positive-from-negative-square.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/pell-d5-positive-from-negative-square.lean
+  lean≜packages/unsorry-archive-0009/goals/pell-d5-positive-from-negative-square.lean
   sha≜3eb676018565a5babdc8308b2eeaae7b4f995dec695b2b79cf0b4858afd8d469
   aff≜-10
 }

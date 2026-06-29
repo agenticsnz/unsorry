@@ -1,8 +1,0 @@
-𝔸5.1.lemma.836f9de8fc20@2026-06-17
-γ≔unsorry.lemma.index
-⟦Ω:Lemma⟧{sha≜836f9de8fc20c02c2c41eeea3af7aa69859f4dc7295cb19e97354216fdebe6cb; goal≜sum-even-squares-faulhaber; name≜sum_even_squares_faulhaber}
-⟦Σ:Source⟧{src≜goals/sum-even-squares-faulhaber.lean}
-⟦Γ:Tags⟧{tags≜⟨⟩}
-⟦Λ:Meta⟧{use≜0; aff≜0}
-⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜claude; model≜template-sum-induction; attempts≜1}
-⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

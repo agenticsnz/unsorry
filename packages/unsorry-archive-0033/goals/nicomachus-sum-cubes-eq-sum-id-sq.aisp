@@ -1,0 +1,20 @@
+𝔸5.1.goal.nicomachus-sum-cubes-eq-sum-id-sq@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜nicomachus-sum-cubes-eq-sum-id-sq
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/nicomachus-sum-cubes-eq-sum-id-sq.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/nicomachus-sum-cubes-eq-sum-id-sq.lean
+  sha≜98eb83c9adfdf3f9d0cc953c84dd2a2005e297dc52da0f5d73ca091140857cc4
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

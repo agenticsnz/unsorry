@@ -1,0 +1,20 @@
+𝔸5.1.goal.putnam-1969-b2-s2@2026-06-26
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜putnam-1969-b2-s2
+  phase≜prove
+  status≜open
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜decompositions/putnam-1969-b2.afnz-zbook-b336.aisp
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/putnam-1969-b2-s2.lean
+  sha≜∅
+  depth≜1
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

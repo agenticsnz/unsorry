@@ -1,0 +1,20 @@
+𝔸5.1.goal.induction-sum-odd@2026-06-24
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜induction-sum-odd
+  phase≜prove
+  status≜open
+  difficulty≜4
+}
+⟦Σ:Source⟧{
+  src≜backlog/induction-sum-odd.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜benchmark-goals/induction-sum-odd.lean
+  sha≜∅
+  aff≜-20
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -1,0 +1,20 @@
+𝔸5.1.goal.pell-d10-fundamental-ladder-step-preserves@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜pell-d10-fundamental-ladder-step-preserves
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/pell-d10-fundamental-ladder-step-preserves.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/pell-d10-fundamental-ladder-step-preserves.lean
+  sha≜f7aa4469a3b4037c7258c4a599e808c67ae87454d2db4f429bde563ceac11874
+  aff≜-10
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

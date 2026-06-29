@@ -1,8 +1,0 @@
-𝔸5.1.lemma.4c1f20c099d8@2026-06-16
-γ≔unsorry.lemma.index
-⟦Ω:Lemma⟧{sha≜4c1f20c099d86384db9029e66f6d64d9ca7e8ec8e2ae3f338abe98572a883c5e; goal≜quartic-sum-ge-abc-times-sum; name≜quartic_sum_ge_abc_times_sum}
-⟦Σ:Source⟧{src≜goals/quartic-sum-ge-abc-times-sum.lean}
-⟦Γ:Tags⟧{tags≜⟨⟩}
-⟦Λ:Meta⟧{use≜0; aff≜0}
-⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜claude; model≜template-nlinarith; attempts≜1}
-⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

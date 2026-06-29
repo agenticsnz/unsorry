@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sq-mod-twentyfour-mem
   phase≜prove
-  status≜proved
-  difficulty≜3
+  status≜archived
+  difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sq-mod-twentyfour-mem.md
+  src≜packages/unsorry-archive-0012/backlog/sq-mod-twentyfour-mem.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sq-mod-twentyfour-mem.lean
+  lean≜packages/unsorry-archive-0012/goals/sq-mod-twentyfour-mem.lean
   sha≜83146b8a4f68c8ad88eeb451257bc674e23b4d3ebd4ee41fb537d71f31997e2b
   aff≜-9
 }

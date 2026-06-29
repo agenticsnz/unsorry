@@ -1,0 +1,179 @@
+{
+  "block_id": "unsorry-archive-0016",
+  "target_size": 40,
+  "proof_count": 40,
+  "status": "frozen",
+  "source_commit": "bd6e826771a24226e999855dd45238988eb6eda5",
+  "validation_commit": null,
+  "pins": {
+    "lean_toolchain": "leanprover/lean4:v4.30.0",
+    "mathlib": "v4.30.0"
+  },
+  "notes": [
+    "ADR-041 proof archive block 0016.",
+    "Whole decomposition trees + standalone proved goals only (invariant A).",
+    "Active goal records remain as archived metadata pointing at this package."
+  ],
+  "goals": [
+    {
+      "goal": "sum-triple-product-eq",
+      "module": "Unsorry.SumTripleProductEq"
+    },
+    {
+      "goal": "alt-sum-range-choose-sq-eq-zero-odd",
+      "module": "Unsorry.AltSumRangeChooseSqEqZeroOdd"
+    },
+    {
+      "goal": "sumsq-ge-ab-plus-bc",
+      "module": "Unsorry.SumsqGeAbPlusBc"
+    },
+    {
+      "goal": "sym-deg-three-ge-six-mul",
+      "module": "Unsorry.SymDegThreeGeSixMul"
+    },
+    {
+      "goal": "sym-grouped-deg-three-ge-six-abc",
+      "module": "Unsorry.SymGroupedDegThreeGeSixAbc"
+    },
+    {
+      "goal": "three-quartic-sum-ge-sumsq-sq",
+      "module": "Unsorry.ThreeQuarticSumGeSumsqSq"
+    },
+    {
+      "goal": "alternating-sum-shifted-choose-eq-one",
+      "module": "Unsorry.AlternatingSumShiftedChooseEqOne"
+    },
+    {
+      "goal": "catalan-r2-shift-nat-fib-int",
+      "module": "Unsorry.CatalanR2ShiftNatFibInt"
+    },
+    {
+      "goal": "fib-two-mul-sq-diff-int",
+      "module": "Unsorry.FibTwoMulSqDiffInt"
+    },
+    {
+      "goal": "sum-hexagonal-eq",
+      "module": "Unsorry.SumHexagonalEq"
+    },
+    {
+      "goal": "sum-range-id-mul-four-pow-closed",
+      "module": "Unsorry.SumRangeIdMulFourPowClosed"
+    },
+    {
+      "goal": "sum-range-id-mul-three-pow",
+      "module": "Unsorry.SumRangeIdMulThreePow"
+    },
+    {
+      "goal": "sum-range-sq-mul-two-pow",
+      "module": "Unsorry.SumRangeSqMulTwoPow"
+    },
+    {
+      "goal": "sum-triangular-squared-closed-form",
+      "module": "Unsorry.SumTriangularSquaredClosedForm"
+    },
+    {
+      "goal": "self-dvd-cube-add-square",
+      "module": "Unsorry.SelfDvdCubeAddSquare"
+    },
+    {
+      "goal": "pred-dvd-square-sub-one",
+      "module": "Unsorry.PredDvdSquareSubOne"
+    },
+    {
+      "goal": "self-dvd-pow-four-add-cube",
+      "module": "Unsorry.SelfDvdPowFourAddCube"
+    },
+    {
+      "goal": "gzmod-12-pow-four-sub-pow-two",
+      "module": "Unsorry.Gzmod12PowFourSubPowTwo"
+    },
+    {
+      "goal": "gzmod-30-pow-five-sub-pow-one",
+      "module": "Unsorry.Gzmod30PowFiveSubPowOne"
+    },
+    {
+      "goal": "gzmod-42-pow-seven-sub-pow-one",
+      "module": "Unsorry.Gzmod42PowSevenSubPowOne"
+    },
+    {
+      "goal": "gzmod-240-pow-ten-sub-pow-six",
+      "module": "Unsorry.Gzmod240PowTenSubPowSix"
+    },
+    {
+      "goal": "gzmod-264-pow-fourteen-sub-pow-four",
+      "module": "Unsorry.Gzmod264PowFourteenSubPowFour"
+    },
+    {
+      "goal": "gzmod-24-pow-eight-sub-pow-six",
+      "module": "Unsorry.Gzmod24PowEightSubPowSix"
+    },
+    {
+      "goal": "gzmod-24-pow-nine-sub-pow-seven",
+      "module": "Unsorry.Gzmod24PowNineSubPowSeven"
+    },
+    {
+      "goal": "gzmod-24-pow-ten-sub-pow-eight",
+      "module": "Unsorry.Gzmod24PowTenSubPowEight"
+    },
+    {
+      "goal": "gzmod-240-pow-eleven-sub-pow-seven",
+      "module": "Unsorry.Gzmod240PowElevenSubPowSeven"
+    },
+    {
+      "goal": "gzmod-24-pow-eleven-sub-pow-nine",
+      "module": "Unsorry.Gzmod24PowElevenSubPowNine"
+    },
+    {
+      "goal": "gzmod-132-pow-twelve-sub-pow-two",
+      "module": "Unsorry.Gzmod132PowTwelveSubPowTwo"
+    },
+    {
+      "goal": "gzmod-240-pow-twelve-sub-pow-four",
+      "module": "Unsorry.Gzmod240PowTwelveSubPowFour"
+    },
+    {
+      "goal": "gzmod-240-pow-twelve-sub-pow-eight",
+      "module": "Unsorry.Gzmod240PowTwelveSubPowEight"
+    },
+    {
+      "goal": "gzmod-24-pow-twelve-sub-pow-ten",
+      "module": "Unsorry.Gzmod24PowTwelveSubPowTen"
+    },
+    {
+      "goal": "gzmod-240-pow-thirteen-sub-pow-nine",
+      "module": "Unsorry.Gzmod240PowThirteenSubPowNine"
+    },
+    {
+      "goal": "gzmod-24-pow-thirteen-sub-pow-eleven",
+      "module": "Unsorry.Gzmod24PowThirteenSubPowEleven"
+    },
+    {
+      "goal": "gzmod-240-pow-fourteen-sub-pow-ten",
+      "module": "Unsorry.Gzmod240PowFourteenSubPowTen"
+    },
+    {
+      "goal": "gzmod-24-pow-fourteen-sub-pow-twelve",
+      "module": "Unsorry.Gzmod24PowFourteenSubPowTwelve"
+    },
+    {
+      "goal": "ggeom-pred-pow-two-sub-one",
+      "module": "Unsorry.GgeomPredPowTwoSubOne"
+    },
+    {
+      "goal": "ggeom-pred-pow-three-sub-one",
+      "module": "Unsorry.GgeomPredPowThreeSubOne"
+    },
+    {
+      "goal": "ggeom-pred-pow-four-sub-one",
+      "module": "Unsorry.GgeomPredPowFourSubOne"
+    },
+    {
+      "goal": "ggeom-pred-pow-five-sub-one",
+      "module": "Unsorry.GgeomPredPowFiveSubOne"
+    },
+    {
+      "goal": "ggeom-pred-pow-six-sub-one",
+      "module": "Unsorry.GgeomPredPowSixSubOne"
+    }
+  ]
+}
