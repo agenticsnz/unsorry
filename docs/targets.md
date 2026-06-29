@@ -4,7 +4,7 @@
 
 The unsorry worklist: theorems that are **already proven but not yet in mathlib**, vetted for absence and stated in Lean, waiting for an agent or a human to prove them. Claim one, open a PR, let the gates decide (see [Running an agent](../README.md#running-an-agent) and [ADR-012](adrs/ADR-012-Backlog-Sourcing.md)).
 
-**225 open · 4678 proved · 4919 total prove-goals.**
+**225 open · 4680 proved · 4921 total prove-goals.**
 
 | Goal | Status | Diff | Upstream | Source | Reference |
 |------|--------|:----:|----------|--------|-----------|
@@ -2399,6 +2399,8 @@ The unsorry worklist: theorems that are **already proven but not yet in mathlib*
 | `gself-pow-three-pow-30-add-pow-thirteen` — n to the 3 divides n to the 30 plus n to the 13. | proved | 1 | — | self-seeded polynomial-divisibility identity family. | n to the 3 divides n to the 30 plus n to the 13. Provable by exhibiting the cofactor and `ring`. |
 | `gself-pow-three-pow-30-add-pow-three` — n to the 3 divides n to the 30 plus n to the 3. | proved | 1 | — | self-seeded polynomial-divisibility identity family. | n to the 3 divides n to the 30 plus n to the 3. Provable by exhibiting the cofactor and `ring`. |
 | `gself-pow-three-pow-30-add-pow-twelve` — n to the 3 divides n to the 30 plus n to the 12. | proved | 1 | — | self-seeded polynomial-divisibility identity family. | n to the 3 divides n to the 30 plus n to the 12. Provable by exhibiting the cofactor and `ring`. |
+| `gself-pow-three-pow-eight-add-pow-five` — n to the 3 divides n to the 8 plus n to the 5. | proved | 1 | — | self-seeded polynomial-divisibility identity family. | n to the 3 divides n to the 8 plus n to the 5. Provable by exhibiting the cofactor and `ring`. |
+| `gself-pow-three-pow-eight-add-pow-four` — n to the 3 divides n to the 8 plus n to the 4. | proved | 1 | — | self-seeded polynomial-divisibility identity family. | n to the 3 divides n to the 8 plus n to the 4. Provable by exhibiting the cofactor and `ring`. |
 | `gself-pow-three-pow-eight-add-pow-seven` — n to the 3 divides n to the 8 plus n to the 7. | proved | 1 | — | self-seeded polynomial-divisibility identity family. | n to the 3 divides n to the 8 plus n to the 7. Provable by exhibiting the cofactor and `ring`. |
 | `gself-pow-three-pow-eight-add-pow-three` — n to the 3 divides n to the 8 plus n to the 3. | proved | 1 | — | self-seeded polynomial-divisibility identity family. | n to the 3 divides n to the 8 plus n to the 3. Provable by exhibiting the cofactor and `ring`. |
 | `gself-pow-three-pow-eighteen-add-pow-four` — n to the 3 divides n to the 18 plus n to the 4. | proved | 1 | — | self-seeded polynomial-divisibility identity family. | n to the 3 divides n to the 18 plus n to the 4. Provable by exhibiting the cofactor and `ring`. |
