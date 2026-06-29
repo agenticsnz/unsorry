@@ -2241,12 +2241,19 @@ assemble_and_dispatch_batch() {
   return "$rc"
 }
 
-# One batch PR per pass, assembled from the highest-priority eligible queued
-# branches (a batch is ONE governor admission). Gated on UNSORRY_BATCH_SIZE>1.
-# Non-fatal: any failure logs and returns 0 so singleton dispatch still proceeds;
-# the remaining/ineligible branches fall through to dispatch_queue, which dedups
-# against this batch via dispatch_open_batch_goals.
+# Assemble ONE batch PR from the highest-priority eligible queued branches (a
+# batch is ONE governor admission). Gated on UNSORRY_BATCH_SIZE>1. Non-fatal: any
+# failure logs and returns 0 so singleton dispatch still proceeds; the remaining/
+# ineligible branches fall through to dispatch_queue, which dedups against open
+# batches via dispatch_open_batch_goals. Sets the global BATCH_DISPATCHED=1 iff it
+# actually opened a batch this call (so dispatch_batch_passes can loop), else 0.
+# $1 (optional): a pass-scoped file of goals already batched THIS pass — excluded
+# from selection (ADR-113) so the A1 multi-batch loop never re-selects a goal
+# whose just-opened batch PR is not yet visible to dispatch_open_batch_goals
+# (GitHub read-after-write lag).
 dispatch_batch_pass() {
+  BATCH_DISPATCHED=0
+  local pass_exclude="${1:-}"
   [ "${UNSORRY_BATCH_SIZE:-1}" -gt 1 ] || return 0
   fetch_queued_prove_branches || return 0
   fetch_main_ref || true
@@ -2256,7 +2263,8 @@ dispatch_batch_pass() {
   fi
   local exclude_file
   exclude_file="$(mktemp)"
-  { dispatch_open_pr_goals; dispatch_open_batch_goals; } 2>/dev/null | sort -u > "$exclude_file"
+  { dispatch_open_pr_goals; dispatch_open_batch_goals
+    [ -n "$pass_exclude" ] && cat "$pass_exclude"; } 2>/dev/null | sort -u > "$exclude_file"
   local -a picked
   mapfile -t picked < <(queued_branch_refs | fair_dispatch_order \
     | python3 -m tools.dispatch.batch select --max "$UNSORRY_BATCH_SIZE" --exclude-file "$exclude_file" 2>/dev/null)
@@ -2267,7 +2275,7 @@ dispatch_batch_pass() {
     return 0
   fi
   # ADR-071 fresh re-check: drop any pick taken (merged/PR'd) since selection.
-  local -a final=()
+  local -a final=() final_goals=()
   local b g
   for b in "${picked[@]}"; do
     b="${b#origin/}"
@@ -2276,11 +2284,38 @@ dispatch_batch_pass() {
       log "batch: dropping $g — taken since selection"
       continue
     fi
-    final+=("$b")
+    final+=("$b"); final_goals+=("$g")
   done
   [ "${#final[@]}" -ge 2 ] || return 0
-  assemble_and_dispatch_batch "${final[@]}" \
-    || log "batch: assembly failed — branches remain for singleton dispatch"
+  if assemble_and_dispatch_batch "${final[@]}"; then
+    BATCH_DISPATCHED=1
+    # Record the just-batched goals so the next loop iteration won't re-select
+    # them before the new batch PR is visible to dispatch_open_batch_goals.
+    [ -n "$pass_exclude" ] && printf '%s\n' "${final_goals[@]}" >> "$pass_exclude"
+  else
+    log "batch: assembly failed — branches remain for singleton dispatch"
+  fi
+  return 0
+}
+
+# A1/A2 (ADR-113, amends ADR-107): fill EVERY free Gate-A slot with batches before
+# any singleton. Loop dispatch_batch_pass until it stops opening batches (governor
+# paused → gate full, or fewer than 2 batchable branches remain), capped at
+# UNSORRY_MAX_BATCHES_PER_PASS as a runaway backstop. A pass-scoped exclude file
+# dedups batched goals across iterations against read-after-write lag. Singletons
+# (dispatch_queue) then handle only the <2-batchable remainder, so the dominant
+# mathlib env-load is amortised over K proofs per slot instead of spent per proof.
+dispatch_batch_passes() {
+  [ "${UNSORRY_BATCH_SIZE:-1}" -gt 1 ] || return 0
+  local pass_exclude rounds=0
+  pass_exclude="$(mktemp)"
+  while [ "$rounds" -lt "${UNSORRY_MAX_BATCHES_PER_PASS:-8}" ]; do
+    dispatch_batch_pass "$pass_exclude"
+    [ "${BATCH_DISPATCHED:-0}" -eq 1 ] || break
+    rounds=$((rounds + 1))
+  done
+  rm -f "$pass_exclude"
+  [ "$rounds" -gt 0 ] && log "batch: opened $rounds batch PR(s) this pass"
   return 0
 }
 
@@ -6251,6 +6286,35 @@ test_dispatch_open_batch_goals_parses_manifests() {
     || { log "  expected 'ga gb' from the batch manifest only, got '$out'"; return 1; }
 }
 
+test_dispatch_batch_loop_multiple() {
+  # A1 (ADR-113): the batch loop keeps opening batches until one stops, so a
+  # homogeneous flood drains via batches rather than crowding the gate with
+  # 1-proof singletons.
+  local UNSORRY_BATCH_SIZE=8 UNSORRY_MAX_BATCHES_PER_PASS=8 calls=0
+  dispatch_batch_pass() { calls=$((calls + 1)); [ "$calls" -le 3 ] && BATCH_DISPATCHED=1 || BATCH_DISPATCHED=0; return 0; }
+  dispatch_batch_passes
+  unset -f dispatch_batch_pass
+  [ "$calls" -eq 4 ] || { log "  expected 4 calls (3 batches + 1 stop), got $calls"; return 1; }
+}
+
+test_dispatch_batch_loop_caps() {
+  # The runaway backstop caps batches per pass even if the gate never reports full.
+  local UNSORRY_BATCH_SIZE=8 UNSORRY_MAX_BATCHES_PER_PASS=2 calls=0
+  dispatch_batch_pass() { calls=$((calls + 1)); BATCH_DISPATCHED=1; return 0; }
+  dispatch_batch_passes
+  unset -f dispatch_batch_pass
+  [ "$calls" -eq 2 ] || { log "  expected cap of 2 calls, got $calls"; return 1; }
+}
+
+test_dispatch_batch_loop_disabled_at_size_one() {
+  # At the default batch size 1 the loop is a no-op (singleton path unchanged).
+  local UNSORRY_BATCH_SIZE=1 calls=0
+  dispatch_batch_pass() { calls=$((calls + 1)); BATCH_DISPATCHED=1; return 0; }
+  dispatch_batch_passes
+  unset -f dispatch_batch_pass
+  [ "$calls" -eq 0 ] || { log "  expected 0 calls at size 1, got $calls"; return 1; }
+}
+
 test_batch_dedup_skips_batched_goal() {
   # ADR-107: with batching ON, dispatch_queue dedups its singletons against goals
   # already in an open batch PR, so no redundant singleton opens for a batched goal.
@@ -6456,6 +6520,9 @@ run_self_tests() {
     test_dispatch_solver_fairness
     test_fair_dispatch_order_survives_early_reader_close
     test_dispatch_open_batch_goals_parses_manifests
+    test_dispatch_batch_loop_multiple
+    test_dispatch_batch_loop_caps
+    test_dispatch_batch_loop_disabled_at_size_one
     test_batch_dedup_skips_batched_goal
     test_batch_dedup_inactive_at_size_one
     test_batch_build_worktree_shallow_safe
@@ -6745,6 +6812,7 @@ main() {
     UNSORRY_GOVERNOR_SCAN_LIMIT="${UNSORRY_GOVERNOR_SCAN_LIMIT:-200}"
     UNSORRY_DISPATCH_LIMIT="${UNSORRY_DISPATCH_LIMIT:-1}"
     UNSORRY_BATCH_SIZE="${UNSORRY_BATCH_SIZE:-1}"
+    UNSORRY_MAX_BATCHES_PER_PASS="${UNSORRY_MAX_BATCHES_PER_PASS:-8}"
     UNSORRY_GOVERNOR_WAIT="${UNSORRY_GOVERNOR_WAIT:-300}"
     case "$UNSORRY_SUBMISSION_GOVERNOR" in
       0|1) ;;
@@ -6755,13 +6823,15 @@ main() {
     validate_integer_knob UNSORRY_GOVERNOR_SCAN_LIMIT "$UNSORRY_GOVERNOR_SCAN_LIMIT"
     validate_integer_knob UNSORRY_DISPATCH_LIMIT "$UNSORRY_DISPATCH_LIMIT"
     validate_integer_knob UNSORRY_BATCH_SIZE "$UNSORRY_BATCH_SIZE"
+    validate_integer_knob UNSORRY_MAX_BATCHES_PER_PASS "$UNSORRY_MAX_BATCHES_PER_PASS" 1
     validate_integer_knob UNSORRY_GOVERNOR_WAIT "$UNSORRY_GOVERNOR_WAIT"
     gh auth status >/dev/null 2>&1 || die_config "gh is not authenticated"
     while :; do
-      # ADR-107: assemble a batch PR first (when enabled), then singleton-dispatch
-      # the remainder. Batching is one governor admission for K proofs; dispatch_queue
-      # dedups its singletons against the open batch via dispatch_open_batch_goals.
-      [ "$UNSORRY_BATCH_SIZE" -gt 1 ] && dispatch_batch_pass
+      # ADR-107 + ADR-113: open as many batch PRs as the gate budget allows FIRST
+      # (A1/A2), then singleton-dispatch only the <2-batchable remainder. Each batch
+      # is one governor admission for K proofs; dispatch_queue dedups its singletons
+      # against open batches via dispatch_open_batch_goals.
+      dispatch_batch_passes
       dispatch_queue || exit 1
       [ "$ONCE" -eq 1 ] && exit 0
       [ "$UNSORRY_GOVERNOR_WAIT" -gt 0 ] || exit 0
