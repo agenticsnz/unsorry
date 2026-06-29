@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-k-sub-one-div-factorial-telescope
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-k-sub-one-div-factorial-telescope.md
+  src≜packages/unsorry-archive-0037/backlog/sum-range-k-sub-one-div-factorial-telescope.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-k-sub-one-div-factorial-telescope.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0037/goals/sum-range-k-sub-one-div-factorial-telescope.lean
+  sha≜362922065f638100be67e0e23690b88225073cef72ae1872fa1eed028a840ca5
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

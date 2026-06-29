@@ -1,0 +1,155 @@
+{
+  "block_id": "unsorry-archive-0078",
+  "target_size": 40,
+  "proof_count": 34,
+  "status": "frozen",
+  "source_commit": "894c67725f355be442bf001398222fd49d66c8da",
+  "validation_commit": null,
+  "pins": {
+    "lean_toolchain": "leanprover/lean4:v4.30.0",
+    "mathlib": "v4.30.0"
+  },
+  "notes": [
+    "ADR-041 proof archive block 0078.",
+    "Whole decomposition trees + standalone proved goals only (invariant A).",
+    "Active goal records remain as archived metadata pointing at this package."
+  ],
+  "goals": [
+    {
+      "goal": "gself-pow-three-pow-24-add-pow-three",
+      "module": "Unsorry.GselfPowThreePow24AddPowThree"
+    },
+    {
+      "goal": "gself-pow-three-pow-24-add-pow-four",
+      "module": "Unsorry.GselfPowThreePow24AddPowFour"
+    },
+    {
+      "goal": "gself-pow-three-pow-24-add-pow-five",
+      "module": "Unsorry.GselfPowThreePow24AddPowFive"
+    },
+    {
+      "goal": "gself-pow-three-pow-24-add-pow-six",
+      "module": "Unsorry.GselfPowThreePow24AddPowSix"
+    },
+    {
+      "goal": "gself-pow-three-pow-24-add-pow-seven",
+      "module": "Unsorry.GselfPowThreePow24AddPowSeven"
+    },
+    {
+      "goal": "gself-pow-three-pow-24-add-pow-eight",
+      "module": "Unsorry.GselfPowThreePow24AddPowEight"
+    },
+    {
+      "goal": "gself-pow-three-pow-24-add-pow-nine",
+      "module": "Unsorry.GselfPowThreePow24AddPowNine"
+    },
+    {
+      "goal": "gself-pow-three-pow-24-add-pow-eleven",
+      "module": "Unsorry.GselfPowThreePow24AddPowEleven"
+    },
+    {
+      "goal": "gself-pow-three-pow-24-add-pow-twelve",
+      "module": "Unsorry.GselfPowThreePow24AddPowTwelve"
+    },
+    {
+      "goal": "gself-pow-three-pow-24-add-pow-thirteen",
+      "module": "Unsorry.GselfPowThreePow24AddPowThirteen"
+    },
+    {
+      "goal": "gself-pow-three-pow-24-add-pow-fourteen",
+      "module": "Unsorry.GselfPowThreePow24AddPowFourteen"
+    },
+    {
+      "goal": "gself-pow-three-pow-24-add-pow-sixteen",
+      "module": "Unsorry.GselfPowThreePow24AddPowSixteen"
+    },
+    {
+      "goal": "gself-pow-three-pow-24-add-pow-seventeen",
+      "module": "Unsorry.GselfPowThreePow24AddPowSeventeen"
+    },
+    {
+      "goal": "gself-pow-three-pow-24-add-pow-eighteen",
+      "module": "Unsorry.GselfPowThreePow24AddPowEighteen"
+    },
+    {
+      "goal": "gself-pow-three-pow-24-add-pow-nineteen",
+      "module": "Unsorry.GselfPowThreePow24AddPowNineteen"
+    },
+    {
+      "goal": "gself-pow-three-pow-24-add-pow-twenty",
+      "module": "Unsorry.GselfPowThreePow24AddPowTwenty"
+    },
+    {
+      "goal": "gself-pow-three-pow-24-add-pow-21",
+      "module": "Unsorry.GselfPowThreePow24AddPow21"
+    },
+    {
+      "goal": "gself-pow-three-pow-24-add-pow-22",
+      "module": "Unsorry.GselfPowThreePow24AddPow22"
+    },
+    {
+      "goal": "gself-pow-three-pow-24-add-pow-23",
+      "module": "Unsorry.GselfPowThreePow24AddPow23"
+    },
+    {
+      "goal": "gself-pow-three-pow-25-add-pow-three",
+      "module": "Unsorry.GselfPowThreePow25AddPowThree"
+    },
+    {
+      "goal": "gself-pow-three-pow-25-add-pow-four",
+      "module": "Unsorry.GselfPowThreePow25AddPowFour"
+    },
+    {
+      "goal": "gself-pow-three-pow-25-add-pow-five",
+      "module": "Unsorry.GselfPowThreePow25AddPowFive"
+    },
+    {
+      "goal": "gself-pow-three-pow-25-add-pow-six",
+      "module": "Unsorry.GselfPowThreePow25AddPowSix"
+    },
+    {
+      "goal": "gself-pow-three-pow-25-add-pow-seven",
+      "module": "Unsorry.GselfPowThreePow25AddPowSeven"
+    },
+    {
+      "goal": "gself-pow-three-pow-25-add-pow-eight",
+      "module": "Unsorry.GselfPowThreePow25AddPowEight"
+    },
+    {
+      "goal": "gself-pow-three-pow-25-add-pow-nine",
+      "module": "Unsorry.GselfPowThreePow25AddPowNine"
+    },
+    {
+      "goal": "gself-pow-three-pow-25-add-pow-ten",
+      "module": "Unsorry.GselfPowThreePow25AddPowTen"
+    },
+    {
+      "goal": "gself-pow-three-pow-25-add-pow-eleven",
+      "module": "Unsorry.GselfPowThreePow25AddPowEleven"
+    },
+    {
+      "goal": "gself-pow-three-pow-25-add-pow-twelve",
+      "module": "Unsorry.GselfPowThreePow25AddPowTwelve"
+    },
+    {
+      "goal": "gself-pow-three-pow-25-add-pow-thirteen",
+      "module": "Unsorry.GselfPowThreePow25AddPowThirteen"
+    },
+    {
+      "goal": "gself-pow-three-pow-25-add-pow-fourteen",
+      "module": "Unsorry.GselfPowThreePow25AddPowFourteen"
+    },
+    {
+      "goal": "gself-pow-three-pow-25-add-pow-fifteen",
+      "module": "Unsorry.GselfPowThreePow25AddPowFifteen"
+    },
+    {
+      "goal": "gself-pow-three-pow-25-add-pow-sixteen",
+      "module": "Unsorry.GselfPowThreePow25AddPowSixteen"
+    },
+    {
+      "goal": "gself-pow-three-pow-25-add-pow-seventeen",
+      "module": "Unsorry.GselfPowThreePow25AddPowSeventeen"
+    }
+  ]
+}

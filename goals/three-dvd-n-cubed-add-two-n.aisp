@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜three-dvd-n-cubed-add-two-n
   phase≜prove
-  status≜proved
-  difficulty≜2
+  status≜archived
+  difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/three-dvd-n-cubed-add-two-n.md
+  src≜packages/unsorry-archive-0012/backlog/three-dvd-n-cubed-add-two-n.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/three-dvd-n-cubed-add-two-n.lean
+  lean≜packages/unsorry-archive-0012/goals/three-dvd-n-cubed-add-two-n.lean
   sha≜9790715e918a94944e1b4f44bd44170ff09a72bca46133e050deca98a6e3e70d
   aff≜-9
 }

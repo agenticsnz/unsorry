@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜prod-icc-succ-sq-div-k-mul-add-two-telescope
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/prod-icc-succ-sq-div-k-mul-add-two-telescope.md
+  src≜packages/unsorry-archive-0033/backlog/prod-icc-succ-sq-div-k-mul-add-two-telescope.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/prod-icc-succ-sq-div-k-mul-add-two-telescope.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0033/goals/prod-icc-succ-sq-div-k-mul-add-two-telescope.lean
+  sha≜7c9b7ac14e116c7d0da7af4a55fa4b97a2df7c5296600fba7f04371f69949a27
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

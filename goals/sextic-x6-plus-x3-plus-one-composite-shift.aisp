@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜sextic-x6-plus-x3-plus-one-composite-shift
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/sextic-x6-plus-x3-plus-one-composite-shift.lean
-  sha≜∅
-  aff≜-20
+  sha≜c1c1554faebab3b3b138eb458e0c52191dea946f2a149735804028c4c76e4264
+  aff≜-19
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

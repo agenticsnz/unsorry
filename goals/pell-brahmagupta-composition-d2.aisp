@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜pell-brahmagupta-composition-d2
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/pell-brahmagupta-composition-d2.md
+  src≜packages/unsorry-archive-0011/backlog/pell-brahmagupta-composition-d2.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/pell-brahmagupta-composition-d2.lean
+  lean≜packages/unsorry-archive-0011/goals/pell-brahmagupta-composition-d2.lean
   sha≜ada08066aac117231c634841c86f77011cd17c45ac51465352d37da3c05bbdff
   aff≜-9
 }

@@ -6,7 +6,7 @@
 | **Initiative** | volunteer-scale orchestration / non-contributor onramp |
 | **Proposed By** | unsorry maintainers |
 | **Date** | 2026-06-17 |
-| **Status** | Proposed |
+| **Status** | Accepted |
 
 ## Context
 
@@ -187,3 +187,4 @@ job, not this ADR's.
 | Status | Approver | Date |
 |--------|----------|------|
 | Proposed | unsorry maintainers | 2026-06-17 |
+| Accepted (Phase 1 implemented — fork mode + auto-merge enabler, #2152, #2158) | unsorry maintainers | 2026-06-19 |

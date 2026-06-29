@@ -1,8 +1,0 @@
-𝔸5.1.lemma.9d6b0aaff1f6@2026-06-17
-γ≔unsorry.lemma.index
-⟦Ω:Lemma⟧{sha≜9d6b0aaff1f6524cf10965b0ff13308d7259b8c4f07789e227d8072f8177f91d; goal≜sum-range-recip-two-pow; name≜sum_range_recip_two_pow}
-⟦Σ:Source⟧{src≜goals/sum-range-recip-two-pow.lean}
-⟦Γ:Tags⟧{tags≜⟨⟩}
-⟦Λ:Meta⟧{use≜0; aff≜0}
-⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜claude; model≜template-sum-induction; attempts≜1}
-⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

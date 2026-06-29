@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜two-mul-sum-range-fib-triple-eq-fib-pred
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜4
 }
 ⟦Σ:Source⟧{
-  src≜backlog/two-mul-sum-range-fib-triple-eq-fib-pred.md
+  src≜packages/unsorry-archive-0039/backlog/two-mul-sum-range-fib-triple-eq-fib-pred.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/two-mul-sum-range-fib-triple-eq-fib-pred.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0039/goals/two-mul-sum-range-fib-triple-eq-fib-pred.lean
+  sha≜2dd8a835c9a78845f2c9ab78f6770d9ea45aa375d3aa1ae2595e7f6a1facd755
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

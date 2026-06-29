@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-vandermonde-diagonal-eq-choose
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-vandermonde-diagonal-eq-choose.md
+  src≜packages/unsorry-archive-0039/backlog/sum-vandermonde-diagonal-eq-choose.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-vandermonde-diagonal-eq-choose.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0039/goals/sum-vandermonde-diagonal-eq-choose.lean
+  sha≜f87f0d8cd26868c208703ef3703b5e2ed34fcef86266217fd95fe55327f6d9d5
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

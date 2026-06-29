@@ -1,0 +1,8 @@
+𝔸5.1.run.gpow-diff-nine-pow-two.mac-158f.20260619t094158371818z-ef6930e9@2026-06-19
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260619t094158371818z-ef6930e9; goal≜gpow-diff-nine-pow-two; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜claude; model≜template-ring-cofactor}
+⟦Γ:Goal⟧{goal≜gpow-diff-nine-pow-two}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-19T09:41:58Z}
+⟦Σ:Artifact⟧{sha≜2bc46f967e39674720be13de451a7283d440fb21055c44870e9c9d3c56b5b0fe}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

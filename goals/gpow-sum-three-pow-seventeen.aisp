@@ -1,0 +1,20 @@
+𝔸5.1.goal.gpow-sum-three-pow-seventeen@2026-06-19
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gpow-sum-three-pow-seventeen
+  phase≜prove
+  status≜archived
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜packages/unsorry-archive-0088/backlog/gpow-sum-three-pow-seventeen.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜packages/unsorry-archive-0088/goals/gpow-sum-three-pow-seventeen.lean
+  sha≜2cd67d4122ed677c7b068747549754a6aec5b908ea7b6626125e6f1d03cc3f59
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

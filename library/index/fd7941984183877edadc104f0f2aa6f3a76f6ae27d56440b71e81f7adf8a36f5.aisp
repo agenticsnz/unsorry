@@ -1,8 +1,0 @@
-𝔸5.1.lemma.fd7941984183@2026-06-16
-γ≔unsorry.lemma.index
-⟦Ω:Lemma⟧{sha≜fd7941984183877edadc104f0f2aa6f3a76f6ae27d56440b71e81f7adf8a36f5; goal≜sum-range-fib-sq-eq-fib-mul-fib-succ; name≜sum_range_fib_sq_eq_fib_mul_fib_succ}
-⟦Σ:Source⟧{src≜goals/sum-range-fib-sq-eq-fib-mul-fib-succ.lean}
-⟦Γ:Tags⟧{tags≜⟨⟩}
-⟦Λ:Meta⟧{use≜0; aff≜0}
-⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜claude; model≜template-fib; attempts≜1}
-⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

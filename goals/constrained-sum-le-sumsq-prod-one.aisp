@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜constrained-sum-le-sumsq-prod-one
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/constrained-sum-le-sumsq-prod-one.md
+  src≜packages/unsorry-archive-0011/backlog/constrained-sum-le-sumsq-prod-one.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/constrained-sum-le-sumsq-prod-one.lean
+  lean≜packages/unsorry-archive-0011/goals/constrained-sum-le-sumsq-prod-one.lean
   sha≜76adfd0ccbf3fb5fe2667a59ad77c054b54ba7296c6f57259c64dd9bf6b8c010
   aff≜-9
 }

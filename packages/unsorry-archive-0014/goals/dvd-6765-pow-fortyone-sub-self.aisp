@@ -1,0 +1,20 @@
+𝔸5.1.goal.dvd-6765-pow-fortyone-sub-self@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜dvd-6765-pow-fortyone-sub-self
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/dvd-6765-pow-fortyone-sub-self.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/dvd-6765-pow-fortyone-sub-self.lean
+  sha≜6bccee210b9a4d4210ded74f05726302e5a1c486f092ac7550c3a7f101a3c3b4
+  aff≜-19
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

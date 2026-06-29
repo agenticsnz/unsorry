@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-centered-tetrahedral-closed-form@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-centered-tetrahedral-closed-form
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-centered-tetrahedral-closed-form.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-centered-tetrahedral-closed-form.lean
+  sha≜2f90632ec089ad922db6cf190d943a2478b814f128b77230a6a49c48c6ec3ce8
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

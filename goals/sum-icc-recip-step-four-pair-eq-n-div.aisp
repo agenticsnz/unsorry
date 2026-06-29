@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-icc-recip-step-four-pair-eq-n-div
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-icc-recip-step-four-pair-eq-n-div.md
+  src≜packages/unsorry-archive-0034/backlog/sum-icc-recip-step-four-pair-eq-n-div.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-icc-recip-step-four-pair-eq-n-div.lean
-  sha≜∅
-  aff≜-10
+  lean≜packages/unsorry-archive-0034/goals/sum-icc-recip-step-four-pair-eq-n-div.lean
+  sha≜5a65077ccb9aec1f1838bb5866fee065e620c52a9f5684485ad5946241c0aa26
+  aff≜-9
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
