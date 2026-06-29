@@ -2151,9 +2151,16 @@ build_batch_worktree() {
       log "batch: no net proof files for $goal (proved/pruned mid-pass?) — skipping it"
       continue
     fi
+    # NB the explicit committer identity: the queue-dispatcher runs on an Actions
+    # checkout with NO git user configured (singletons never commit there — they open
+    # PRs from pre-committed branches), so a bare `git commit` dies "Author identity
+    # unknown" and silently drops every constituent. The authoritative proof
+    # attribution is the library/index `solver≜` record (carried verbatim), so a
+    # generic committer here is correct and matches the bot-driven singleton path.
     if ! git -C "$wt" checkout "origin/$b" -- "${files[@]}" 2>/dev/null \
        || ! git -C "$wt" add -- "${files[@]}" 2>/dev/null \
-       || ! git -C "$wt" commit -q -m "prove($goal): batched proof (ADR-107)" 2>/dev/null; then
+       || ! git -C "$wt" -c user.name="unsorry-batch" -c user.email="unsorry-batch@users.noreply.github.com" \
+            commit -q -m "prove($goal): batched proof (ADR-107)" 2>/dev/null; then
       log "batch: could not lay down $goal — skipping it"
       git -C "$wt" reset -q --hard 2>/dev/null || true
       continue
@@ -6296,10 +6303,13 @@ test_batch_build_worktree_shallow_safe() {
     log "  shallow clone failed"; rm -rf "$tmp"; return 1
   fi
   test -f "$ci/.git/shallow" || { log "  test clone was not shallow — invalid fixture"; rm -rf "$tmp"; return 1; }
-  git -C "$ci" config user.email t@t; git -C "$ci" config user.name t
   git -C "$ci" fetch -q --depth=1 origin '+refs/heads/queued/prove/*:refs/remotes/origin/queued/prove/*'
   batch_net_files() { printf 'library/Unsorry/Gx.lean\n'; }   # stub the compare-API resolver
-  succ="$( cd "$ci" && build_batch_worktree ".bwt" "batch/test" queued/prove/gx/agent-x )" || rc=$?
+  # Run with NO ambient git identity (GIT_CONFIG_*=/dev/null + no local user.* on the
+  # clone) — exactly the Actions-runner state — so this fails unless build_batch_worktree
+  # sets its own committer identity for the batch commit.
+  succ="$( cd "$ci" && GIT_CONFIG_GLOBAL=/dev/null GIT_CONFIG_SYSTEM=/dev/null \
+           build_batch_worktree ".bwt" "batch/test" queued/prove/gx/agent-x )" || rc=$?
   unset -f batch_net_files
   [ -f "$ci/.bwt/library/Unsorry/Gx.lean" ] && hasproof=1
   [ -f "$ci/.bwt/library/Unsorry/Archived.lean" ] || resurrected=0
