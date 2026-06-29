@@ -2,7 +2,7 @@
 
 # Architecture Decision Records
 
-Index of the 108 ADRs in this directory, generated from the `ADR-*.md` headers and kept in sync by the `adr-index` workflow. See [ADR-001](ADR-001-Adopt-Development-Protocols.md) and [the development protocols](../protocols.md) for the WH(Y) format and process.
+Index of the 110 ADRs in this directory, generated from the `ADR-*.md` headers and kept in sync by the `adr-index` workflow. See [ADR-001](ADR-001-Adopt-Development-Protocols.md) and [the development protocols](../protocols.md) for the WH(Y) format and process.
 
 | ADR | Title | Status | Date |
 |-----|-------|--------|------|
@@ -114,3 +114,5 @@ Index of the 108 ADRs in this directory, generated from the `ADR-*.md` headers a
 | [ADR-106](ADR-106-Difficulty-Aware-Dispatch.md) | Deprioritise low-difficulty template proofs in the queue dispatcher | Proposed | 2026-06-26 |
 | [ADR-107](ADR-107-Batch-Verification.md) | Batch verification — amortise the per-PR Gate A env-load across K proofs | Proposed | 2026-06-26 |
 | [ADR-110](ADR-110-Segregate-Benchmark-Goal-Statements.md) | Segregate Benchmark Goal Statements From the Repo-Pin Build | Proposed | 2026-06-26 |
+| [ADR-111](ADR-111-Proofs-Over-Time-Quiet-Gap-Carry-Forward.md) | Carry the Proofs-Over-Time Chart Forward Across Quiet Gaps | Accepted | 2026-06-29 |
+| [ADR-112](ADR-112-Bounded-Retry-For-Flaked-Required-Gate.md) | Bounded Auto-Retry for PRs Blocked by a Flaked Required Gate | Accepted | 2026-06-29 |

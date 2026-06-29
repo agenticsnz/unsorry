@@ -1,6 +1,6 @@
 {
   "generated_by": "python3 -m tools.adr_index --write",
-  "count": 108,
+  "count": 110,
   "adrs": [
     {
       "id": "ADR-001",
@@ -865,6 +865,22 @@
       "status": "Proposed",
       "date": "2026-06-26",
       "file": "ADR-110-Segregate-Benchmark-Goal-Statements.md"
+    },
+    {
+      "id": "ADR-111",
+      "number": 111,
+      "title": "Carry the Proofs-Over-Time Chart Forward Across Quiet Gaps",
+      "status": "Accepted",
+      "date": "2026-06-29",
+      "file": "ADR-111-Proofs-Over-Time-Quiet-Gap-Carry-Forward.md"
+    },
+    {
+      "id": "ADR-112",
+      "number": 112,
+      "title": "Bounded Auto-Retry for PRs Blocked by a Flaked Required Gate",
+      "status": "Accepted",
+      "date": "2026-06-29",
+      "file": "ADR-112-Bounded-Retry-For-Flaked-Required-Gate.md"
     }
   ]
 }
