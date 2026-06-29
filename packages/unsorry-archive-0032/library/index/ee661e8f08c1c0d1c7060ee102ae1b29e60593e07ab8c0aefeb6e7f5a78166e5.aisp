@@ -1,0 +1,8 @@
+𝔸5.1.lemma.ee661e8f08c1@2026-06-19
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜ee661e8f08c1c0d1c7060ee102ae1b29e60593e07ab8c0aefeb6e7f5a78166e5; goal≜gpow-diff-two-pow-ten; name≜gpow_diff_two_pow_ten}
+⟦Σ:Source⟧{src≜goals/gpow-diff-two-pow-ten.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜python; model≜sympy; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

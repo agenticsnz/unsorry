@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-fourth-powers-three-var-ge-sym-square-products@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-fourth-powers-three-var-ge-sym-square-products
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-fourth-powers-three-var-ge-sym-square-products.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-fourth-powers-three-var-ge-sym-square-products.lean
+  sha≜39aab2d1d190b17200e1d10709859a4bb23c6ca593df8045559b48b4e5c95d80
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

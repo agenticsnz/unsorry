@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜prod-icc-one-add-recip-k-sq-sub-one-telescope
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/prod-icc-one-add-recip-k-sq-sub-one-telescope.md
+  src≜packages/unsorry-archive-0033/backlog/prod-icc-one-add-recip-k-sq-sub-one-telescope.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/prod-icc-one-add-recip-k-sq-sub-one-telescope.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0033/goals/prod-icc-one-add-recip-k-sq-sub-one-telescope.lean
+  sha≜6f09dd52470563b2a54fb44a2830c8044e7d5d2d67982b9fded0d6b5a8f657b4
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

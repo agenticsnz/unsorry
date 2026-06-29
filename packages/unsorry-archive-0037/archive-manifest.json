@@ -1,0 +1,155 @@
+{
+  "block_id": "unsorry-archive-0037",
+  "target_size": 40,
+  "proof_count": 34,
+  "status": "frozen",
+  "source_commit": "1ac3a7e67629651cd15f47212c91559c16063a86",
+  "validation_commit": null,
+  "pins": {
+    "lean_toolchain": "leanprover/lean4:v4.30.0",
+    "mathlib": "v4.30.0"
+  },
+  "notes": [
+    "ADR-041 proof archive block 0037.",
+    "Whole decomposition trees + standalone proved goals only (invariant A).",
+    "Active goal records remain as archived metadata pointing at this package."
+  ],
+  "goals": [
+    {
+      "goal": "sum-icc-choose-hockey-stick-s1",
+      "module": "Unsorry.SumIccChooseHockeyStickS1"
+    },
+    {
+      "goal": "sum-icc-choose-hockey-stick-s3",
+      "module": "Unsorry.SumIccChooseHockeyStickS3"
+    },
+    {
+      "goal": "sum-icc-choose-hockey-stick",
+      "module": "Unsorry.SumIccChooseHockeyStick"
+    },
+    {
+      "goal": "sum-icc-choose-hockey-stick-s2",
+      "module": "Unsorry.SumIccChooseHockeyStickS2"
+    },
+    {
+      "goal": "sum-range-odd-cubes",
+      "module": "Unsorry.SumRangeOddCubes"
+    },
+    {
+      "goal": "sum-product-consecutive-odds-closed-form",
+      "module": "Unsorry.SumProductConsecutiveOddsClosedForm"
+    },
+    {
+      "goal": "sum-range-k-div-succ-factorial-eq",
+      "module": "Unsorry.SumRangeKDivSuccFactorialEq"
+    },
+    {
+      "goal": "sum-range-k-div-succ-factorial-telescope",
+      "module": "Unsorry.SumRangeKDivSuccFactorialTelescope"
+    },
+    {
+      "goal": "sum-range-k-mul-choose-mul-three-pow-closed",
+      "module": "Unsorry.SumRangeKMulChooseMulThreePowClosed"
+    },
+    {
+      "goal": "sum-range-k-mul-factorial-succ",
+      "module": "Unsorry.SumRangeKMulFactorialSucc"
+    },
+    {
+      "goal": "sum-range-k-plus-one-mul-choose",
+      "module": "Unsorry.SumRangeKPlusOneMulChoose"
+    },
+    {
+      "goal": "sum-range-k-sq-mul-choose-eq",
+      "module": "Unsorry.SumRangeKSqMulChooseEq"
+    },
+    {
+      "goal": "sum-range-k-sub-one-div-factorial-telescope",
+      "module": "Unsorry.SumRangeKSubOneDivFactorialTelescope"
+    },
+    {
+      "goal": "sum-range-lower-triangle-choose-eq-two-pow",
+      "module": "Unsorry.SumRangeLowerTriangleChooseEqTwoPow"
+    },
+    {
+      "goal": "sum-range-lucas-shift-nat",
+      "module": "Unsorry.SumRangeLucasShiftNat"
+    },
+    {
+      "goal": "sum-range-multichoose-two-eq-choose-succ-two",
+      "module": "Unsorry.SumRangeMultichooseTwoEqChooseSuccTwo"
+    },
+    {
+      "goal": "sum-range-odd-index-choose-eq-two-pow",
+      "module": "Unsorry.SumRangeOddIndexChooseEqTwoPow"
+    },
+    {
+      "goal": "gzmod-104-pow-twenty-sub-pow-eight",
+      "module": "Unsorry.Gzmod104PowTwentySubPowEight"
+    },
+    {
+      "goal": "gzmod-120-pow-sixteen-sub-pow-four",
+      "module": "Unsorry.Gzmod120PowSixteenSubPowFour"
+    },
+    {
+      "goal": "gzmod-120-pow-ten-sub-pow-six",
+      "module": "Unsorry.Gzmod120PowTenSubPowSix"
+    },
+    {
+      "goal": "gzmod-120-pow-twelve-sub-pow-four",
+      "module": "Unsorry.Gzmod120PowTwelveSubPowFour"
+    },
+    {
+      "goal": "gzmod-140-pow-fifteen-sub-pow-three",
+      "module": "Unsorry.Gzmod140PowFifteenSubPowThree"
+    },
+    {
+      "goal": "gzmod-140-pow-seventeen-sub-pow-five",
+      "module": "Unsorry.Gzmod140PowSeventeenSubPowFive"
+    },
+    {
+      "goal": "gzmod-144-pow-eighteen-sub-pow-six",
+      "module": "Unsorry.Gzmod144PowEighteenSubPowSix"
+    },
+    {
+      "goal": "gzmod-144-pow-nineteen-sub-pow-seven",
+      "module": "Unsorry.Gzmod144PowNineteenSubPowSeven"
+    },
+    {
+      "goal": "gzmod-144-pow-seventeen-sub-pow-five",
+      "module": "Unsorry.Gzmod144PowSeventeenSubPowFive"
+    },
+    {
+      "goal": "gzmod-144-pow-twenty-sub-pow-eight",
+      "module": "Unsorry.Gzmod144PowTwentySubPowEight"
+    },
+    {
+      "goal": "gzmod-152-pow-thirty-sub-pow-twelve",
+      "module": "Unsorry.Gzmod152PowThirtySubPowTwelve"
+    },
+    {
+      "goal": "gpow-sum-six-pow-two",
+      "module": "Unsorry.GpowSumSixPowTwo"
+    },
+    {
+      "goal": "gpow-sum-six-pow-three",
+      "module": "Unsorry.GpowSumSixPowThree"
+    },
+    {
+      "goal": "gpow-sum-seven-pow-four",
+      "module": "Unsorry.GpowSumSevenPowFour"
+    },
+    {
+      "goal": "gpow-sum-seven-pow-five",
+      "module": "Unsorry.GpowSumSevenPowFive"
+    },
+    {
+      "goal": "gpow-sum-seven-pow-six",
+      "module": "Unsorry.GpowSumSevenPowSix"
+    },
+    {
+      "goal": "gpow-sum-seven-pow-seven",
+      "module": "Unsorry.GpowSumSevenPowSeven"
+    }
+  ]
+}

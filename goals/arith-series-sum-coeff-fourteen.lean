@@ -1,0 +1,4 @@
+import Mathlib
+
+theorem arith_series_sum_coeff_fourteen (n : ℕ) : 2 * ∑ k ∈ Finset.range n, ((k : ℤ) + 14) = (n : ℤ) * ((n : ℤ) - 1) + 2 * 14 * (n : ℤ) := by
+  sorry

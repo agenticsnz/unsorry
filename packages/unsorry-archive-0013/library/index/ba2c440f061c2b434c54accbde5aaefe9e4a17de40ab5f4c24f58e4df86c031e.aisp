@@ -1,0 +1,8 @@
+𝔸5.1.lemma.ba2c440f061c@2026-06-16
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜ba2c440f061c2b434c54accbde5aaefe9e4a17de40ab5f4c24f58e4df86c031e; goal≜sum-range-three-k-add-two-mul-two-pow-closed; name≜sum_range_three_k_add_two_mul_two_pow_closed}
+⟦Σ:Source⟧{src≜goals/sum-range-three-k-add-two-mul-two-pow-closed.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜python; model≜sympy; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

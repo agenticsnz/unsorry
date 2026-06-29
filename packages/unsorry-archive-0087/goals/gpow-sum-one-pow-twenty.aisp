@@ -1,0 +1,20 @@
+𝔸5.1.goal.gpow-sum-one-pow-twenty@2026-06-19
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gpow-sum-one-pow-twenty
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/gpow-sum-one-pow-twenty.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/gpow-sum-one-pow-twenty.lean
+  sha≜b7ec575cf869fa2219d6cdea1d24561b7a2c20ca5f007feea33d3c6a6b30894d
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

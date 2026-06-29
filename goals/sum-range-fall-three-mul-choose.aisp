@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-fall-three-mul-choose
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜4
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-fall-three-mul-choose.md
+  src≜packages/unsorry-archive-0042/backlog/sum-range-fall-three-mul-choose.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-fall-three-mul-choose.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0042/goals/sum-range-fall-three-mul-choose.lean
+  sha≜c4d895dbfd52fb44812550158910966be56441fb9bc03ed1fe30b4572448a328
   aff≜-20
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -1,0 +1,19 @@
+name = "unsorryArchive0015"
+version = "0.1.0"
+keywords = ["math", "archive", "unsorry"]
+defaultTargets = ["UnsorryArchive0015"]
+
+[leanOptions]
+pp.unicode.fun = true
+autoImplicit = false
+relaxedAutoImplicit = false
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.30.0"
+
+[[lean_lib]]
+name = "UnsorryArchive0015"
+srcDir = "library"
+globs = ["Unsorry.+"]

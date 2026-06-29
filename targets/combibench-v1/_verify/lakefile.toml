@@ -1,0 +1,19 @@
+name = "combibenchV1"
+version = "0.1.0"
+keywords = ["math", "benchmark", "unsorry"]
+defaultTargets = ["CombibenchV1"]
+
+[leanOptions]
+pp.unicode.fun = true
+autoImplicit = false
+relaxedAutoImplicit = false
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "f897ebcf72cd16f89ab4577d0c826cd14afaafc7"
+
+[[lean_lib]]
+name = "CombibenchV1"
+srcDir = "library"
+globs = ["Unsorry.+"]

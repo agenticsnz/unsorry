@@ -1,0 +1,20 @@
+𝔸5.1.goal.dvd-840-pow-fifteen-sub-pow-three@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜dvd-840-pow-fifteen-sub-pow-three
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/dvd-840-pow-fifteen-sub-pow-three.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/dvd-840-pow-fifteen-sub-pow-three.lean
+  sha≜bf9516f266f282ae65139db6b0335ba9fdff1f861abe5fd028ce7f3a9b8b6d27
+  aff≜-19
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

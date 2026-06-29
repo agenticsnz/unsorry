@@ -1,0 +1,20 @@
+𝔸5.1.goal.gbinom-consec-four-fact-dvd@2026-06-19
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gbinom-consec-four-fact-dvd
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/gbinom-consec-four-fact-dvd.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/gbinom-consec-four-fact-dvd.lean
+  sha≜e50d98a4eae6dce734cdcf8d4e78bacfc217af6aba42818763176b3ecc8eb8e5
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

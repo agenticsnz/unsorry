@@ -1,0 +1,8 @@
+𝔸5.1.run.putnam-1969-b3.afnz-zbook-b336.20260626t160404745289z-1fdbaee4@2026-06-26
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260626t160404745289z-1fdbaee4; goal≜putnam-1969-b3; agent≜afnz-zbook-b336; outcome≜failed}
+⟦Π:Provenance⟧{solver≜cgbarlow; provider≜claude; model≜opus; effort≜high}
+⟦Γ:Goal⟧{goal≜putnam-1969-b3}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜1256; ended≜2026-06-26T16:04:04Z; lessons≜0}
+⟦Σ:Artifact⟧{sha≜∅}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

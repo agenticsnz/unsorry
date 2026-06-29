@@ -1,0 +1,8 @@
+𝔸5.1.run.sum-two-cubes-zmod-seven-mem.mac-158f.20260616t220758922011z-63c0d5e4@2026-06-16
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260616t220758922011z-63c0d5e4; goal≜sum-two-cubes-zmod-seven-mem; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜python; model≜sympy}
+⟦Γ:Goal⟧{goal≜sum-two-cubes-zmod-seven-mem}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-16T22:07:58Z}
+⟦Σ:Artifact⟧{sha≜2bd3bf882089b63c6da8528664217f15a2d99de5e41195e255bed31b158572e0}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

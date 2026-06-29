@@ -6,9 +6,11 @@
   <title>{% if page.title %}{{ page.title }} · {% endif %}{{ site.title | default: "unsorry" }}</title>
   {% seo %}
   <style>
-    :root { --fg:#1f2328; --muted:#59636e; --link:#0969da; --border:#d1d9e0; --bg:#ffffff; --code-bg:#f6f8fa; }
+    :root { --fg:#1f2328; --muted:#59636e; --link:#0969da; --border:#d1d9e0; --bg:#ffffff; --code-bg:#f6f8fa;
+      --btn-bg:#1f2328; --btn-fg:#ffffff; --btn-sub:#9198a1; --btn-border:rgba(27,31,36,.15); }
     @media (prefers-color-scheme: dark) {
-      :root { --fg:#e6edf3; --muted:#9198a1; --link:#4493f8; --border:#3d444d; --bg:#0d1117; --code-bg:#151b23; }
+      :root { --fg:#e6edf3; --muted:#9198a1; --link:#4493f8; --border:#3d444d; --bg:#0d1117; --code-bg:#151b23;
+        --btn-bg:#21262d; --btn-fg:#e6edf3; --btn-sub:#9198a1; --btn-border:#3d444d; }
     }
     body {
       color: var(--fg); background: var(--bg);
@@ -30,10 +32,99 @@
     th, td { border: 1px solid var(--border); padding: .4em .8em; }
     blockquote { color: var(--muted); border-left: .25em solid var(--border); padding: 0 1em; margin-left: 0; }
     img { max-width: 100%; }
+    /* Site banner: Agentics logo (top left) + "View project on GitHub" button
+       (top right), echoing the GitHub Pages "architect" theme header. */
+    .site-header {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem 1.5rem; margin-bottom: 2.5rem;
+    }
+    .site-header__logo img { height: 60px; width: auto; display: block; }
+    .site-header__gh {
+      display: inline-block; text-align: center; line-height: 1.25; white-space: nowrap;
+      color: var(--btn-fg); background: var(--btn-bg);
+      border: 1px solid var(--btn-border); border-radius: 8px;
+      padding: 9px 18px; font-weight: 700; font-size: 1rem;
+    }
+    .site-header__gh:hover { text-decoration: none; filter: brightness(1.12); }
+    .site-header__gh small { display: block; font-weight: 400; font-size: 11px; color: var(--btn-sub); }
+    /* Centre "On this page" dropdown: a native <details> disclosure populated at
+       runtime from the rendered h2/h3 headings, so it stays in sync with the README. */
+    .site-header__toc { position: relative; }
+    .site-header__toc[hidden] { display: none; }
+    .site-header__toc > summary {
+      list-style: none; cursor: pointer; user-select: none; white-space: nowrap;
+      display: inline-flex; align-items: center; gap: .4em;
+      color: var(--fg); background: var(--code-bg);
+      border: 1px solid var(--border); border-radius: 8px;
+      padding: 9px 14px; font-weight: 600; font-size: .95rem;
+    }
+    .site-header__toc > summary::-webkit-details-marker { display: none; }
+    .site-header__toc > summary:hover { border-color: var(--muted); }
+    .site-header__caret { font-size: .7em; color: var(--muted); transition: transform .15s ease; }
+    .site-header__toc[open] .site-header__caret { transform: rotate(180deg); }
+    .site-header__menu {
+      position: absolute; top: calc(100% + 6px); left: 50%; transform: translateX(-50%);
+      z-index: 30; min-width: 220px; max-width: min(340px, 86vw);
+      max-height: min(70vh, 420px); overflow-y: auto;
+      background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.18); padding: .35rem;
+    }
+    .site-header__menu a {
+      display: block; color: var(--fg); border-radius: 6px;
+      padding: .35rem .6rem; font-size: .9rem; line-height: 1.35;
+    }
+    .site-header__menu a:hover { text-decoration: none; background: var(--code-bg); }
+    .site-header__menu a.lvl-3 { padding-left: 1.5rem; color: var(--muted); font-size: .85rem; }
+    @media (max-width: 480px) {
+      .site-header__logo img { height: 48px; }
+      .site-header__toc { order: 3; flex-basis: 100%; }
+      .site-header__menu { left: 0; transform: none; }
+    }
   </style>
 </head>
 <body>
+  <header class="site-header">
+    <a class="site-header__logo" href="https://agentics.org.nz" aria-label="Agentics">
+      <img src="https://cdn.disco.co/media/agentics-logo-enhanced-removebg-preview_2949fb89-758d-4d9d-ae30-a51cea979427.png"
+           alt="Agentics" width="400" height="400">
+    </a>
+    <details class="site-header__toc" id="site-toc" hidden>
+      <summary aria-label="Jump to a section on this page">On this page <span class="site-header__caret" aria-hidden="true">▾</span></summary>
+      <nav class="site-header__menu" aria-label="On this page"></nav>
+    </details>
+    <a class="site-header__gh" href="https://github.com/agenticsnz/unsorry">
+      <small>View project on</small> GitHub
+    </a>
+  </header>
+
   {{ content }}
+
+  <script>
+    // Build the centre "On this page" dropdown from the rendered headings.
+    // kramdown auto-assigns an id to every heading, so we link straight to them.
+    (function buildToc() {
+      const toc = document.getElementById("site-toc");
+      if (!toc) return;
+      const menu = toc.querySelector(".site-header__menu");
+      const heads = Array.from(document.querySelectorAll("h2[id], h3[id]"))
+        .filter((h) => !h.closest(".site-header"));
+      if (!heads.length) return; // nothing to navigate — leave the dropdown hidden
+
+      for (const h of heads) {
+        const a = document.createElement("a");
+        a.href = "#" + h.id;
+        a.textContent = h.textContent.trim();
+        a.className = h.tagName === "H3" ? "lvl-3" : "lvl-2";
+        menu.appendChild(a);
+      }
+      toc.hidden = false;
+
+      // Close after picking a destination, on Escape, or on an outside click.
+      menu.addEventListener("click", (e) => { if (e.target.closest("a")) toc.open = false; });
+      document.addEventListener("keydown", (e) => { if (e.key === "Escape") toc.open = false; });
+      document.addEventListener("click", (e) => { if (toc.open && !toc.contains(e.target)) toc.open = false; });
+    })();
+  </script>
 
   <script type="module">
     import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";

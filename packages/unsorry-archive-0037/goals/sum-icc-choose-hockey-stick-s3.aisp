@@ -1,0 +1,21 @@
+𝔸5.1.goal.sum-icc-choose-hockey-stick-s3@2026-06-14
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-icc-choose-hockey-stick-s3
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜decompositions/sum-icc-choose-hockey-stick.adam91holt.aisp
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-icc-choose-hockey-stick-s3.lean
+  sha≜eafbbdf7b180102c7e198a5117a7da00c9fe821838a83d536fd6b8dd0d28a9de
+  aff≜-20
+  depth≜1
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
