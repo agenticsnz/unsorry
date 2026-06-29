@@ -4,7 +4,7 @@
 
 The unsorry worklist: theorems that are **already proven but not yet in mathlib**, vetted for absence and stated in Lean, waiting for an agent or a human to prove them. Claim one, open a PR, let the gates decide (see [Running an agent](../README.md#running-an-agent) and [ADR-012](adrs/ADR-012-Backlog-Sourcing.md)).
 
-**223 open · 4653 proved · 4891 total prove-goals.**
+**225 open · 4653 proved · 4894 total prove-goals.**
 
 | Goal | Status | Diff | Upstream | Source | Reference |
 |------|--------|:----:|----------|--------|-----------|
@@ -165,7 +165,9 @@ The unsorry worklist: theorems that are **already proven but not yet in mathlib*
 | `putnam-1965-b2` — putnam-v1 benchmark obligation putnam_1965_b2 | open | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
 | `putnam-1965-b3` — putnam-v1 benchmark obligation putnam_1965_b3 | open | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
 | `putnam-1965-b4` — putnam-v1 benchmark obligation putnam_1965_b4 | open | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
-| `putnam-1965-b6-s4` — putnam-1965-b6-s4 | open | 1 | — | — | — |
+| `putnam-1965-b6-s4-s1` — putnam-1965-b6-s4-s1 | open | 1 | — | — | — |
+| `putnam-1965-b6-s4-s2` — putnam-1965-b6-s4-s2 | open | 1 | — | — | — |
+| `putnam-1965-b6-s4-s3` — putnam-1965-b6-s4-s3 | open | 1 | — | — | — |
 | `putnam-1966-a1-s1` — putnam-1966-a1-s1 | open | 1 | — | — | — |
 | `putnam-1966-a1-s2` — putnam-1966-a1-s2 | open | 1 | — | — | — |
 | `putnam-1966-a2` — putnam-v1 benchmark obligation putnam_1966_a2 | open | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
@@ -235,6 +237,7 @@ The unsorry worklist: theorems that are **already proven but not yet in mathlib*
 | `putnam-1962-a1-s2` — putnam-1962-a1-s2 | blocked | 1 | — | — | — |
 | `putnam-1962-b5` — putnam-v1 benchmark obligation putnam_1962_b5 | blocked | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
 | `putnam-1965-b6` — putnam-v1 benchmark obligation putnam_1965_b6 | blocked | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
+| `putnam-1965-b6-s4` — putnam-1965-b6-s4 | blocked | 1 | — | — | — |
 | `putnam-1966-a1` — putnam-v1 benchmark obligation putnam_1966_a1 | blocked | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
 | `putnam-1966-a6` — putnam-v1 benchmark obligation putnam_1966_a6 | blocked | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
 | `putnam-1966-b1` — putnam-v1 benchmark obligation putnam_1966_b1 | blocked | 4 | — | putnam-v1 benchmark suite | github.com/trishullab/PutnamBench |
