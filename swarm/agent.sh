@@ -1894,10 +1894,32 @@ fetch_queued_prove_branches() {
   git fetch -q origin '+refs/heads/queued/prove/*:refs/remotes/origin/queued/prove/*'
 }
 
+# Pure decision helper (ADR-109): given the PR-list JSON for a branch and a
+# back-off (seconds), count the PRs that should BLOCK re-dispatch. An OPEN or
+# MERGED PR always blocks. A CLOSED PR blocks if it was closed for a reason OTHER
+# than the per-contributor quota, OR if it was quota-closed (label
+# over-author-quota) within the back-off window. A quota-closed PR PAST the
+# back-off does NOT block — the goal "returns to the pool" and re-dispatches, so a
+# transient quota close can no longer strand a branch forever (the #6751
+# deadlock). Exercised hermetically by --self-test.
+_blocking_pr_count() {
+  local json="$1" backoff="$2"
+  printf '%s' "$json" | jq --argjson backoff "$backoff" '[.[] | select(
+      (.state == "OPEN") or (.state == "MERGED")
+      or ((.state == "CLOSED") and (
+          ((.labels | map(.name) | index("over-author-quota")) | not)
+          or ((.closedAt | fromdate) > (now - $backoff))
+      ))
+    )] | length'
+}
+
 queued_branch_has_pr() {
-  local branch="$1" count
-  count="$(gh pr list --state all --head "$branch" --json number --jq 'length' 2>/dev/null)" \
+  local branch="$1" json count backoff="${UNSORRY_QUOTA_RETRY_BACKOFF_S:-3600}"
+  [[ "$backoff" =~ ^[0-9]+$ ]] || backoff=3600
+  json="$(gh pr list --state all --head "$branch" --json state,labels,closedAt 2>/dev/null)" \
     || return 1
+  [ -n "$json" ] || return 1
+  count="$(_blocking_pr_count "$json" "$backoff" 2>/dev/null)" || return 1
   [ "$count" -gt 0 ]
 }
 
@@ -6015,6 +6037,29 @@ test_submission_governor_allows_with_stubbed_gh() {
   unset -f count_agent_inflight
 }
 
+test_queued_branch_has_pr_quota_retryable() {
+  # ADR-109 un-strand: a quota-closed PR (over-author-quota) past the back-off
+  # must NOT block re-dispatch, but other closes / open / merged / fresh quota
+  # closes must. Drives the real jq via _blocking_pr_count on canned gh JSON.
+  local UNSORRY_QUOTA_RETRY_BACKOFF_S=0
+  gh() { printf '%s' '[{"state":"CLOSED","labels":[{"name":"over-author-quota"}],"closedAt":"2000-01-01T00:00:00Z"}]'; }
+  if queued_branch_has_pr b; then unset -f gh; log "  quota-closed past back-off should be retryable"; return 1; fi
+  gh() { printf '%s' '[{"state":"CLOSED","labels":[{"name":"swarm:prove"}],"closedAt":"2000-01-01T00:00:00Z"}]'; }
+  if ! queued_branch_has_pr b; then unset -f gh; log "  non-quota closed PR should block"; return 1; fi
+  gh() { printf '%s' '[{"state":"OPEN","labels":[],"closedAt":null}]'; }
+  if ! queued_branch_has_pr b; then unset -f gh; log "  open PR should block"; return 1; fi
+  gh() { printf '%s' '[{"state":"MERGED","labels":[],"closedAt":"2000-01-01T00:00:00Z"}]'; }
+  if ! queued_branch_has_pr b; then unset -f gh; log "  merged PR should block"; return 1; fi
+  # Within the back-off window, a quota close still blocks (anti-churn).
+  UNSORRY_QUOTA_RETRY_BACKOFF_S=999999999999
+  gh() { printf '%s' '[{"state":"CLOSED","labels":[{"name":"over-author-quota"}],"closedAt":"2000-01-01T00:00:00Z"}]'; }
+  if ! queued_branch_has_pr b; then unset -f gh; log "  quota-closed within back-off should block (anti-churn)"; return 1; fi
+  # No PRs at all → not blocking (free to dispatch).
+  gh() { printf '%s' '[]'; }
+  if queued_branch_has_pr b; then unset -f gh; log "  no PRs should not block"; return 1; fi
+  unset -f gh
+}
+
 test_queued_branch_claim_guard() {
   local PROVE=1 CLAIMED_GOAL="" claimed=""
   open_prove_pr_exists() { return 1; }
@@ -6404,6 +6449,7 @@ run_self_tests() {
     test_fork_open_pr_dedup_targets_upstream
     test_submission_governor_reason
     test_submission_governor_allows_with_stubbed_gh
+    test_queued_branch_has_pr_quota_retryable
     test_queued_branch_claim_guard
     test_dispatch_goal_dedup
     test_dispatch_skips_taken_midpass

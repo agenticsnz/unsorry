@@ -167,6 +167,24 @@ def quota_decide(open_prove_count: int,
         f"cap of {cap} — newest over-cap submission turned away (ADR-054)")
 
 
+def fair_share_cap(budget: int, active_authors: int, floor: int = 1) -> int:
+    """Contention-aware per-author open-PR cap (ADR-109, amends ADR-054).
+
+    The fixed ADR-054 cap throttled a *sole* contributor to a fraction of the
+    dispatcher's open-PR budget (`UNSORRY_MAX_OPEN_PROVE_PRS`, default 40) because
+    the cap was a flat 20 — so PRs 21..40 the governor opened got quota-closed and
+    stranded, even with nobody else waiting. Instead, divide the shared budget by
+    the number of contributors actually competing: a lone contributor gets the
+    WHOLE budget (cap == budget == governor limit → no spurious closes), and N
+    contributors get an equal `budget // N` share. Never below `floor` (default 1)
+    so every contributor can always hold at least one open PR. `active_authors <= 1`
+    ⇒ the full budget.
+    """
+    if active_authors <= 1:
+        return max(budget, floor)
+    return max(budget // active_authors, floor)
+
+
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser()
     parser.add_argument("command", choices=("check", "env", "explain", "quota"))
@@ -177,13 +195,20 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--open-count", type=int, default=0)
     parser.add_argument("--cap", type=int,
                         default=DEFAULT_MAX_OPEN_PROVE_PRS_PER_AUTHOR)
+    # Contention-aware cap (ADR-109): when both are given, the effective per-author
+    # cap is `budget // active_authors` (floor 1), overriding the flat --cap.
+    parser.add_argument("--budget", type=int, default=0)
+    parser.add_argument("--active-authors", type=int, default=0)
     return parser
 
 
 def main(argv: list[str] | None = None) -> int:
     args = _parser().parse_args(sys.argv[1:] if argv is None else argv)
     if args.command == "quota":
-        verdict = quota_decide(args.open_count, args.cap)
+        cap = args.cap
+        if args.budget > 0 and args.active_authors > 0:
+            cap = fair_share_cap(args.budget, args.active_authors)
+        verdict = quota_decide(args.open_count, cap)
         print(f"admitted={'true' if verdict.admitted else 'false'}")
         print(f"reason={verdict.reason}")
         return 0

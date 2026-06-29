@@ -24,10 +24,14 @@ jobs:
             --created-at "$CREATED_AT" \
             --head-ref "$HEAD_REF" \
             --title "$TITLE" >> "$GITHUB_OUTPUT"
-      # Per-contributor fairness cap (ADR-054). Only at submission time
-      # (opened/reopened) so a contributor's already-admitted PRs keep draining
-      # and only NEW over-cap submissions are turned away (FIFO fairness). Counts
-      # the author's open queued/prove PRs (incl. this one) and rejects if over cap.
+      # Contention-aware per-contributor fairness cap (ADR-109, amends ADR-054).
+      # Only at submission time (opened/reopened) so a contributor's already-
+      # admitted PRs keep draining and only NEW over-share submissions are turned
+      # away (FIFO fairness). The effective per-author cap is the shared open-PR
+      # budget (UNSORRY_MAX_OPEN_PROVE_PRS — the SAME limit the dispatcher's
+      # submission governor meters against, default 40) divided by the number of
+      # contributors with open queued/prove PRs right now: a lone contributor gets
+      # the whole budget (no spurious closes/strands), N contributors get budget/N.
       - id: quota
         if: >-
           steps.admission.outputs.admitted == 'true' &&
@@ -36,15 +40,23 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           AUTHOR: ${{ github.event.pull_request.user.login }}
-          CAP: ${{ vars.UNSORRY_MAX_OPEN_PROVE_PRS_PER_AUTHOR || '20' }}
+          BUDGET: ${{ vars.UNSORRY_MAX_OPEN_PROVE_PRS || '40' }}
         run: |
           set -euo pipefail
-          count=$(gh pr list --repo "$GITHUB_REPOSITORY" --author "$AUTHOR" \
-            --state open --limit 300 --json headRefName \
-            -q '[.[] | select(.headRefName | startswith("queued/prove/"))] | length')
-          echo "author=$AUTHOR open_prove_prs=$count cap=$CAP"
+          prs=$(gh pr list --repo "$GITHUB_REPOSITORY" \
+            --state open --limit 300 --json author,headRefName)
+          # This author's open queued/prove PRs (incl. the one under evaluation).
+          count=$(printf '%s' "$prs" | jq '[.[]
+            | select(.headRefName | startswith("queued/prove/"))
+            | select(.author.login == env.AUTHOR)] | length')
+          # Distinct contributors competing for the shared budget (incl. this one).
+          active=$(printf '%s' "$prs" | jq '([.[]
+            | select(.headRefName | startswith("queued/prove/"))
+            | .author.login] + [env.AUTHOR]) | unique | length')
+          echo "author=$AUTHOR open_prove_prs=$count active_contributors=$active budget=$BUDGET"
           python3 -m tools.repo.pr_admission quota \
-            --open-count "$count" --cap "$CAP" >> "$GITHUB_OUTPUT"
+            --open-count "$count" --budget "$BUDGET" --active-authors "$active" \
+            >> "$GITHUB_OUTPUT"
       - name: Admit PR
         if: steps.admission.outputs.admitted == 'true' && steps.quota.outputs.admitted != 'false'
         run: echo "${{ steps.admission.outputs.reason }}"

@@ -4,9 +4,51 @@ from tools.repo.pr_admission import (
     DEFAULT_CUTOVER,
     DEFAULT_MAX_OPEN_PROVE_PRS_PER_AUTHOR,
     decide,
+    fair_share_cap,
+    main,
     quota_decide,
     resolve_is_fork,
 )
+
+
+# --- contention-aware fair-share cap (ADR-109) --------------------------------
+def test_fair_share_sole_contributor_gets_whole_budget() -> None:
+    # The crux of the fix: one contributor (or zero others) is never throttled
+    # below the dispatcher's open-PR budget.
+    assert fair_share_cap(budget=40, active_authors=1) == 40
+    assert fair_share_cap(budget=40, active_authors=0) == 40
+
+
+def test_fair_share_splits_budget_under_contention() -> None:
+    assert fair_share_cap(budget=40, active_authors=2) == 20
+    assert fair_share_cap(budget=40, active_authors=4) == 10
+
+
+def test_fair_share_never_below_floor() -> None:
+    # Heavy contention can't starve a contributor to zero — always at least 1.
+    assert fair_share_cap(budget=40, active_authors=100) == 1
+    assert fair_share_cap(budget=0, active_authors=5) == 1
+
+
+def test_quota_cli_contention_aware_admits_sole_contributor() -> None:
+    # 30 open PRs would FAIL the flat 20 cap but PASS once the sole contributor
+    # gets the whole 40 budget — the exact ohdearquant strand this fixes.
+    rc = main(["quota", "--open-count", "30", "--cap", "20",
+               "--budget", "40", "--active-authors", "1"])
+    assert rc == 0
+
+
+def test_quota_cli_contention_aware_enforces_share_under_contention(capsys) -> None:
+    # Two contributors → share is 20; 30 open is over share → rejected.
+    main(["quota", "--open-count", "30", "--cap", "20",
+          "--budget", "40", "--active-authors", "2"])
+    assert "admitted=false" in capsys.readouterr().out
+
+
+def test_quota_cli_falls_back_to_flat_cap_without_budget(capsys) -> None:
+    # Back-compat: no --budget/--active-authors → flat --cap path unchanged.
+    main(["quota", "--open-count", "25", "--cap", "20"])
+    assert "admitted=false" in capsys.readouterr().out
 
 
 def test_quota_under_cap_is_admitted() -> None:
