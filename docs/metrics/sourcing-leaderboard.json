@@ -3,7 +3,7 @@
   "sourcers": [
     {
       "avatar_url": "https://github.com/cgbarlow.png?size=96",
-      "difficulty_points": 5321,
+      "difficulty_points": 5324,
       "display_name": "Chris Barlow",
       "earliest_sourced": "2026-06-10",
       "git_author": "Chris Barlow <cgbarlow@gmail.com>",
@@ -11,8 +11,8 @@
       "latest_sourced": "2026-06-29",
       "open": 210,
       "profile_url": "https://github.com/cgbarlow",
-      "proved": 1371,
-      "sourced_goals": 3928,
+      "proved": 1374,
+      "sourced_goals": 3931,
       "sourcer": "cgbarlow"
     },
     {
@@ -73,6 +73,20 @@
     },
     {
       "avatar_url": null,
+      "difficulty_points": 23,
+      "display_name": "unsorry-batch",
+      "earliest_sourced": "2026-06-29",
+      "git_author": "unsorry-batch <unsorry-batch@users.noreply.github.com>",
+      "github": null,
+      "latest_sourced": "2026-06-29",
+      "open": 0,
+      "profile_url": null,
+      "proved": 23,
+      "sourced_goals": 23,
+      "sourcer": null
+    },
+    {
+      "avatar_url": null,
       "difficulty_points": 15,
       "display_name": "Rauxon",
       "earliest_sourced": "2026-06-26",
@@ -82,20 +96,6 @@
       "open": 12,
       "profile_url": null,
       "proved": 2,
-      "sourced_goals": 15,
-      "sourcer": null
-    },
-    {
-      "avatar_url": null,
-      "difficulty_points": 15,
-      "display_name": "unsorry-batch",
-      "earliest_sourced": "2026-06-29",
-      "git_author": "unsorry-batch <unsorry-batch@users.noreply.github.com>",
-      "github": null,
-      "latest_sourced": "2026-06-29",
-      "open": 0,
-      "profile_url": null,
-      "proved": 15,
       "sourced_goals": 15,
       "sourcer": null
     },
@@ -115,8 +115,8 @@
     }
   ],
   "totals": {
-    "difficulty_points": 6289,
-    "sourced_goals": 4887,
+    "difficulty_points": 6300,
+    "sourced_goals": 4898,
     "sourcers": 8
   }
 }
