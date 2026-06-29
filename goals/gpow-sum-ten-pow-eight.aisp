@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜gpow-sum-ten-pow-eight
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/gpow-sum-ten-pow-eight.md
+  src≜packages/unsorry-archive-0093/backlog/gpow-sum-ten-pow-eight.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/gpow-sum-ten-pow-eight.lean
+  lean≜packages/unsorry-archive-0093/goals/gpow-sum-ten-pow-eight.lean
   sha≜e2e66a384a4c97bfca84b8c4f675295bcdbe0a2ebe3f600efb70e95098a0fed8
   aff≜0
 }
