@@ -1414,6 +1414,19 @@ def render_timeline_svg(root: Path) -> str:
     pad_l, pad_r, pad_t, pad_b = 52, 28, 90, 48
     font = "Inter, system-ui, sans-serif"
     total = points[-1]["cumulative_proofs"] if points else 0
+    by_label = "merged, hourly" if by_merge else "solved, daily"
+    # The x-axis right edge tracks the latest board-source activity — the same
+    # commit timestamp that keys generated_at (SPEC-023-A) — rather than the last
+    # proof. So a stretch with no new proofs renders as a flat trailing segment
+    # ("alive, no new proofs") instead of the axis simply ending at the last
+    # point, which reads as a frozen/stale chart (ADR-111). Anchoring to the
+    # source-commit time (not wall-clock now) keeps the SVG deterministic for
+    # --check and free of timestamp-only churn: it advances only when an input
+    # merge already triggers a regen + commit.
+    edge_z = _latest_source_commit_z(root)
+    subtitle = f"{total} cumulative kernel-verified proofs · {by_label}"
+    if points and by_merge:
+        subtitle += f" · last proof {_bucket_dt(points[-1]['t']):%b %d %H:00} UTC"
     out = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" '
         f'viewBox="0 0 {width} {height}" role="img" aria-labelledby="title desc">',
@@ -1426,8 +1439,7 @@ def render_timeline_svg(root: Path) -> str:
         f'<text x="32" y="44" font-family="{font}" font-size="28" font-weight="700" '
         'fill="#334155">unsorry — Proofs Over Time</text>',
         f'<text x="32" y="72" font-family="{font}" font-size="13" fill="#64748b">'
-        f"{total} cumulative kernel-verified proofs · "
-        f"{'merged, hourly' if by_merge else 'solved, daily'}</text>",
+        f"{subtitle}</text>",
     ]
     if not points:
         out.append(
@@ -1440,14 +1452,36 @@ def render_timeline_svg(root: Path) -> str:
     plot_w = width - pad_l - pad_r
     plot_h = height - pad_t - pad_b
     dts = [_bucket_dt(p["t"]) for p in points]
-    span = max(1.0, (dts[-1] - dts[0]).total_seconds())
+    edge_dt = _bucket_dt(edge_z) if edge_z else None
+    if edge_dt is not None:
+        # Align the activity time to the series' bucket resolution (hourly merge /
+        # daily solve) so a sub-bucket difference — e.g. an archive commit minutes
+        # after the last proof in the same hour — does not draw a one-pixel stub.
+        if by_merge:
+            edge_dt = edge_dt.replace(minute=0, second=0, microsecond=0)
+        else:
+            edge_dt = edge_dt.replace(hour=0, minute=0, second=0, microsecond=0)
+        # Match the series' tz-awareness (both UTC): merge buckets are aware, the
+        # solve fallback is naïve, so drop tzinfo to keep the comparison and the px
+        # arithmetic well-defined.
+        if dts[0].tzinfo is None and edge_dt.tzinfo is not None:
+            edge_dt = edge_dt.replace(tzinfo=None)
+    # Extend the domain only when the latest activity is genuinely later than the
+    # last proof (a quiet gap); never shrink the data range.
+    extended = edge_dt is not None and edge_dt > dts[-1]
+    domain_end = edge_dt if extended else dts[-1]
+    span = max(1.0, (domain_end - dts[0]).total_seconds())
     max_y = max(total, 1)
     n = len(points)
+    single = n == 1 and not extended
+
+    def px_dt(dt: datetime.datetime) -> float:
+        if single:
+            return pad_l + plot_w / 2
+        return pad_l + (dt - dts[0]).total_seconds() / span * plot_w
 
     def px(i: int) -> float:
-        if n == 1:
-            return pad_l + plot_w / 2
-        return pad_l + (dts[i] - dts[0]).total_seconds() / span * plot_w
+        return px_dt(dts[i])
 
     def py(v: float) -> float:
         return pad_t + plot_h - v / max_y * plot_h
@@ -1468,19 +1502,31 @@ def render_timeline_svg(root: Path) -> str:
         f"{px(i):.1f},{py(p['cumulative_proofs']):.1f}" for i, p in enumerate(points)
     )
     base = pad_t + plot_h
-    out.append(
-        f'<polygon points="{px(0):.1f},{base:.1f} {coords} {px(n - 1):.1f},{base:.1f}" '
-        'fill="#e0f2fe" opacity="0.55"/>'
-    )
+    last_x, last_y = px(n - 1), py(total)
+    edge_x = px_dt(domain_end)
+    # Filled area under the curve, carried flat to the right edge on a quiet gap.
+    area_pts = f"{px(0):.1f},{base:.1f} {coords}"
+    if extended:
+        area_pts += f" {edge_x:.1f},{last_y:.1f}"
+    area_pts += f" {(edge_x if extended else last_x):.1f},{base:.1f}"
+    out.append(f'<polygon points="{area_pts}" fill="#e0f2fe" opacity="0.55"/>')
     out.append(
         f'<polyline points="{coords}" fill="none" stroke="#38bdf8" stroke-width="2.5" '
         'stroke-linejoin="round" stroke-linecap="round"/>'
     )
-    lx, ly = px(n - 1), py(max_y)
-    out.append(f'<circle cx="{lx:.1f}" cy="{ly:.1f}" r="4" fill="#0ea5e9"/>')
+    if extended:
+        # Dashed carry-forward: the count has not moved since the last proof, but
+        # the board is still live — distinguishes "quiet" from "frozen".
+        out.append(
+            f'<polyline points="{last_x:.1f},{last_y:.1f} {edge_x:.1f},{last_y:.1f}" '
+            'fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4 4" '
+            'stroke-linecap="round"/>'
+        )
+    out.append(f'<circle cx="{last_x:.1f}" cy="{last_y:.1f}" r="4" fill="#0ea5e9"/>')
     out.append(
-        f'<text x="{lx - 6:.1f}" y="{ly - 10:.1f}" text-anchor="end" font-family="{font}" '
-        f'font-size="13" font-weight="700" fill="#334155">{max_y}</text>'
+        f'<text x="{last_x - 6:.1f}" y="{last_y - 10:.1f}" text-anchor="end" '
+        f'font-family="{font}" font-size="13" font-weight="700" '
+        f'fill="#334155">{max_y}</text>'
     )
 
     def label(dt: datetime.datetime) -> str:
@@ -1490,6 +1536,11 @@ def render_timeline_svg(root: Path) -> str:
         out.append(
             f'<text x="{px(i):.1f}" y="{height - pad_b + 22}" text-anchor="middle" '
             f'font-family="{font}" font-size="11" fill="#94a3b8">{label(dts[i])}</text>'
+        )
+    if extended:
+        out.append(
+            f'<text x="{edge_x:.1f}" y="{height - pad_b + 22}" text-anchor="end" '
+            f'font-family="{font}" font-size="11" fill="#94a3b8">{label(domain_end)}</text>'
         )
     out.append("</svg>")
     return "\n".join(out) + "\n"

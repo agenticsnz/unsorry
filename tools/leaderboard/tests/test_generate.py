@@ -736,6 +736,35 @@ def test_render_timeline_svg_empty(tmp_path):
     assert svg.startswith("<svg") and "No dated proofs yet." in svg
 
 
+def test_render_timeline_svg_carries_forward_a_quiet_gap(tmp_path, monkeypatch):
+    # ADR-111: when the latest board-source activity is later than the last proof
+    # (a quiet stretch with no new proofs), the chart carries the line flat to the
+    # right edge with a dashed segment + an edge tick at the activity time, instead
+    # of the axis ending at the last proof and reading as a frozen/stale chart.
+    _goal(tmp_path, "g1", 1)
+    _index(tmp_path, "a" * 64, "g1")  # AISP @date 2026-06-13 → solve bucket
+    # Simulate ~3 days of activity (affinity/archive churn) with no new proof.
+    monkeypatch.setattr(generate, "_latest_source_commit_z", lambda root: "2026-06-16T07:00:00Z")
+    svg = render_timeline_svg(tmp_path)
+    assert "stroke-dasharray" in svg          # the carry-forward segment
+    assert "Jun 16" in svg                     # edge tick at the latest activity
+    # The flat carry never raises the count: still 1 cumulative proof.
+    assert "1 cumulative kernel-verified proofs" in svg
+
+
+def test_render_timeline_svg_no_gap_is_unextended(tmp_path, monkeypatch):
+    # No quiet gap (latest activity == last proof bucket) → no carry-forward; the
+    # render is byte-identical to the pre-ADR-111 shape, so no churn/regression.
+    _goal(tmp_path, "g1", 1)
+    _index(tmp_path, "a" * 64, "g1")
+    monkeypatch.setattr(generate, "_latest_source_commit_z", lambda root: None)
+    baseline = render_timeline_svg(tmp_path)
+    assert "stroke-dasharray" not in baseline
+    # An activity timestamp at/just before the last proof bucket also stays flat-free.
+    monkeypatch.setattr(generate, "_latest_source_commit_z", lambda root: "2026-06-13T00:00:00Z")
+    assert render_timeline_svg(tmp_path) == baseline
+
+
 def test_main_write_includes_timeline_svg(tmp_path):
     _goal(tmp_path, "g1", 1)
     _index(tmp_path, "a" * 64, "g1")
