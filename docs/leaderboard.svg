@@ -4,15 +4,15 @@
 <rect width="900" height="100%" rx="18" fill="#ffffff"/>
 <rect x="0.5" y="0.5" width="899" height="485" rx="18" fill="none" stroke="#e2e8f0"/>
 <text x="32" y="44" font-family="Inter, system-ui, sans-serif" font-size="28" font-weight="700" fill="#334155">unsorry — Leaderboard</text>
-<text x="32" y="72" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#64748b">4670 credited proofs · 4362 explicit · 308 inferred from git · 9 contributors</text>
+<text x="32" y="72" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#64748b">4675 credited proofs · 4367 explicit · 308 inferred from git · 9 contributors</text>
 <text x="34" y="148" font-family="Georgia, serif" font-size="24" font-style="italic" font-weight="700" fill="#fbbf24">1</text>
 <a href="https://github.com/ohdearquant">
 <text x="82" y="138" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="650" fill="#334155">@ohdearquant</text>
 </a>
-<text x="82" y="158" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">2287 proofs · 2290 difficulty · 2286 explicit · 1 inferred · 143 runs</text>
+<text x="82" y="158" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">2292 proofs · 2295 difficulty · 2291 explicit · 1 inferred · 148 runs</text>
 <rect x="320" y="127" width="420" height="26" rx="13" fill="#f1f5f9"/>
 <rect x="320" y="127" width="363" height="26" rx="13" fill="#e0f2fe"/>
-<text x="760" y="146" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">286175 pts</text>
+<text x="760" y="146" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">286800 pts</text>
 <text x="760" y="162" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#64748b">explicit + inferred</text>
 <text x="34" y="212" font-family="Georgia, serif" font-size="24" font-style="italic" font-weight="700" fill="#94a3b8">2</text>
 <a href="https://github.com/chat-bit-01">
@@ -39,7 +39,7 @@
 <text x="82" y="350" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">120 proofs · 216 difficulty · 73 explicit · 47 inferred · 286 runs</text>
 <rect x="320" y="319" width="420" height="26" rx="13" fill="#f1f5f9"/>
 <rect x="320" y="319" width="390" height="26" rx="13" fill="#e0f2fe"/>
-<text x="760" y="338" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">307200 pts</text>
+<text x="760" y="338" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">307650 pts</text>
 <text x="760" y="354" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#64748b">explicit + inferred</text>
 <text x="34" y="404" font-family="Georgia, serif" font-size="24" font-style="italic" font-weight="700" fill="#cbd5e1">5</text>
 <a href="https://github.com/perttu">
@@ -47,7 +47,7 @@
 </a>
 <text x="82" y="414" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">41 proofs · 87 difficulty · 37 explicit · 4 inferred · 27 runs</text>
 <rect x="320" y="383" width="420" height="26" rx="13" fill="#f1f5f9"/>
-<rect x="320" y="383" width="38" height="26" rx="13" fill="#e0f2fe"/>
+<rect x="320" y="383" width="37" height="26" rx="13" fill="#e0f2fe"/>
 <text x="760" y="402" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#334155">29975 pts</text>
 <text x="760" y="418" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#64748b">explicit + inferred</text>
 <text x="32" y="454" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#64748b">Inferred credits use git add-author history only when explicit solver provenance is missing.</text>
