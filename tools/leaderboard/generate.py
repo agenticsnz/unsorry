@@ -1507,9 +1507,20 @@ def render_timeline_svg(root: Path) -> str:
             f'font-family="{font}" font-size="11" fill="#94a3b8">{v}</text>'
         )
 
-    coords = " ".join(
-        f"{px(i):.1f},{py(p['cumulative_proofs']):.1f}" for i, p in enumerate(points)
-    )
+    # Cumulative count is a step function: it holds flat between buckets and jumps
+    # at each bucket that landed proofs. Render it as a step (hold the prior level
+    # across to the next bucket's time, then rise) so a no-proof gap reads as
+    # flat-then-jump rather than a diagonal that implies steady growth across the
+    # gap — the 3-day-gap artifact ADR-111 set out to make legible.
+    step: list[str] = []
+    prev_y: float | None = None
+    for i, p in enumerate(points):
+        x, y = px(i), py(p["cumulative_proofs"])
+        if prev_y is not None:
+            step.append(f"{x:.1f},{prev_y:.1f}")
+        step.append(f"{x:.1f},{y:.1f}")
+        prev_y = y
+    coords = " ".join(step)
     base = pad_t + plot_h
     last_x, last_y = px(n - 1), py(total)
     edge_x = px_dt(domain_end)

@@ -795,6 +795,34 @@ def test_render_timeline_svg_no_gap_is_unextended(tmp_path, monkeypatch):
     assert render_timeline_svg(tmp_path) == baseline
 
 
+def test_render_timeline_svg_steps_across_a_gap(tmp_path):
+    # ADR-111 step render: two proofs on far-apart dates must produce a STEP — hold
+    # the prior cumulative level flat across the empty gap, then jump — not a diagonal
+    # that implies steady growth where no proofs landed.
+    import re
+
+    idx = tmp_path / "library" / "index"
+    idx.mkdir(parents=True, exist_ok=True)
+    for sha, goal, date in (("a" * 64, "g1", "2026-06-13"), ("b" * 64, "g2", "2026-06-20")):
+        _goal(tmp_path, goal, 1)
+        (idx / f"{sha}.aisp").write_text(
+            f"𝔸5.1.lemma.{sha[:12]}@{date}\n"
+            "γ≔unsorry.lemma.index\n"
+            f"⟦Ω:Lemma⟧{{sha≜{sha}; goal≜{goal}; name≜{goal}}}\n"
+            "⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩\n",
+            encoding="utf-8",
+        )
+    svg = render_timeline_svg(tmp_path)
+    m = re.search(r'<polyline points="([^"]+)" fill="none" stroke="#38bdf8"', svg)
+    assert m, "data polyline not found"
+    pts = [tuple(float(v) for v in c.split(",")) for c in m.group(1).split()]
+    # Two data points → step path of exactly three vertices: p0, a horizontal hold,
+    # then a vertical jump.
+    assert len(pts) == 3, pts
+    assert abs(pts[0][1] - pts[1][1]) < 0.01, f"first segment should be flat (hold): {pts}"
+    assert abs(pts[1][0] - pts[2][0]) < 0.01, f"second segment should be vertical (jump): {pts}"
+
+
 def test_main_write_includes_timeline_svg(tmp_path):
     _goal(tmp_path, "g1", 1)
     _index(tmp_path, "a" * 64, "g1")
