@@ -106,8 +106,16 @@ jobs:
           else
             echo "present=false" >> "$GITHUB_OUTPUT"
           fi
+      - name: Debounce — skip a push refresh that already landed recently (ADR-108)
+        id: debounce
+        if: github.event_name == 'push'
+        run: |
+          python3 -m tools.repo.refresh_debounce \
+            --subject "docs: refresh leaderboard" \
+            --window-seconds "${{ vars.UNSORRY_REFRESH_DEBOUNCE_SECONDS || '600' }}" \
+            >> "$GITHUB_OUTPUT"
       - name: Refresh leaderboard in a single recompute, then push (ADR-082)
-        if: steps.tok.outputs.present == 'true'
+        if: steps.tok.outputs.present == 'true' && steps.debounce.outputs.skip != 'true'
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
