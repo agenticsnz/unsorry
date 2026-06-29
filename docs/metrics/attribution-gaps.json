@@ -6,21 +6,6 @@
   ],
   "missing_solver_provenance": [
     {
-      "alias_mapped": false,
-      "date": "2026-06-17",
-      "difficulty": 3,
-      "display_name": "unsorry-batch",
-      "git_add_commit": "a5f09e063e4d84b2f758c71fc5e6dd5dcf301944",
-      "git_add_date": "2026-06-29",
-      "git_author": "unsorry-batch <unsorry-batch@users.noreply.github.com>",
-      "git_author_name": "unsorry-batch",
-      "goal": "sum-range-succ-k-mul-choose-mul-two-pow-closed",
-      "mapped_github": null,
-      "path": "library/index/48e81ff2e4b9c407d653396a195698739a69375b55ae238a77bcb138e5da7bbc.aisp",
-      "review_status": "candidate",
-      "sha": "48e81ff2e4b9c407d653396a195698739a69375b55ae238a77bcb138e5da7bbc"
-    },
-    {
       "alias_mapped": true,
       "date": "2026-06-10",
       "difficulty": 0,
@@ -4644,9 +4629,9 @@
   "schema_version": 1,
   "source": "git-add-author",
   "summary": {
-    "git_attributed_missing_solver": 309,
+    "git_attributed_missing_solver": 308,
     "mapped_missing_solver": 308,
-    "missing_solver_provenance": 309,
-    "unmapped_missing_solver": 1
+    "missing_solver_provenance": 308,
+    "unmapped_missing_solver": 0
   }
 }

@@ -68,20 +68,20 @@
       "attempt_yield": null,
       "avatar_url": "https://github.com/ruvnet.png?size=96",
       "badges": {
-        "difficulty": 429,
-        "proofs": 160,
+        "difficulty": 432,
+        "proofs": 161,
         "success_rate_percent": null
       },
       "credit_source_summary": "explicit",
       "credit_sources": [
         "explicit-solver"
       ],
-      "credited_proofs": 160,
-      "difficulty_points": 429,
+      "credited_proofs": 161,
+      "difficulty_points": 432,
       "dispatch_points": 0.0,
       "dispatch_proofs": 0,
       "display_name": "@ruvnet",
-      "explicit_solver_proofs": 160,
+      "explicit_solver_proofs": 161,
       "failed_attempts": 0,
       "github": "ruvnet",
       "inferred_git_proofs": 0,
@@ -90,10 +90,10 @@
       "rank": 3,
       "run_success_rate": null,
       "runs": 0,
-      "score": 46900,
+      "score": 47225,
       "solver": "ruvnet",
       "successes": 0,
-      "verified_proofs": 160
+      "verified_proofs": 161
     },
     {
       "attempt_yield": 0.0455,
@@ -254,37 +254,6 @@
     },
     {
       "attempt_yield": null,
-      "avatar_url": null,
-      "badges": {
-        "difficulty": 3,
-        "proofs": 1,
-        "success_rate_percent": null
-      },
-      "credit_source_summary": "inferred",
-      "credit_sources": [
-        "inferred-git-add-author"
-      ],
-      "credited_proofs": 1,
-      "difficulty_points": 3,
-      "dispatch_points": 20.7,
-      "dispatch_proofs": 23,
-      "display_name": "unsorry-batch",
-      "explicit_solver_proofs": 0,
-      "failed_attempts": 0,
-      "github": null,
-      "inferred_git_proofs": 1,
-      "median_solve_s": null,
-      "profile_url": null,
-      "rank": 9,
-      "run_success_rate": null,
-      "runs": 0,
-      "score": 2395,
-      "solver": null,
-      "successes": 0,
-      "verified_proofs": 1
-    },
-    {
-      "attempt_yield": null,
       "avatar_url": "https://github.com/yarcles.png?size=96",
       "badges": {
         "difficulty": 1,
@@ -306,7 +275,7 @@
       "inferred_git_proofs": 0,
       "median_solve_s": null,
       "profile_url": "https://github.com/yarcles",
-      "rank": 10,
+      "rank": 9,
       "run_success_rate": null,
       "runs": 0,
       "score": 125,
@@ -315,7 +284,7 @@
       "verified_proofs": 1
     }
   ],
-  "generated_at": "2026-06-29T07:51:27Z",
+  "generated_at": "2026-06-29T08:18:24Z",
   "generated_from": "docs/metrics/community-stats.json",
   "historical_contributors": [
     {
@@ -390,11 +359,11 @@
       "display_name": "unsorry-batch",
       "github": null,
       "index_files_added": 24,
-      "missing_solver_provenance": 1,
+      "missing_solver_provenance": 0,
       "profile_url": null,
       "rank": 6,
       "solver_credit": false,
-      "solver_provenance_proofs": 23
+      "solver_provenance_proofs": 24
     },
     {
       "attribution_source": "git-add-author",
@@ -472,7 +441,7 @@
       "provider_model": "openrouter / unknown",
       "run_success_rate": null,
       "runs": 0,
-      "verified_proofs": 160
+      "verified_proofs": 161
     },
     {
       "provider_model": "claude / opus",
@@ -538,15 +507,15 @@
   "schema_version": 1,
   "score_policy": "rank by score desc; score = difficulty_points * 100 + credited_proofs * 25 + dispatch_points * 100 (dispatch_points = 0.9 flat for each proof PR you opened/landed for another contributor; self-dispatch excluded — the system does not run without dispatchers)",
   "summary": {
-    "attributed_proofs": 4333,
-    "attribution_gap_count": 309,
-    "credited_contributors": 10,
+    "attributed_proofs": 4334,
+    "attribution_gap_count": 308,
+    "credited_contributors": 9,
     "credited_proofs": 4642,
-    "explicit_solver_proofs": 4333,
+    "explicit_solver_proofs": 4334,
     "git_attributed_index_files": 4642,
     "historical_contributors": 10,
-    "historical_unknown_proofs": 309,
-    "inferred_git_proofs": 309,
+    "historical_unknown_proofs": 308,
+    "inferred_git_proofs": 308,
     "proof_run_coverage": 0.0407,
     "terminal_runs": 553,
     "uncredited_proofs": 0,

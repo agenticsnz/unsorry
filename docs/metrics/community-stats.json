@@ -35,7 +35,7 @@
     {
       "attempt_yield": null,
       "attempts": 0,
-      "difficulty_points": 429,
+      "difficulty_points": 432,
       "failed_attempts": 0,
       "failures": 0,
       "median_solve_s": null,
@@ -46,7 +46,7 @@
       "successes": 0,
       "successes_per_recorded_hour": null,
       "total_solve_s": 0,
-      "verified_proofs": 160
+      "verified_proofs": 161
     },
     {
       "attempt_yield": 0.0455,
@@ -130,18 +130,18 @@
     }
   ],
   "coverage": {
-    "attributed_proofs": 4333,
-    "historical_unknown_proofs": 309,
+    "attributed_proofs": 4334,
+    "historical_unknown_proofs": 308,
     "proof_run_coverage": 0.0407,
     "successful_proofs_with_run_telemetry": 189,
     "terminal_runs": 553,
     "verified_proofs": 4642
   },
   "credit": {
-    "credited_contributors": 10,
+    "credited_contributors": 9,
     "credited_proofs": 4642,
-    "explicit_solver_proofs": 4333,
-    "inferred_git_proofs": 309,
+    "explicit_solver_proofs": 4334,
+    "inferred_git_proofs": 308,
     "uncredited_proofs": 0
   },
   "credited_contributors": [
@@ -215,12 +215,12 @@
       "credit_sources": [
         "explicit-solver"
       ],
-      "credited_proofs": 160,
-      "difficulty_points": 429,
+      "credited_proofs": 161,
+      "difficulty_points": 432,
       "dispatch_points": 0.0,
       "dispatch_proofs": 0,
       "display_name": "@ruvnet",
-      "explicit_solver_proofs": 160,
+      "explicit_solver_proofs": 161,
       "failed_attempts": 0,
       "failures": 0,
       "git_author": null,
@@ -235,7 +235,7 @@
       "successes": 0,
       "successes_per_recorded_hour": null,
       "total_solve_s": 0,
-      "verified_proofs": 160
+      "verified_proofs": 161
     },
     {
       "attempt_yield": 0.0455,
@@ -388,36 +388,6 @@
       "successes_per_recorded_hour": null,
       "total_solve_s": 0,
       "verified_proofs": 9
-    },
-    {
-      "attempt_yield": null,
-      "attempts": 0,
-      "avatar_url": null,
-      "credit_source_summary": "inferred",
-      "credit_sources": [
-        "inferred-git-add-author"
-      ],
-      "credited_proofs": 1,
-      "difficulty_points": 3,
-      "dispatch_points": 20.7,
-      "dispatch_proofs": 23,
-      "display_name": "unsorry-batch",
-      "explicit_solver_proofs": 0,
-      "failed_attempts": 0,
-      "failures": 0,
-      "git_author": "unsorry-batch <unsorry-batch@users.noreply.github.com>",
-      "github": null,
-      "inferred_git_proofs": 1,
-      "median_solve_s": null,
-      "p90_solve_s": null,
-      "profile_url": null,
-      "run_success_rate": null,
-      "runs": 0,
-      "solver": null,
-      "successes": 0,
-      "successes_per_recorded_hour": null,
-      "total_solve_s": 0,
-      "verified_proofs": 1
     },
     {
       "attempt_yield": null,
@@ -7755,12 +7725,12 @@
         "git_author_name": "unsorry-batch",
         "github": null,
         "index_files_added": 24,
-        "missing_solver_provenance": 1,
+        "missing_solver_provenance": 0,
         "profile_url": null,
         "sample_add_commit": "e2adee7ecb744ec6c68647b4e20bf040008c48c0",
         "sample_add_date": "2026-06-29",
         "solver_credit": false,
-        "solver_provenance_proofs": 23
+        "solver_provenance_proofs": 24
       },
       {
         "attribution_source": "git-add-author",
@@ -7896,7 +7866,7 @@
       "successes": 0,
       "successes_per_recorded_hour": null,
       "total_solve_s": 0,
-      "verified_proofs": 160
+      "verified_proofs": 161
     },
     {
       "attempt_yield": 0.2452,
