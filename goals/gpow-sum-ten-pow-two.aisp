@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜gpow-sum-ten-pow-two
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/gpow-sum-ten-pow-two.md
+  src≜packages/unsorry-archive-0093/backlog/gpow-sum-ten-pow-two.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/gpow-sum-ten-pow-two.lean
+  lean≜packages/unsorry-archive-0093/goals/gpow-sum-ten-pow-two.lean
   sha≜ab1539904b6c15236afe597eafdb5b9f517ac7cb31af7148e97af9f03da6e15a
   aff≜0
 }

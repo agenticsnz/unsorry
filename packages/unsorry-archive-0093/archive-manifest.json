@@ -1,0 +1,155 @@
+{
+  "block_id": "unsorry-archive-0093",
+  "target_size": 40,
+  "proof_count": 34,
+  "status": "frozen",
+  "source_commit": "04a7abcb6c1784531cea497ed3ed218c0ed5ddb3",
+  "validation_commit": null,
+  "pins": {
+    "lean_toolchain": "leanprover/lean4:v4.30.0",
+    "mathlib": "v4.30.0"
+  },
+  "notes": [
+    "ADR-041 proof archive block 0093.",
+    "Whole decomposition trees + standalone proved goals only (invariant A).",
+    "Active goal records remain as archived metadata pointing at this package."
+  ],
+  "goals": [
+    {
+      "goal": "gpow-sum-nine-pow-four",
+      "module": "Unsorry.GpowSumNinePowFour"
+    },
+    {
+      "goal": "gpow-sum-nine-pow-five",
+      "module": "Unsorry.GpowSumNinePowFive"
+    },
+    {
+      "goal": "gpow-sum-nine-pow-six",
+      "module": "Unsorry.GpowSumNinePowSix"
+    },
+    {
+      "goal": "gpow-sum-nine-pow-seven",
+      "module": "Unsorry.GpowSumNinePowSeven"
+    },
+    {
+      "goal": "gpow-sum-nine-pow-eight",
+      "module": "Unsorry.GpowSumNinePowEight"
+    },
+    {
+      "goal": "gpow-sum-nine-pow-nine",
+      "module": "Unsorry.GpowSumNinePowNine"
+    },
+    {
+      "goal": "gpow-sum-nine-pow-ten",
+      "module": "Unsorry.GpowSumNinePowTen"
+    },
+    {
+      "goal": "gpow-sum-nine-pow-eleven",
+      "module": "Unsorry.GpowSumNinePowEleven"
+    },
+    {
+      "goal": "gpow-sum-nine-pow-twelve",
+      "module": "Unsorry.GpowSumNinePowTwelve"
+    },
+    {
+      "goal": "gpow-sum-nine-pow-thirteen",
+      "module": "Unsorry.GpowSumNinePowThirteen"
+    },
+    {
+      "goal": "gpow-sum-nine-pow-fourteen",
+      "module": "Unsorry.GpowSumNinePowFourteen"
+    },
+    {
+      "goal": "gpow-sum-nine-pow-fifteen",
+      "module": "Unsorry.GpowSumNinePowFifteen"
+    },
+    {
+      "goal": "gpow-sum-nine-pow-sixteen",
+      "module": "Unsorry.GpowSumNinePowSixteen"
+    },
+    {
+      "goal": "gpow-sum-nine-pow-seventeen",
+      "module": "Unsorry.GpowSumNinePowSeventeen"
+    },
+    {
+      "goal": "gpow-sum-nine-pow-eighteen",
+      "module": "Unsorry.GpowSumNinePowEighteen"
+    },
+    {
+      "goal": "gpow-sum-nine-pow-nineteen",
+      "module": "Unsorry.GpowSumNinePowNineteen"
+    },
+    {
+      "goal": "gpow-sum-nine-pow-twenty",
+      "module": "Unsorry.GpowSumNinePowTwenty"
+    },
+    {
+      "goal": "gpow-sum-ten-pow-two",
+      "module": "Unsorry.GpowSumTenPowTwo"
+    },
+    {
+      "goal": "gpow-sum-ten-pow-three",
+      "module": "Unsorry.GpowSumTenPowThree"
+    },
+    {
+      "goal": "gpow-sum-ten-pow-four",
+      "module": "Unsorry.GpowSumTenPowFour"
+    },
+    {
+      "goal": "gpow-sum-ten-pow-five",
+      "module": "Unsorry.GpowSumTenPowFive"
+    },
+    {
+      "goal": "gpow-sum-ten-pow-six",
+      "module": "Unsorry.GpowSumTenPowSix"
+    },
+    {
+      "goal": "gpow-sum-ten-pow-seven",
+      "module": "Unsorry.GpowSumTenPowSeven"
+    },
+    {
+      "goal": "gpow-sum-ten-pow-eight",
+      "module": "Unsorry.GpowSumTenPowEight"
+    },
+    {
+      "goal": "gpow-sum-ten-pow-nine",
+      "module": "Unsorry.GpowSumTenPowNine"
+    },
+    {
+      "goal": "gpow-sum-ten-pow-ten",
+      "module": "Unsorry.GpowSumTenPowTen"
+    },
+    {
+      "goal": "gpow-sum-ten-pow-eleven",
+      "module": "Unsorry.GpowSumTenPowEleven"
+    },
+    {
+      "goal": "gpow-sum-ten-pow-twelve",
+      "module": "Unsorry.GpowSumTenPowTwelve"
+    },
+    {
+      "goal": "gpow-sum-ten-pow-thirteen",
+      "module": "Unsorry.GpowSumTenPowThirteen"
+    },
+    {
+      "goal": "gpow-sum-ten-pow-fourteen",
+      "module": "Unsorry.GpowSumTenPowFourteen"
+    },
+    {
+      "goal": "gpow-sum-ten-pow-fifteen",
+      "module": "Unsorry.GpowSumTenPowFifteen"
+    },
+    {
+      "goal": "gpow-sum-ten-pow-sixteen",
+      "module": "Unsorry.GpowSumTenPowSixteen"
+    },
+    {
+      "goal": "gpow-sum-ten-pow-seventeen",
+      "module": "Unsorry.GpowSumTenPowSeventeen"
+    },
+    {
+      "goal": "gpow-sum-ten-pow-eighteen",
+      "module": "Unsorry.GpowSumTenPowEighteen"
+    }
+  ]
+}

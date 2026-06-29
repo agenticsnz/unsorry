@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜gpow-sum-nine-pow-seventeen
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/gpow-sum-nine-pow-seventeen.md
+  src≜packages/unsorry-archive-0093/backlog/gpow-sum-nine-pow-seventeen.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/gpow-sum-nine-pow-seventeen.lean
+  lean≜packages/unsorry-archive-0093/goals/gpow-sum-nine-pow-seventeen.lean
   sha≜f97d038c7037d9e5455911ea4525d70b677f3c664f694bad2c7fc7a0a9ffd289
   aff≜0
 }
