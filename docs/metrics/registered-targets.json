@@ -3,7 +3,7 @@
   "suites": [
     {
       "cohort": "benchmark",
-      "credited": 92,
+      "credited": 95,
       "domain": "lean-math",
       "glue": 0,
       "goals": [
@@ -649,6 +649,27 @@
           "difficulty": 4,
           "id": "imosl-2021-c5",
           "run_snippet": "./swarm/run.sh --goal imosl-2021-c5",
+          "status": "open"
+        },
+        {
+          "credit": "credited",
+          "difficulty": 4,
+          "id": "izho-2014-p3",
+          "run_snippet": "./swarm/run.sh --goal izho-2014-p3",
+          "status": "open"
+        },
+        {
+          "credit": "credited",
+          "difficulty": 4,
+          "id": "izho-2019-p1",
+          "run_snippet": "./swarm/run.sh --goal izho-2019-p1",
+          "status": "open"
+        },
+        {
+          "credit": "credited",
+          "difficulty": 4,
+          "id": "usamo-2000-p4",
+          "run_snippet": "./swarm/run.sh --goal usamo-2000-p4",
           "status": "open"
         }
       ],
