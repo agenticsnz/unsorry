@@ -68,20 +68,20 @@
       "attempt_yield": null,
       "avatar_url": "https://github.com/ruvnet.png?size=96",
       "badges": {
-        "difficulty": 432,
-        "proofs": 161,
+        "difficulty": 429,
+        "proofs": 160,
         "success_rate_percent": null
       },
       "credit_source_summary": "explicit",
       "credit_sources": [
         "explicit-solver"
       ],
-      "credited_proofs": 161,
-      "difficulty_points": 432,
+      "credited_proofs": 160,
+      "difficulty_points": 429,
       "dispatch_points": 0.0,
       "dispatch_proofs": 0,
       "display_name": "@ruvnet",
-      "explicit_solver_proofs": 161,
+      "explicit_solver_proofs": 160,
       "failed_attempts": 0,
       "github": "ruvnet",
       "inferred_git_proofs": 0,
@@ -90,10 +90,10 @@
       "rank": 3,
       "run_success_rate": null,
       "runs": 0,
-      "score": 47225,
+      "score": 46900,
       "solver": "ruvnet",
       "successes": 0,
-      "verified_proofs": 161
+      "verified_proofs": 160
     },
     {
       "attempt_yield": 0.0455,
@@ -284,7 +284,7 @@
       "verified_proofs": 1
     }
   ],
-  "generated_at": "2026-06-29T08:18:24Z",
+  "generated_at": "2026-06-29T09:04:33Z",
   "generated_from": "docs/metrics/community-stats.json",
   "historical_contributors": [
     {
@@ -359,11 +359,11 @@
       "display_name": "unsorry-batch",
       "github": null,
       "index_files_added": 24,
-      "missing_solver_provenance": 0,
+      "missing_solver_provenance": 1,
       "profile_url": null,
       "rank": 6,
       "solver_credit": false,
-      "solver_provenance_proofs": 24
+      "solver_provenance_proofs": 23
     },
     {
       "attribution_source": "git-add-author",
@@ -441,7 +441,7 @@
       "provider_model": "openrouter / unknown",
       "run_success_rate": null,
       "runs": 0,
-      "verified_proofs": 161
+      "verified_proofs": 160
     },
     {
       "provider_model": "claude / opus",
@@ -507,18 +507,18 @@
   "schema_version": 1,
   "score_policy": "rank by score desc; score = difficulty_points * 100 + credited_proofs * 25 + dispatch_points * 100 (dispatch_points = 0.9 flat for each proof PR you opened/landed for another contributor; self-dispatch excluded — the system does not run without dispatchers)",
   "summary": {
-    "attributed_proofs": 4334,
-    "attribution_gap_count": 308,
+    "attributed_proofs": 4333,
+    "attribution_gap_count": 309,
     "credited_contributors": 9,
-    "credited_proofs": 4642,
-    "explicit_solver_proofs": 4334,
+    "credited_proofs": 4641,
+    "explicit_solver_proofs": 4333,
     "git_attributed_index_files": 4642,
     "historical_contributors": 10,
-    "historical_unknown_proofs": 308,
+    "historical_unknown_proofs": 309,
     "inferred_git_proofs": 308,
     "proof_run_coverage": 0.0407,
     "terminal_runs": 553,
-    "uncredited_proofs": 0,
+    "uncredited_proofs": 1,
     "verified_proofs": 4642
   },
   "timelines": {

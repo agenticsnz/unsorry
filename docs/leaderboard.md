@@ -4,7 +4,7 @@
 
 Verified output comes from active `library/index` records plus archived index records only after their active copy has been retired; append-only terminal-run telemetry comes from `proof-runs/`. Rates cover only logged runs and never guess historical failures from Git history. Timing is contributor-reported local proof plus verification time.
 
-**4642 verified proofs · 4334 attributed · 308 historical/unknown · 553 logged terminal runs.**
+**4642 verified proofs · 4333 attributed · 309 historical/unknown · 553 logged terminal runs.**
 
 ## Efficiency Baseline
 
@@ -61,7 +61,7 @@ Rank uses Score (difficulty points + dispatch credit). Explicit `solver≜...` p
 | 1 | [@cgbarlow](https://github.com/cgbarlow) | 120 | 73 | 47 | 286 | 5.2% | 216 | 2814.3 | 306030 |
 | 2 | [@chat-bit-01](https://github.com/chat-bit-01) | 2023 | 1776 | 247 | 4 | 100.0% | 2354 | 20.7 | 288045 |
 | 3 | [@ohdearquant](https://github.com/ohdearquant) | 2258 | 2257 | 1 | 147 | 100.0% | 2261 | 0.0 | 282550 |
-| 4 | [@ruvnet](https://github.com/ruvnet) | 161 | 161 | 0 | 0 | — | 432 | 0.0 | 47225 |
+| 4 | [@ruvnet](https://github.com/ruvnet) | 160 | 160 | 0 | 0 | — | 429 | 0.0 | 46900 |
 | 5 | [@perttu](https://github.com/perttu) | 41 | 37 | 4 | 27 | 14.8% | 87 | 202.5 | 29975 |
 | 6 | [@adam91holt](https://github.com/adam91holt) | 19 | 19 | 0 | 56 | 0.0% | 46 | 0.0 | 5075 |
 | 7 | [@binto](https://github.com/binto) | 9 | 0 | 9 | 0 | — | 19 | 0.0 | 2125 |
@@ -70,7 +70,7 @@ Rank uses Score (difficulty points + dispatch credit). Explicit `solver≜...` p
 
 ## Attribution Notes
 
-**4334 explicit solver credits · 308 inferred git credits · 0 uncredited proof records.**
+**4333 explicit solver credits · 308 inferred git credits · 1 uncredited proof records.**
 
 Git add-author attribution covers 4642 of 4642 proof index files. It is used only where explicit `solver≜` provenance is missing.
 
@@ -81,7 +81,7 @@ Git add-author attribution covers 4642 of 4642 proof index files. It is used onl
 | `python / sympy` | 2256 | 147 | 100.0% | 0 | 1 | 0s | — |
 | `lean / ring` | 1119 | 0 | — | 0 | 1 | — | — |
 | `lean / decide` | 653 | 0 | — | 0 | 1 | — | — |
-| `openrouter / unknown` | 161 | 0 | — | 0 | 1 | — | — |
+| `openrouter / unknown` | 160 | 0 | — | 0 | 1 | — | — |
 | `claude / opus` | 72 | 79 | 48.1% | 117 | 6 | 10m 49s | 1.08 |
 | `codex / unknown` | 39 | 75 | 5.3% | 111 | 2 | 7m 35s | 0.35 |
 | `openai / leanstral-2603` | 21 | 201 | 0.0% | 205 | 1 | 6m 30s | 0.00 |

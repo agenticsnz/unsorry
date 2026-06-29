@@ -35,7 +35,7 @@
     {
       "attempt_yield": null,
       "attempts": 0,
-      "difficulty_points": 432,
+      "difficulty_points": 429,
       "failed_attempts": 0,
       "failures": 0,
       "median_solve_s": null,
@@ -46,7 +46,7 @@
       "successes": 0,
       "successes_per_recorded_hour": null,
       "total_solve_s": 0,
-      "verified_proofs": 161
+      "verified_proofs": 160
     },
     {
       "attempt_yield": 0.0455,
@@ -130,8 +130,8 @@
     }
   ],
   "coverage": {
-    "attributed_proofs": 4334,
-    "historical_unknown_proofs": 308,
+    "attributed_proofs": 4333,
+    "historical_unknown_proofs": 309,
     "proof_run_coverage": 0.0407,
     "successful_proofs_with_run_telemetry": 189,
     "terminal_runs": 553,
@@ -139,10 +139,10 @@
   },
   "credit": {
     "credited_contributors": 9,
-    "credited_proofs": 4642,
-    "explicit_solver_proofs": 4334,
+    "credited_proofs": 4641,
+    "explicit_solver_proofs": 4333,
     "inferred_git_proofs": 308,
-    "uncredited_proofs": 0
+    "uncredited_proofs": 1
   },
   "credited_contributors": [
     {
@@ -215,12 +215,12 @@
       "credit_sources": [
         "explicit-solver"
       ],
-      "credited_proofs": 161,
-      "difficulty_points": 432,
+      "credited_proofs": 160,
+      "difficulty_points": 429,
       "dispatch_points": 0.0,
       "dispatch_proofs": 0,
       "display_name": "@ruvnet",
-      "explicit_solver_proofs": 161,
+      "explicit_solver_proofs": 160,
       "failed_attempts": 0,
       "failures": 0,
       "git_author": null,
@@ -235,7 +235,7 @@
       "successes": 0,
       "successes_per_recorded_hour": null,
       "total_solve_s": 0,
-      "verified_proofs": 161
+      "verified_proofs": 160
     },
     {
       "attempt_yield": 0.0455,
@@ -7725,12 +7725,12 @@
         "git_author_name": "unsorry-batch",
         "github": null,
         "index_files_added": 24,
-        "missing_solver_provenance": 0,
+        "missing_solver_provenance": 1,
         "profile_url": null,
         "sample_add_commit": "e2adee7ecb744ec6c68647b4e20bf040008c48c0",
         "sample_add_date": "2026-06-29",
         "solver_credit": false,
-        "solver_provenance_proofs": 24
+        "solver_provenance_proofs": 23
       },
       {
         "attribution_source": "git-add-author",
@@ -7866,7 +7866,7 @@
       "successes": 0,
       "successes_per_recorded_hour": null,
       "total_solve_s": 0,
-      "verified_proofs": 161
+      "verified_proofs": 160
     },
     {
       "attempt_yield": 0.2452,
