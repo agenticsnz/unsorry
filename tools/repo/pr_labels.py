@@ -43,6 +43,7 @@ _SWARM = {
     "tr": "swarm:translate",
     "converge": "swarm:translate",
     "prove": "swarm:prove",
+    "prove-batch": "swarm:prove",
     "decompose": "swarm:decompose",
     "unblock": "swarm:unblock",
     "affinity": "swarm:demote",
@@ -51,7 +52,9 @@ _SWARM = {
 #: closing `):` so a malformed `prove(goal)` (no colon) is rejected by the gate,
 #: matching the documented `prove(<goal>): …` contract (ADR-026). `unblock(<goal>):`
 #: re-opens a `blocked` parent once its sub-lemmas are proved (ADR-009).
-_SWARM_RE = re.compile(r"^(?P<kind>tr|converge|prove|decompose|unblock|affinity)\([^()]*\):")
+#: `prove-batch(<n>):` is the ADR-107 batch PR (K proofs in one Gate A run); it
+#: labels as a proof PR. It is listed BEFORE `prove` so the longer kind wins.
+_SWARM_RE = re.compile(r"^(?P<kind>tr|converge|prove-batch|prove|decompose|unblock|affinity)\([^()]*\):")
 _REDTEAM_RE = re.compile(r"^redteam\d*\([^()]*\):")
 _RELEASE_RE = re.compile(r"^docs\(v[\d.]+\):")
 _METRICS_RE = re.compile(r"\(run \d+\)|metrics|red-team round \d+", re.IGNORECASE)
@@ -118,7 +121,8 @@ def diagnose(title: str) -> str:
 VALID_SHAPES = (
     "Conventional Commits (scope optional): "
     "feat: / fix: / docs: / chore: / ci: / test: / refactor: / perf: / build: ;  "
-    "swarm: prove(<goal>): [theorem proved] / decompose(<goal>): & affinity(<goal>): "
+    "swarm: prove(<goal>): [theorem proved] / prove-batch(<n>): [ADR-107 batch of n "
+    "proofs] / decompose(<goal>): & affinity(<goal>): "
     "[theorem not proved — split / demoted] / unblock(<goal>): [parent re-opened, "
     "subs proved] / tr(<goal>): / converge(<goal>): ;  "
     "red-team: redteam<n>(<vector>): ;  release: docs(vX.Y.Z):"

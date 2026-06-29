@@ -9,6 +9,9 @@ def test_swarm_surfaces():
     assert classify("tr(nat-add-assoc): translation by trial-alpha") == ["swarm:translate"]
     assert classify("converge(nat-mul-one): matched by trial-bravo") == ["swarm:translate"]
     assert classify("prove(nicomachus-sum-cubes): nicomachus_sum_cubes by e-alpha") == ["swarm:prove"]
+    # ADR-107 batch PR — labels as a proof PR; `prove-batch` must win over `prove`
+    assert classify("prove-batch(8): amortised verification of 8 proofs (ADR-107)") == ["swarm:prove"]
+    assert is_conforming("prove-batch(8): amortised verification of 8 proofs (ADR-107)")
     assert classify("decompose(platonic-schlafli-core): split into 3 subs by p3-alpha") == ["swarm:decompose"]
     assert classify("unblock(am-gm-three-cube): sub-lemmas proved, re-opening (ADR-009)") == ["swarm:unblock"]
     assert classify("affinity(platonic-schlafli-core): -10 after a failed prove attempt by p3-alpha") == ["swarm:demote"]
