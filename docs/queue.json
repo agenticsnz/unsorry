@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
   "source": "queued/prove/* refs + library/index provenance",
-  "generated_at": "2026-06-30T06:49:37Z",
+  "generated_at": "2026-06-30T08:13:04Z",
   "pr_status_known": true,
   "summary": {
-    "queued_submissions": 3,
+    "queued_submissions": 2,
     "waiting": 0,
-    "in_flight": 3,
-    "distinct_goals": 3,
+    "in_flight": 2,
+    "distinct_goals": 2,
     "solvers": 1
   },
   "solvers": [
@@ -16,10 +16,10 @@
       "github": "ohdearquant",
       "display_name": "@ohdearquant",
       "profile_url": "https://github.com/ohdearquant",
-      "submissions": 3,
+      "submissions": 2,
       "waiting": 0,
-      "in_flight": 3,
-      "distinct_goals": 3,
+      "in_flight": 2,
+      "distinct_goals": 2,
       "queued": [
         {
           "goal": "gself-pow-three-pow-nineteen-add-pow-nine",
@@ -33,14 +33,6 @@
           "goal": "gself-pow-three-pow-nineteen-add-pow-sixteen",
           "branch": "queued/prove/gself-pow-three-pow-nineteen-add-pow-sixteen/mac-158f-521edf",
           "sha": "966ecae18",
-          "model": "template-ring-cofactor",
-          "date": "2026-06-19",
-          "state": "in-flight"
-        },
-        {
-          "goal": "gself-pow-three-pow-sixteen-add-pow-four",
-          "branch": "queued/prove/gself-pow-three-pow-sixteen-add-pow-four/mac-158f-4c5848",
-          "sha": "5a51ca115",
           "model": "template-ring-cofactor",
           "date": "2026-06-19",
           "state": "in-flight"
