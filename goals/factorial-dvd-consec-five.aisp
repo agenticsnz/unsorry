@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜factorial-dvd-consec-five
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/factorial-dvd-consec-five.md
+  src≜packages/unsorry-archive-0102/backlog/factorial-dvd-consec-five.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/factorial-dvd-consec-five.lean
+  lean≜packages/unsorry-archive-0102/goals/factorial-dvd-consec-five.lean
   sha≜0f6960023130b6244ba129cb6182a7fd874f9600946b604f25860fb54fd6b0a2
   aff≜0
 }
