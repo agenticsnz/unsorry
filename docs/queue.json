@@ -4,13 +4,33 @@
   "generated_at": "2026-06-30T21:39:07Z",
   "pr_status_known": true,
   "summary": {
-    "queued_submissions": 1,
-    "waiting": 1,
+    "queued_submissions": 2,
+    "waiting": 2,
     "in_flight": 0,
-    "distinct_goals": 1,
-    "solvers": 1
+    "distinct_goals": 2,
+    "solvers": 2
   },
   "solvers": [
+    {
+      "solver": "cgbarlow",
+      "github": "cgbarlow",
+      "display_name": "@cgbarlow",
+      "profile_url": "https://github.com/cgbarlow",
+      "submissions": 1,
+      "waiting": 1,
+      "in_flight": 0,
+      "distinct_goals": 1,
+      "queued": [
+        {
+          "goal": "aime-1983-p9-s2",
+          "branch": "queued/prove/aime-1983-p9-s2/afnz-zbook-b336-0290c9",
+          "sha": "d9f1963ae",
+          "model": "opus",
+          "date": "2026-07-01",
+          "state": "waiting"
+        }
+      ]
+    },
     {
       "solver": "ohdearquant",
       "github": "ohdearquant",
