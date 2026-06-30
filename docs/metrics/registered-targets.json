@@ -2560,12 +2560,12 @@
       "run_snippet": "./swarm/run.sh --goal minif2f-v1-suite",
       "stats": {
         "best_solve_s": null,
-        "contributors": 0,
-        "failed_runs": 0,
+        "contributors": 1,
+        "failed_runs": 1,
         "median_solve_s": null,
         "success_rate": 0.0,
         "successful_runs": 0,
-        "total_runs": 0,
+        "total_runs": 1,
         "worst_solve_s": null
       },
       "supplier": "yangky11",
