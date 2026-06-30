@@ -3,16 +3,16 @@
   "sourcers": [
     {
       "avatar_url": "https://github.com/cgbarlow.png?size=96",
-      "difficulty_points": 5418,
+      "difficulty_points": 5421,
       "display_name": "Chris Barlow",
       "earliest_sourced": "2026-06-10",
       "git_author": "Chris Barlow <cgbarlow@gmail.com>",
       "github": "cgbarlow",
       "latest_sourced": "2026-06-30",
-      "open": 209,
+      "open": 211,
       "profile_url": "https://github.com/cgbarlow",
       "proved": 1194,
-      "sourced_goals": 4025,
+      "sourced_goals": 4028,
       "sourcer": "cgbarlow"
     },
     {
@@ -115,8 +115,8 @@
     }
   ],
   "totals": {
-    "difficulty_points": 6422,
-    "sourced_goals": 5020,
+    "difficulty_points": 6425,
+    "sourced_goals": 5023,
     "sourcers": 8
   }
 }

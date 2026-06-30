@@ -12,6 +12,17 @@
         "run_id": "20260630t204959293360z-4e9f6880",
         "solve_s": 840,
         "verification": "—"
+      },
+      {
+        "contributor": "cgbarlow",
+        "ended": "2026-06-30T20:55:38Z",
+        "goal": "aime-1983-p9",
+        "model": "claude/opus",
+        "outcome": "decomposed",
+        "passed": false,
+        "run_id": "20260630t205538378073z-5ce77689",
+        "solve_s": 1015,
+        "verification": "—"
       }
     ],
     "putnam-v1": [
