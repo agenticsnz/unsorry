@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜gpow-sum-twelve-pow-twenty
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/gpow-sum-twelve-pow-twenty.md
+  src≜packages/unsorry-archive-0095/backlog/gpow-sum-twelve-pow-twenty.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/gpow-sum-twelve-pow-twenty.lean
+  lean≜packages/unsorry-archive-0095/goals/gpow-sum-twelve-pow-twenty.lean
   sha≜ee124ba7df6764f4f49df6f5da04415093d9d14f198810e101cdebf31a98a326
   aff≜0
 }
