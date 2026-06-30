@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>unsorry · proof-territory map</title>
+<!--
+  Static frontend for the proof-territory map.  No graph server, no build step.
+  It fetches a single territory.json (the data contract — see CONTRACT.md) and
+  renders it on a canvas.  Point it at any host:
+      proof-territory.html                     -> ./territory.json
+      proof-territory.html?data=https://.../t.json
+  Position = mathlib territory (SVD of abstraction incidence); colour = redundancy
+  class; size = machinery; hover a proof to see its real dependency edges.
+-->
+<style>
+html,body{margin:0;background:#0d0f12;color:#cdd3da;font:13px -apple-system,system-ui,monospace;overflow:hidden}
+#hud{position:fixed;top:10px;left:12px;z-index:5;line-height:1.5}#hud b{color:#fff}
+#tip{position:fixed;display:none;background:#1b1f24;border:1px solid #333;padding:6px 8px;border-radius:4px;pointer-events:none;z-index:6;white-space:nowrap}
+#err{position:fixed;top:50%;left:0;right:0;text-align:center;color:#e8a33d;display:none}
+.g{color:#2ecc71}.r{color:#e8a33d}.s{color:#9aa0a6}
+#leg{position:fixed;bottom:10px;left:12px;z-index:5}
+#cv{display:block;cursor:grab}
+button{background:#1b1f24;color:#cdd3da;border:1px solid #333;border-radius:4px;padding:3px 7px;cursor:pointer;margin-right:4px}
+</style>
+</head>
+<body>
+<div id="hud"></div>
+<div id="tip"></div>
+<div id="err"></div>
+<div id="leg">
+<button id="tf">toggle farms</button>
+<span class="g">● genuine</span> &nbsp;<span class="r">● restatement</span> &nbsp;<span class="s">● shallow</span>
+&nbsp; size ∝ machinery · position = mathlib territory (SVD) · <b>hover a proof to see its real dependency edges</b>
+</div>
+<canvas id="cv"></canvas>
+<script>
+const cv=document.getElementById('cv'),cx=cv.getContext('2d'),tip=document.getElementById('tip');
+const COL={g:'#2ecc71',r:'#e8a33d',s:'#9aa0a6'};
+const dataURL=new URLSearchParams(location.search).get('data')||'./territory.json';
+let D,W,H,sc,ox,oy,bx0,by0,bx1,by1,showFarms=true,hov=null;
+
+function fit(){
+  W=cv.width=innerWidth;H=cv.height=innerHeight;
+  sc=Math.min(W/(bx1-bx0+160),H/(by1-by0+160));
+  ox=W/2-(bx0+bx1)/2*sc;oy=H/2-(by0+by1)/2*sc;
+}
+function tx(x){return x*sc+ox}function ty(y){return y*sc+oy}
+
+function draw(){
+  cx.clearRect(0,0,W,H);
+  // hovered proof's REAL dependency edges -> mathlib abstraction landmarks
+  if(hov&&hov.e){cx.strokeStyle='rgba(46,204,113,0.55)';cx.lineWidth=1;
+    for(const li of hov.e){const L=D.land[li];cx.beginPath();cx.moveTo(tx(hov.x),ty(hov.y));cx.lineTo(tx(L.x),ty(L.y));cx.stroke();}}
+  for(const p of D.proofs){if(!showFarms&&p.c!=='g')continue;
+    cx.fillStyle=COL[p.c];cx.globalAlpha=p.c==='g'?0.95:0.45;
+    const r=Math.max(1.2,Math.min(8,1+p.m*0.17))*Math.sqrt(sc);
+    cx.beginPath();cx.arc(tx(p.x),ty(p.y),r,0,7);cx.fill();}
+  cx.globalAlpha=1;
+  const hovset=hov?new Set(hov.e):null;
+  cx.font=(11*Math.max(0.7,Math.min(1.5,sc)))+'px monospace';cx.lineWidth=3;
+  for(let i=0;i<D.land.length;i++){const L=D.land[i],X=tx(L.x),Y=ty(L.y),on=hovset&&hovset.has(i);
+    cx.fillStyle=on?'#7fe3a8':'#5b7fb0';cx.beginPath();cx.arc(X,Y,on?3.5:2,0,7);cx.fill();
+    if(L.l||on){cx.strokeStyle='rgba(0,0,0,0.75)';cx.fillStyle=on?'#dfffe9':'#cfe0f5';
+      cx.strokeText(L.n,X+4,Y);cx.fillText(L.n,X+4,Y);}}
+  if(hov){cx.fillStyle=COL[hov.c];cx.globalAlpha=1;
+    cx.beginPath();cx.arc(tx(hov.x),ty(hov.y),Math.max(3,1+hov.m*0.17)*Math.sqrt(sc)+1.5,0,7);
+    cx.strokeStyle='#fff';cx.lineWidth=1.5;cx.stroke();}
+}
+
+function render(){
+  const S=D.stats;
+  document.getElementById('hud').innerHTML=
+    `<b>unsorry · proof-territory map</b><br>${S.total} credited proofs · ${S.regions} mathlib regions<br>`+
+    `<span class=g>${S.genuine} genuine</span> · <span class=r>${S.restatement} restatement</span> · `+
+    `<span class=s>${S.shallow} shallow</span><br><b>${(S.redundant_fraction*100).toFixed(1)}% redundant</b> `+
+    `<span style=color:#777>(structure-only: depends_on+instance_of+enables)</span>`;
+  bx0=by0=1e9;bx1=by1=-1e9;
+  for(const p of D.proofs){if(p.x<bx0)bx0=p.x;if(p.y<by0)by0=p.y;if(p.x>bx1)bx1=p.x;if(p.y>by1)by1=p.y;}
+  fit();draw();
+}
+
+onresize=()=>{if(D){fit();draw();}};
+let drag=false,px,py;
+cv.onmousedown=e=>{drag=true;px=e.clientX;py=e.clientY;cv.style.cursor='grabbing';};
+onmouseup=()=>{drag=false;cv.style.cursor='grab';};
+cv.onmousemove=e=>{
+  if(drag){ox+=e.clientX-px;oy+=e.clientY-py;px=e.clientX;py=e.clientY;draw();return;}
+  if(!D)return;
+  let best=null,bd=80;
+  for(const p of D.proofs){if(!showFarms&&p.c!=='g')continue;
+    const dx=tx(p.x)-e.clientX,dy=ty(p.y)-e.clientY,d=dx*dx+dy*dy;if(d<bd){bd=d;best=p;}}
+  if(best!==hov){hov=best;draw();}
+  if(best){tip.style.display='block';tip.style.left=(e.clientX+12)+'px';tip.style.top=(e.clientY+12)+'px';
+    const cn={g:'genuine',r:'restatement',s:'shallow'}[best.c];
+    tip.innerHTML=`<b>${best.n}</b><br>machinery ${best.m} · ${cn} · region ${best.r} proof(s) · ${best.e.length} territory edges`;}
+  else tip.style.display='none';
+};
+cv.onwheel=e=>{e.preventDefault();const f=e.deltaY<0?1.12:0.89;ox=e.clientX-(e.clientX-ox)*f;oy=e.clientY-(e.clientY-oy)*f;sc*=f;draw();};
+document.getElementById('tf').onclick=()=>{showFarms=!showFarms;draw();};
+
+fetch(dataURL).then(r=>{if(!r.ok)throw new Error(r.status);return r.json();})
+  .then(j=>{D=j;render();})
+  .catch(e=>{document.getElementById('err').style.display='block';
+    document.getElementById('err').textContent='could not load '+dataURL+' ('+e.message+')';});
+</script>
+</body>
+</html>
