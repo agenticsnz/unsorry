@@ -1907,7 +1907,16 @@ independent_check_pr_note() {
 }
 
 fetch_queued_prove_branches() {
-  git fetch -q origin '+refs/heads/queued/prove/*:refs/remotes/origin/queued/prove/*'
+  # --prune so a deleted upstream branch drops its local tracking ref the next
+  # fetch. The refspec fetches the queued/prove/* namespace but, without --prune,
+  # never removes refs/remotes/origin/queued/prove/* whose upstream is gone — so a
+  # long-lived dispatcher (run.sh) keeps re-listing branches the stale-branch
+  # janitor already deleted on the remote and re-attempts `gh pr create` against
+  # them ("Head ref must be a branch" / "No commits between main") every pass. The
+  # scheduled backstop never sees this (fresh checkout each run); only a local
+  # loop accumulates the leak. Prune is scoped to this refspec's destination, so
+  # only queued/prove/* tracking refs are eligible — origin/main et al. untouched.
+  git fetch -q --prune origin '+refs/heads/queued/prove/*:refs/remotes/origin/queued/prove/*'
 }
 
 # Pure decision helper (ADR-109): given the PR-list JSON for a branch and a
