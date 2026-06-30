@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜geud-42-pow-seven-sub-self
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/geud-42-pow-seven-sub-self.md
+  src≜packages/unsorry-archive-0095/backlog/geud-42-pow-seven-sub-self.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/geud-42-pow-seven-sub-self.lean
+  lean≜packages/unsorry-archive-0095/goals/geud-42-pow-seven-sub-self.lean
   sha≜220c4b4709a7fe8420c195627b90aeec2792c847b9b73841e6d5c46749f1f71b
   aff≜0
 }

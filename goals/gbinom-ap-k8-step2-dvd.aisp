@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜gbinom-ap-k8-step2-dvd
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/gbinom-ap-k8-step2-dvd.md
+  src≜packages/unsorry-archive-0095/backlog/gbinom-ap-k8-step2-dvd.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/gbinom-ap-k8-step2-dvd.lean
+  lean≜packages/unsorry-archive-0095/goals/gbinom-ap-k8-step2-dvd.lean
   sha≜ae89d4e9b729d0b6e0a6dde499a9e5c3c18f374ea9dde85fff112e63a871337e
   aff≜0
 }

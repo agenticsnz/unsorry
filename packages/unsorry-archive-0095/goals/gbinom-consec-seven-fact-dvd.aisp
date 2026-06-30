@@ -1,0 +1,20 @@
+𝔸5.1.goal.gbinom-consec-seven-fact-dvd@2026-06-19
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gbinom-consec-seven-fact-dvd
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/gbinom-consec-seven-fact-dvd.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/gbinom-consec-seven-fact-dvd.lean
+  sha≜d7f3568e1f3a3cdb365276e3671217a718213ee27d3aaeb1347ef297ad4fe1b4
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

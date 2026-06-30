@@ -1,0 +1,155 @@
+{
+  "block_id": "unsorry-archive-0095",
+  "target_size": 40,
+  "proof_count": 34,
+  "status": "frozen",
+  "source_commit": "3551661258940d792c15a1c5595223242105462a",
+  "validation_commit": null,
+  "pins": {
+    "lean_toolchain": "leanprover/lean4:v4.30.0",
+    "mathlib": "v4.30.0"
+  },
+  "notes": [
+    "ADR-041 proof archive block 0095.",
+    "Whole decomposition trees + standalone proved goals only (invariant A).",
+    "Active goal records remain as archived metadata pointing at this package."
+  ],
+  "goals": [
+    {
+      "goal": "gpow-sum-twelve-pow-fifteen",
+      "module": "Unsorry.GpowSumTwelvePowFifteen"
+    },
+    {
+      "goal": "gpow-sum-twelve-pow-sixteen",
+      "module": "Unsorry.GpowSumTwelvePowSixteen"
+    },
+    {
+      "goal": "gpow-sum-twelve-pow-seventeen",
+      "module": "Unsorry.GpowSumTwelvePowSeventeen"
+    },
+    {
+      "goal": "gpow-sum-twelve-pow-eighteen",
+      "module": "Unsorry.GpowSumTwelvePowEighteen"
+    },
+    {
+      "goal": "gpow-sum-twelve-pow-nineteen",
+      "module": "Unsorry.GpowSumTwelvePowNineteen"
+    },
+    {
+      "goal": "gpow-sum-twelve-pow-twenty",
+      "module": "Unsorry.GpowSumTwelvePowTwenty"
+    },
+    {
+      "goal": "geud-6-pow-twentyseven-sub-self",
+      "module": "Unsorry.Geud6PowTwentysevenSubSelf"
+    },
+    {
+      "goal": "geud-6-pow-thirtyfive-sub-self",
+      "module": "Unsorry.Geud6PowThirtyfiveSubSelf"
+    },
+    {
+      "goal": "geud-6-pow-thirtynine-sub-self",
+      "module": "Unsorry.Geud6PowThirtynineSubSelf"
+    },
+    {
+      "goal": "geud-30-pow-five-sub-self",
+      "module": "Unsorry.Geud30PowFiveSubSelf"
+    },
+    {
+      "goal": "geud-30-pow-69-sub-self",
+      "module": "Unsorry.Geud30Pow69SubSelf"
+    },
+    {
+      "goal": "geud-30-pow-77-sub-self",
+      "module": "Unsorry.Geud30Pow77SubSelf"
+    },
+    {
+      "goal": "geud-42-pow-seven-sub-self",
+      "module": "Unsorry.Geud42PowSevenSubSelf"
+    },
+    {
+      "goal": "geud-42-pow-115-sub-self",
+      "module": "Unsorry.Geud42Pow115SubSelf"
+    },
+    {
+      "goal": "geud-42-pow-187-sub-self",
+      "module": "Unsorry.Geud42Pow187SubSelf"
+    },
+    {
+      "goal": "geud-66-pow-171-sub-self",
+      "module": "Unsorry.Geud66Pow171SubSelf"
+    },
+    {
+      "goal": "gbinom-consec-four-fact-dvd",
+      "module": "Unsorry.GbinomConsecFourFactDvd"
+    },
+    {
+      "goal": "gbinom-consec-six-fact-dvd",
+      "module": "Unsorry.GbinomConsecSixFactDvd"
+    },
+    {
+      "goal": "gbinom-consec-seven-fact-dvd",
+      "module": "Unsorry.GbinomConsecSevenFactDvd"
+    },
+    {
+      "goal": "gbinom-falling-three-fact-dvd",
+      "module": "Unsorry.GbinomFallingThreeFactDvd"
+    },
+    {
+      "goal": "gbinom-falling-four-fact-dvd",
+      "module": "Unsorry.GbinomFallingFourFactDvd"
+    },
+    {
+      "goal": "gbinom-falling-five-fact-dvd",
+      "module": "Unsorry.GbinomFallingFiveFactDvd"
+    },
+    {
+      "goal": "gbinom-falling-six-fact-dvd",
+      "module": "Unsorry.GbinomFallingSixFactDvd"
+    },
+    {
+      "goal": "gbinom-falling-seven-fact-dvd",
+      "module": "Unsorry.GbinomFallingSevenFactDvd"
+    },
+    {
+      "goal": "gbinom-ap-k4-step3-dvd",
+      "module": "Unsorry.GbinomApK4Step3Dvd"
+    },
+    {
+      "goal": "gbinom-ap-k5-step2-dvd",
+      "module": "Unsorry.GbinomApK5Step2Dvd"
+    },
+    {
+      "goal": "gbinom-ap-k6-step2-dvd",
+      "module": "Unsorry.GbinomApK6Step2Dvd"
+    },
+    {
+      "goal": "gbinom-ap-k7-step2-dvd",
+      "module": "Unsorry.GbinomApK7Step2Dvd"
+    },
+    {
+      "goal": "gbinom-ap-k8-step2-dvd",
+      "module": "Unsorry.GbinomApK8Step2Dvd"
+    },
+    {
+      "goal": "gbinom-ap-k9-step2-dvd",
+      "module": "Unsorry.GbinomApK9Step2Dvd"
+    },
+    {
+      "goal": "gbinom-poly-nmulnpow2p2",
+      "module": "Unsorry.GbinomPolyNmulnpow2p2"
+    },
+    {
+      "goal": "gbinom-poly-nmulnpow2m7",
+      "module": "Unsorry.GbinomPolyNmulnpow2m7"
+    },
+    {
+      "goal": "gbinom-poly-nmul2mulnp1mul2mulnm1",
+      "module": "Unsorry.GbinomPolyNmul2mulnp1mul2mulnm1"
+    },
+    {
+      "goal": "gbinom-poly-np1mulnp2mul2mulnp3",
+      "module": "Unsorry.GbinomPolyNp1mulnp2mul2mulnp3"
+    }
+  ]
+}
