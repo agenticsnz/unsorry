@@ -60,10 +60,25 @@ jobs:
       - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
           python-version: "3.12"
-      - name: Re-run PRs blocked by a flaked required gate (bounded)
+      - name: Detect refresh token (#417)
+        id: tok
         env:
-          GH_TOKEN: ${{ github.token }}
+          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+        run: |
+          if [ -n "${REFRESH_TOKEN}" ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Re-run (or rebase) PRs blocked by a flaked required gate (bounded)
+        env:
+          # github.token can re-run a run; but the rebase fallback (for stale runs
+          # GitHub won't re-run) needs a non-default token, since a default-token
+          # `synchronize` does not re-dispatch the gates. Use REFRESH_TOKEN when
+          # present and enable rebase; otherwise stay rerun-only (--no-rebase).
+          GH_TOKEN: ${{ secrets.REFRESH_TOKEN || github.token }}
         run: |
           python3 -m tools.repo.flaky_gate_retry \
             --repo "${{ github.repository }}" \
-            ${{ github.event.inputs.apply != 'false' && '--apply' || '' }}
+            ${{ github.event.inputs.apply != 'false' && '--apply' || '' }} \
+            ${{ steps.tok.outputs.present == 'true' && ' ' || '--no-rebase' }}
