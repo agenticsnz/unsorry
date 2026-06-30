@@ -1,0 +1,155 @@
+{
+  "block_id": "unsorry-archive-0098",
+  "target_size": 40,
+  "proof_count": 34,
+  "status": "frozen",
+  "source_commit": "a349e0135c117bdd2e39abaf66efe82ed47d4a65",
+  "validation_commit": null,
+  "pins": {
+    "lean_toolchain": "leanprover/lean4:v4.30.0",
+    "mathlib": "v4.30.0"
+  },
+  "notes": [
+    "ADR-041 proof archive block 0098.",
+    "Whole decomposition trees + standalone proved goals only (invariant A).",
+    "Active goal records remain as archived metadata pointing at this package."
+  ],
+  "goals": [
+    {
+      "goal": "gself-pow-three-pow-seventeen-add-pow-six",
+      "module": "Unsorry.GselfPowThreePowSeventeenAddPowSix"
+    },
+    {
+      "goal": "gself-pow-three-pow-seventeen-add-pow-seven",
+      "module": "Unsorry.GselfPowThreePowSeventeenAddPowSeven"
+    },
+    {
+      "goal": "gself-pow-three-pow-seventeen-add-pow-eight",
+      "module": "Unsorry.GselfPowThreePowSeventeenAddPowEight"
+    },
+    {
+      "goal": "gself-pow-three-pow-seventeen-add-pow-nine",
+      "module": "Unsorry.GselfPowThreePowSeventeenAddPowNine"
+    },
+    {
+      "goal": "gself-pow-three-pow-seventeen-add-pow-eleven",
+      "module": "Unsorry.GselfPowThreePowSeventeenAddPowEleven"
+    },
+    {
+      "goal": "gself-pow-three-pow-seventeen-add-pow-twelve",
+      "module": "Unsorry.GselfPowThreePowSeventeenAddPowTwelve"
+    },
+    {
+      "goal": "gself-pow-three-pow-seventeen-add-pow-thirteen",
+      "module": "Unsorry.GselfPowThreePowSeventeenAddPowThirteen"
+    },
+    {
+      "goal": "gself-pow-three-pow-seventeen-add-pow-fourteen",
+      "module": "Unsorry.GselfPowThreePowSeventeenAddPowFourteen"
+    },
+    {
+      "goal": "gself-pow-three-pow-seventeen-add-pow-fifteen",
+      "module": "Unsorry.GselfPowThreePowSeventeenAddPowFifteen"
+    },
+    {
+      "goal": "gself-pow-three-pow-seventeen-add-pow-sixteen",
+      "module": "Unsorry.GselfPowThreePowSeventeenAddPowSixteen"
+    },
+    {
+      "goal": "gself-pow-three-pow-nineteen-add-pow-three",
+      "module": "Unsorry.GselfPowThreePowNineteenAddPowThree"
+    },
+    {
+      "goal": "gself-pow-three-pow-nineteen-add-pow-four",
+      "module": "Unsorry.GselfPowThreePowNineteenAddPowFour"
+    },
+    {
+      "goal": "gself-pow-three-pow-nineteen-add-pow-six",
+      "module": "Unsorry.GselfPowThreePowNineteenAddPowSix"
+    },
+    {
+      "goal": "gself-pow-three-pow-nineteen-add-pow-seven",
+      "module": "Unsorry.GselfPowThreePowNineteenAddPowSeven"
+    },
+    {
+      "goal": "gself-pow-three-pow-nineteen-add-pow-eight",
+      "module": "Unsorry.GselfPowThreePowNineteenAddPowEight"
+    },
+    {
+      "goal": "gself-pow-three-pow-nineteen-add-pow-nine",
+      "module": "Unsorry.GselfPowThreePowNineteenAddPowNine"
+    },
+    {
+      "goal": "gself-pow-three-pow-nineteen-add-pow-thirteen",
+      "module": "Unsorry.GselfPowThreePowNineteenAddPowThirteen"
+    },
+    {
+      "goal": "gself-pow-three-pow-nineteen-add-pow-fourteen",
+      "module": "Unsorry.GselfPowThreePowNineteenAddPowFourteen"
+    },
+    {
+      "goal": "gself-pow-three-pow-30-add-pow-nine",
+      "module": "Unsorry.GselfPowThreePow30AddPowNine"
+    },
+    {
+      "goal": "alt-geometric-ratio-fourteen",
+      "module": "Unsorry.AltGeometricRatioFourteen"
+    },
+    {
+      "goal": "alt-geometric-ratio-nine",
+      "module": "Unsorry.AltGeometricRatioNine"
+    },
+    {
+      "goal": "alt-geometric-ratio-nineteen",
+      "module": "Unsorry.AltGeometricRatioNineteen"
+    },
+    {
+      "goal": "alt-geometric-ratio-one",
+      "module": "Unsorry.AltGeometricRatioOne"
+    },
+    {
+      "goal": "alt-geometric-ratio-seven",
+      "module": "Unsorry.AltGeometricRatioSeven"
+    },
+    {
+      "goal": "alt-geometric-ratio-seventeen",
+      "module": "Unsorry.AltGeometricRatioSeventeen"
+    },
+    {
+      "goal": "alt-geometric-ratio-seventy",
+      "module": "Unsorry.AltGeometricRatioSeventy"
+    },
+    {
+      "goal": "alt-geometric-ratio-seventyeight",
+      "module": "Unsorry.AltGeometricRatioSeventyeight"
+    },
+    {
+      "goal": "alt-geometric-ratio-seventyfive",
+      "module": "Unsorry.AltGeometricRatioSeventyfive"
+    },
+    {
+      "goal": "alt-geometric-ratio-seventyfour",
+      "module": "Unsorry.AltGeometricRatioSeventyfour"
+    },
+    {
+      "goal": "alt-geometric-ratio-seventynine",
+      "module": "Unsorry.AltGeometricRatioSeventynine"
+    },
+    {
+      "goal": "alt-geometric-ratio-seventyone",
+      "module": "Unsorry.AltGeometricRatioSeventyone"
+    },
+    {
+      "goal": "alt-geometric-ratio-seventyseven",
+      "module": "Unsorry.AltGeometricRatioSeventyseven"
+    },
+    {
+      "goal": "alt-geometric-ratio-seventysix",
+      "module": "Unsorry.AltGeometricRatioSeventysix"
+    },
+    {
+      "goal": "alt-geometric-ratio-seventythree",
+      "module": "Unsorry.AltGeometricRatioSeventythree"
+    }
+  ]
+}

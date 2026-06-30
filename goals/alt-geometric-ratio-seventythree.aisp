@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜alt-geometric-ratio-seventythree
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/alt-geometric-ratio-seventythree.md
+  src≜packages/unsorry-archive-0098/backlog/alt-geometric-ratio-seventythree.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/alt-geometric-ratio-seventythree.lean
+  lean≜packages/unsorry-archive-0098/goals/alt-geometric-ratio-seventythree.lean
   sha≜536b6beeb77fd0c651cc2a8b093c782b86a5eea5ab0f9380ce05c869926c5663
   aff≜0
 }
