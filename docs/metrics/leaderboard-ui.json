@@ -96,36 +96,36 @@
       "verified_proofs": 160
     },
     {
-      "attempt_yield": 0.0476,
+      "attempt_yield": 0.0504,
       "avatar_url": "https://github.com/cgbarlow.png?size=96",
       "badges": {
-        "difficulty": 217,
-        "proofs": 121,
-        "success_rate_percent": 5.54
+        "difficulty": 218,
+        "proofs": 122,
+        "success_rate_percent": 5.86
       },
       "credit_source_summary": "explicit + inferred",
       "credit_sources": [
         "explicit-solver",
         "inferred-git-add-author"
       ],
-      "credited_proofs": 121,
-      "difficulty_points": 217,
+      "credited_proofs": 122,
+      "difficulty_points": 218,
       "dispatch_points": 2898.0,
       "dispatch_proofs": 3220,
       "display_name": "@cgbarlow",
-      "explicit_solver_proofs": 74,
+      "explicit_solver_proofs": 75,
       "failed_attempts": 320,
       "github": "cgbarlow",
       "inferred_git_proofs": 47,
-      "median_solve_s": 886,
+      "median_solve_s": 882,
       "profile_url": "https://github.com/cgbarlow",
       "rank": 4,
-      "run_success_rate": 0.0554,
-      "runs": 289,
-      "score": 314525,
+      "run_success_rate": 0.0586,
+      "runs": 290,
+      "score": 314650,
       "solver": "cgbarlow",
-      "successes": 16,
-      "verified_proofs": 121
+      "successes": 17,
+      "verified_proofs": 122
     },
     {
       "attempt_yield": 0.058,
@@ -284,21 +284,21 @@
       "verified_proofs": 1
     }
   ],
-  "generated_at": "2026-06-30T21:39:07Z",
+  "generated_at": "2026-06-30T21:58:05Z",
   "generated_from": "docs/metrics/community-stats.json",
   "historical_contributors": [
     {
       "attribution_source": "git-add-author",
       "avatar_url": "https://github.com/cgbarlow.png?size=96",
-      "difficulty_points": 3667,
+      "difficulty_points": 3668,
       "display_name": "Chris Barlow",
       "github": "cgbarlow",
-      "index_files_added": 3341,
+      "index_files_added": 3342,
       "missing_solver_provenance": 47,
       "profile_url": "https://github.com/cgbarlow",
       "rank": 1,
       "solver_credit": false,
-      "solver_provenance_proofs": 3294
+      "solver_provenance_proofs": 3295
     },
     {
       "attribution_source": "git-add-author",
@@ -445,9 +445,9 @@
     },
     {
       "provider_model": "claude / opus",
-      "run_success_rate": 0.4756,
-      "runs": 82,
-      "verified_proofs": 73
+      "run_success_rate": 0.4819,
+      "runs": 83,
+      "verified_proofs": 74
     },
     {
       "provider_model": "codex / unknown",
@@ -507,19 +507,19 @@
   "schema_version": 1,
   "score_policy": "rank by score desc; score = difficulty_points * 100 + credited_proofs * 25 + dispatch_points * 100 (dispatch_points = 0.9 flat for each proof PR you opened/landed for another contributor; self-dispatch excluded — the system does not run without dispatchers)",
   "summary": {
-    "attributed_proofs": 4450,
+    "attributed_proofs": 4451,
     "attribution_gap_count": 309,
     "credited_contributors": 9,
-    "credited_proofs": 4758,
-    "explicit_solver_proofs": 4450,
-    "git_attributed_index_files": 4759,
+    "credited_proofs": 4759,
+    "explicit_solver_proofs": 4451,
+    "git_attributed_index_files": 4760,
     "historical_contributors": 10,
     "historical_unknown_proofs": 309,
     "inferred_git_proofs": 308,
-    "proof_run_coverage": 0.009,
-    "terminal_runs": 409,
+    "proof_run_coverage": 0.0092,
+    "terminal_runs": 410,
     "uncredited_proofs": 1,
-    "verified_proofs": 4759
+    "verified_proofs": 4760
   },
   "timelines": {
     "default": "merge",
@@ -2035,8 +2035,8 @@
         "t": "2026-06-30T10:00:00Z"
       },
       {
-        "cumulative_proofs": 4769,
-        "proofs": 1,
+        "cumulative_proofs": 4770,
+        "proofs": 2,
         "t": "2026-06-30T21:00:00Z"
       }
     ],
@@ -2117,8 +2117,8 @@
         "t": "2026-06-26"
       },
       {
-        "cumulative_proofs": 4771,
-        "proofs": 1,
+        "cumulative_proofs": 4772,
+        "proofs": 2,
         "t": "2026-06-30"
       }
     ]
