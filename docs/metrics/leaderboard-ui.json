@@ -96,36 +96,36 @@
       "verified_proofs": 160
     },
     {
-      "attempt_yield": 0.0504,
+      "attempt_yield": 0.0533,
       "avatar_url": "https://github.com/cgbarlow.png?size=96",
       "badges": {
-        "difficulty": 218,
-        "proofs": 122,
-        "success_rate_percent": 5.86
+        "difficulty": 219,
+        "proofs": 123,
+        "success_rate_percent": 6.19
       },
       "credit_source_summary": "explicit + inferred",
       "credit_sources": [
         "explicit-solver",
         "inferred-git-add-author"
       ],
-      "credited_proofs": 122,
-      "difficulty_points": 218,
+      "credited_proofs": 123,
+      "difficulty_points": 219,
       "dispatch_points": 2898.0,
       "dispatch_proofs": 3220,
       "display_name": "@cgbarlow",
-      "explicit_solver_proofs": 75,
+      "explicit_solver_proofs": 76,
       "failed_attempts": 320,
       "github": "cgbarlow",
       "inferred_git_proofs": 47,
-      "median_solve_s": 882,
+      "median_solve_s": 878,
       "profile_url": "https://github.com/cgbarlow",
       "rank": 4,
-      "run_success_rate": 0.0586,
-      "runs": 290,
-      "score": 314650,
+      "run_success_rate": 0.0619,
+      "runs": 291,
+      "score": 314775,
       "solver": "cgbarlow",
-      "successes": 17,
-      "verified_proofs": 122
+      "successes": 18,
+      "verified_proofs": 123
     },
     {
       "attempt_yield": 0.058,
@@ -284,21 +284,21 @@
       "verified_proofs": 1
     }
   ],
-  "generated_at": "2026-06-30T22:48:57Z",
+  "generated_at": "2026-06-30T23:26:46Z",
   "generated_from": "docs/metrics/community-stats.json",
   "historical_contributors": [
     {
       "attribution_source": "git-add-author",
       "avatar_url": "https://github.com/cgbarlow.png?size=96",
-      "difficulty_points": 3668,
+      "difficulty_points": 3669,
       "display_name": "Chris Barlow",
       "github": "cgbarlow",
-      "index_files_added": 3342,
+      "index_files_added": 3343,
       "missing_solver_provenance": 47,
       "profile_url": "https://github.com/cgbarlow",
       "rank": 1,
       "solver_credit": false,
-      "solver_provenance_proofs": 3295
+      "solver_provenance_proofs": 3296
     },
     {
       "attribution_source": "git-add-author",
@@ -445,9 +445,9 @@
     },
     {
       "provider_model": "claude / opus",
-      "run_success_rate": 0.4819,
-      "runs": 83,
-      "verified_proofs": 74
+      "run_success_rate": 0.4881,
+      "runs": 84,
+      "verified_proofs": 75
     },
     {
       "provider_model": "codex / unknown",
@@ -507,19 +507,19 @@
   "schema_version": 1,
   "score_policy": "rank by score desc; score = difficulty_points * 100 + credited_proofs * 25 + dispatch_points * 100 (dispatch_points = 0.9 flat for each proof PR you opened/landed for another contributor; self-dispatch excluded — the system does not run without dispatchers)",
   "summary": {
-    "attributed_proofs": 4451,
+    "attributed_proofs": 4452,
     "attribution_gap_count": 309,
     "credited_contributors": 9,
-    "credited_proofs": 4759,
-    "explicit_solver_proofs": 4451,
-    "git_attributed_index_files": 4760,
+    "credited_proofs": 4760,
+    "explicit_solver_proofs": 4452,
+    "git_attributed_index_files": 4761,
     "historical_contributors": 10,
     "historical_unknown_proofs": 309,
     "inferred_git_proofs": 308,
-    "proof_run_coverage": 0.0092,
-    "terminal_runs": 410,
+    "proof_run_coverage": 0.0095,
+    "terminal_runs": 411,
     "uncredited_proofs": 1,
-    "verified_proofs": 4760
+    "verified_proofs": 4761
   },
   "timelines": {
     "default": "merge",
@@ -2038,6 +2038,11 @@
         "cumulative_proofs": 4770,
         "proofs": 2,
         "t": "2026-06-30T21:00:00Z"
+      },
+      {
+        "cumulative_proofs": 4771,
+        "proofs": 1,
+        "t": "2026-06-30T23:00:00Z"
       }
     ],
     "solve": [
@@ -2117,8 +2122,8 @@
         "t": "2026-06-26"
       },
       {
-        "cumulative_proofs": 4772,
-        "proofs": 2,
+        "cumulative_proofs": 4773,
+        "proofs": 3,
         "t": "2026-06-30"
       }
     ]
