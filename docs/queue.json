@@ -5,8 +5,8 @@
   "pr_status_known": true,
   "summary": {
     "queued_submissions": 2,
-    "waiting": 0,
-    "in_flight": 2,
+    "waiting": 1,
+    "in_flight": 1,
     "distinct_goals": 2,
     "solvers": 1
   },
@@ -17,25 +17,25 @@
       "display_name": "@ohdearquant",
       "profile_url": "https://github.com/ohdearquant",
       "submissions": 2,
-      "waiting": 0,
-      "in_flight": 2,
+      "waiting": 1,
+      "in_flight": 1,
       "distinct_goals": 2,
       "queued": [
         {
           "goal": "gself-pow-three-pow-nineteen-add-pow-nine",
           "branch": "queued/prove/gself-pow-three-pow-nineteen-add-pow-nine/mac-158f-e7eba2",
-          "sha": "bc7bb8dd4",
+          "sha": "e26a3cd6b",
           "model": "template-ring-cofactor",
-          "date": "2026-06-19",
+          "date": "2026-06-30",
           "state": "in-flight"
         },
         {
           "goal": "gself-pow-three-pow-nineteen-add-pow-sixteen",
           "branch": "queued/prove/gself-pow-three-pow-nineteen-add-pow-sixteen/mac-158f-521edf",
-          "sha": "966ecae18",
+          "sha": "7566173cb",
           "model": "template-ring-cofactor",
-          "date": "2026-06-19",
-          "state": "in-flight"
+          "date": "2026-06-30",
+          "state": "waiting"
         }
       ]
     }
