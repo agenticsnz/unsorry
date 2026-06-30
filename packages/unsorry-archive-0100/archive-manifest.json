@@ -1,0 +1,155 @@
+{
+  "block_id": "unsorry-archive-0100",
+  "target_size": 40,
+  "proof_count": 34,
+  "status": "frozen",
+  "source_commit": "057b2df48e4a37da8bf414071d9b6b9bb814f3fb",
+  "validation_commit": null,
+  "pins": {
+    "lean_toolchain": "leanprover/lean4:v4.30.0",
+    "mathlib": "v4.30.0"
+  },
+  "notes": [
+    "ADR-041 proof archive block 0100.",
+    "Whole decomposition trees + standalone proved goals only (invariant A).",
+    "Active goal records remain as archived metadata pointing at this package."
+  ],
+  "goals": [
+    {
+      "goal": "alt-geometric-ratio-twentysix",
+      "module": "Unsorry.AltGeometricRatioTwentysix"
+    },
+    {
+      "goal": "alt-geometric-ratio-twentythree",
+      "module": "Unsorry.AltGeometricRatioTwentythree"
+    },
+    {
+      "goal": "alt-geometric-ratio-twentytwo",
+      "module": "Unsorry.AltGeometricRatioTwentytwo"
+    },
+    {
+      "goal": "alt-geometric-ratio-two",
+      "module": "Unsorry.AltGeometricRatioTwo"
+    },
+    {
+      "goal": "arith-series-sum-coeff-eight",
+      "module": "Unsorry.ArithSeriesSumCoeffEight"
+    },
+    {
+      "goal": "arith-series-sum-coeff-eighteen",
+      "module": "Unsorry.ArithSeriesSumCoeffEighteen"
+    },
+    {
+      "goal": "arith-series-sum-coeff-eighty",
+      "module": "Unsorry.ArithSeriesSumCoeffEighty"
+    },
+    {
+      "goal": "arith-series-sum-coeff-eleven",
+      "module": "Unsorry.ArithSeriesSumCoeffEleven"
+    },
+    {
+      "goal": "arith-series-sum-coeff-fifteen",
+      "module": "Unsorry.ArithSeriesSumCoeffFifteen"
+    },
+    {
+      "goal": "arith-series-sum-coeff-fifty",
+      "module": "Unsorry.ArithSeriesSumCoeffFifty"
+    },
+    {
+      "goal": "arith-series-sum-coeff-fiftyeight",
+      "module": "Unsorry.ArithSeriesSumCoeffFiftyeight"
+    },
+    {
+      "goal": "arith-series-sum-coeff-fiftyfive",
+      "module": "Unsorry.ArithSeriesSumCoeffFiftyfive"
+    },
+    {
+      "goal": "arith-series-sum-coeff-fiftyfour",
+      "module": "Unsorry.ArithSeriesSumCoeffFiftyfour"
+    },
+    {
+      "goal": "arith-series-sum-coeff-fiftynine",
+      "module": "Unsorry.ArithSeriesSumCoeffFiftynine"
+    },
+    {
+      "goal": "arith-series-sum-coeff-fiftyone",
+      "module": "Unsorry.ArithSeriesSumCoeffFiftyone"
+    },
+    {
+      "goal": "arith-series-sum-coeff-fiftyseven",
+      "module": "Unsorry.ArithSeriesSumCoeffFiftyseven"
+    },
+    {
+      "goal": "arith-series-sum-coeff-fiftysix",
+      "module": "Unsorry.ArithSeriesSumCoeffFiftysix"
+    },
+    {
+      "goal": "arith-series-sum-coeff-fiftythree",
+      "module": "Unsorry.ArithSeriesSumCoeffFiftythree"
+    },
+    {
+      "goal": "arith-series-sum-coeff-fiftytwo",
+      "module": "Unsorry.ArithSeriesSumCoeffFiftytwo"
+    },
+    {
+      "goal": "arith-series-sum-coeff-five",
+      "module": "Unsorry.ArithSeriesSumCoeffFive"
+    },
+    {
+      "goal": "arith-series-sum-coeff-forty",
+      "module": "Unsorry.ArithSeriesSumCoeffForty"
+    },
+    {
+      "goal": "arith-series-sum-coeff-fortyeight",
+      "module": "Unsorry.ArithSeriesSumCoeffFortyeight"
+    },
+    {
+      "goal": "arith-series-sum-coeff-fortyfive",
+      "module": "Unsorry.ArithSeriesSumCoeffFortyfive"
+    },
+    {
+      "goal": "arith-series-sum-coeff-fortyfour",
+      "module": "Unsorry.ArithSeriesSumCoeffFortyfour"
+    },
+    {
+      "goal": "arith-series-sum-coeff-fortynine",
+      "module": "Unsorry.ArithSeriesSumCoeffFortynine"
+    },
+    {
+      "goal": "arith-series-sum-coeff-fortyone",
+      "module": "Unsorry.ArithSeriesSumCoeffFortyone"
+    },
+    {
+      "goal": "arith-series-sum-coeff-fortyseven",
+      "module": "Unsorry.ArithSeriesSumCoeffFortyseven"
+    },
+    {
+      "goal": "arith-series-sum-coeff-fortysix",
+      "module": "Unsorry.ArithSeriesSumCoeffFortysix"
+    },
+    {
+      "goal": "arith-series-sum-coeff-fortythree",
+      "module": "Unsorry.ArithSeriesSumCoeffFortythree"
+    },
+    {
+      "goal": "arith-series-sum-coeff-fortytwo",
+      "module": "Unsorry.ArithSeriesSumCoeffFortytwo"
+    },
+    {
+      "goal": "arith-series-sum-coeff-four",
+      "module": "Unsorry.ArithSeriesSumCoeffFour"
+    },
+    {
+      "goal": "arith-series-sum-coeff-fourteen",
+      "module": "Unsorry.ArithSeriesSumCoeffFourteen"
+    },
+    {
+      "goal": "arith-series-sum-coeff-nine",
+      "module": "Unsorry.ArithSeriesSumCoeffNine"
+    },
+    {
+      "goal": "arith-series-sum-coeff-nineteen",
+      "module": "Unsorry.ArithSeriesSumCoeffNineteen"
+    }
+  ]
+}

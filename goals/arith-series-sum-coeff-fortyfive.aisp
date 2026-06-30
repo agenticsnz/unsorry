@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜arith-series-sum-coeff-fortyfive
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/arith-series-sum-coeff-fortyfive.md
+  src≜packages/unsorry-archive-0100/backlog/arith-series-sum-coeff-fortyfive.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/arith-series-sum-coeff-fortyfive.lean
+  lean≜packages/unsorry-archive-0100/goals/arith-series-sum-coeff-fortyfive.lean
   sha≜75fdec3090518cc27862c5afc894dbbed9aeb14687c08a0ded4eff36f88642d2
   aff≜0
 }
