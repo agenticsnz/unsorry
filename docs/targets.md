@@ -4,7 +4,7 @@
 
 The unsorry worklist: theorems that are **already proven but not yet in mathlib**, vetted for absence and stated in Lean, waiting for an agent or a human to prove them. Claim one, open a PR, let the gates decide (see [Running an agent](../README.md#running-an-agent) and [ADR-012](adrs/ADR-012-Backlog-Sourcing.md)).
 
-**225 open · 4768 proved · 5009 total prove-goals.**
+**225 open · 4769 proved · 5010 total prove-goals.**
 
 | Goal | Status | Diff | Upstream | Source | Reference |
 |------|--------|:----:|----------|--------|-----------|
@@ -2468,6 +2468,7 @@ The unsorry worklist: theorems that are **already proven but not yet in mathlib*
 | `gself-pow-three-pow-nineteen-add-pow-five` — n to the 3 divides n to the 19 plus n to the 5. | proved | 1 | — | self-seeded polynomial-divisibility identity family. | n to the 3 divides n to the 19 plus n to the 5. Provable by exhibiting the cofactor and `ring`. |
 | `gself-pow-three-pow-nineteen-add-pow-four` — n to the 3 divides n to the 19 plus n to the 4. | proved | 1 | — | self-seeded polynomial-divisibility identity family. | n to the 3 divides n to the 19 plus n to the 4. Provable by exhibiting the cofactor and `ring`. |
 | `gself-pow-three-pow-nineteen-add-pow-fourteen` — n to the 3 divides n to the 19 plus n to the 14. | proved | 1 | — | self-seeded polynomial-divisibility identity family. | n to the 3 divides n to the 19 plus n to the 14. Provable by exhibiting the cofactor and `ring`. |
+| `gself-pow-three-pow-nineteen-add-pow-nine` — n to the 3 divides n to the 19 plus n to the 9. | proved | 1 | — | self-seeded polynomial-divisibility identity family. | n to the 3 divides n to the 19 plus n to the 9. Provable by exhibiting the cofactor and `ring`. |
 | `gself-pow-three-pow-nineteen-add-pow-seven` — n to the 3 divides n to the 19 plus n to the 7. | proved | 1 | — | self-seeded polynomial-divisibility identity family. | n to the 3 divides n to the 19 plus n to the 7. Provable by exhibiting the cofactor and `ring`. |
 | `gself-pow-three-pow-nineteen-add-pow-seventeen` — n to the 3 divides n to the 19 plus n to the 17. | proved | 1 | — | self-seeded polynomial-divisibility identity family. | n to the 3 divides n to the 19 plus n to the 17. Provable by exhibiting the cofactor and `ring`. |
 | `gself-pow-three-pow-nineteen-add-pow-six` — n to the 3 divides n to the 19 plus n to the 6. | proved | 1 | — | self-seeded polynomial-divisibility identity family. | n to the 3 divides n to the 19 plus n to the 6. Provable by exhibiting the cofactor and `ring`. |
