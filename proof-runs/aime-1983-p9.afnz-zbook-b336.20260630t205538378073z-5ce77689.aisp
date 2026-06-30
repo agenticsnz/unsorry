@@ -1,0 +1,8 @@
+𝔸5.1.run.aime-1983-p9.afnz-zbook-b336.20260630t205538378073z-5ce77689@2026-06-30
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260630t205538378073z-5ce77689; goal≜aime-1983-p9; agent≜afnz-zbook-b336; outcome≜decomposed}
+⟦Π:Provenance⟧{solver≜cgbarlow; provider≜claude; model≜opus; effort≜xhigh}
+⟦Γ:Goal⟧{goal≜aime-1983-p9}
+⟦Λ:Metrics⟧{attempts≜2; solve_s≜1015; ended≜2026-06-30T20:55:38Z; lessons≜0}
+⟦Σ:Artifact⟧{sha≜∅}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

@@ -1,0 +1,20 @@
+𝔸5.1.goal.aime-1983-p9-s1@2026-06-30
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜aime-1983-p9-s1
+  phase≜prove
+  status≜open
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜decompositions/aime-1983-p9.afnz-zbook-b336.aisp
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/aime-1983-p9-s1.lean
+  sha≜∅
+  depth≜1
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
