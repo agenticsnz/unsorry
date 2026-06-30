@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "source": "queued/prove/* refs + library/index provenance",
-  "generated_at": "2026-06-30T21:39:07Z",
+  "generated_at": "2026-06-30T21:58:05Z",
   "pr_status_known": true,
   "summary": {
     "queued_submissions": 2,
-    "waiting": 2,
-    "in_flight": 0,
+    "waiting": 1,
+    "in_flight": 1,
     "distinct_goals": 2,
     "solvers": 2
   },
@@ -17,17 +17,17 @@
       "display_name": "@cgbarlow",
       "profile_url": "https://github.com/cgbarlow",
       "submissions": 1,
-      "waiting": 1,
-      "in_flight": 0,
+      "waiting": 0,
+      "in_flight": 1,
       "distinct_goals": 1,
       "queued": [
         {
-          "goal": "aime-1983-p9-s2",
-          "branch": "queued/prove/aime-1983-p9-s2/afnz-zbook-b336-0290c9",
-          "sha": "d9f1963ae",
+          "goal": "aime-1983-p9-s3",
+          "branch": "queued/prove/aime-1983-p9-s3/afnz-zbook-b336-6b8811",
+          "sha": "4b2e648c7",
           "model": "opus",
           "date": "2026-07-01",
-          "state": "waiting"
+          "state": "in-flight"
         }
       ]
     },
