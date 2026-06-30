@@ -104,6 +104,20 @@ def test_build_board_groups_ranks_and_links():
     assert board["summary"]["in_flight"] == 0
 
 
+def test_build_board_carries_generated_at():
+    # generated_at is surfaced so the guild can show queue freshness; None by default.
+    assert (
+        build_board(_subs(), proved_goals=set(), open_pr_branches=None,
+                    pr_status_known=False)["generated_at"]
+        is None
+    )
+    board = build_board(
+        _subs(), proved_goals=set(), open_pr_branches=None, pr_status_known=False,
+        generated_at="2026-06-29T16:07:25Z",
+    )
+    assert board["generated_at"] == "2026-06-29T16:07:25Z"
+
+
 def test_build_board_excludes_proved_goals():
     board = build_board(
         _subs(), proved_goals={"g1"}, open_pr_branches=None, pr_status_known=False
