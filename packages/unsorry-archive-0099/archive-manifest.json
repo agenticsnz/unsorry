@@ -1,0 +1,155 @@
+{
+  "block_id": "unsorry-archive-0099",
+  "target_size": 40,
+  "proof_count": 34,
+  "status": "frozen",
+  "source_commit": "41f6f7549cfa523d93e134152da6fd69e2d52114",
+  "validation_commit": null,
+  "pins": {
+    "lean_toolchain": "leanprover/lean4:v4.30.0",
+    "mathlib": "v4.30.0"
+  },
+  "notes": [
+    "ADR-041 proof archive block 0099.",
+    "Whole decomposition trees + standalone proved goals only (invariant A).",
+    "Active goal records remain as archived metadata pointing at this package."
+  ],
+  "goals": [
+    {
+      "goal": "alt-geometric-ratio-seventytwo",
+      "module": "Unsorry.AltGeometricRatioSeventytwo"
+    },
+    {
+      "goal": "alt-geometric-ratio-six",
+      "module": "Unsorry.AltGeometricRatioSix"
+    },
+    {
+      "goal": "alt-geometric-ratio-sixteen",
+      "module": "Unsorry.AltGeometricRatioSixteen"
+    },
+    {
+      "goal": "alt-geometric-ratio-sixty",
+      "module": "Unsorry.AltGeometricRatioSixty"
+    },
+    {
+      "goal": "alt-geometric-ratio-sixtyeight",
+      "module": "Unsorry.AltGeometricRatioSixtyeight"
+    },
+    {
+      "goal": "alt-geometric-ratio-sixtyfive",
+      "module": "Unsorry.AltGeometricRatioSixtyfive"
+    },
+    {
+      "goal": "alt-geometric-ratio-sixtyfour",
+      "module": "Unsorry.AltGeometricRatioSixtyfour"
+    },
+    {
+      "goal": "alt-geometric-ratio-sixtynine",
+      "module": "Unsorry.AltGeometricRatioSixtynine"
+    },
+    {
+      "goal": "alt-geometric-ratio-sixtyone",
+      "module": "Unsorry.AltGeometricRatioSixtyone"
+    },
+    {
+      "goal": "alt-geometric-ratio-sixtyseven",
+      "module": "Unsorry.AltGeometricRatioSixtyseven"
+    },
+    {
+      "goal": "alt-geometric-ratio-sixtysix",
+      "module": "Unsorry.AltGeometricRatioSixtysix"
+    },
+    {
+      "goal": "alt-geometric-ratio-sixtythree",
+      "module": "Unsorry.AltGeometricRatioSixtythree"
+    },
+    {
+      "goal": "alt-geometric-ratio-sixtytwo",
+      "module": "Unsorry.AltGeometricRatioSixtytwo"
+    },
+    {
+      "goal": "alt-geometric-ratio-ten",
+      "module": "Unsorry.AltGeometricRatioTen"
+    },
+    {
+      "goal": "alt-geometric-ratio-thirteen",
+      "module": "Unsorry.AltGeometricRatioThirteen"
+    },
+    {
+      "goal": "alt-geometric-ratio-thirty",
+      "module": "Unsorry.AltGeometricRatioThirty"
+    },
+    {
+      "goal": "alt-geometric-ratio-thirtyeight",
+      "module": "Unsorry.AltGeometricRatioThirtyeight"
+    },
+    {
+      "goal": "alt-geometric-ratio-thirtyfive",
+      "module": "Unsorry.AltGeometricRatioThirtyfive"
+    },
+    {
+      "goal": "alt-geometric-ratio-thirtyfour",
+      "module": "Unsorry.AltGeometricRatioThirtyfour"
+    },
+    {
+      "goal": "alt-geometric-ratio-thirtynine",
+      "module": "Unsorry.AltGeometricRatioThirtynine"
+    },
+    {
+      "goal": "alt-geometric-ratio-thirtyone",
+      "module": "Unsorry.AltGeometricRatioThirtyone"
+    },
+    {
+      "goal": "alt-geometric-ratio-thirtyseven",
+      "module": "Unsorry.AltGeometricRatioThirtyseven"
+    },
+    {
+      "goal": "alt-geometric-ratio-thirtysix",
+      "module": "Unsorry.AltGeometricRatioThirtysix"
+    },
+    {
+      "goal": "alt-geometric-ratio-thirtythree",
+      "module": "Unsorry.AltGeometricRatioThirtythree"
+    },
+    {
+      "goal": "alt-geometric-ratio-thirtytwo",
+      "module": "Unsorry.AltGeometricRatioThirtytwo"
+    },
+    {
+      "goal": "alt-geometric-ratio-three",
+      "module": "Unsorry.AltGeometricRatioThree"
+    },
+    {
+      "goal": "alt-geometric-ratio-twelve",
+      "module": "Unsorry.AltGeometricRatioTwelve"
+    },
+    {
+      "goal": "alt-geometric-ratio-twenty",
+      "module": "Unsorry.AltGeometricRatioTwenty"
+    },
+    {
+      "goal": "alt-geometric-ratio-twentyeight",
+      "module": "Unsorry.AltGeometricRatioTwentyeight"
+    },
+    {
+      "goal": "alt-geometric-ratio-twentyfive",
+      "module": "Unsorry.AltGeometricRatioTwentyfive"
+    },
+    {
+      "goal": "alt-geometric-ratio-twentyfour",
+      "module": "Unsorry.AltGeometricRatioTwentyfour"
+    },
+    {
+      "goal": "alt-geometric-ratio-twentynine",
+      "module": "Unsorry.AltGeometricRatioTwentynine"
+    },
+    {
+      "goal": "alt-geometric-ratio-twentyone",
+      "module": "Unsorry.AltGeometricRatioTwentyone"
+    },
+    {
+      "goal": "alt-geometric-ratio-twentyseven",
+      "module": "Unsorry.AltGeometricRatioTwentyseven"
+    }
+  ]
+}
