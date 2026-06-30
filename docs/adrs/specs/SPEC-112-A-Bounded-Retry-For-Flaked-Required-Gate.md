@@ -40,19 +40,29 @@ Returns a non-`None` reason **iff** all hold:
   its `details_url`; parse the run id (`run_id_from_details_url`); read
   `run_attempt` via `repos/{repo}/actions/runs/{id}`.
 - On `--apply`: `gh run rerun <run-id> --failed` for each retryable gate's run.
-- Report counts; list PRs that have **exhausted** `--max-attempts` (left BLOCKED
-  for a human) — never silently drop them.
+  **Rebase fallback:** GitHub refuses to re-run a run older than a few days, so a
+  queued branch that flaked days ago then got dispatched cannot be rerun at all
+  ("This workflow run cannot be retried"). When the rerun is rejected, fall back to
+  `update-branch` (rebase → fresh `synchronize` → gates re-dispatch on a current
+  SHA), exactly like the dropped-gate janitor. `--no-rebase` disables the fallback
+  for token-less (rerun-only) runs, since a default-token `synchronize` won't
+  re-dispatch. A PR neither rerunnable nor rebasable (e.g. a conflicting ancient
+  branch) is reported, not silently dropped.
+- Report counts (`retried`, `rebased`); list PRs that have **exhausted**
+  `--max-attempts` (left BLOCKED for a human) — never silently drop them.
 - Defaults: `--required gate-a`, `--max-attempts 3`, `--min-age-minutes 15`,
-  `--limit 20`. Dry-run unless `--apply`.
+  `--limit 20`. Dry-run unless `--apply`; rebase fallback on unless `--no-rebase`.
 
 ## 4. Workflow (D3)
 
 `on: workflow_run [gate-a completed] + schedule (cron "41 * * * *") + workflow_dispatch`.
 `permissions: contents: read, pull-requests: read, actions: write`.
 `concurrency: gate-a-flake-retry, cancel-in-progress: false` (coalesce).
-`GH_TOKEN: ${{ github.token }}` — re-running an existing run needs only
-`actions: write`, no PAT (contrast the janitor's update-branch). `--apply` unless a
-manual dry-run (`inputs.apply == 'false'`).
+`GH_TOKEN: ${{ secrets.REFRESH_TOKEN || github.token }}` — a rerun needs only
+`actions: write`, but the rebase fallback's `synchronize` only re-dispatches the
+gates under a non-default token, so it prefers `REFRESH_TOKEN`. A `Detect refresh
+token` step passes `--no-rebase` when the secret is absent (rerun-only, no futile
+rebase). `--apply` unless a manual dry-run (`inputs.apply == 'false'`).
 
 ## 5. Tests (D4)
 

@@ -20,7 +20,12 @@ failing proof stops being retried after `--max-attempts` and stays BLOCKED
           BLOCKED/UNKNOWN + a required gate in a terminal non-pass state +
           no required gate still pending + that gate's run_attempt < max +
           PR older than --min-age-minutes.
-  act:    `gh run rerun <run-id> --failed` on the flaked gate's workflow run.
+  act:    `gh run rerun <run-id> --failed` on the flaked gate's workflow run; if
+          GitHub rejects the rerun (it refuses to re-run a run older than a few
+          days — so a queued branch that flaked days ago then got dispatched can't
+          be rerun), fall back to `update-branch` (rebase → fresh `synchronize` →
+          gates re-dispatch on a current SHA). The rebase fallback needs a
+          non-default token (REFRESH_TOKEN); without it, run with `--no-rebase`.
 
 Why the guards:
   * auto-merge OFF → the author is still working; don't burn CI re-running for
@@ -174,6 +179,21 @@ def _rerun_failed(run_id: str) -> bool:
     return proc.returncode == 0
 
 
+def _update_branch(repo: str, number: int) -> bool:
+    """Rebase the PR branch on its base — fires a fresh `pull_request` synchronize
+    that re-dispatches the gates on a current SHA. The fallback when a rerun is
+    rejected (GitHub refuses to re-run a run older than a few days, so a queued
+    branch that flaked days ago then got dispatched can't be rerun at all). Needs
+    a non-default token (REFRESH_TOKEN) for the synchronize to trigger workflows;
+    same mechanism as the dropped-gate janitor."""
+    proc = subprocess.run(
+        ["gh", "api", "--method", "PUT", f"repos/{repo}/pulls/{number}/update-branch"],
+        stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True, check=False)
+    if proc.returncode != 0:
+        print(f"  update-branch #{number} failed: {proc.stderr.strip()}", file=sys.stderr)
+    return proc.returncode == 0
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(
         prog="python3 -m tools.repo.flaky_gate_retry",
@@ -187,6 +207,9 @@ def main(argv: list[str] | None = None) -> int:
                     help="ignore PRs younger than this")
     ap.add_argument("--max-attempts", type=int, default=DEFAULT_MAX_ATTEMPTS,
                     help="stop retrying once the gate's run_attempt reaches this")
+    ap.add_argument("--no-rebase", action="store_true",
+                    help="disable the update-branch fallback (use when no admin token "
+                         "is available — a default-token synchronize won't re-dispatch)")
     args = ap.parse_args(argv)
 
     repo = args.repo
@@ -244,17 +267,26 @@ def main(argv: list[str] | None = None) -> int:
               f"{', '.join('#' + str(n) for n in exhausted)}")
 
     retried = 0
+    rebased = 0
     for number, reason, _retry, run_ids in capped:
         line = f"#{number} — {reason}"
         if not args.apply:
             print(f"  would retry {line}")
             continue
-        ok = all(_rerun_failed(rid) for rid in run_ids.values()) if run_ids else False
-        if ok:
+        if run_ids and all(_rerun_failed(rid) for rid in run_ids.values()):
             retried += 1
             print(f"  retried {line}")
+            continue
+        # Rerun rejected (typically a stale run GitHub won't re-run) — fall back to
+        # rebasing the branch so the gates re-dispatch on a current SHA.
+        if not args.no_rebase and _update_branch(repo, number):
+            rebased += 1
+            print(f"  rebased (rerun unavailable — stale run) {line}")
+        else:
+            print(f"  could not recover {line} — rerun rejected and "
+                  f"{'rebase disabled' if args.no_rebase else 'rebase failed (conflict/up-to-date)'}")
     if args.apply:
-        print(f"flaky-gate retry: retried {retried}")
+        print(f"flaky-gate retry: retried {retried}, rebased {rebased}")
     return 0
 
 
