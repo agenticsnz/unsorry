@@ -1,13 +1,18 @@
 # Keep the queued-proofs board (docs/queue.{html,json}) up to date (ADR-066).
 #
-# Unlike the leaderboard / proof-graph / targets generators, this page's data is
-# NOT a function of the `main` working tree: it is sourced from the live
-# `queued/prove/*` branches (ADR-058) and the set of open prove PRs, which fill
-# and drain continuously without any push to `main`. So a push-triggered refresh
-# would never reflect the queue — this runs on a **schedule** (the dispatcher /
-# reaper cadence) instead, regenerates the two `docs/` outputs, and commits them
-# straight back to `main` (the standard generated-artifact exception — a single
-# docs-only, `[skip ci]` commit).
+# This page's data is sourced from the live `queued/prove/*` branches (ADR-058)
+# and the set of open prove PRs, which fill and drain continuously, so a **schedule**
+# (the dispatcher / reaper cadence) is the primary trigger; it regenerates the two
+# `docs/` outputs and commits them straight back to `main` (the standard
+# generated-artifact exception — a single docs-only, `[skip ci]` commit).
+#
+# But GitHub throttles `schedule` under load (the */15 cron observed running hours
+# apart exactly when the swarm is busy), which left the board showing a pre-drain
+# count long after proofs landed. A proof merge — the dominant driver of "waiting"
+# dropping (a proved goal is excluded) — IS a push to `main` under `library/index`,
+# so we ALSO trigger on that path (not cron-throttled). It doesn't capture a queued
+# branch merely being dispatched/created (still cron's job), but it makes the
+# proved-drain show promptly.
 #
 # Pushing the refresh to `main` needs an admin identity (the default GITHUB_TOKEN
 # cannot push to a branch protected by required status checks): the push
@@ -18,6 +23,15 @@
 name: queue-board
 
 on:
+  # A proof merge proves a goal → it drops out of the queue; refresh promptly
+  # (cron gets throttled under load). Archived index copies count too.
+  push:
+    branches: [main]
+    paths:
+      - "library/index/**"
+      - "packages/unsorry-archive-*/library/index/**"
+      - "tools/queue_board/**"
+      - ".github/workflows/queue-board.yml"
   schedule:
     # Every 15 minutes — matches the queue-dispatcher / reaper cadence so the
     # board tracks the live queue closely without busy-spinning.

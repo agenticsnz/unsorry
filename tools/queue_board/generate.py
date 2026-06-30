@@ -35,6 +35,7 @@ from pathlib import Path
 from tools.leaderboard.generate import (
     GitAuthor,
     _alias_for,
+    _latest_source_commit_z,
     _profile_url,
     _valid_github_handle,
     contributor_aliases,
@@ -216,6 +217,7 @@ def build_board(
     proved_goals: set[str],
     open_pr_branches: set[str] | None,
     pr_status_known: bool,
+    generated_at: str | None = None,
 ) -> dict:
     """Group submissions by solver, excluding already-proved goals, labelling state."""
     proved = set(proved_goals or ())
@@ -269,6 +271,12 @@ def build_board(
     return {
         "schema_version": 1,
         "source": "queued/prove/* refs + library/index provenance",
+        # Keyed to the latest board-source commit (the same deterministic stamp the
+        # leaderboard uses) — it bumps on a proof merge (when a goal is proved → the
+        # dominant driver of "waiting" dropping), not on every regen, so it adds no
+        # timestamp-only churn and a frozen value means the board itself has gone
+        # stale rather than the queue merely being quiet (ADR-066).
+        "generated_at": generated_at,
         "pr_status_known": pr_status_known,
         "summary": {
             "queued_submissions": sum(r["submissions"] for r in solvers),
@@ -293,6 +301,7 @@ def board_for(root: Path, open_pr_branches: set[str] | None = None) -> dict:
         proved_goals=proved,
         open_pr_branches=open_pr_branches,
         pr_status_known=open_pr_branches is not None,
+        generated_at=_latest_source_commit_z(root),
     )
 
 
