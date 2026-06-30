@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "source": "queued/prove/* refs + library/index provenance",
-  "generated_at": "2026-06-30T21:58:05Z",
+  "generated_at": "2026-06-30T22:48:57Z",
   "pr_status_known": true,
   "summary": {
     "queued_submissions": 2,
@@ -24,7 +24,7 @@
         {
           "goal": "aime-1983-p9-s3",
           "branch": "queued/prove/aime-1983-p9-s3/afnz-zbook-b336-6b8811",
-          "sha": "4b2e648c7",
+          "sha": "747e47fe6",
           "model": "opus",
           "date": "2026-07-01",
           "state": "in-flight"
