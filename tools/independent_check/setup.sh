@@ -6,9 +6,11 @@
 #   tools/independent_check/setup.sh            # build into ~/.unsorry/independent-check
 #   eval "$(tools/independent_check/setup.sh --print-env)"   # re-print exports (no rebuild)
 #
-# Requires a Lean toolchain (elan/lake) + Rust (cargo); BOTH are installed
-# automatically if missing — lake via `ensure_lake` (ADR-100), cargo via
-# `ensure_cargo` below. lean4export is pinned to the repo's lean-toolchain tag
+# Requires a Lean toolchain (elan/lake), Rust (cargo), and a C linker (cc); ALL
+# are installed automatically if missing — lake via `ensure_lake` (ADR-100),
+# cargo via `ensure_cargo` below, and the C toolchain via `ensure_cc`
+# (swarm/lib/ensure_cc.sh; both lean4export's `leanc` and nanoda's `cargo build`
+# link via `cc`). lean4export is pinned to the repo's lean-toolchain tag
 # (ADR-002); nanoda is built from its master HEAD (pin a reviewed commit before
 # this becomes load-bearing — ADR-096 acceptance gate 2).
 set -euo pipefail
@@ -18,6 +20,10 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 # Shared Lean-build-tool bootstrap (ADR-100): installs elan if `lake` is missing.
 # shellcheck source=swarm/lib/ensure_lake.sh
 . "$ROOT/swarm/lib/ensure_lake.sh"
+# Shared C-toolchain bootstrap: best-effort installs `cc` if missing (sibling of
+# ensure_lake/ensure_cargo; both builds below link via cc).
+# shellcheck source=swarm/lib/ensure_cc.sh
+. "$ROOT/swarm/lib/ensure_cc.sh"
 PREFIX="${UNSORRY_INDEPENDENT_CHECK_DIR:-$HOME/.unsorry/independent-check}"
 L4E_DIR="$PREFIX/lean4export"
 NAN_DIR="$PREFIX/nanoda"
@@ -70,6 +76,14 @@ ensure_cargo() {
   TAG="$(tr -d '[:space:]' < "$ROOT/lean-toolchain" | sed 's#.*:##')"   # e.g. v4.30.0
   echo "[setup] toolchain tag: $TAG  prefix: $PREFIX"
   mkdir -p "$PREFIX"
+
+  # Both builds link via a C compiler (`cc`): lean4export through Lean's `leanc`,
+  # nanoda through `cargo build`. Ensure one is present BEFORE either build so a
+  # box with elan + cargo but no C toolchain fails fast with a clear instruction
+  # instead of a cryptic mid-compile "linker cc not found" (ADR-096).
+  if [ ! -x "$L4E_BIN" ] || [ ! -x "$NAN_BIN" ]; then
+    ensure_cc || { echo "[setup] C toolchain (cc) unavailable — cannot build lean4export/nanoda"; exit 1; }
+  fi
 
   if [ ! -x "$L4E_BIN" ]; then
     echo "[setup] building lean4export@$TAG ..."
