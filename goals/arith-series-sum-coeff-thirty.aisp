@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜arith-series-sum-coeff-thirty
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/arith-series-sum-coeff-thirty.md
+  src≜packages/unsorry-archive-0101/backlog/arith-series-sum-coeff-thirty.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/arith-series-sum-coeff-thirty.lean
+  lean≜packages/unsorry-archive-0101/goals/arith-series-sum-coeff-thirty.lean
   sha≜ef6273f0338850a097d748bd1f4a362d8ea934d30a4e995f2fd7ef6cbebd84ee
   aff≜0
 }

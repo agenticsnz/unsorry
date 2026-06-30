@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜arith-series-sum-coeff-seventyeight
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/arith-series-sum-coeff-seventyeight.md
+  src≜packages/unsorry-archive-0101/backlog/arith-series-sum-coeff-seventyeight.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/arith-series-sum-coeff-seventyeight.lean
+  lean≜packages/unsorry-archive-0101/goals/arith-series-sum-coeff-seventyeight.lean
   sha≜73fd8948b4055c809ef38a8728ae02e41be83c2ae3679050cb4494c8be044b41
   aff≜0
 }

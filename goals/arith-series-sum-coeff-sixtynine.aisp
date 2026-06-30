@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜arith-series-sum-coeff-sixtynine
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/arith-series-sum-coeff-sixtynine.md
+  src≜packages/unsorry-archive-0101/backlog/arith-series-sum-coeff-sixtynine.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/arith-series-sum-coeff-sixtynine.lean
+  lean≜packages/unsorry-archive-0101/goals/arith-series-sum-coeff-sixtynine.lean
   sha≜36e72193625e7674a3576246c62c11be99598546233ed060a2274eebb761dd4f
   aff≜0
 }
