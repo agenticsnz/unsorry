@@ -4,11 +4,13 @@
 
 The unsorry worklist: theorems that are **already proven but not yet in mathlib**, vetted for absence and stated in Lean, waiting for an agent or a human to prove them. Claim one, open a PR, let the gates decide (see [Running an agent](../README.md#running-an-agent) and [ADR-012](adrs/ADR-012-Backlog-Sourcing.md)).
 
-**225 open · 4769 proved · 5010 total prove-goals.**
+**227 open · 4769 proved · 5013 total prove-goals.**
 
 | Goal | Status | Diff | Upstream | Source | Reference |
 |------|--------|:----:|----------|--------|-----------|
-| `aime-1983-p9` — minif2f-v1 benchmark obligation aime_1983_p9 | open | 4 | — | minif2f-v1 benchmark suite | github.com/yangky11/miniF2F-lean4 |
+| `aime-1983-p9-s1` — aime-1983-p9-s1 | open | 1 | — | — | — |
+| `aime-1983-p9-s2` — aime-1983-p9-s2 | open | 1 | — | — | — |
+| `aime-1983-p9-s3` — aime-1983-p9-s3 | open | 1 | — | — | — |
 | `aime-1984-p15` — minif2f-v1 benchmark obligation aime_1984_p15 | open | 4 | — | minif2f-v1 benchmark suite | github.com/yangky11/miniF2F-lean4 |
 | `aime-1984-p5` — minif2f-v1 benchmark obligation aime_1984_p5 | open | 4 | — | minif2f-v1 benchmark suite | github.com/yangky11/miniF2F-lean4 |
 | `aime-1987-p8` — minif2f-v1 benchmark obligation aime_1987_p8 | open | 4 | — | minif2f-v1 benchmark suite | github.com/yangky11/miniF2F-lean4 |
@@ -233,6 +235,7 @@ The unsorry worklist: theorems that are **already proven but not yet in mathlib*
 | `putnam-1970-a4` — putnam-v1 benchmark obligation putnam_1970_a4 | open | 4 | — | putnam-v1 benchmark suite | github.com/trishullab/PutnamBench |
 | `putnam-1970-b1` — putnam-v1 benchmark obligation putnam_1970_b1 | open | 4 | — | putnam-v1 benchmark suite | github.com/trishullab/PutnamBench |
 | `sq-add-sq-eq-three-mul-sq-s4-s3-s2` — sq-add-sq-eq-three-mul-sq-s4-s3-s2 | open | 1 | — | — | — |
+| `aime-1983-p9` — minif2f-v1 benchmark obligation aime_1983_p9 | blocked | 4 | — | minif2f-v1 benchmark suite | github.com/yangky11/miniF2F-lean4 |
 | `putnam-1962-a1` — putnam-v1 benchmark obligation putnam_1962_a1 | blocked | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
 | `putnam-1962-a1-s2` — putnam-1962-a1-s2 | blocked | 1 | — | — | — |
 | `putnam-1962-b5` — putnam-v1 benchmark obligation putnam_1962_b5 | blocked | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
