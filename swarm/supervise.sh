@@ -204,7 +204,7 @@ main() {
       log "independent check: ENABLED — nanoda re-checks each proof (advisory, non-gating)"
     else
       export UNSORRY_INDEPENDENT_CHECK=0
-      log "independent check: dependency setup failed (needs lake + cargo) — proceeding WITHOUT it"
+      log "independent check: dependency setup failed (needs lake, cargo + a C toolchain) — proceeding WITHOUT it"
     fi
   fi
 

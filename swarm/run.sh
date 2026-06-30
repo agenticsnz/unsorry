@@ -87,7 +87,8 @@ upstream's queued branches).
 The advisory kernel-diverse independent check (ADR-096 Phase 3a) is ON BY
 DEFAULT: after each proof verifies locally, it is re-checked with an independent
 Lean kernel (nanoda) over a declaration-scoped lean4export. The tools build on
-first use (lean4export + nanoda; Rust auto-installs if missing). NON-GATING —
+first use (lean4export + nanoda; Rust + a C toolchain auto-install if missing).
+NON-GATING —
 admits nothing, never blocks proving; ADR-049's p=1 Lean gate in CI is unchanged.
 
   --no-independent-check  Opt out — legacy proving with no nanoda re-check (alias
@@ -337,9 +338,10 @@ guard_solver_credit
 # re-check after each proof (via UNSORRY_INDEPENDENT_CHECK, which agent.sh reads).
 # Consumed HERE and stripped from the args so it is not passed to agent.sh, which
 # has no such flag. Absent → normal run, zero overhead. setup.sh self-bootstraps
-# its toolchains — lake via ensure_lake/elan (ADR-100), cargo via rustup — so a
-# bare machine builds the tools rather than skipping. NON-GATING: if a toolchain
-# genuinely cannot be installed (e.g. no curl), setup failure downgrades to a
+# its toolchains — lake via ensure_lake/elan (ADR-100), cargo via rustup, and a
+# C linker (cc) via ensure_cc — so a bare machine builds the tools rather than
+# skipping. NON-GATING: if a toolchain genuinely cannot be installed (e.g. no
+# curl, or a C compiler that needs sudo), setup failure downgrades to a
 # warning and proceeds without it — proving is never blocked. The env exports
 # survive the fork `exec` and the prover subprocess.
 # Default ON (ADR-096): nanoda re-checks each proof unless explicitly opted out
