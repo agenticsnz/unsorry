@@ -1,0 +1,9 @@
+𝔸5.1.run.algebra-2complexrootspoly-xsqp49eqxp7itxpn7i.1367ab40f0b1-e413.20260630t204959293360z-4e9f6880@2026-06-30
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260630t204959293360z-4e9f6880; goal≜algebra-2complexrootspoly-xsqp49eqxp7itxpn7i; agent≜1367ab40f0b1-e413; outcome≜failed}
+⟦Π:Provenance⟧{solver≜cgbarlow; provider≜claude; model≜opus; effort≜max}
+⟦Γ:Goal⟧{goal≜algebra-2complexrootspoly-xsqp49eqxp7itxpn7i}
+⟦Λ:Metrics⟧{attempts≜3; solve_s≜840; ended≜2026-06-30T20:49:59Z; lessons≜0}
+⟦Σ:Artifact⟧{sha≜∅}
+⟦Δ:Lesson⟧{sig≜(no file was written at targets/minif2f-v1/_verify/library/Unsorry/Algebra2complexrootspolyXsqp49eqxp7itxpn7i.lean)}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
