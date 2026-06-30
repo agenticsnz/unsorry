@@ -919,6 +919,25 @@ def cmd_recompose_candidate(args):
     sys.exit(0 if (subs and subs <= proved) else 1)
 
 
+def cmd_suite_subs(args):
+    """suite-subs <goal> <decompositions-dir> [<decompositions-dir> …] — print the
+    decomposition sub-lemma ids of <goal>, one per line lexicographically, unioned
+    across every decomposition record naming <goal> as parent in any given dir.
+
+    Expands a `--goal <suite>` scope to a CURATED decomposition's children. The
+    bash `goal_in_scope` prefix match only catches machine-minted `<parent>-sN`
+    sub ids; a curated decomposition (e.g. a benchmark suite under targets/,
+    imo-v1-suite → imo2020p2 …) names its subs arbitrarily, so they would match
+    nothing and `--goal <suite>` would claim nothing. Empty output (exit 0) when
+    <goal> has no decomposition in any dir — the caller keeps the prefix match."""
+    goal = args[0]
+    subs: set = set()
+    for ddir in args[1:]:
+        subs |= _decomp_subs(ddir).get(goal, set())
+    for sub in sorted(subs):
+        print(sub)
+
+
 def cmd_now(_args):
     print(format_utc_z(datetime.now(timezone.utc)))
 
@@ -1052,6 +1071,7 @@ COMMANDS = {
     "has-decomposition": cmd_has_decomposition,
     "unblockable": cmd_unblockable,
     "recompose-candidate": cmd_recompose_candidate,
+    "suite-subs": cmd_suite_subs,
     "camel-name": cmd_camel_name,
     "lean-stmt": cmd_lean_stmt,
     "lean-name": cmd_lean_name,
@@ -3450,6 +3470,45 @@ test_independent_check_pr_note_roundtrip() {
   note="$(cd "$d" && independent_check_pr_note HEAD)"
   rm -rf "$d"
   [ -z "$note" ] || { log "  expected empty note for a plain proof, got [$note]"; return 1; }
+  return 0
+}
+
+# Suite scope (curated decomposition): `--goal <suite>` must reach a curated
+# decomposition's children — ids OUTSIDE the `<parent>-sN` convention (e.g.
+# imo-v1-suite → imo2020p2 …) — or the suite-run button claims nothing.
+# cmd_suite_subs extracts those ids; goal_in_scope admits them via the resolved set
+# while still admitting the suite itself and minted `<parent>-sN` subs, and nothing
+# else.
+test_goal_scope_curated_suite() {
+  local tmp; tmp="$(mktemp -d)" || return 1
+  mkdir -p "$tmp/dec"
+  cat > "$tmp/dec/foo-suite.tester.aisp" <<'AISP'
+𝔸5.1.decomp.foo-suite.tester@2026-06-30
+γ≔unsorry.decomposition
+⟦Ω:Decomp⟧{parent≜foo-suite;agent≜tester}
+⟦Σ:Subs⟧{sub₁≜⟨id≜alpha-problem,sha≜aaa⟩;sub₂≜⟨id≜beta-problem,sha≜bbb⟩}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
+AISP
+  # Part A — the python helper extracts the curated child ids (sorted); an
+  # undecomposed goal yields nothing.
+  local got
+  got="$(py_helper suite-subs foo-suite "$tmp/dec")" \
+    || { rm -rf "$tmp"; log "  suite-subs failed"; return 1; }
+  [ "$got" = $'alpha-problem\nbeta-problem' ] \
+    || { rm -rf "$tmp"; log "  suite-subs(foo-suite) want alpha/beta got [$got]"; return 1; }
+  [ -z "$(py_helper suite-subs no-such-suite "$tmp/dec")" ] \
+    || { rm -rf "$tmp"; log "  suite-subs of an undecomposed goal should be empty"; return 1; }
+  rm -rf "$tmp"
+  # Part B — goal_in_scope membership. Drive the resolved set directly so the test
+  # is CWD-independent (resolve_goal_scope_subs' py_helper call is covered by A).
+  local GOAL_FILTER=foo-suite GOAL_SCOPE_SUBS_RESOLVED=1
+  local GOAL_SCOPE_SUBS=$'alpha-problem\nbeta-problem'
+  goal_in_scope foo-suite     || { log "  suite itself out of scope"; return 1; }
+  goal_in_scope foo-suite-s1  || { log "  minted <parent>-sN sub out of scope"; return 1; }
+  goal_in_scope alpha-problem || { log "  curated child alpha-problem out of scope (the bug)"; return 1; }
+  goal_in_scope beta-problem  || { log "  curated child beta-problem out of scope"; return 1; }
+  ! goal_in_scope unrelated-goal || { log "  unrelated goal wrongly in scope"; return 1; }
+  GOAL_FILTER="" goal_in_scope anything || { log "  empty --goal should scope everything"; return 1; }
   return 0
 }
 
@@ -6656,6 +6715,7 @@ run_self_tests() {
     test_render_decomp_gateb
     test_independent_check_advisory_opt_in
     test_independent_check_pr_note_roundtrip
+    test_goal_scope_curated_suite
   )
   local failures=0 t
   for t in "${tests[@]}"; do
@@ -6682,6 +6742,8 @@ PROVE_LOCAL=0
 DISPATCH_QUEUE=0
 ONCE=0
 GOAL_FILTER=""
+GOAL_SCOPE_SUBS=""          # curated decomposition children of GOAL_FILTER (lazy)
+GOAL_SCOPE_SUBS_RESOLVED="" # set once resolve_goal_scope_subs has run
 DRY_RUN=0
 SELF_TEST=0
 PI_MODE=0
@@ -6774,16 +6836,47 @@ parse_args() {
 }
 
 # Candidates for this iteration: lexicographic py_helper order, restricted by
-# True when a candidate is in --goal scope: the goal itself, or one of its
-# decomposition descendants (`<goal>-s1`, `<goal>-s1-s2`, …). This lets a Phase-2
-# run focus an agent on a target tree without naming the machine-minted sub ids.
+# Resolve GOAL_FILTER's CURATED decomposition children into GOAL_SCOPE_SUBS (a
+# newline-delimited id set), once. The prefix match in goal_in_scope catches
+# machine-minted `<parent>-sN` subs, but a curated decomposition — e.g. a
+# benchmark suite under targets/, imo-v1-suite → imo2020p2 … — names its subs
+# arbitrarily, so `--goal <suite>` would otherwise match nothing claimable and the
+# prover would idle without ever taking a claim (the suite-run-button no-op). Reads
+# every decomposition dir in the checkout: the main pool plus each targets/<suite>.
+# Lazy + cached because goal_in_scope runs this filter per-candidate in a loop;
+# runs after the ADR-042 relocation, so these relative paths resolve in the agent
+# worktree. Best-effort: no GOAL_FILTER, no dirs, or a py_helper error → empty set,
+# and goal_in_scope falls back to the prefix match alone.
+resolve_goal_scope_subs() {
+  GOAL_SCOPE_SUBS_RESOLVED=1
+  GOAL_SCOPE_SUBS=""
+  [ -n "$GOAL_FILTER" ] || return 0
+  local -a ddirs=() d
+  [ -d decompositions ] && ddirs+=(decompositions)
+  for d in targets/*/decompositions; do [ -d "$d" ] && ddirs+=("$d"); done
+  [ "${#ddirs[@]}" -gt 0 ] || return 0
+  GOAL_SCOPE_SUBS="$(py_helper suite-subs "$GOAL_FILTER" "${ddirs[@]}" 2>/dev/null || true)"
+}
+
+# True when a candidate is in --goal scope: the goal itself, one of its
+# machine-minted `<goal>-s1`/`<goal>-s1-s2` descendants, OR a curated decomposition
+# child (a suite's arbitrarily-named sub, e.g. imo-v1-suite → imo2020p2, resolved
+# into GOAL_SCOPE_SUBS). Lets a Phase-2 run focus an agent on a target tree without
+# naming the sub ids.
 goal_in_scope() {
   local cand="$1"
   [ -z "$GOAL_FILTER" ] && return 0
   case "$cand" in
     "$GOAL_FILTER" | "$GOAL_FILTER"-*) return 0 ;;
-    *) return 1 ;;
   esac
+  # A curated decomposition child (id outside the `<parent>-sN` convention above),
+  # resolved once into GOAL_SCOPE_SUBS. Ids pass is-id (space/glob-free), so the
+  # quoted case pattern matches literally.
+  [ -n "$GOAL_SCOPE_SUBS_RESOLVED" ] || resolve_goal_scope_subs
+  case $'\n'"$GOAL_SCOPE_SUBS"$'\n' in
+    *$'\n'"$cand"$'\n'*) return 0 ;;
+  esac
+  return 1
 }
 
 # --goal, minus goals already handled (success or failure) this session.
