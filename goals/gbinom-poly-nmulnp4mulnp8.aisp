@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜gbinom-poly-nmulnp4mulnp8
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/gbinom-poly-nmulnp4mulnp8.md
+  src≜packages/unsorry-archive-0096/backlog/gbinom-poly-nmulnp4mulnp8.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/gbinom-poly-nmulnp4mulnp8.lean
+  lean≜packages/unsorry-archive-0096/goals/gbinom-poly-nmulnp4mulnp8.lean
   sha≜ee8adc41b9b597b824cf2146227c0ec51edd0b144e05a4720ca1717ca495ab35
   aff≜0
 }

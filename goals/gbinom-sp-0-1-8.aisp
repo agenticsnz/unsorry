@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜gbinom-sp-0-1-8
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/gbinom-sp-0-1-8.md
+  src≜packages/unsorry-archive-0096/backlog/gbinom-sp-0-1-8.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/gbinom-sp-0-1-8.lean
+  lean≜packages/unsorry-archive-0096/goals/gbinom-sp-0-1-8.lean
   sha≜744e5d36a7e37c756ada748c286973ec2134d81cedf4beeef4540b10a509f321
   aff≜0
 }
