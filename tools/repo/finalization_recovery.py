@@ -30,12 +30,14 @@ import sys
 #: ADR-026 prove title — the type+scope must be the first token.
 PROVE_TITLE_RE = re.compile(r"^prove\([^)]+\):")
 
-#: The only paths a verified prove PR ever touches (submit_pr_tree adds exactly
-#: ``library goals proof-runs``). Anything outside — a gate, harness, workflow,
-#: lakefile — means it is NOT a plain proof and must not be armed by automation
-#: (CODEOWNERS also guards those; this is defence in depth). Mirrors
-#: ``fork_automerge.ALLOW_PREFIXES`` deliberately (same trust boundary).
-ALLOW_PREFIXES = ("library/", "goals/", "proof-runs/")
+#: The paths a verified prove PR touches: ``submit_pr_tree`` adds ``library goals
+#: proof-runs``, and a queued / seedkit prove branch additionally adds a
+#: ``backlog/<goal>.md`` tracking note (benign markdown, not CODEOWNERS-gated).
+#: Anything outside these — a gate, harness, workflow, lakefile — means it is NOT
+#: a plain proof and must not be armed by automation (CODEOWNERS also guards
+#: those; this is defence in depth). Mirrors ``fork_automerge.ALLOW_PREFIXES``
+#: deliberately (same trust boundary).
+ALLOW_PREFIXES = ("library/", "goals/", "proof-runs/", "backlog/")
 
 #: A gate-a job whose FAILURE is a downstream cascade of a cancelled leg, not a
 #: genuine check result. A failure in any OTHER job (a leaf check, the library

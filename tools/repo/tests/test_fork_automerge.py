@@ -21,6 +21,17 @@ def test_admissible_fork_prove_pr():
     assert fa.is_admissible(_pr())
 
 
+def test_admissible_fork_prove_pr_with_backlog_note():
+    # A queued / seedkit prove PR adds a backlog/<goal>.md tracking note alongside
+    # the proof; it must still be admissible (mirrors finalization_recovery).
+    assert fa.is_admissible(_pr(files=[
+        {"path": "backlog/g.md"},
+        {"path": "goals/g.lean"},
+        {"path": "library/Unsorry/G.lean"},
+        {"path": "proof-runs/g.aisp"},
+    ]))
+
+
 def test_non_fork_pr_excluded():
     # A same-repo (write-access) prove PR arms its own auto-merge; the enabler
     # only handles cross-repo fork PRs.

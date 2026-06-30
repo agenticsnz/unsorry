@@ -40,6 +40,21 @@ def test_arms_plain_same_repo_prove_pr():
     assert should_arm(_prove_pr()) is True
 
 
+def test_arms_queued_prove_pr_with_backlog_note():
+    # Regression: a queued / seedkit prove PR adds a backlog/<goal>.md tracking
+    # note alongside the proof. It must still be armable — the missing prefix
+    # stranded 40 green PRs (governor then paused on the saturated open-PR budget).
+    pr = _prove_pr(files=[
+        {"path": "backlog/gself-pow-three.md"},
+        {"path": "goals/gself-pow-three.aisp"},
+        {"path": "goals/gself-pow-three.lean"},
+        {"path": "library/Unsorry/GselfPowThree.lean"},
+        {"path": "library/index/abc.aisp"},
+        {"path": "proof-runs/gself-pow-three.mac.aisp"},
+    ])
+    assert should_arm(pr) is True
+
+
 def test_skips_cross_repo_pr_owned_by_fork_enabler():
     # ADR-068: cross-repo arming is the fork-automerge-enabler's job — don't double-arm.
     assert should_arm(_prove_pr(isCrossRepository=True)) is False
@@ -76,6 +91,7 @@ def test_fail_closed_on_unseen_diff():
 
 def test_within_allow_requires_every_path_allowed():
     assert within_allow(["library/A.lean", "goals/b.lean"]) is True
+    assert within_allow(["backlog/g.md", "library/A.lean", "proof-runs/r.aisp"]) is True
     assert within_allow(["library/A.lean", "tools/x.py"]) is False
     assert within_allow([]) is False
 
