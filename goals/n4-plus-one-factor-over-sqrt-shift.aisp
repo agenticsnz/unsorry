@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜n4-plus-one-factor-over-sqrt-shift
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜2
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/n4-plus-one-factor-over-sqrt-shift.lean
-  sha≜∅
-  aff≜-20
+  sha≜cb1a907cbef8ad253e2442f3609c807dd88feb96fc89dd1cf4f8f3569976515c
+  aff≜-19
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

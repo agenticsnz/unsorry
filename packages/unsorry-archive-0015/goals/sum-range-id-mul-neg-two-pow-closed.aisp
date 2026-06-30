@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-range-id-mul-neg-two-pow-closed@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-range-id-mul-neg-two-pow-closed
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-range-id-mul-neg-two-pow-closed.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-range-id-mul-neg-two-pow-closed.lean
+  sha≜ca3809038905bb8ad8d80690a2f93b1dc74f35d112e6b89d4f0acf7142ad1b01
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

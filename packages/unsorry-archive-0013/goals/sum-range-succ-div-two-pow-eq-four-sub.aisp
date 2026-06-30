@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-range-succ-div-two-pow-eq-four-sub@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-range-succ-div-two-pow-eq-four-sub
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-range-succ-div-two-pow-eq-four-sub.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-range-succ-div-two-pow-eq-four-sub.lean
+  sha≜92d483875893e3d4335bb06c513ffc3ffec250c921d0379311fd2355b4486456
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

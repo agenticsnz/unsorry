@@ -1,0 +1,20 @@
+𝔸5.1.goal.gpow-sum-nine-pow-eighteen@2026-06-19
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gpow-sum-nine-pow-eighteen
+  phase≜prove
+  status≜archived
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜packages/unsorry-archive-0093/backlog/gpow-sum-nine-pow-eighteen.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜packages/unsorry-archive-0093/goals/gpow-sum-nine-pow-eighteen.lean
+  sha≜aabab333ebc05a0714d5f0823787f58820e2bbaab3cc6b67952e6d983dbcdb30
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

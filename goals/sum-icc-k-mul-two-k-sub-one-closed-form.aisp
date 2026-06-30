@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-icc-k-mul-two-k-sub-one-closed-form
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-icc-k-mul-two-k-sub-one-closed-form.md
+  src≜packages/unsorry-archive-0010/backlog/sum-icc-k-mul-two-k-sub-one-closed-form.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-icc-k-mul-two-k-sub-one-closed-form.lean
+  lean≜packages/unsorry-archive-0010/goals/sum-icc-k-mul-two-k-sub-one-closed-form.lean
   sha≜dc17dd19ed4794565be88e1d3493c12a87ca7c7f209d72366f0f16c94fb20151
   aff≜-10
 }

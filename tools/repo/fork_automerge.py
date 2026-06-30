@@ -29,11 +29,13 @@ import sys
 #: ADR-026 prove title: the type+scope must be the first token.
 PROVE_TITLE_RE = re.compile(r"^prove\([^)]+\):")
 
-#: The only paths a verified prove PR ever touches (submit_pr_tree adds exactly
-#: `library goals proof-runs`). Anything outside these — a gate, the harness, a
-#: workflow, a lakefile — means the PR is NOT a plain proof and must not be armed
-#: by this automation (CODEOWNERS also guards them; this is defence in depth).
-ALLOW_PREFIXES = ("library/", "goals/", "proof-runs/")
+#: The paths a verified prove PR touches: `submit_pr_tree` adds `library goals
+#: proof-runs`, and a queued / seedkit prove branch additionally adds a
+#: `backlog/<goal>.md` tracking note (benign markdown, not CODEOWNERS-gated).
+#: Anything outside these — a gate, the harness, a workflow, a lakefile — means the
+#: PR is NOT a plain proof and must not be armed by this automation (CODEOWNERS
+#: also guards them; this is defence in depth).
+ALLOW_PREFIXES = ("library/", "goals/", "proof-runs/", "backlog/")
 
 
 def _paths(pr: dict) -> list[str]:

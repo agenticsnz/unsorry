@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-pronic-eq-thrice-tetrahedral
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-pronic-eq-thrice-tetrahedral.md
+  src≜packages/unsorry-archive-0034/backlog/sum-pronic-eq-thrice-tetrahedral.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-pronic-eq-thrice-tetrahedral.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0034/goals/sum-pronic-eq-thrice-tetrahedral.lean
+  sha≜4b7eba12ad57b0b8e8ed8279521cdaebc7bfe01c7b3750bc5694d4dbb50a102e
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

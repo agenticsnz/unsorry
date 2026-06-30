@@ -1,0 +1,20 @@
+𝔸5.1.goal.gpow-sum-two-pow-nineteen@2026-06-19
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gpow-sum-two-pow-nineteen
+  phase≜prove
+  status≜archived
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜packages/unsorry-archive-0088/backlog/gpow-sum-two-pow-nineteen.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜packages/unsorry-archive-0088/goals/gpow-sum-two-pow-nineteen.lean
+  sha≜00d6890e198d833607a0abc9170fd99929168fa8fdcd3315d3ad9431492b44f7
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

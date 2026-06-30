@@ -1,0 +1,8 @@
+𝔸5.1.lemma.92d483875893@2026-06-16
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜92d483875893e3d4335bb06c513ffc3ffec250c921d0379311fd2355b4486456; goal≜sum-range-succ-div-two-pow-eq-four-sub; name≜sum_range_succ_div_two_pow_eq_four_sub}
+⟦Σ:Source⟧{src≜goals/sum-range-succ-div-two-pow-eq-four-sub.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜python; model≜sympy; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

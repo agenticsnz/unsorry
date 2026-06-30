@@ -1,0 +1,20 @@
+𝔸5.1.goal.gpow-sum-ten-pow-thirteen@2026-06-19
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gpow-sum-ten-pow-thirteen
+  phase≜prove
+  status≜archived
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜packages/unsorry-archive-0093/backlog/gpow-sum-ten-pow-thirteen.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜packages/unsorry-archive-0093/goals/gpow-sum-ten-pow-thirteen.lean
+  sha≜8c0ea94ea1a47aea58fe6284e24e2c6b4cbfaf77dfe6a42f365a11f170c876d6
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

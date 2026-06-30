@@ -1,0 +1,20 @@
+𝔸5.1.goal.alt-geometric-ratio-eighty@2026-06-23
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜alt-geometric-ratio-eighty
+  phase≜prove
+  status≜archived
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜packages/unsorry-archive-0096/backlog/alt-geometric-ratio-eighty.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜packages/unsorry-archive-0096/goals/alt-geometric-ratio-eighty.lean
+  sha≜8fe38de6ff9dcede4e5119bc877ce76b903879e931457263ef759500e49fc737
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.85;τ≜◊⁺⟩

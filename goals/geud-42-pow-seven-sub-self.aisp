@@ -1,0 +1,20 @@
+𝔸5.1.goal.geud-42-pow-seven-sub-self@2026-06-19
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜geud-42-pow-seven-sub-self
+  phase≜prove
+  status≜archived
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜packages/unsorry-archive-0095/backlog/geud-42-pow-seven-sub-self.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜packages/unsorry-archive-0095/goals/geud-42-pow-seven-sub-self.lean
+  sha≜220c4b4709a7fe8420c195627b90aeec2792c847b9b73841e6d5c46749f1f71b
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

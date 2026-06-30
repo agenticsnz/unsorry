@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-k-plus-one-mul-choose
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-k-plus-one-mul-choose.md
+  src≜packages/unsorry-archive-0037/backlog/sum-range-k-plus-one-mul-choose.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-k-plus-one-mul-choose.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0037/goals/sum-range-k-plus-one-mul-choose.lean
+  sha≜79fbea943fd1f3b6e734ae9ee085fdbd4fee8385a3f74396bfa0b739e27bb1ca
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

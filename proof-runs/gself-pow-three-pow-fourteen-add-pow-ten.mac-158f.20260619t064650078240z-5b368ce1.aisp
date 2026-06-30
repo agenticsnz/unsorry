@@ -1,0 +1,8 @@
+𝔸5.1.run.gself-pow-three-pow-fourteen-add-pow-ten.mac-158f.20260619t064650078240z-5b368ce1@2026-06-19
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260619t064650078240z-5b368ce1; goal≜gself-pow-three-pow-fourteen-add-pow-ten; agent≜mac-158f; outcome≜proved}
+⟦Π:Provenance⟧{solver≜ohdearquant; provider≜python; model≜sympy}
+⟦Γ:Goal⟧{goal≜gself-pow-three-pow-fourteen-add-pow-ten}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜0; ended≜2026-06-19T06:46:50Z}
+⟦Σ:Artifact⟧{sha≜5702577e7c2d526b7a8a8a0824868536ecdac92f03669319e52405baf27a1d7e}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

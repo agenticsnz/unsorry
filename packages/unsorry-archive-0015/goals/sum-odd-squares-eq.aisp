@@ -1,0 +1,20 @@
+𝔸5.1.goal.sum-odd-squares-eq@2026-06-14
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜sum-odd-squares-eq
+  phase≜prove
+  status≜proved
+  difficulty≜3
+}
+⟦Σ:Source⟧{
+  src≜backlog/sum-odd-squares-eq.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/sum-odd-squares-eq.lean
+  sha≜1f56dbef11d3b9912f2c578d32ef3f2990a88771d2c733372a93feb37fa5d3ab
+  aff≜-9
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

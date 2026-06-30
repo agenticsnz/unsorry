@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-recip-three-consec-odd-telescope
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-recip-three-consec-odd-telescope.md
+  src≜packages/unsorry-archive-0038/backlog/sum-range-recip-three-consec-odd-telescope.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-recip-three-consec-odd-telescope.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0038/goals/sum-range-recip-three-consec-odd-telescope.lean
+  sha≜e41b29a56dddd99bd1cc22032f40016ee23475a65fc3d2a99133a553fd68c4e2
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

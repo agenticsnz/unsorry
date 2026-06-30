@@ -1,0 +1,8 @@
+import Mathlib
+
+theorem putnam_2006_b2 (n : ℕ)
+(npos : n > 0)
+(X : Finset ℝ)
+(hXcard : X.card = n)
+: (∃ S ⊆ X, S ≠ ∅ ∧ ∃ m : ℤ, |m + ∑ s ∈ S, s| ≤ 1 / (n + 1)) := by
+  sorry

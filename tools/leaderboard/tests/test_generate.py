@@ -3,9 +3,14 @@ import os
 from pathlib import Path
 import subprocess
 
+import pytest
+
+from tools.leaderboard import generate
 from tools.leaderboard.generate import (
     attribution_gaps_payload,
     base_stats,
+    git_add_authors,
+    goal_add_authors,
     main,
     proofs,
     provenance_phantoms,
@@ -14,7 +19,9 @@ from tools.leaderboard.generate import (
     render_json,
     render_sourcing,
     render_svg,
+    render_timeline_svg,
     render_ui_json,
+    reset_caches,
     sourcing_contributors,
     sourcing_payload,
     ui_payload,
@@ -147,6 +154,36 @@ def test_historical_entries_are_unknown_not_guessed(tmp_path):
     assert ui_payload(tmp_path)["contributors"] == []
 
 
+def test_unaliased_git_author_is_uncredited_not_null_github(tmp_path):
+    # #6975 / ADR-107: a proof with no solver≜ whose git author has NO
+    # contributor-aliases entry (e.g. the `unsorry-batch` bot committer) must NOT
+    # surface as a credited contributor with github: null — that unlinkable row
+    # 500s the leaderboard frontend. It is left UNCREDITED (counted in
+    # uncredited_proofs). To credit such work, alias the git author instead.
+    _git(tmp_path, "init")
+    _goal(tmp_path, "orphan-goal", 4)
+    _index(tmp_path, "b" * 64, "orphan-goal")
+    _git(tmp_path, "add", "goals", "library/index")
+    _git(
+        tmp_path,
+        "commit",
+        "-m",
+        "batched proof",
+        author="unsorry-batch <unsorry-batch@users.noreply.github.com>",
+    )
+    # deliberately NO _alias(...) for unsorry-batch — it has no GitHub handle
+
+    stats = base_stats(tmp_path)
+    assert stats["credited_contributors"] == []
+    assert all(row["github"] is not None for row in stats["credited_contributors"])
+
+    payload = ui_payload(tmp_path)
+    assert payload["contributors"] == []
+    assert all(c["github"] is not None for c in payload["contributors"])
+    assert payload["summary"]["credited_proofs"] == 0
+    assert payload["summary"]["uncredited_proofs"] == 1
+
+
 def test_git_add_author_is_historical_visibility_not_solver_credit(tmp_path):
     _git(tmp_path, "init")
     _goal(tmp_path, "old-goal", 4)
@@ -202,6 +239,66 @@ def test_git_add_author_is_historical_visibility_not_solver_credit(tmp_path):
     assert "1 proofs" in svg
     assert "0 explicit" in svg
     assert "1 inferred" in svg
+
+
+def test_generated_at_tracks_latest_source_commit(tmp_path, monkeypatch):
+    # A relabel (or proof merge) commits to library/index but records no new run.
+    # generated_at must still bump to that commit's time — the staleness the live
+    # board showed after the attribution relabel. (With no git repo it falls back to
+    # the latest run time, which the other ui_payload tests exercise.)
+    monkeypatch.setenv("GIT_AUTHOR_DATE", "2026-06-21T03:12:00+00:00")
+    monkeypatch.setenv("GIT_COMMITTER_DATE", "2026-06-21T03:12:00+00:00")
+    _git(tmp_path, "init")
+    _goal(tmp_path, "goal-easy", 1, "proved")
+    _index(
+        tmp_path, "b" * 64, "goal-easy",
+        "⟦Π:Provenance⟧{solver≜perttu; agent≜mac-158f; "
+        "provider≜python; model≜sympy; attempts≜1}\n",
+    )
+    _run(tmp_path, "goal-easy", "20260613t120000000000z-11111111", "proved",
+         attempts=1, solve_s=10, solver="perttu")
+    _git(tmp_path, "add", "-A")
+    _git(tmp_path, "commit", "-m", "relabel", author="Bot <bot@example.test>")
+
+    # latest source-commit time, NOT the run's recorded ended (2026-06-13T12:00:00Z)
+    assert ui_payload(tmp_path)["generated_at"] == "2026-06-21T03:12:00Z"
+
+
+def test_dispatch_credit_for_landing_anothers_proof(tmp_path):
+    _git(tmp_path, "init")
+    _goal(tmp_path, "g1", 4)
+    _goal(tmp_path, "g2", 6)
+    _index(tmp_path, "a" * 64, "g1",
+           provenance="⟦Π:Provenance⟧{solver≜alice; agent≜x; provider≜manual}\n")
+    _index(tmp_path, "b" * 64, "g2",
+           provenance="⟦Π:Provenance⟧{solver≜bob; agent≜y; provider≜manual}\n")
+    _git(tmp_path, "add", "goals", "library/index")
+    # Bob is the git add-author of BOTH index files (he opened/landed both PRs):
+    # g1 is alice's proof (cross-dispatch -> credit) and g2 is his own (self -> none).
+    _git(tmp_path, "commit", "-m", "land proofs",
+         author="Bob Builder <bob@example.test>")
+    _alias(tmp_path, "Bob Builder <bob@example.test>", "bob", "Bob Builder")
+
+    rows = {r["github"]: r for r in base_stats(tmp_path)["credited_contributors"]}
+
+    # alice proved g1 and dispatched nothing
+    assert rows["alice"]["credited_proofs"] == 1
+    assert rows["alice"]["difficulty_points"] == 4
+    assert rows["alice"]["dispatch_proofs"] == 0
+    assert rows["alice"]["dispatch_points"] == 0.0
+
+    # bob proved g2 (self-dispatch excluded) AND dispatched alice's g1 (flat 0.9)
+    assert rows["bob"]["credited_proofs"] == 1
+    assert rows["bob"]["difficulty_points"] == 6
+    assert rows["bob"]["dispatch_proofs"] == 1
+    assert rows["bob"]["dispatch_points"] == 0.9
+
+    # score now includes dispatch: bob = 6*100 + 1*25 + 0.9*100 = 715; alice = 425
+    contribs = {c["github"]: c for c in ui_payload(tmp_path)["contributors"]}
+    assert contribs["bob"]["score"] == 715
+    assert contribs["bob"]["dispatch_proofs"] == 1
+    assert contribs["bob"]["dispatch_points"] == 0.9
+    assert contribs["alice"]["score"] == 425
 
 
 def test_archived_index_files_keep_original_active_attribution(tmp_path):
@@ -333,8 +430,28 @@ def test_base_stats_derive_failure_and_efficiency_metrics(tmp_path):
     out = render(tmp_path)
     assert "Run success rate | 50.0%" in out
     assert "Failed attempts | 4" in out
-    assert "[@perttu](https://github.com/perttu) | 1 | 1 | 0 | 2 | 50.0% | 4 | 425" in out
+    assert "[@perttu](https://github.com/perttu) | 1 | 1 | 0 | 2 | 50.0% | 4 | 0.0 | 425" in out
     assert "`codex / gpt-5.1-codex` | 1 | 2 | 50.0% | 4" in out
+
+
+def test_template_proof_folds_to_honest_engine_in_model_distribution(tmp_path):
+    # ADR-100: a deterministic-template proof landed before the next attribution
+    # sweep must be counted under its honest engine (lean / ring), never surfacing
+    # a phantom "claude / template-*" model in the distribution.
+    _goal(tmp_path, "tele-ring", 1, status="proved")
+    _index(
+        tmp_path,
+        "c" * 64,
+        "tele-ring",
+        provenance=(
+            "⟦Π:Provenance⟧{solver≜chat-bit-01; agent≜claude-web; "
+            "provider≜claude; model≜template-induction-ring; attempts≜1}\n"
+        ),
+    )
+    models = base_stats(tmp_path)["models"]
+    by_label = {m["provider_model"]: m for m in models}
+    assert "claude / template-induction-ring" not in by_label
+    assert by_label["lean / ring"]["verified_proofs"] == 1
 
 
 def test_lesson_telemetry_is_ignored_by_leaderboard(tmp_path):
@@ -432,7 +549,7 @@ def test_ui_payload_is_stable_browser_contract(tmp_path):
 
     assert json.loads(render_ui_json(tmp_path)) == payload
     svg = render_svg(tmp_path)
-    assert "Unsorry Leaderboard" in svg
+    assert "unsorry — Leaderboard" in svg
     assert "@perttu" in svg
     assert "425 pts" in svg
     assert "href=\"https://github.com/perttu\"" in svg
@@ -462,6 +579,61 @@ def test_check_and_write_modes_cover_markdown_json_ui_json_and_svg(tmp_path):
     assert main(["--check", str(tmp_path)]) == 1
 
 
+def test_write_if_stale_writes_once_and_signals_drift(tmp_path):
+    # ADR-082: a single recompute that writes iff stale, returning 1 when it
+    # wrote (mirroring --check's drift signal) and 0 when already in sync — so the
+    # leaderboard workflow no longer pays the ~10-min regen twice (once to --check,
+    # once to --write).
+    _goal(tmp_path, "g", 1)
+    _index(tmp_path, "a" * 64, "g")
+    # First run: artifacts are absent → stale → written, exit 1 (drift).
+    assert main(["--write-if-stale", str(tmp_path)]) == 1
+    ui_path = tmp_path / "docs" / "metrics" / "leaderboard-ui.json"
+    assert ui_path.is_file()
+    assert (tmp_path / "docs" / "metrics" / "community-stats.json").is_file()
+    assert (tmp_path / "docs" / "metrics" / "attribution-gaps.json").is_file()
+    assert (tmp_path / "docs" / "metrics" / "sourcing-leaderboard.json").is_file()
+    assert (tmp_path / "docs" / "leaderboard.md").is_file()
+    assert (tmp_path / "docs" / "leaderboard.svg").is_file()
+    assert (tmp_path / "docs" / "proofs-over-time.svg").is_file()
+    # The artifacts it wrote are exactly what --check considers in sync.
+    assert main(["--check", str(tmp_path)]) == 0
+
+
+def test_write_if_stale_is_a_noop_when_in_sync(tmp_path):
+    _goal(tmp_path, "g", 1)
+    _index(tmp_path, "a" * 64, "g")
+    assert main(["--write", str(tmp_path)]) == 0
+    ui_path = tmp_path / "docs" / "metrics" / "leaderboard-ui.json"
+    before = ui_path.read_text(encoding="utf-8")
+    # Already in sync → no drift → exit 0 and the artifacts are left byte-identical.
+    assert main(["--write-if-stale", str(tmp_path)]) == 0
+    assert ui_path.read_text(encoding="utf-8") == before
+    # A subsequent --write-if-stale stays a clean no-op (idempotent/deterministic).
+    assert main(["--write-if-stale", str(tmp_path)]) == 0
+    assert ui_path.read_text(encoding="utf-8") == before
+
+
+def test_write_if_stale_rewrites_only_the_drifted_artifact(tmp_path):
+    _goal(tmp_path, "g", 1)
+    _index(tmp_path, "a" * 64, "g")
+    assert main(["--write", str(tmp_path)]) == 0
+    ui_path = tmp_path / "docs" / "metrics" / "leaderboard-ui.json"
+    canonical = ui_path.read_text(encoding="utf-8")
+    ui_path.write_text("{}\n", encoding="utf-8")  # tamper one artifact
+    # Drift detected and repaired in a single pass.
+    assert main(["--write-if-stale", str(tmp_path)]) == 1
+    assert ui_path.read_text(encoding="utf-8") == canonical
+    assert main(["--check", str(tmp_path)]) == 0
+
+
+def test_write_if_stale_is_mutually_exclusive_with_other_modes(tmp_path):
+    _goal(tmp_path, "g", 1)
+    _index(tmp_path, "a" * 64, "g")
+    assert main(["--check", "--write-if-stale", str(tmp_path)]) == 2
+    assert main(["--write", "--write-if-stale", str(tmp_path)]) == 2
+
+
 def test_docs_leaderboard_html_consumes_generated_ui_json():
     root = Path(__file__).resolve().parents[3]
     html = (root / "docs" / "leaderboard.html").read_text(encoding="utf-8")
@@ -478,12 +650,14 @@ def test_docs_leaderboard_html_consumes_generated_ui_json():
     assert "LocalDataStore" not in html
     assert "seedData" not in html
     assert "pravatar" not in html
-    # Issue #738: shared top-nav + proofs-over-time toggle consuming payload.timeline.
+    # Issue #738: shared top-nav + proofs-over-time toggle consuming payload.timelines.
     assert 'href="index.html"' in html
     assert 'href="proofs-contributors-visualisation.html"' in html
     assert 'id="tab-leaderboard"' in html and 'id="tab-timeline"' in html
     assert 'id="view-timeline"' in html
-    assert "renderTimeline" in html and "payload.timeline" in html
+    assert "renderTimeline" in html and "payload.timelines" in html
+    # Solve/merge basis toggle (merge is the default).
+    assert 'id="tl-mode-merge"' in html and 'id="tl-mode-solve"' in html
     # Top 5 view: a third toggle tab rendering the top five contributors.
     assert 'id="tab-top5"' in html and 'id="view-top5"' in html
     assert "renderTop5" in html
@@ -505,15 +679,157 @@ def test_docs_index_links_readme():
 
 
 def test_ui_payload_includes_proof_timeline(tmp_path):
-    # Issue #738: cumulative proofs-over-time series for the leaderboard line graph.
+    # Issue #738: proofs-over-time toggle — a solve series (daily, by AISP @date)
+    # and a merge series (hourly, by prove-commit time; empty without a checkout).
     _goal(tmp_path, "g1", 1)
     _goal(tmp_path, "g2", 2)
     _index(tmp_path, "a" * 64, "g1")
     _index(tmp_path, "b" * 64, "g2")
     payload = ui_payload(tmp_path)
-    assert payload["timeline"] == [
-        {"date": "2026-06-13", "proofs": 2, "cumulative_proofs": 2}
+    assert payload["timelines"]["default"] == "merge"
+    assert payload["timelines"]["solve"] == [
+        {"t": "2026-06-13", "proofs": 2, "cumulative_proofs": 2}
     ]
+    # No git history in the fixture dir → the merge series degrades to empty.
+    assert payload["timelines"]["merge"] == []
+
+
+def test_parse_merge_log_keeps_oldest_prove_commit_per_goal():
+    # git log is newest-first, so the oldest prove(<goal>) commit (the proof's
+    # first landing) must win; recompose counts; non-prove subjects are ignored.
+    from tools.leaderboard.generate import parse_merge_log
+
+    text = (
+        "2026-06-20T17:00:00Z\x00recompose(g1): g1 by claude (#9)\n"
+        "2026-06-19T08:00:00Z\x00prove(g1): g1 by claude (#3)\n"
+        "2026-06-19T09:00:00Z\x00prove(g2): g2 by ruvnet (#4)\n"
+        "2026-06-19T10:00:00Z\x00docs: refresh leaderboard\n"
+    )
+    assert parse_merge_log(text) == {
+        "g1": "2026-06-19T08:00:00Z",
+        "g2": "2026-06-19T09:00:00Z",
+    }
+
+
+def test_merge_timeline_buckets_by_prove_commit_hour(tmp_path):
+    # With a real checkout, the merge series buckets each proof by its prove-commit
+    # hour (UTC). The wall-clock is the commit's, so assert the bucket shape.
+    import re as _re
+
+    from tools.leaderboard.generate import merge_times, proof_timelines, proofs
+
+    _goal(tmp_path, "g1", 1)
+    _index(tmp_path, "a" * 64, "g1")
+    _git(tmp_path, "init")
+    _git(tmp_path, "add", "goals", "library/index")
+    _git(
+        tmp_path,
+        "commit",
+        "-m",
+        "prove(g1): g1 by claude (#1)",
+        author="Claude <c@e.com>",
+    )
+
+    mt = merge_times(tmp_path)
+    assert set(mt) == {"g1"}
+    assert _re.fullmatch(r"\d{4}-\d{2}-\d{2}T\d{2}:00:00Z", mt["g1"])
+
+    series = proof_timelines(proofs(tmp_path), mt)
+    assert series["default"] == "merge"
+    assert series["merge"] == [
+        {"t": mt["g1"], "proofs": 1, "cumulative_proofs": 1}
+    ]
+    # The solve series still buckets by the recorded AISP @date, not the commit.
+    assert series["solve"] == [
+        {"t": "2026-06-13", "proofs": 1, "cumulative_proofs": 1}
+    ]
+
+
+def test_render_timeline_svg(tmp_path):
+    # README preview card for the proofs-over-time line graph (issue #738).
+    _goal(tmp_path, "g1", 1)
+    _goal(tmp_path, "g2", 2)
+    _index(tmp_path, "a" * 64, "g1")
+    _index(tmp_path, "b" * 64, "g2")
+    svg = render_timeline_svg(tmp_path)
+    assert svg.startswith("<svg") and svg.rstrip().endswith("</svg>")
+    assert "unsorry — Proofs Over Time" in svg
+    assert "Inter, system-ui, sans-serif" in svg  # shared design language
+    assert "<polyline" in svg  # the cumulative line
+    assert "2 cumulative kernel-verified proofs" in svg
+    # No git in the fixture → merge series empty, falls back to the daily solve view.
+    assert "solved, daily" in svg
+
+
+def test_render_timeline_svg_empty(tmp_path):
+    svg = render_timeline_svg(tmp_path)
+    assert svg.startswith("<svg") and "No dated proofs yet." in svg
+
+
+def test_render_timeline_svg_carries_forward_a_quiet_gap(tmp_path, monkeypatch):
+    # ADR-111: when the latest board-source activity is later than the last proof
+    # (a quiet stretch with no new proofs), the chart carries the line flat to the
+    # right edge with a dashed segment + an edge tick at the activity time, instead
+    # of the axis ending at the last proof and reading as a frozen/stale chart.
+    _goal(tmp_path, "g1", 1)
+    _index(tmp_path, "a" * 64, "g1")  # AISP @date 2026-06-13 → solve bucket
+    # Simulate ~3 days of activity (affinity/archive churn) with no new proof.
+    monkeypatch.setattr(generate, "_latest_source_commit_z", lambda root: "2026-06-16T07:00:00Z")
+    svg = render_timeline_svg(tmp_path)
+    assert "stroke-dasharray" in svg          # the carry-forward segment
+    assert "Jun 16" in svg                     # edge tick at the latest activity
+    # The flat carry never raises the count: still 1 cumulative proof.
+    assert "1 cumulative kernel-verified proofs" in svg
+
+
+def test_render_timeline_svg_no_gap_is_unextended(tmp_path, monkeypatch):
+    # No quiet gap (latest activity == last proof bucket) → no carry-forward; the
+    # render is byte-identical to the pre-ADR-111 shape, so no churn/regression.
+    _goal(tmp_path, "g1", 1)
+    _index(tmp_path, "a" * 64, "g1")
+    monkeypatch.setattr(generate, "_latest_source_commit_z", lambda root: None)
+    baseline = render_timeline_svg(tmp_path)
+    assert "stroke-dasharray" not in baseline
+    # An activity timestamp at/just before the last proof bucket also stays flat-free.
+    monkeypatch.setattr(generate, "_latest_source_commit_z", lambda root: "2026-06-13T00:00:00Z")
+    assert render_timeline_svg(tmp_path) == baseline
+
+
+def test_render_timeline_svg_steps_across_a_gap(tmp_path):
+    # ADR-111 step render: two proofs on far-apart dates must produce a STEP — hold
+    # the prior cumulative level flat across the empty gap, then jump — not a diagonal
+    # that implies steady growth where no proofs landed.
+    import re
+
+    idx = tmp_path / "library" / "index"
+    idx.mkdir(parents=True, exist_ok=True)
+    for sha, goal, date in (("a" * 64, "g1", "2026-06-13"), ("b" * 64, "g2", "2026-06-20")):
+        _goal(tmp_path, goal, 1)
+        (idx / f"{sha}.aisp").write_text(
+            f"𝔸5.1.lemma.{sha[:12]}@{date}\n"
+            "γ≔unsorry.lemma.index\n"
+            f"⟦Ω:Lemma⟧{{sha≜{sha}; goal≜{goal}; name≜{goal}}}\n"
+            "⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩\n",
+            encoding="utf-8",
+        )
+    svg = render_timeline_svg(tmp_path)
+    m = re.search(r'<polyline points="([^"]+)" fill="none" stroke="#38bdf8"', svg)
+    assert m, "data polyline not found"
+    pts = [tuple(float(v) for v in c.split(",")) for c in m.group(1).split()]
+    # Two data points → step path of exactly three vertices: p0, a horizontal hold,
+    # then a vertical jump.
+    assert len(pts) == 3, pts
+    assert abs(pts[0][1] - pts[1][1]) < 0.01, f"first segment should be flat (hold): {pts}"
+    assert abs(pts[1][0] - pts[2][0]) < 0.01, f"second segment should be vertical (jump): {pts}"
+
+
+def test_main_write_includes_timeline_svg(tmp_path):
+    _goal(tmp_path, "g1", 1)
+    _index(tmp_path, "a" * 64, "g1")
+    assert main(["--write", str(tmp_path)]) == 0
+    assert (tmp_path / "docs" / "proofs-over-time.svg").is_file()
+    # Freshly written → the drift check is clean (the new SVG is checked too).
+    assert main(["--check", str(tmp_path)]) == 0
 
 
 # --- Phantom-solver guard (ADR-037) ------------------------------------------
@@ -655,3 +971,131 @@ def test_write_and_check_cover_sourcing_artifact(tmp_path):
     assert main(["--check", str(tmp_path)]) == 0          # in sync right after a write
     sourcing_json.write_text("{}\n", encoding="utf-8")     # tamper
     assert main(["--check", str(tmp_path)]) == 1           # drift detected
+
+
+# --- regen performance regressions (issue #6317) -----------------------------
+#
+# The leaderboard regen had grown to ~64 min and starved the push-on-merge
+# refresh. Two compounding causes: git add-author attribution passed one pathspec
+# per proof/goal (so `git log` was O(history × corpus)), and every loader re-ran
+# ~4–9× because `base_stats` is recomputed for each rendered artifact. These tests
+# pin both fixes: a single directory-scoped git walk, and per-process memoisation.
+
+
+@pytest.fixture(autouse=True)
+def _reset_leaderboard_caches():
+    # The per-root loader caches are process-lifetime; reset around every test so a
+    # memo from one fixture repo can never leak into another (and so the
+    # call-counting assertions below start from a clean slate).
+    reset_caches()
+    yield
+    reset_caches()
+
+
+def _git_log_pathspecs(calls):
+    """The pathspecs (args after ``--``) of every captured add-author `git log`."""
+    specs = []
+    for argv in calls:
+        if "log" in argv and "--diff-filter=A" in argv and "--" in argv:
+            specs.append(argv[argv.index("--") + 1:])
+    return specs
+
+
+def _spy_subprocess(monkeypatch):
+    real_run = generate.subprocess.run
+    calls: list[list[str]] = []
+
+    def spy(argv, *a, **k):
+        calls.append(list(argv))
+        return real_run(argv, *a, **k)
+
+    monkeypatch.setattr(generate.subprocess, "run", spy)
+    return calls
+
+
+def test_git_add_authors_walks_one_directory_not_per_file(tmp_path, monkeypatch):
+    _git(tmp_path, "init")
+    _goal(tmp_path, "g1", 1)
+    _goal(tmp_path, "g2", 2)
+    _index(tmp_path, "a" * 64, "g1")
+    _index(tmp_path, "b" * 64, "g2")
+    _git(tmp_path, "add", "goals", "library/index")
+    _git(tmp_path, "commit", "-m", "land", author="Ada <ada@example.test>")
+
+    proof_data = proofs(tmp_path)  # no git, just file reads
+    calls = _spy_subprocess(monkeypatch)
+    authors = git_add_authors(tmp_path, proof_data)
+
+    # Attribution is unchanged: both proofs map to their add-author.
+    assert len(authors) == 2
+    assert {a.name for a in authors.values()} == {"Ada"}
+    # …and it took a SINGLE directory-scoped walk, not one pathspec per proof.
+    assert _git_log_pathspecs(calls) == [["library/index"]]
+
+
+def test_goal_add_authors_walks_one_directory_not_per_goal(tmp_path, monkeypatch):
+    _git(tmp_path, "init")
+    _goal(tmp_path, "g1", 1)
+    _goal(tmp_path, "g2", 2)
+    _git(tmp_path, "add", "goals")
+    _git(tmp_path, "commit", "-m", "source", author="Bo <bo@example.test>")
+
+    calls = _spy_subprocess(monkeypatch)
+    authors = goal_add_authors(tmp_path, ["g1", "g2"])
+
+    assert sorted(a.name for a in authors.values()) == ["Bo", "Bo"]
+    assert _git_log_pathspecs(calls) == [["goals"]]
+
+
+def test_generation_parses_each_record_once(tmp_path, monkeypatch):
+    # A full --write runs every renderer (markdown / community-stats /
+    # leaderboard-ui / svg / timeline / gaps / sourcing), each of which used to
+    # re-load the corpus. Under one scoped generation each record is parsed exactly
+    # once — here two source files (one goal, one index), so two parses total.
+    _goal(tmp_path, "g", 1)
+    _index(tmp_path, "a" * 64, "g")
+
+    counter = {"n": 0}
+    real_parse = generate.parse_record
+
+    def counting_parse(text):
+        counter["n"] += 1
+        return real_parse(text)
+
+    monkeypatch.setattr(generate, "parse_record", counting_parse)
+    assert main(["--write", str(tmp_path)]) == 0
+    assert counter["n"] == 2  # one goal + one index, not multiplied per renderer
+
+
+def test_main_walks_git_attribution_once_across_renderers(tmp_path, monkeypatch):
+    # The expensive add-author walk must run once per generation, not once per
+    # renderer. Driven through main(), the whole --write shares one scope.
+    _git(tmp_path, "init")
+    _goal(tmp_path, "g", 1)
+    _index(tmp_path, "a" * 64, "g")
+    _git(tmp_path, "add", "goals", "library/index")
+    _git(tmp_path, "commit", "-m", "land", author="Ada <ada@example.test>")
+
+    calls = _spy_subprocess(monkeypatch)
+    assert main(["--write", str(tmp_path)]) == 0
+
+    specs = _git_log_pathspecs(calls)
+    assert specs.count(["library/index"]) == 1  # add-author walk, once
+    assert specs.count(["goals"]) == 1           # sourcing walk, once
+
+
+def test_separate_top_level_calls_re_read_the_tree(tmp_path):
+    # Each top-level call is its own generation: the cache is cleared on entry/exit
+    # so a corpus change between two in-process generations is always seen (the
+    # workflow's rebase-and-regen push retry, or a test that mutates then recomputes).
+    _goal(tmp_path, "g", 1)
+    _index(tmp_path, "a" * 64, "g")
+    assert base_stats(tmp_path)["coverage"]["verified_proofs"] == 1
+    # Add a second proof, then recompute — no stale memo from the first call.
+    _goal(tmp_path, "g2", 2)
+    _index(tmp_path, "c" * 64, "g2")
+    assert base_stats(tmp_path)["coverage"]["verified_proofs"] == 2
+    # …and the same holds through the CLI entry point.
+    assert main(["--write", str(tmp_path)]) == 0
+    stats_path = tmp_path / "docs" / "metrics" / "community-stats.json"
+    assert json.loads(stats_path.read_text())["coverage"]["verified_proofs"] == 2

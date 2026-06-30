@@ -104,6 +104,20 @@ def test_build_board_groups_ranks_and_links():
     assert board["summary"]["in_flight"] == 0
 
 
+def test_build_board_carries_generated_at():
+    # generated_at is surfaced so the guild can show queue freshness; None by default.
+    assert (
+        build_board(_subs(), proved_goals=set(), open_pr_branches=None,
+                    pr_status_known=False)["generated_at"]
+        is None
+    )
+    board = build_board(
+        _subs(), proved_goals=set(), open_pr_branches=None, pr_status_known=False,
+        generated_at="2026-06-29T16:07:25Z",
+    )
+    assert board["generated_at"] == "2026-06-29T16:07:25Z"
+
+
 def test_build_board_excludes_proved_goals():
     board = build_board(
         _subs(), proved_goals={"g1"}, open_pr_branches=None, pr_status_known=False
@@ -170,12 +184,16 @@ def test_render_html_shares_nav_and_design():
         pr_status_known=True,
     ))
     assert html.startswith("<!doctype html>")
-    # Shared top-nav with Queue current and the other three pages present.
+    # Shared top-nav with Queue current and the other four pages present
+    # (Showcase must appear on every page, not just the hand-authored shells).
     assert 'href="queue.html" aria-current="page"' in html
     assert 'href="index.html"' in html and 'href="leaderboard.html"' in html
     assert 'href="proofs-contributors-visualisation.html"' in html
+    assert 'href="showcase.html"' in html
+    # Nav wraps instead of spilling on narrow viewports (mobile UX).
+    assert "flex-wrap" in html
     # Shared design language (ADR-038).
-    assert "cdn.tailwindcss.com" in html and "Inter" in html and ">Unsorry<" in html
+    assert "cdn.tailwindcss.com" in html and "Inter" in html and ">unsorry<" in html
     assert 'name="viewport"' in html
     # Solver sections + state badges + summary chips.
     assert "@ruvnet" in html and "macbook" in html

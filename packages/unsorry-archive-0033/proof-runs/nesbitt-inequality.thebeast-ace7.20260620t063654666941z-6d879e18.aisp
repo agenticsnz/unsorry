@@ -1,0 +1,8 @@
+𝔸5.1.run.nesbitt-inequality.thebeast-ace7.20260620t063654666941z-6d879e18@2026-06-20
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260620t063654666941z-6d879e18; goal≜nesbitt-inequality; agent≜thebeast-ace7; outcome≜proved}
+⟦Π:Provenance⟧{solver≜adam91holt; provider≜codex; effort≜medium}
+⟦Γ:Goal⟧{goal≜nesbitt-inequality}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜190; ended≜2026-06-20T06:36:54Z; lessons≜1}
+⟦Σ:Artifact⟧{sha≜c35ea01d383826d6a4abe443136e95a50973cc355f6f1610c74f94a68915c226}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

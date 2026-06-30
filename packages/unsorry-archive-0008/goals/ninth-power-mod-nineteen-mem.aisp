@@ -1,0 +1,20 @@
+𝔸5.1.goal.ninth-power-mod-nineteen-mem@2026-06-15
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜ninth-power-mod-nineteen-mem
+  phase≜prove
+  status≜proved
+  difficulty≜2
+}
+⟦Σ:Source⟧{
+  src≜backlog/ninth-power-mod-nineteen-mem.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/ninth-power-mod-nineteen-mem.lean
+  sha≜d7db9810b4e482ee6e95bd9fdbe9177d86a426210872ec4133e31e01c160e44a
+  aff≜-10
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

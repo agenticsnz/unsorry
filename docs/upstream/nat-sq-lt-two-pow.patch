@@ -1,0 +1,20 @@
+--- /dev/null
++++ b/Mathlib/Unsorry/NatSqLtTwoPow.lean
+@@ -0,0 +1,17 @@
++/-
++Copyright (c) 2026 Chris Barlow. All rights reserved.
++Released under Apache 2.0 license as described in the file LICENSE.
++Authors: Chris Barlow
++-/
++import Mathlib.Tactic.NormNum
++import Mathlib.Tactic.Linarith
++import Mathlib.Tactic.Ring
++
++theorem sq_lt_two_pow_of_five_le {n : ℕ} (hn : 5 ≤ n) : n ^ 2 < 2 ^ n := by
++  obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hn
++  suffices h : ∀ k : ℕ, (5 + k) ^ 2 < 2 ^ (5 + k) by exact h k
++  intro k
++  induction k with
++  | zero => norm_num
++  | succ k ih =>
++      simpa [Nat.add_assoc] using sq_lt_two_pow_step_from_five (n := 5 + k) (by omega) ih

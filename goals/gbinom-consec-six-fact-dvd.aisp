@@ -1,0 +1,20 @@
+𝔸5.1.goal.gbinom-consec-six-fact-dvd@2026-06-19
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜gbinom-consec-six-fact-dvd
+  phase≜prove
+  status≜archived
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜packages/unsorry-archive-0095/backlog/gbinom-consec-six-fact-dvd.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜packages/unsorry-archive-0095/goals/gbinom-consec-six-fact-dvd.lean
+  sha≜88633f55e93c2f6de33c5c2a33590b287de6610043664337a02ba3b29b283f6b
+  aff≜0
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

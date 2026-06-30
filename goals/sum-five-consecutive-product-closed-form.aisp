@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-five-consecutive-product-closed-form
   phase≜prove
-  status≜proved
-  difficulty≜2
+  status≜archived
+  difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-five-consecutive-product-closed-form.md
+  src≜packages/unsorry-archive-0015/backlog/sum-five-consecutive-product-closed-form.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-five-consecutive-product-closed-form.lean
+  lean≜packages/unsorry-archive-0015/goals/sum-five-consecutive-product-closed-form.lean
   sha≜5cd97b00b27e456b1805d46a62abee00914c573b83d2a68957bc8981dc31eb67
   aff≜-9
 }

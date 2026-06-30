@@ -1,0 +1,8 @@
+𝔸5.1.lemma.17f28faf8d13@2026-06-16
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{sha≜17f28faf8d133721a029206c7f3dfa3dd3503c98b45c28670498259d08bb6e0a; goal≜sum-three-squares-zmod-eight-ne-seven; name≜sum_three_squares_zmod_eight_ne_seven}
+⟦Σ:Source⟧{src≜goals/sum-three-squares-zmod-eight-ne-seven.lean}
+⟦Γ:Tags⟧{tags≜⟨⟩}
+⟦Λ:Meta⟧{use≜0; aff≜0}
+⟦Π:Provenance⟧{solver≜ohdearquant; agent≜mac-158f; provider≜python; model≜sympy; attempts≜1}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

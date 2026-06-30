@@ -1,0 +1,21 @@
+𝔸5.1.goal.nesbitt-inequality-s1@2026-06-14
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜nesbitt-inequality-s1
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜decompositions/nesbitt-inequality.d337a70018c9-90fd.aisp
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/nesbitt-inequality-s1.lean
+  sha≜3a578dcc1d941c9ce2f6dd78c23b2b9211ccab10f640a7a068e3b72980242a1a
+  aff≜-20
+  depth≜1
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

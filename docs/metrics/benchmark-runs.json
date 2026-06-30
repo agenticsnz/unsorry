@@ -1,0 +1,271 @@
+{
+  "schema_version": 1,
+  "suites": {
+    "putnam-v1": [
+      {
+        "contributor": "Rauxon",
+        "ended": "2026-06-25T01:11:41Z",
+        "goal": "putnam-1962-a3",
+        "model": "claude/opus",
+        "outcome": "failed",
+        "passed": false,
+        "run_id": "20260625t011141094604z-22be57a6",
+        "solve_s": 5740,
+        "verification": "—"
+      },
+      {
+        "contributor": "Rauxon",
+        "ended": "2026-06-25T02:33:20Z",
+        "goal": "putnam-1963-b1",
+        "model": "claude/opus",
+        "outcome": "proved",
+        "passed": true,
+        "run_id": "20260625t023320340718z-92a9f89f",
+        "solve_s": 1719,
+        "verification": "kernel"
+      },
+      {
+        "contributor": "Rauxon",
+        "ended": "2026-06-25T03:17:30Z",
+        "goal": "putnam-1964-a4",
+        "model": "claude/opus",
+        "outcome": "proved",
+        "passed": true,
+        "run_id": "20260625t031730417265z-fb1be3cc",
+        "solve_s": 1965,
+        "verification": "kernel"
+      },
+      {
+        "contributor": "Rauxon",
+        "ended": "2026-06-25T03:52:18Z",
+        "goal": "putnam-1962-a3",
+        "model": "claude/opus",
+        "outcome": "failed",
+        "passed": false,
+        "run_id": "20260625t035218767703z-12c98393",
+        "solve_s": 5566,
+        "verification": "—"
+      },
+      {
+        "contributor": "Rauxon",
+        "ended": "2026-06-25T04:31:58Z",
+        "goal": "putnam-1965-a1",
+        "model": "claude/opus",
+        "outcome": "proved",
+        "passed": true,
+        "run_id": "20260625t043158129565z-14441c74",
+        "solve_s": 3429,
+        "verification": "kernel"
+      },
+      {
+        "contributor": "Rauxon",
+        "ended": "2026-06-25T05:31:49Z",
+        "goal": "putnam-1962-a1",
+        "model": "claude/opus",
+        "outcome": "decomposed",
+        "passed": false,
+        "run_id": "20260625t053148992186z-0fe777b8",
+        "solve_s": 5677,
+        "verification": "—"
+      },
+      {
+        "contributor": "Rauxon",
+        "ended": "2026-06-25T05:45:54Z",
+        "goal": "putnam-1965-b5",
+        "model": "claude/opus",
+        "outcome": "proved",
+        "passed": true,
+        "run_id": "20260625t054554175694z-bc4f7eea",
+        "solve_s": 4056,
+        "verification": "kernel"
+      },
+      {
+        "contributor": "Rauxon",
+        "ended": "2026-06-25T06:02:02Z",
+        "goal": "putnam-1962-a3",
+        "model": "claude/opus",
+        "outcome": "failed",
+        "passed": false,
+        "run_id": "20260625t060202038233z-a1cec2e1",
+        "solve_s": 5581,
+        "verification": "—"
+      },
+      {
+        "contributor": "Rauxon",
+        "ended": "2026-06-25T06:19:26Z",
+        "goal": "putnam-1966-a3",
+        "model": "claude/opus",
+        "outcome": "proved",
+        "passed": true,
+        "run_id": "20260625t061926212811z-468eb768",
+        "solve_s": 1419,
+        "verification": "kernel"
+      },
+      {
+        "contributor": "Rauxon",
+        "ended": "2026-06-25T07:39:34Z",
+        "goal": "putnam-1962-b5",
+        "model": "claude/opus",
+        "outcome": "decomposed",
+        "passed": false,
+        "run_id": "20260625t073934846415z-400eed2b",
+        "solve_s": 5588,
+        "verification": "—"
+      },
+      {
+        "contributor": "cgbarlow",
+        "ended": "2026-06-25T11:30:14Z",
+        "goal": "putnam-1962-b2",
+        "model": "claude/opus",
+        "outcome": "proved",
+        "passed": true,
+        "run_id": "20260625t113014387527z-80dffdf1",
+        "solve_s": 869,
+        "verification": "kernel"
+      },
+      {
+        "contributor": "cgbarlow",
+        "ended": "2026-06-25T11:52:56Z",
+        "goal": "putnam-1962-b3",
+        "model": "claude/opus",
+        "outcome": "proved",
+        "passed": true,
+        "run_id": "20260625t115256620860z-6384143d",
+        "solve_s": 1299,
+        "verification": "kernel"
+      },
+      {
+        "contributor": "cgbarlow",
+        "ended": "2026-06-25T15:38:06Z",
+        "goal": "putnam-1966-b1",
+        "model": "claude/opus",
+        "outcome": "decomposed",
+        "passed": false,
+        "run_id": "20260625t153806561756z-e4113ef5",
+        "solve_s": 3308,
+        "verification": "—"
+      },
+      {
+        "contributor": "cgbarlow",
+        "ended": "2026-06-25T16:59:33Z",
+        "goal": "putnam-1967-a5",
+        "model": "claude/opus",
+        "outcome": "decomposed",
+        "passed": false,
+        "run_id": "20260625t165933222620z-c7e206b1",
+        "solve_s": 3123,
+        "verification": "—"
+      },
+      {
+        "contributor": "cgbarlow",
+        "ended": "2026-06-25T19:53:59Z",
+        "goal": "putnam-1962-a5",
+        "model": "claude/opus",
+        "outcome": "proved",
+        "passed": true,
+        "run_id": "20260625t195359812575z-8a06bf49",
+        "solve_s": 1471,
+        "verification": "kernel"
+      },
+      {
+        "contributor": "cgbarlow",
+        "ended": "2026-06-25T22:22:14Z",
+        "goal": "putnam-1965-b6",
+        "model": "claude/opus",
+        "outcome": "decomposed",
+        "passed": false,
+        "run_id": "20260625t222214871647z-edb05958",
+        "solve_s": 5446,
+        "verification": "—"
+      },
+      {
+        "contributor": "cgbarlow",
+        "ended": "2026-06-25T23:08:52Z",
+        "goal": "putnam-1966-a1",
+        "model": "claude/opus",
+        "outcome": "decomposed",
+        "passed": false,
+        "run_id": "20260625t230852898787z-65cc19b8",
+        "solve_s": 1144,
+        "verification": "—"
+      },
+      {
+        "contributor": "cgbarlow",
+        "ended": "2026-06-26T01:10:58Z",
+        "goal": "putnam-1966-b4",
+        "model": "claude/opus",
+        "outcome": "decomposed",
+        "passed": false,
+        "run_id": "20260626t011058223576z-4dd46925",
+        "solve_s": 852,
+        "verification": "—"
+      },
+      {
+        "contributor": "cgbarlow",
+        "ended": "2026-06-26T02:41:44Z",
+        "goal": "putnam-1962-a3",
+        "model": "claude/opus",
+        "outcome": "failed",
+        "passed": false,
+        "run_id": "20260626t024144306882z-6dd7c3af",
+        "solve_s": 4080,
+        "verification": "—"
+      },
+      {
+        "contributor": "cgbarlow",
+        "ended": "2026-06-26T07:19:24Z",
+        "goal": "putnam-1964-a3",
+        "model": "claude/opus",
+        "outcome": "failed",
+        "passed": false,
+        "run_id": "20260626t071924018179z-0ed999c7",
+        "solve_s": 5450,
+        "verification": "—"
+      },
+      {
+        "contributor": "cgbarlow",
+        "ended": "2026-06-26T08:36:18Z",
+        "goal": "putnam-1966-a6",
+        "model": "claude/opus",
+        "outcome": "decomposed",
+        "passed": false,
+        "run_id": "20260626t083618809150z-32e37b6d",
+        "solve_s": 2778,
+        "verification": "—"
+      },
+      {
+        "contributor": "cgbarlow",
+        "ended": "2026-06-26T13:31:34Z",
+        "goal": "putnam-1969-b2",
+        "model": "claude/opus",
+        "outcome": "decomposed",
+        "passed": false,
+        "run_id": "20260626t133134459630z-6194d5f4",
+        "solve_s": 1249,
+        "verification": "—"
+      },
+      {
+        "contributor": "cgbarlow",
+        "ended": "2026-06-26T16:04:04Z",
+        "goal": "putnam-1969-b3",
+        "model": "claude/opus",
+        "outcome": "failed",
+        "passed": false,
+        "run_id": "20260626t160404745289z-1fdbaee4",
+        "solve_s": 1256,
+        "verification": "—"
+      },
+      {
+        "contributor": "cgbarlow",
+        "ended": "2026-06-26T17:49:32Z",
+        "goal": "putnam-1969-b4",
+        "model": "claude/opus",
+        "outcome": "failed",
+        "passed": false,
+        "run_id": "20260626t174932232770z-e2877681",
+        "solve_s": 5566,
+        "verification": "—"
+      }
+    ]
+  }
+}

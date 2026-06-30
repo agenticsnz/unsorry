@@ -3,18 +3,18 @@
 ⟦Ω:Goal⟧{
   id≜sum-range-k-mul-factorial-succ
   phase≜prove
-  status≜open
+  status≜archived
   difficulty≜3
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-range-k-mul-factorial-succ.md
+  src≜packages/unsorry-archive-0037/backlog/sum-range-k-mul-factorial-succ.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-range-k-mul-factorial-succ.lean
-  sha≜∅
+  lean≜packages/unsorry-archive-0037/goals/sum-range-k-mul-factorial-succ.lean
+  sha≜3bcaa93a1a696d47c63bad33340692fc3b43354d5e8afbfdc74ef7f8ee77d138
   aff≜-10
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
