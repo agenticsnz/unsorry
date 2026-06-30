@@ -20,12 +20,17 @@ failing proof stops being retried after `--max-attempts` and stays BLOCKED
           BLOCKED/UNKNOWN + a required gate in a terminal non-pass state +
           no required gate still pending + that gate's run_attempt < max +
           PR older than --min-age-minutes.
-  act:    `gh run rerun <run-id> --failed` on the flaked gate's workflow run; if
-          GitHub rejects the rerun (it refuses to re-run a run older than a few
-          days — so a queued branch that flaked days ago then got dispatched can't
-          be rerun), fall back to `update-branch` (rebase → fresh `synchronize` →
-          gates re-dispatch on a current SHA). The rebase fallback needs a
-          non-default token (REFRESH_TOKEN); without it, run with `--no-rebase`.
+  act:    rebase-first when the branch is BEHIND its base, else rerun (see
+          `recovery_action`). A rerun re-runs the same head SHA, which clears a
+          transient flake but NOT a base-staleness failure (e.g. a cold-cache
+          `gate-a-prepare` timeout on a branch behind `main`); for those an
+          `update-branch` rebase warms the cache and re-dispatches on a fresh SHA.
+          So: behind base → `update-branch` (fall through to rerun if it can't
+          apply); up to date → `gh run rerun <run-id> --failed`, then fall back to
+          `update-branch` if GitHub rejects the rerun (it refuses to re-run a run
+          older than a few days — a queued branch dispatched late can't be rerun).
+          The rebase paths need a non-default token (REFRESH_TOKEN); without it,
+          run with `--no-rebase` and recovery degrades to rerun-only.
 
 Why the guards:
   * auto-merge OFF → the author is still working; don't burn CI re-running for
@@ -54,6 +59,7 @@ from datetime import datetime, timezone
 from tools.repo.dropped_gate_prs import (
     PENDING_STATES,
     TERMINAL_NONPASS,
+    _behind_by,
     normalize_run_state,
 )
 
@@ -97,6 +103,32 @@ def flaky_retry_reason(required, present_states, attempts, merge_state, is_draft
     )
 
 
+def recovery_action(behind_by: int, no_rebase: bool) -> str:
+    """Pure: how to recover a flaked-gate PR — ``"rebase"`` or ``"rerun"``.
+
+    A *rerun* re-runs the **same head SHA**'s failed jobs; it recovers a
+    *transient* flake (runner eviction, one-off cache miss) that simply passes on
+    a healthy retry. But when the branch is **behind its base**, the failure is
+    often base-staleness induced — the canonical case is `gate-a-prepare`
+    cold-building because the published-olean cache is keyed to a superseded base,
+    then hitting its `timeout-minutes` cap — and re-running the *same stale SHA*
+    reproduces it deterministically, burning the attempt budget until the PR is
+    parked BLOCKED for a human (observed: #7056, 2 commits behind `main`, a 45-min
+    cold-prepare timeout that no rerun could clear).
+
+    Rebasing onto the current base (``update-branch``) restores a warm cache and
+    re-dispatches the gates on a fresh SHA, which actually clears the block. So
+    prefer ``"rebase"`` whenever the branch is behind **and** rebase is available
+    (``no_rebase`` is false — a non-default token enables the synchronize). When
+    ``behind_by == 0`` an update-branch is a no-op anyway, so ``"rerun"`` is the
+    only useful action; and with ``no_rebase`` we cannot rebase, so we fall back
+    to ``"rerun"`` (futile for a stale-base failure, but the attempt cap still
+    converges it to a visible block — same degradation as before this change)."""
+    if behind_by > 0 and not no_rebase:
+        return "rebase"
+    return "rerun"
+
+
 # ---------------------------------------------------------------------------
 # I/O shell (thin; the logic above is what's tested)
 # ---------------------------------------------------------------------------
@@ -124,7 +156,7 @@ def _gh_json(args: list[str], default):
 
 def _open_prs(repo: str | None) -> list[dict]:
     args = ["pr", "list", "--state", "open", "--limit", "400", "--json",
-            "number,title,headRefOid,isDraft,mergeStateStatus,updatedAt,autoMergeRequest"]
+            "number,title,headRefOid,baseRefName,isDraft,mergeStateStatus,updatedAt,autoMergeRequest"]
     if repo:
         args += ["--repo", repo]
     return _gh_json(args, []) or []
@@ -223,7 +255,7 @@ def main(argv: list[str] | None = None) -> int:
     required = tuple(c.strip() for c in args.required.split(",") if c.strip())
     now = datetime.now(timezone.utc)
 
-    candidates: list[tuple[int, str, list[str], dict[str, str]]] = []
+    candidates: list[tuple[int, str, list[str], dict[str, str], int]] = []
     exhausted: list[int] = []
     for pr in _open_prs(repo):
         if pr.get("isDraft") or pr.get("mergeStateStatus") not in ("BLOCKED", "UNKNOWN"):
@@ -252,7 +284,11 @@ def main(argv: list[str] | None = None) -> int:
                 exhausted.append(int(pr["number"]))
             continue
         run_ids = {c: gates[c].get("run_id") for c in retry if gates[c].get("run_id")}
-        candidates.append((int(pr["number"]), reason, retry, run_ids))
+        # How far behind base decides rerun-vs-rebase (see recovery_action): a
+        # rerun re-runs the same stale SHA and can't clear a base-staleness
+        # failure. One compare call per confirmed candidate (bounded by --limit).
+        behind = _behind_by(repo, pr.get("baseRefName") or "main", sha)
+        candidates.append((int(pr["number"]), reason, retry, run_ids, behind))
 
     capped = candidates[: args.limit]
     mode = "APPLY" if args.apply else "DRY-RUN"
@@ -268,11 +304,26 @@ def main(argv: list[str] | None = None) -> int:
 
     retried = 0
     rebased = 0
-    for number, reason, _retry, run_ids in capped:
+    for number, reason, _retry, run_ids, behind in capped:
         line = f"#{number} — {reason}"
+        action = recovery_action(behind, args.no_rebase)
         if not args.apply:
-            print(f"  would retry {line}")
+            detail = f" (behind base by {behind})" if behind > 0 else ""
+            print(f"  would {action} {line}{detail}")
             continue
+        # Behind base → a rerun of the stale SHA would just reproduce a
+        # base-staleness failure (e.g. a cold-cache gate-a-prepare timeout), so
+        # rebase first to warm the cache and re-dispatch on a fresh SHA. If the
+        # rebase can't apply (conflict / lost an up-to-date race) fall through to
+        # a rerun rather than leaving the PR stuck.
+        if action == "rebase":
+            if _update_branch(repo, number):
+                rebased += 1
+                print(f"  rebased (behind base by {behind} — rerun would reproduce "
+                      f"a stale-base failure) {line}")
+                continue
+            print(f"  rebase failed (conflict/race) — falling back to rerun {line}",
+                  file=sys.stderr)
         if run_ids and all(_rerun_failed(rid) for rid in run_ids.values()):
             retried += 1
             print(f"  retried {line}")

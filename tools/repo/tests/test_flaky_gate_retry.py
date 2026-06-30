@@ -4,6 +4,7 @@ from __future__ import annotations
 from tools.repo.flaky_gate_retry import (
     DEFAULT_MAX_ATTEMPTS,
     flaky_retry_reason,
+    recovery_action,
     run_id_from_details_url,
 )
 
@@ -93,3 +94,26 @@ def test_absent_attempt_defaults_to_one():
 
 def test_default_max_attempts_is_three():
     assert DEFAULT_MAX_ATTEMPTS == 3
+
+
+# --- recovery_action: rebase-first when behind base (ADR-114) -----------------
+
+def test_rebase_first_when_behind_base():
+    # Behind base + rebase available → rerun would reproduce a stale-base failure
+    # (cold-cache gate-a-prepare timeout); rebase to warm the cache instead.
+    assert recovery_action(2, no_rebase=False) == "rebase"
+
+
+def test_rerun_when_up_to_date():
+    # behind_by == 0: update-branch is a no-op, so rerun is the only useful action.
+    assert recovery_action(0, no_rebase=False) == "rerun"
+
+
+def test_rerun_when_rebase_disabled_even_if_behind():
+    # No admin token (--no-rebase) → cannot rebase; degrade to rerun (the attempt
+    # cap still converges a stale-base failure to a visible block).
+    assert recovery_action(5, no_rebase=True) == "rerun"
+
+
+def test_rerun_when_up_to_date_and_rebase_disabled():
+    assert recovery_action(0, no_rebase=True) == "rerun"
