@@ -226,7 +226,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from tools.gate_b import config
-from tools.gate_b.claims import is_live, parse_claim, split_claim_filename
+from tools.gate_b.claims import expires_at, is_live, parse_claim, split_claim_filename
 from tools.gate_b.records import format_utc_z, is_id, parse_record, parse_utc_z
 
 
@@ -515,6 +515,35 @@ def cmd_prove_claimable(args):
     now = _now(args[3] if len(args) > 3 else "")
     others, _ = _live_other_agents(claims_dir, goal, agent, now)
     sys.exit(0 if len(others) < config.PROVE_CLAIM_CAP else 1)
+
+
+def cmd_claimants(args):
+    """claimants <goal> <claims-dir> [<at>]
+
+    Print one TSV line per LIVE claim on <goal>: ``<agent>\t<expiry-utc-z>`` —
+    the holder and when its claim lapses — sorted by agent id. Empty output ⇒ no
+    live claim (the goal is free to claim). This is the visibility primitive
+    behind the operator-facing "your named --goal is already claimed by X"
+    message: with PROVE_CLAIM_CAP=1 a single live claim blocks every other
+    agent, so an explicitly named goal can silently yield no work purely because
+    it is already in flight."""
+    goal, claims_dir = args[0], args[1]
+    now = _now(args[2] if len(args) > 2 else "")
+    rows = []
+    directory = Path(claims_dir)
+    if directory.is_dir():
+        for path in sorted(directory.glob("*.aisp")):
+            fields = split_claim_filename(path.name)
+            if fields is None or fields[0] != goal:
+                continue
+            claim = parse_claim(path)
+            if not is_live(claim, now):
+                continue
+            holder = claim.agent or fields[1]
+            expiry = expires_at(claim)
+            rows.append((holder, format_utc_z(expiry) if expiry else "?"))
+    for holder, expiry in sorted(rows):
+        print(f"{holder}\t{expiry}")
 
 
 def cmd_render_index(args):
@@ -1032,6 +1061,7 @@ COMMANDS = {
     "prove-candidates": cmd_prove_candidates,
     "recovery-candidates": cmd_recovery_candidates,
     "prove-claimable": cmd_prove_claimable,
+    "claimants": cmd_claimants,
     "render-index": cmd_render_index,
     "run-id": cmd_run_id,
     "render-run": cmd_render_run,
@@ -5371,6 +5401,50 @@ test_viability_skip() {
     || { log "  at τ_v should be viable but rank below ok; expected 'ok bad', got '$got'"; return 1; }
 }
 
+test_claimants() {
+  # The visibility primitive behind the operator-facing "your named --goal is
+  # already claimed by X" message: `claimants` lists LIVE claim holders on a goal
+  # (TSV agent<TAB>expiry), sorted by agent, excluding expired and other-goal
+  # claims, so the prove loop can tell an operator the goal is in flight.
+  local tree claims ttl got
+  tree="$(mktemp -d "$SESSION_TMP/claimants.XXXXXX")" || return 1
+  claims="$tree/claims"
+  mkdir -p "$claims" || return 1
+  ttl="$(py_helper ttl)" || return 1
+
+  # A: no claims → empty output (goal is free to claim).
+  got="$(py_helper claimants mygoal "$claims" "$T_AT")"
+  [ -z "$got" ] || { log "  A: no claims should be empty, got '$got'"; return 1; }
+
+  # B: a live claim by another agent → its id is the first TSV field.
+  render_claim_record mygoal agent-other "$T_LIVE_TS" "$ttl" \
+    > "$claims/mygoal.agent-other.aisp"
+  got="$(py_helper claimants mygoal "$claims" "$T_AT" | cut -f1)"
+  [ "$got" = "agent-other" ] \
+    || { log "  B: expected holder 'agent-other', got '$got'"; return 1; }
+
+  # C: an EXPIRED claim is not a live claimant (ts+ttl well before T_AT).
+  rm -f "$claims/mygoal.agent-other.aisp"
+  render_claim_record mygoal agent-stale "2020-01-01T00:00:00Z" "$ttl" \
+    > "$claims/mygoal.agent-stale.aisp"
+  got="$(py_helper claimants mygoal "$claims" "$T_AT")"
+  [ -z "$got" ] || { log "  C: expired claim should not be listed, got '$got'"; return 1; }
+
+  # D: a claim on a DIFFERENT goal must not leak into this goal's claimants.
+  rm -f "$claims/mygoal.agent-stale.aisp"
+  render_claim_record othergoal agent-x "$T_LIVE_TS" "$ttl" \
+    > "$claims/othergoal.agent-x.aisp"
+  got="$(py_helper claimants mygoal "$claims" "$T_AT")"
+  [ -z "$got" ] || { log "  D: other-goal claim leaked, got '$got'"; return 1; }
+
+  # E: two live holders → both reported, sorted by agent id.
+  render_claim_record mygoal agent-b "$T_LIVE_TS" "$ttl" > "$claims/mygoal.agent-b.aisp"
+  render_claim_record mygoal agent-a "$T_LIVE_TS" "$ttl" > "$claims/mygoal.agent-a.aisp"
+  got="$(py_helper claimants mygoal "$claims" "$T_AT" | cut -f1 | paste -sd ' ' -)"
+  [ "$got" = "agent-a agent-b" ] \
+    || { log "  E: expected sorted 'agent-a agent-b', got '$got'"; return 1; }
+}
+
 test_recovery_candidates() {
   # ADR-044: recovery-candidates is the exact inverse of prove-candidates —
   # it surfaces ONLY goals parked below τ_v, ordered least-buried first, with
@@ -6536,6 +6610,7 @@ run_self_tests() {
     test_affinity_ranking
     test_gap_ranking
     test_viability_skip
+    test_claimants
     test_recovery_candidates
     test_goal_override_bypasses_viability
     test_affinity_bump_math
@@ -6738,6 +6813,29 @@ select_prove_candidates() {
     printf '%s\n' "$cand"
   done < <(py_helper prove-candidates goals "$CLAIMS_WT/claims" library "$AGENT_ID" "" \
              ${GOAL_FILTER:+--force "$GOAL_FILTER"}) | fork_maybe_shard
+}
+
+# When an explicitly named --goal yields no work, the generic "no viable work"
+# line hides WHY. The most common reason is that the goal is already in flight:
+# one live claim (another agent — or this agent's own earlier/orphaned claim)
+# blocks everyone else (cap 1, ADR-017). Surface the live holder(s) and their
+# expiry so the operator sees "claimed", not "missing". Best-effort and
+# read-only: any failure (no claims worktree, py error) degrades to silence.
+report_named_goal_claims() {
+  local goal="$1" holder expiry rows self_note
+  [ -n "$goal" ] || return 0
+  rows="$(py_helper claimants "$goal" "$CLAIMS_WT/claims" "" 2>/dev/null)" || return 0
+  [ -n "$rows" ] || return 0
+  while IFS=$'\t' read -r holder expiry; do
+    [ -n "$holder" ] || continue
+    self_note=""
+    [ "$holder" = "$AGENT_ID" ] \
+      && self_note=" — this agent's own live claim (orphaned if no sibling is still proving it; clears at expiry)"
+    log "named goal $goal is held by a live claim: $holder (expires $expiry)$self_note"
+  done <<EOF
+$rows
+EOF
+  log "  → a live claim blocks other agents from also working it (cap 1, ADR-017); it frees up when that attempt finishes or the claim expires"
 }
 
 # Local smoke has no claims or coordination. Reuse the production prove ranking
@@ -7150,6 +7248,7 @@ main() {
     fi
     if [ -z "$goal" ]; then
       log "no viable or recoverable prove work this pass"
+      [ -n "$GOAL_FILTER" ] && report_named_goal_claims "$GOAL_FILTER"
       if [ "$PROVE" -eq 1 ] && [ "$UNSORRY_GOVERNOR_WAIT" -gt 0 ] && [ "$ONCE" -eq 0 ]; then
         log "waiting ${UNSORRY_GOVERNOR_WAIT}s for new prove work"
         sleep "$UNSORRY_GOVERNOR_WAIT"
