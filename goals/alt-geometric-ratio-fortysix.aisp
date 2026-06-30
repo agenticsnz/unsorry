@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜alt-geometric-ratio-fortysix
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/alt-geometric-ratio-fortysix.md
+  src≜packages/unsorry-archive-0096/backlog/alt-geometric-ratio-fortysix.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/alt-geometric-ratio-fortysix.lean
+  lean≜packages/unsorry-archive-0096/goals/alt-geometric-ratio-fortysix.lean
   sha≜b90dae1b1515ff3724ad686d34ffb969c69619be8c5fa6616560d5156ada8beb
   aff≜0
 }

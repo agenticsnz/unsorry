@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜alt-geometric-ratio-fiftynine
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/alt-geometric-ratio-fiftynine.md
+  src≜packages/unsorry-archive-0096/backlog/alt-geometric-ratio-fiftynine.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/alt-geometric-ratio-fiftynine.lean
+  lean≜packages/unsorry-archive-0096/goals/alt-geometric-ratio-fiftynine.lean
   sha≜da925fb1a7246e07cbf95752d4a0c8b76723cfa84fe637cc913a9bfe44623a7d
   aff≜0
 }

@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜alt-geometric-ratio-eight
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/alt-geometric-ratio-eight.md
+  src≜packages/unsorry-archive-0096/backlog/alt-geometric-ratio-eight.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/alt-geometric-ratio-eight.lean
+  lean≜packages/unsorry-archive-0096/goals/alt-geometric-ratio-eight.lean
   sha≜c9948e034d9e172aade1aeb608ad74ccf01650ced57ed3a74b4805ca697ab0e9
   aff≜0
 }

@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜alt-geometric-ratio-fortyone
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/alt-geometric-ratio-fortyone.md
+  src≜packages/unsorry-archive-0096/backlog/alt-geometric-ratio-fortyone.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/alt-geometric-ratio-fortyone.lean
+  lean≜packages/unsorry-archive-0096/goals/alt-geometric-ratio-fortyone.lean
   sha≜6f9d89aea3fca361c896cc6529dbefd3ed5d83487f743e60362b149b11261f3d
   aff≜0
 }
