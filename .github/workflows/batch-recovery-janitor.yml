@@ -1,5 +1,7 @@
-# Recover failed ADR-107 batch PRs (prove-batch(…)) so a batch never strands its
-# K−1 good proofs behind one bad one.
+# Recover stranded ADR-107 batch PRs (prove-batch(…)) so a batch never strands its
+# K−1 good proofs behind one bad one, AND a green-but-unarmed batch (its
+# creation-time --merge arm was lost) gets armed here — finalization-recovery skips
+# prove-batch( titles, so the green-batch arm is owned in this janitor.
 #
 # A batch combines K independent proofs into one Gate A run (D1b, #5683), so it is
 # all-or-nothing per PR. This janitor classifies each open batch PR's latest gate-a:
@@ -73,7 +75,7 @@ jobs:
           acted=0; cap=10
           # Process substitution (not a pipe) so the loop runs in THIS shell and the
           # counter/cap survive — same reason as finalization-recovery-janitor.
-          while read -r num sha; do
+          while read -r num sha armed; do
               [ "$acted" -ge "$cap" ] && break
               [ -z "$num" ] && continue
               # Latest gate-a run for this PR head; only act on a COMPLETED run.
@@ -81,6 +83,19 @@ jobs:
               read -r rid concl < <(gh api "repos/$REPO/actions/workflows/gate-a.yml/runs?head_sha=$sha" \
                     --jq '.workflow_runs | sort_by(.created_at) | last | select(.status=="completed") | "\(.id) \(.conclusion)"' 2>/dev/null) || true
               [ -z "${rid:-}" ] && continue
+              # A GREEN but UNARMED batch PR lost its creation-time --merge arm and
+              # would strand: finalization-recovery skips prove-batch( titles, so the
+              # green-batch arm is owned here. Arm with --merge (batch enrolment, to
+              # preserve per-proof commits); a PR already CLEAN rejects --auto, so fall
+              # through to a direct merge.
+              if [ "$armed" = unarmed ] && [ "$concl" = success ]; then
+                if [ -z "${APPLY}" ]; then echo "  would arm green batch #$num"; acted=$((acted+1)); continue; fi
+                if gh pr merge "$num" --repo "$REPO" --auto --merge 2>/dev/null; then
+                  echo "  armed green batch #$num"; acted=$((acted+1)); continue
+                elif gh pr merge "$num" --repo "$REPO" --merge 2>/dev/null; then
+                  echo "  merged green batch #$num (was already clean)"; acted=$((acted+1)); continue
+                fi
+              fi
               jobs=$(gh api "repos/$REPO/actions/runs/$rid/jobs?per_page=100" \
                     --jq '[.jobs[] | {name,conclusion}]' 2>/dev/null || echo '[]')
               action=$(printf '%s' "$jobs" | python3 -m tools.dispatch.batch recover --conclusion "${concl:-}")
@@ -120,7 +135,8 @@ jobs:
                   ;;
               esac
           done < <(gh pr list --repo "$REPO" --state open --limit 200 --search 'prove-batch in:title' \
-                     --json number,headRefOid --jq '.[] | "\(.number) \(.headRefOid)"')
+                     --json number,headRefOid,autoMergeRequest \
+                     --jq '.[] | "\(.number) \(.headRefOid) \(if .autoMergeRequest then "armed" else "unarmed" end)"')
           echo "batch recovery actions taken/dry: $acted (cap $cap)"
 
       - name: No REFRESH_TOKEN — report-only notice (#417)

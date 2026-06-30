@@ -1811,6 +1811,22 @@ open_pr_worktree() {
   git worktree add -q -B "$branch" "$prwt" origin/main
 }
 
+# Robustly enrol a freshly-created PR for autonomous merge (ADR-005). `gh pr merge
+# --auto` arms a not-yet-green PR so GitHub merges it once the gates pass — but it
+# is REJECTED ("in clean status") when the PR is ALREADY mergeable (gates passed in
+# the race before this ran), which silently left PRs un-armed and stranded. So fall
+# back to a direct merge, and on any other (transient) failure leave the PR for the
+# recovery janitors (ADR-105 / batch-recovery). ALWAYS returns 0 — a created PR is
+# never a hard dispatch failure just because its arm hiccupped. $2 is the merge
+# method: --squash (singleton) | --merge (batch).
+arm_or_merge_pr() {
+  local ref="$1" method="${2:---squash}"
+  gh pr merge "$ref" --auto "$method" 2>/dev/null && return 0
+  gh pr merge "$ref" "$method" 2>/dev/null && return 0
+  log "arm: could not enrol $ref now ($method) — left for the recovery janitor"
+  return 0
+}
+
 # Gate-B-validate the tree, commit the given paths (title doubles as the
 # commit message), push, open an auto-merge PR, clean up the worktree.
 submit_pr_tree() {
@@ -1853,7 +1869,7 @@ submit_pr_tree() {
     (
       cd "$prwt" || exit 1
       gh pr create --base main --head "$branch" --title "$title" --body "$body" \
-        && gh pr merge --auto --squash "$branch"
+        && arm_or_merge_pr "$branch" --squash
     ) || return 1
   fi
   git worktree remove --force "$prwt" >/dev/null 2>&1 || true
@@ -1943,7 +1959,7 @@ dispatch_queued_proof_branch() {
   fi
   (
     gh pr create --base main --head "$branch" --title "$title" --body "$body" \
-      && gh pr merge --auto --squash "$branch"
+      && arm_or_merge_pr "$branch" --squash
   ) || return 1
   log "dispatched queued proof branch $branch"
   return 0
@@ -2234,7 +2250,7 @@ assemble_and_dispatch_batch() {
   (
     cd "$wt" || exit 1
     gh pr create --base main --head "$branch" --title "$title" --body "$body" \
-      && gh pr merge --auto --merge "$branch"
+      && arm_or_merge_pr "$branch" --merge
   ) || rc=1
   _cleanup_batch_worktree "$wt" "$branch"
   [ "$rc" -eq 0 ] && log "dispatched batch $branch with $n proofs"
@@ -6286,6 +6302,28 @@ test_dispatch_open_batch_goals_parses_manifests() {
     || { log "  expected 'ga gb' from the batch manifest only, got '$out'"; return 1; }
 }
 
+test_arm_or_merge_pr_arms() {
+  # --auto succeeds on a not-yet-green PR → armed.
+  gh() { case " $* " in *" --auto "*) return 0 ;; *) return 1 ;; esac; }
+  arm_or_merge_pr somebranch --squash || { unset -f gh; log "  expected arm via --auto"; return 1; }
+  unset -f gh
+}
+
+test_arm_or_merge_pr_direct_merge_fallback() {
+  # --auto rejected (PR already clean) → direct merge succeeds (the strand fix).
+  gh() { case " $* " in *" --auto "*) return 1 ;; *) return 0 ;; esac; }
+  arm_or_merge_pr somebranch --merge || { unset -f gh; log "  expected direct-merge fallback"; return 1; }
+  unset -f gh
+}
+
+test_arm_or_merge_pr_nonfatal_on_transient() {
+  # Neither works (transient API error) → non-fatal (returns 0; the recovery
+  # janitor catches it). A created PR is never a hard dispatch failure.
+  gh() { return 1; }
+  if arm_or_merge_pr somebranch --squash; then unset -f gh; else
+    unset -f gh; log "  expected non-fatal return 0 on transient failure"; return 1; fi
+}
+
 test_dispatch_batch_loop_multiple() {
   # A1 (ADR-113): the batch loop keeps opening batches until one stops, so a
   # homogeneous flood drains via batches rather than crowding the gate with
@@ -6520,6 +6558,9 @@ run_self_tests() {
     test_dispatch_solver_fairness
     test_fair_dispatch_order_survives_early_reader_close
     test_dispatch_open_batch_goals_parses_manifests
+    test_arm_or_merge_pr_arms
+    test_arm_or_merge_pr_direct_merge_fallback
+    test_arm_or_merge_pr_nonfatal_on_transient
     test_dispatch_batch_loop_multiple
     test_dispatch_batch_loop_caps
     test_dispatch_batch_loop_disabled_at_size_one
