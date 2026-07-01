@@ -26,6 +26,9 @@
 # (ADR-059, #983). Either way supervise.sh backs off and reschedules.
 #
 # shellcheck disable=SC2317,SC2329  # test_* functions are invoked indirectly ("$t")
+# shellcheck disable=SC2030,SC2031  # HANDLED/SWEPT/RECOMPOSE_RETRIES are shared
+# across functions by bash dynamic scope and exercised through subshell-isolated
+# self-tests; SC2030/SC2031 cannot model either and only false-positive here.
 set -euo pipefail
 
 # ----------------------------------------------------------------- constants
@@ -162,6 +165,14 @@ Environment:
                     normal prove pipeline (retry with accumulated lessons,
                     ADR-024; decompose on failure, ADR-009) instead of going
                     idle (default: 1; set 0 to disable)
+  UNSORRY_RECOMPOSE_RETRIES
+                    ADR-009 recompose self-retry: per-goal, per-session retries
+                    for a recompose-candidate (a decomposed parent whose subs are
+                    all proved) this session already tried. Without it a
+                    long-running --prove --goal <parent> idles at "no work" after
+                    one failed assembly; with it the loop retries (escalating
+                    effort via the ADR-015 ladder) up to this many times before
+                    giving up (default: 2; set 0 to disable)
   UNSORRY_FETCH_RETRIES
                     Attempts for a `git fetch` on the shared object store before
                     it is called an infrastructure failure (ADR-059, #983;
@@ -3217,6 +3228,29 @@ prove_local_verify() {
     && python3 -m tools.gate_a.check_library_options library ) >/dev/null 2>&1
 }
 
+# ADR-009 recompose hardening. Print a prompt block iff <goal> is a recompose-
+# candidate (a decomposed parent whose sub-lemmas — surfaced separately as PROVED
+# DEPENDENCIES — are ALL proved), else nothing. A failed recompose on a trivial
+# glue is the observed stuck-goal cause (#388); this steers the model to ASSEMBLE
+# the proved sub-lemmas instead of re-proving from scratch. Run from the proof
+# worktree root so `decompositions`/`library` resolve. Extracted from run_proof
+# so --self-test can exercise it hermetically.
+recompose_prompt_block() {
+  local goal="$1"
+  py_helper recompose-candidate "$goal" decompositions library || return 0
+  printf '%s' "
+
+RECOMPOSITION (ADR-009) — this goal was DECOMPOSED and every sub-lemma listed
+under PROVED DEPENDENCIES is already kernel-verified. They are intended to be
+SUFFICIENT to prove this goal: ASSEMBLE them, do not re-prove from scratch. The
+usual shape is short — introduce the hypotheses, instantiate each sub-lemma at
+the matching term, reconcile purely syntactic differences with \`ring\`/
+\`ring_nf\` (e.g. rewrite \`a ^ 2 * b ^ 2\` as \`(a * b) ^ 2\` so a lemma about
+\`(a*b)\` applies), then close with \`exact\`/\`linarith\`/\`nlinarith\`. If your
+proof is long or ignores the lemmas above, you are almost certainly on the wrong
+track — step back and combine them."
+}
+
 # Prove steps 5–6: drive `claude` to write library/Unsorry/<camel>.lean proving
 # the goal's theorem, then locally verify. Up to UNSORRY_ATTEMPTS attempts
 # (default 3 in prove mode — one per ADR-015 effort rung, high→xhigh→max): on
@@ -3288,6 +3322,11 @@ THIS repository's library. Import their modules and use them; do not re-prove
 them. The import-tightness rule explicitly allows these Unsorry.* imports:
 $(printf '%s\n' "$deps_lines" | awk -F'\t' '{printf "- import %s\n    %s\n", $1, ($3 != "" ? $3 : "theorem " $2)}')"
   fi
+  # ADR-009 recompose hardening: when THIS goal is a fully-proved-subtree parent,
+  # steer the model to ASSEMBLE the sub-lemmas surfaced above rather than re-prove
+  # from scratch (the observed stuck-goal cause, #388). Empty for a normal prove.
+  local recompose_prompt=""
+  [ -n "$deps_lines" ] && recompose_prompt="$(recompose_prompt_block "$goal")"
   # ADR-024 lesson reuse: surface prior failed/decomposed attempt signatures for
   # THIS goal (merged onto origin/main, so cross-cycle and cross-agent) and count
   # them for the run record. Gated by UNSORRY_LESSONS so the off-state matches
@@ -3318,7 +3357,7 @@ $stmt
 
 Target module file (relative to repo root): $target
 Lean module name (for the audit): Unsorry.$camel
-Theorem name to re-state and prove: $name$deps_prompt$lessons_prompt"
+Theorem name to re-state and prove: $name$deps_prompt$recompose_prompt$lessons_prompt"
     if [ -n "$err" ]; then
       prompt="$prompt
 
@@ -5814,6 +5853,73 @@ test_recompose_fail_floors_at_viability() {
   [ "$laff" = "-10" ] || { log "  ordinary leaf demote should be -10, got $laff"; return 1; }
 }
 
+# Build a tree with a recompose-candidate `parent` (its one sub proved) and a
+# non-decomposed `leaf`, then cd in. Echoes nothing; returns 0 on success.
+_make_recompose_fixture() {  # $1 = tree
+  local tree="$1" sha1
+  mkdir -p "$tree/goals" "$tree/decompositions" "$tree/library/index" "$tree/backlog" || return 1
+  make_prove_goal "$tree" parent "theorem p (a b : Nat) : a + b = b + a" || return 1
+  make_prove_goal "$tree" parent-s1 "theorem s1 (n : Nat) : n + 0 = n" || return 1
+  make_prove_goal "$tree" leaf "theorem l (n : Nat) : n = n" || return 1
+  py_helper render-decomp parent agent-x \
+    parent-s1 "$(py_helper lean-sha "$tree/goals/parent-s1.lean")" \
+    > "$tree/decompositions/parent.agent-x.aisp" || return 1
+  sha1="$(py_helper lean-sha "$tree/goals/parent-s1.lean")" || return 1
+  py_helper render-index "$sha1" parent-s1 s1 > "$tree/library/index/$sha1.aisp" || return 1
+}
+
+test_recompose_prompt_hint() {
+  # ADR-009 hardening: recompose_prompt_block emits the RECOMPOSITION steer for a
+  # recompose-candidate (all subs proved) and nothing for an ordinary goal.
+  local tree
+  tree="$(mktemp -d "$SESSION_TMP/recompose-hint.XXXXXX")" || return 1
+  _make_recompose_fixture "$tree" || return 1
+  # py_helper imports tools.gate_b; keep the repo root importable after cd into
+  # the fixture (production runs from the worktree root, which has tools/).
+  ( export PYTHONPATH="$PWD${PYTHONPATH:+:$PYTHONPATH}"; cd "$tree" || exit 1
+    recompose_prompt_block parent | grep -q 'RECOMPOSITION (ADR-009)' \
+      || { log "  recompose-candidate must get the assembly steer"; exit 1; }
+    [ -z "$(recompose_prompt_block leaf)" ] \
+      || { log "  a non-decomposed goal must get no recompose steer"; exit 1; }
+  ) || return 1
+}
+
+test_recompose_self_retry_rearm() {
+  # ADR-009 self-retry: rearm_recompose_candidate re-arms a HANDLED recompose-
+  # candidate (clears it from HANDLED) up to UNSORRY_RECOMPOSE_RETRIES times, never
+  # touches a non-candidate, and is a no-op when disabled.
+  local tree
+  tree="$(mktemp -d "$SESSION_TMP/recompose-rearm.XXXXXX")" || return 1
+  _make_recompose_fixture "$tree" || return 1
+  ( export PYTHONPATH="$PWD${PYTHONPATH:+:$PYTHONPATH}"; cd "$tree" || exit 1
+    PROVE=1; GOAL_FILTER=""
+    open_prove_pr_exists() { return 1; }        # nothing in flight
+    queued_prove_branch_exists() { return 1; }
+    declare -A HANDLED=([parent]=1 [leaf]=1)
+    declare -A RECOMPOSE_RETRIES=()
+
+    UNSORRY_RECOMPOSE_RETRIES=2
+    rearm_recompose_candidate || { log "  expected a re-arm on the recompose-candidate"; exit 1; }
+    [ -z "${HANDLED[parent]:-}" ] || { log "  parent should be cleared from HANDLED"; exit 1; }
+    [ -n "${HANDLED[leaf]:-}" ]   || { log "  leaf (not a recompose-candidate) must stay HANDLED"; exit 1; }
+    [ "${RECOMPOSE_RETRIES[parent]:-}" = 1 ] || { log "  retry count should be 1"; exit 1; }
+
+    HANDLED[parent]=1  # simulate the retry failing again
+    rearm_recompose_candidate || { log "  expected a 2nd re-arm"; exit 1; }
+    [ "${RECOMPOSE_RETRIES[parent]:-}" = 2 ] || { log "  retry count should be 2"; exit 1; }
+
+    HANDLED[parent]=1  # budget now exhausted (2/2)
+    rearm_recompose_candidate && { log "  exhausted budget must NOT re-arm"; exit 1; }
+    [ -n "${HANDLED[parent]:-}" ] || { log "  exhausted parent must remain HANDLED"; exit 1; }
+
+    UNSORRY_RECOMPOSE_RETRIES=0  # disabled → never re-arms, even fresh
+    declare -A RECOMPOSE_RETRIES=()
+    HANDLED[parent]=1
+    rearm_recompose_candidate && { log "  retries=0 must disable re-arm"; exit 1; }
+    exit 0
+  ) || return 1
+}
+
 test_proved_deps_surfacing() {
   # ADR-014: a goal's proved deps (declared + own-decomposition subs) surface
   # as importable modules; unproved deps stay silent (gap routing owns those).
@@ -6678,6 +6784,8 @@ run_self_tests() {
     test_has_decomposition
     test_unblockable_detection
     test_recompose_fail_floors_at_viability
+    test_recompose_prompt_hint
+    test_recompose_self_retry_rearm
     test_proved_deps_surfacing
     test_lesson_signature
     test_prove_lessons_surfacing
@@ -6980,6 +7088,39 @@ select_recovery_candidates() {
   done < <(py_helper recovery-candidates goals "$CLAIMS_WT/claims" library "$AGENT_ID") | fork_maybe_shard
 }
 
+# ADR-009 recompose self-retry. A decomposed parent whose sub-lemmas are all
+# proved stays VIABLE at τ_v so it can be retried (its failed assembly floored,
+# not buried — #388). But once this session has tried it, HANDLED removes it from
+# every pool, so a long-running `--prove --goal <parent>` process idles forever
+# at "no viable or recoverable prove work" instead of retrying — the assembly
+# never lands without a manual restart. When the pools are otherwise dry, re-arm
+# ONE such goal (clear it from HANDLED) so the next pass retries it, bounded by
+# UNSORRY_RECOMPOSE_RETRIES per goal so a genuinely stuck recompose still stops.
+# Reads/writes main's HANDLED + RECOMPOSE_RETRIES via bash dynamic scope (as the
+# select_* helpers do). Returns 0 iff it re-armed one (caller should `continue`).
+rearm_recompose_candidate() {
+  [ "$PROVE" -eq 1 ] || return 1
+  [ "${UNSORRY_RECOMPOSE_RETRIES:-2}" -gt 0 ] 2>/dev/null || return 1
+  local g spent
+  for g in "${!HANDLED[@]}"; do
+    goal_in_scope "$g" || continue
+    spent="${RECOMPOSE_RETRIES[$g]:-0}"
+    [ "$spent" -lt "$UNSORRY_RECOMPOSE_RETRIES" ] || continue
+    # Only a genuine recompose-candidate — a decomposed parent whose subs are ALL
+    # proved (py_helper ignores status; the parent is `open` by recompose time).
+    py_helper recompose-candidate "$g" decompositions library || continue
+    # Don't retry if a prior attempt already produced a PR / queued branch — that
+    # work is in flight and claim_from_pool would skip it anyway.
+    open_prove_pr_exists "$g" && continue
+    queued_prove_branch_exists "$g" && continue
+    RECOMPOSE_RETRIES[$g]=$((spent + 1))
+    unset 'HANDLED[$g]'
+    log "re-arming recompose-candidate $g for retry ${RECOMPOSE_RETRIES[$g]}/$UNSORRY_RECOMPOSE_RETRIES — assembly of a proved subtree, stays viable at τ_v (ADR-009)"
+    return 0
+  done
+  return 1
+}
+
 # Walk a newline-separated candidate list (highest priority first), skipping
 # prove goals whose work is already in flight (an open prove PR — ADR-017), and
 # claim the first that is free. Sets CLAIMED_GOAL to that goal, or "" if the
@@ -7215,6 +7356,13 @@ main() {
   UNSORRY_MAX_GATE_A_IN_FLIGHT="${UNSORRY_MAX_GATE_A_IN_FLIGHT:-8}"
   UNSORRY_GOVERNOR_SCAN_LIMIT="${UNSORRY_GOVERNOR_SCAN_LIMIT:-200}"
   UNSORRY_GOVERNOR_WAIT="${UNSORRY_GOVERNOR_WAIT:-300}"
+  # ADR-009 recompose self-retry: per-goal, per-session retries for a floored
+  # recompose-candidate (a decomposed parent whose sub-lemmas are all proved but
+  # whose assembly failed). The unblock→recompose intent is that such a goal
+  # stays viable and is retried; within one long-running --goal process HANDLED
+  # would otherwise block that retry and the loop idles forever. 0 disables
+  # (pre-ADR-009-self-retry behaviour: a single try per session).
+  UNSORRY_RECOMPOSE_RETRIES="${UNSORRY_RECOMPOSE_RETRIES:-2}"
   case "$UNSORRY_SUBMISSION_GOVERNOR" in
     0|1) ;;
     *) die_config "UNSORRY_SUBMISSION_GOVERNOR '$UNSORRY_SUBMISSION_GOVERNOR' must be 0 or 1" ;;
@@ -7227,6 +7375,7 @@ main() {
   validate_integer_knob UNSORRY_MAX_GATE_A_IN_FLIGHT "$UNSORRY_MAX_GATE_A_IN_FLIGHT" 1
   validate_integer_knob UNSORRY_GOVERNOR_SCAN_LIMIT "$UNSORRY_GOVERNOR_SCAN_LIMIT"
   validate_integer_knob UNSORRY_GOVERNOR_WAIT "$UNSORRY_GOVERNOR_WAIT"
+  validate_integer_knob UNSORRY_RECOMPOSE_RETRIES "$UNSORRY_RECOMPOSE_RETRIES"
 
   resolve_agent_id
   if [ "$DRY_RUN" -eq 0 ]; then
@@ -7264,6 +7413,7 @@ main() {
 
   declare -A HANDLED=()
   declare -A SWEPT=()
+  declare -A RECOMPOSE_RETRIES=()   # ADR-009 self-retry: goal → retries spent this session
   local overall=0 translations_dir candidates goal cand stmt cycle_failed prc rc
 
   while :; do
@@ -7340,6 +7490,13 @@ main() {
         && log "recovery: re-surfaced parked goal $goal (below τ_v) for a lessons-armed retry (ADR-044)"
     fi
     if [ -z "$goal" ]; then
+      # ADR-009: before idling, re-arm a recompose-candidate this session already
+      # tried (bounded by UNSORRY_RECOMPOSE_RETRIES) so the assembly is retried
+      # instead of the loop parking on it forever. --once takes a single shot, so
+      # skip the re-arm there (it would never run the retry pass anyway).
+      if [ "$ONCE" -eq 0 ] && rearm_recompose_candidate; then
+        continue
+      fi
       log "no viable or recoverable prove work this pass"
       [ -n "$GOAL_FILTER" ] && report_named_goal_claims "$GOAL_FILTER"
       if [ "$PROVE" -eq 1 ] && [ "$UNSORRY_GOVERNOR_WAIT" -gt 0 ] && [ "$ONCE" -eq 0 ]; then
