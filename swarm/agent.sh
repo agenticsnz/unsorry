@@ -3150,7 +3150,14 @@ PYEXTRACT
 # prove-attempt-*.log lives in the worktree too, but .gitignore keeps it out of
 # this status output rather than having it deleted here.)
 prove_target_only_changed() {
-  local root="$1" target="$2" line code path
+  local root="$1" target="$2" line code path verify_prefix="" stray
+  # ADR-099/ADR-116: a benchmark goal proves INSIDE its suite's `_verify` build dir
+  # (target = targets/<suite>/_verify/library/Unsorry/<X>.lean), so the provider's
+  # scratch files (e.g. an axiom-check helper) land under `_verify/`, not at the repo
+  # root. Tolerate untracked strays there too — otherwise a benchmark prove spuriously
+  # fails on the model's scratch file and decompose-on-failure needlessly splits a
+  # trivial lemma. Derived from the target, so organic (repo-pin) goals are unchanged.
+  case "$target" in *"/_verify/"*) verify_prefix="${target%%/_verify/*}/_verify/" ;; esac
   while IFS= read -r line; do
     [ -n "$line" ] || continue
     code="${line:0:2}"
@@ -3159,8 +3166,19 @@ prove_target_only_changed() {
       *" -> "*) path="${path##* -> }" ;;
     esac
     [ "$path" = "$target" ] && continue
-    if [ "$code" = "??" ] && [ "$path" = "${path##*/}" ]; then
-      log "removed stray root-level provider file '$path' (only '$target' is the proof target)"
+    # An UNTRACKED provider scratch file is tolerable at the repo root (repo flow) or
+    # under the suite `_verify` build dir (benchmark flow); an untracked file in any
+    # package / spec / tooling tree, or any tracked-file edit, stays a hard violation.
+    stray=0
+    if [ "$code" = "??" ]; then
+      if [ "$path" = "${path##*/}" ]; then
+        stray=1
+      elif [ -n "$verify_prefix" ]; then
+        case "$path" in "$verify_prefix"*) stray=1 ;; esac
+      fi
+    fi
+    if [ "$stray" = 1 ]; then
+      log "removed stray provider scratch file '$path' (only '$target' is the proof target)"
       rm -f -- "$root/$path"
       continue
     fi
@@ -4744,6 +4762,25 @@ test_prove_target_path_guard() {
   printf 'tampered\n' > "$tmp/goals/g.lean"
   if prove_target_only_changed "$tmp" "$target" >/dev/null 2>&1; then
     log "  tracked-file modification was accepted"
+    return 1
+  fi
+  git -C "$tmp" checkout -q -- goals/g.lean || return 1
+  rm -f "$tmp/$target"  # drop the repo-target fixture before the suite-target section
+  # ADR-099/ADR-116 benchmark flow: with a suite `_verify` target, a scratch file the
+  # provider drops UNDER that _verify dir (e.g. an axiom-check helper) is removed and
+  # tolerated — not a spurious failure — while a stray OUTSIDE _verify stays rejected.
+  local starget="targets/minif2f-v1/_verify/library/Unsorry/Goal.lean"
+  mkdir -p "$tmp/targets/minif2f-v1/_verify/library/Unsorry" || return 1
+  printf 'theorem goal : True := by trivial\n' > "$tmp/$starget"
+  printf '#print axioms goal\n' > "$tmp/targets/minif2f-v1/_verify/axcheck.lean"
+  prove_target_only_changed "$tmp" "$starget" \
+    || { log "  benchmark _verify stray was rejected"; return 1; }
+  [ -e "$tmp/targets/minif2f-v1/_verify/axcheck.lean" ] \
+    && { log "  benchmark _verify stray was not cleaned up"; return 1; }
+  mkdir -p "$tmp/targets/other" || return 1
+  printf 'nope\n' > "$tmp/targets/other/scratch.lean"
+  if prove_target_only_changed "$tmp" "$starget" >/dev/null 2>&1; then
+    log "  stray outside the suite _verify dir was accepted"
     return 1
   fi
 }
