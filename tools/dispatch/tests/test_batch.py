@@ -165,6 +165,35 @@ def test_recover_action_timed_out_genuine_redispatches():
     assert recover_action("timed_out", []) == "redispatch"
 
 
+def test_recover_action_infra_flake_within_budget_reruns():
+    # A full-volume ENOSPC on a replay shard is a transient infra flake, not a bad
+    # proof: rerun the batch (don't split) while attempts remain.
+    jobs = [{"name": "gate-a-replay (0)", "conclusion": "failure"}, {"name": "gate-a", "conclusion": "failure"}]
+    assert recover_action("failure", jobs, infra_flake=True, attempt=1, max_attempts=3) == "rerun"
+    assert recover_action("failure", jobs, infra_flake=True, attempt=2, max_attempts=3) == "rerun"
+
+
+def test_recover_action_infra_flake_past_budget_redispatches():
+    # Past the attempt cap the volume is evidently persistently full — stop
+    # rerunning and isolate the constituents so they aren't stranded.
+    jobs = [{"name": "gate-a-replay (0)", "conclusion": "failure"}, {"name": "gate-a", "conclusion": "failure"}]
+    assert recover_action("failure", jobs, infra_flake=True, attempt=3, max_attempts=3) == "redispatch"
+
+
+def test_recover_action_default_unchanged_without_infra_flake():
+    # Default (infra_flake=False) is byte-for-byte the prior behaviour.
+    jobs = [{"name": "gate-a-replay (2)", "conclusion": "failure"}, {"name": "gate-a", "conclusion": "failure"}]
+    assert recover_action("failure", jobs) == "redispatch"
+    assert recover_action("cancelled", jobs) == "rerun"
+
+
+def test_cli_recover_infra_flake(monkeypatch, capsys):
+    monkeypatch.setattr("sys.stdin", io.StringIO(
+        '[{"name":"gate-a-replay (0)","conclusion":"failure"},{"name":"gate-a","conclusion":"failure"}]'))
+    assert main(["recover", "--conclusion", "failure", "--attempt", "1", "--infra-flake"]) == 0
+    assert capsys.readouterr().out.strip() == "rerun"
+
+
 # --- CLI (main) contract ----------------------------------------------------
 
 def test_cli_parse_manifest(monkeypatch, capsys):
