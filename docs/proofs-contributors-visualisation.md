@@ -6,7 +6,7 @@ A visualiser for the swarm's proof graph (issue #371): every prove-goal, its sta
 
 > An **interactive** version — pan/zoom, click-to-detail panel, filterable table — is generated alongside this file at [`docs/proofs-contributors-visualisation.html`](proofs-contributors-visualisation.html) (open it locally or via GitHub Pages; the browser renders it, GitHub shows the source).
 
-**5023 goals — 228 open · 16 blocked · 9 translated · 1109 proved · 3661 archived.** 19 decomposition families shown below; standalone goals (no lineage) are folded into one summary cluster per status — the interactive page expands a cluster into its goals on click, and every goal is listed individually in the table.
+**5025 goals — 229 open · 17 blocked · 9 translated · 1109 proved · 3661 archived.** 20 decomposition families shown below; standalone goals (no lineage) are folded into one summary cluster per status — the interactive page expands a cluster into its goals on click, and every goal is listed individually in the table.
 
 Solving agent, PR and the GitHub user who merged it are resolved from the `prove(…)` merge commits (1105 of 1109 proved goals carry a per-goal prove-PR; the rest predate that convention and are left blank). The **solver** shows the recorded AISP login only — never guessed (ADR-023), so a goal with no recorded solver shows “—”; **merged by** is the GitHub user who landed the PR (who merged it, not who solved it), shown in its own column so the two are never conflated. The model comes from recorded provenance only.
 
@@ -26,8 +26,14 @@ flowchart LR
   class g_aime_1983_p9 open;
   click g_aime_1983_p9 "https://github.com/agenticsnz/unsorry/blob/main/goals/aime-1983-p9.lean" "aime-1983-p9 — open"
   g_aime_1983_p9_s1["aime-1983-p9-s1"]
-  class g_aime_1983_p9_s1 open;
-  click g_aime_1983_p9_s1 "https://github.com/agenticsnz/unsorry/blob/main/goals/aime-1983-p9-s1.lean" "aime-1983-p9-s1 — open"
+  class g_aime_1983_p9_s1 blocked;
+  click g_aime_1983_p9_s1 "https://github.com/agenticsnz/unsorry/blob/main/goals/aime-1983-p9-s1.lean" "aime-1983-p9-s1 — blocked"
+  g_aime_1983_p9_s1_s1["aime-1983-p9-s1-s1"]
+  class g_aime_1983_p9_s1_s1 open;
+  click g_aime_1983_p9_s1_s1 "https://github.com/agenticsnz/unsorry/blob/main/goals/aime-1983-p9-s1-s1.lean" "aime-1983-p9-s1-s1 — open"
+  g_aime_1983_p9_s1_s2["aime-1983-p9-s1-s2"]
+  class g_aime_1983_p9_s1_s2 open;
+  click g_aime_1983_p9_s1_s2 "https://github.com/agenticsnz/unsorry/blob/main/goals/aime-1983-p9-s1-s2.lean" "aime-1983-p9-s1-s2 — open"
   g_aime_1983_p9_s2["aime-1983-p9-s2"]
   class g_aime_1983_p9_s2 open;
   click g_aime_1983_p9_s2 "https://github.com/agenticsnz/unsorry/blob/main/goals/aime-1983-p9-s2.lean" "aime-1983-p9-s2 — open"
@@ -256,6 +262,8 @@ flowchart LR
   g_aime_1983_p9 --> g_aime_1983_p9_s1
   g_aime_1983_p9 --> g_aime_1983_p9_s2
   g_aime_1983_p9 --> g_aime_1983_p9_s3
+  g_aime_1983_p9_s1 --> g_aime_1983_p9_s1_s1
+  g_aime_1983_p9_s1 --> g_aime_1983_p9_s1_s2
   g_nat_sq_lt_two_pow --> g_nat_sq_lt_two_pow_s1
   g_nat_sq_lt_two_pow --> g_nat_sq_lt_two_pow_s2
   g_nat_sq_lt_two_pow_s2 --> g_nat_sq_lt_two_pow_s2_s1
@@ -335,7 +343,8 @@ Legend: proved #c6f6d5 · open #e2e8f0 · blocked #feebc8 · flagged #fed7d7 · 
 | Goal | Status | Difficulty | Agent | Solver / model | Merged by | PR | Proved |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | [`aime-1983-p9`](https://github.com/agenticsnz/unsorry/blob/main/goals/aime-1983-p9.lean) | open | 4 | — | — | — | — | — |
-| [`aime-1983-p9-s1`](https://github.com/agenticsnz/unsorry/blob/main/goals/aime-1983-p9-s1.lean) | open | 1 | afnz-zbook-b336 | — | Chris Barlow | [#7107](https://github.com/agenticsnz/unsorry/pull/7107) | 2026-06-30 |
+| [`aime-1983-p9-s1-s1`](https://github.com/agenticsnz/unsorry/blob/main/goals/aime-1983-p9-s1-s1.lean) | open | 1 | — | — | — | — | — |
+| [`aime-1983-p9-s1-s2`](https://github.com/agenticsnz/unsorry/blob/main/goals/aime-1983-p9-s1-s2.lean) | open | 1 | — | — | — | — | — |
 | [`aime-1983-p9-s2`](https://github.com/agenticsnz/unsorry/blob/main/goals/aime-1983-p9-s2.lean) | open | 1 | afnz-zbook-b336 | — | Chris Barlow | [#7111](https://github.com/agenticsnz/unsorry/pull/7111) | 2026-06-30 |
 | [`aime-1983-p9-s3`](https://github.com/agenticsnz/unsorry/blob/main/goals/aime-1983-p9-s3.lean) | open | 1 | afnz-zbook-b336 | — | Chris Barlow | [#7112](https://github.com/agenticsnz/unsorry/pull/7112) | 2026-06-30 |
 | [`aime-1984-p15`](https://github.com/agenticsnz/unsorry/blob/main/goals/aime-1984-p15.lean) | open | 4 | — | — | — | — | — |
@@ -562,6 +571,7 @@ Legend: proved #c6f6d5 · open #e2e8f0 · blocked #feebc8 · flagged #fed7d7 · 
 | [`putnam-1970-a4`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1970-a4.lean) | open | 4 | — | — | — | — | — |
 | [`putnam-1970-b1`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1970-b1.lean) | open | 4 | — | — | — | — | — |
 | [`sq-add-sq-eq-three-mul-sq-s4-s3-s2`](https://github.com/agenticsnz/unsorry/blob/main/goals/sq-add-sq-eq-three-mul-sq-s4-s3-s2.lean) | open | 1 | — | — | — | — | — |
+| [`aime-1983-p9-s1`](https://github.com/agenticsnz/unsorry/blob/main/goals/aime-1983-p9-s1.lean) | blocked | 1 | afnz-zbook-b336 | — | Chris Barlow | [#7107](https://github.com/agenticsnz/unsorry/pull/7107) | 2026-06-30 |
 | [`putnam-1962-a1`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1962-a1.lean) | blocked | 4 | — | — | — | — | — |
 | [`putnam-1962-a1-s2`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1962-a1-s2.lean) | blocked | 1 | — | — | — | — | — |
 | [`putnam-1962-b5`](https://github.com/agenticsnz/unsorry/blob/main/goals/putnam-1962-b5.lean) | blocked | 4 | — | — | — | — | — |
