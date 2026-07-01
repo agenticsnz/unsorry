@@ -3,8 +3,10 @@
 `./swarm/run.sh --goal <slug>` must prove a benchmark goal **in the right context** —
 the suite's own ``(toolchain, mathlib rev)`` — not the repo-wide pin. This module is the
 slug→suite→pin resolver the swarm consults: given a goal id, it returns the suite that
-owns it (the ``top`` sentinel or any obligation) and that suite's verifier context
-(toolchain, concrete mathlib rev, the ``_verify`` lake project, and its lake lib target).
+owns it — the ``top`` sentinel, any obligation, **or a decomposition-descendant of either**
+(ADR-116, so a benchmark obligation's sub-lemmas inherit its pin) — and that suite's
+verifier context (toolchain, concrete mathlib rev, the ``_verify`` lake project, and its
+lake lib target).
 
 A slug that belongs to no registered suite resolves to ``None`` — the swarm keeps the
 repo-pin path unchanged for organic goals. Pure + deterministic; reuses
@@ -29,19 +31,68 @@ from tools.intake.verifier_context import _camel, verifier_dir
 from tools.leaderboard.registered_targets import suite_dirs
 
 
+def _decomp_parent_map(root: Path) -> dict[str, str]:
+    """Sub-goal id → parent-goal id, across every ``decompositions/*.aisp`` under ``root``.
+
+    Built from the same decomposition records ``tools.gate_b`` parses (ADR-009): the
+    ``⟦Ω:Decomp⟧`` ``parent`` field and the content-addressed ids of the ``⟦Σ:Subs⟧``
+    block (``SUB_RE``). This is the inheritance edge that lets a benchmark obligation's
+    decomposition sub-lemmas resolve to the obligation's suite context (ADR-116). First
+    record wins for a given child (``setdefault``); decompose is append-only per ADR-009."""
+    parent_of: dict[str, str] = {}
+    directory = root / "decompositions"
+    if not directory.is_dir():
+        return parent_of
+    for path in sorted(directory.glob("*.aisp")):
+        record = parse_record(path.read_text("utf-8"))
+        parent = record.fields.get("parent", "")
+        subs = record.block("Σ")
+        if not parent or subs is None:
+            continue
+        for m in SUB_RE.finditer(subs.body):
+            parent_of.setdefault(m.group("id"), parent)
+    return parent_of
+
+
+def _lineage(parent_of: dict[str, str], goal: str) -> list[str]:
+    """``goal`` and its decomposition ancestors, nearest first.
+
+    Walks the sub→parent chain (ADR-009 keeps it a DAG within the depth cap). A ``seen``
+    set makes termination unconditional even on malformed cyclic data, and the walk is
+    additionally bounded by the number of edges — no acyclic chain can be longer."""
+    chain = [goal]
+    seen = {goal}
+    cursor = goal
+    while cursor in parent_of and len(chain) <= len(parent_of):
+        parent = parent_of[cursor]
+        if parent in seen:  # defensive: never loop, even if the graph is malformed
+            break
+        seen.add(parent)
+        chain.append(parent)
+        cursor = parent
+    return chain
+
+
 def goal_suite_context(root: Path, goal: str) -> dict | None:
     """The verifier context of the registered suite that owns ``goal``, or None.
+
+    A goal is owned by suite *S* if it is *S*'s ``top`` sentinel, one of *S*'s
+    ``skeleton.aisp`` ``⟦Σ⟧`` obligations, **or a decomposition-descendant of either**
+    (ADR-116): a sub-lemma minted by decompose-on-failure inherits its benchmark parent's
+    suite pin, so it proves and stages at the same toolchain+mathlib as the parent.
+    Descendants of no obligation still resolve to None (the organic repo-pin path).
 
     Returns ``{suite, toolchain, mathlib, verify_dir, build_target}`` where ``verify_dir``
     is repo-relative (POSIX) and ``build_target`` is the suite's lake lib name (matching
     the lakefile ``tools.intake.verifier_context`` scaffolds)."""
     root = Path(root)
+    lineage = _lineage(_decomp_parent_map(root), goal)
     for suite in suite_dirs(root):
         skeleton = parse_record((suite / "skeleton.aisp").read_text("utf-8"))
         top = skeleton.fields.get("top", "")
         block = skeleton.block("Σ")
         obligations = {m.group("id") for m in SUB_RE.finditer(block.body)} if block else set()
-        if goal != top and goal not in obligations:
+        if not any(g == top or g in obligations for g in lineage):
             continue
         suite_id = suite.name
         return {
