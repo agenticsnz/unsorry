@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜faulhaber-quartic-sum-coeff-seventyfive
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/faulhaber-quartic-sum-coeff-seventyfive.md
+  src≜packages/unsorry-archive-0105/backlog/faulhaber-quartic-sum-coeff-seventyfive.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/faulhaber-quartic-sum-coeff-seventyfive.lean
+  lean≜packages/unsorry-archive-0105/goals/faulhaber-quartic-sum-coeff-seventyfive.lean
   sha≜2f57f6db0babaad218d569a83ea7aad09fe0432a2e28b8051c9d4eb8062fe56c
   aff≜0
 }

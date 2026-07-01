@@ -1,0 +1,155 @@
+{
+  "block_id": "unsorry-archive-0105",
+  "target_size": 40,
+  "proof_count": 34,
+  "status": "frozen",
+  "source_commit": "c754a55a215797a84ad43bb5eaa4f4476c395d86",
+  "validation_commit": null,
+  "pins": {
+    "lean_toolchain": "leanprover/lean4:v4.30.0",
+    "mathlib": "v4.30.0"
+  },
+  "notes": [
+    "ADR-041 proof archive block 0105.",
+    "Whole decomposition trees + standalone proved goals only (invariant A).",
+    "Active goal records remain as archived metadata pointing at this package."
+  ],
+  "goals": [
+    {
+      "goal": "faulhaber-quartic-sum-coeff-fiftyfive",
+      "module": "Unsorry.FaulhaberQuarticSumCoeffFiftyfive"
+    },
+    {
+      "goal": "faulhaber-quartic-sum-coeff-fiftyfour",
+      "module": "Unsorry.FaulhaberQuarticSumCoeffFiftyfour"
+    },
+    {
+      "goal": "faulhaber-quartic-sum-coeff-fiftynine",
+      "module": "Unsorry.FaulhaberQuarticSumCoeffFiftynine"
+    },
+    {
+      "goal": "faulhaber-quartic-sum-coeff-fiftyone",
+      "module": "Unsorry.FaulhaberQuarticSumCoeffFiftyone"
+    },
+    {
+      "goal": "faulhaber-quartic-sum-coeff-fiftyseven",
+      "module": "Unsorry.FaulhaberQuarticSumCoeffFiftyseven"
+    },
+    {
+      "goal": "faulhaber-quartic-sum-coeff-fiftysix",
+      "module": "Unsorry.FaulhaberQuarticSumCoeffFiftysix"
+    },
+    {
+      "goal": "faulhaber-quartic-sum-coeff-fiftythree",
+      "module": "Unsorry.FaulhaberQuarticSumCoeffFiftythree"
+    },
+    {
+      "goal": "faulhaber-quartic-sum-coeff-fiftytwo",
+      "module": "Unsorry.FaulhaberQuarticSumCoeffFiftytwo"
+    },
+    {
+      "goal": "faulhaber-quartic-sum-coeff-five",
+      "module": "Unsorry.FaulhaberQuarticSumCoeffFive"
+    },
+    {
+      "goal": "faulhaber-quartic-sum-coeff-forty",
+      "module": "Unsorry.FaulhaberQuarticSumCoeffForty"
+    },
+    {
+      "goal": "faulhaber-quartic-sum-coeff-fortyeight",
+      "module": "Unsorry.FaulhaberQuarticSumCoeffFortyeight"
+    },
+    {
+      "goal": "faulhaber-quartic-sum-coeff-fortyfive",
+      "module": "Unsorry.FaulhaberQuarticSumCoeffFortyfive"
+    },
+    {
+      "goal": "faulhaber-quartic-sum-coeff-fortyfour",
+      "module": "Unsorry.FaulhaberQuarticSumCoeffFortyfour"
+    },
+    {
+      "goal": "faulhaber-quartic-sum-coeff-fortynine",
+      "module": "Unsorry.FaulhaberQuarticSumCoeffFortynine"
+    },
+    {
+      "goal": "faulhaber-quartic-sum-coeff-fortyone",
+      "module": "Unsorry.FaulhaberQuarticSumCoeffFortyone"
+    },
+    {
+      "goal": "faulhaber-quartic-sum-coeff-fortyseven",
+      "module": "Unsorry.FaulhaberQuarticSumCoeffFortyseven"
+    },
+    {
+      "goal": "faulhaber-quartic-sum-coeff-fortysix",
+      "module": "Unsorry.FaulhaberQuarticSumCoeffFortysix"
+    },
+    {
+      "goal": "faulhaber-quartic-sum-coeff-fortythree",
+      "module": "Unsorry.FaulhaberQuarticSumCoeffFortythree"
+    },
+    {
+      "goal": "faulhaber-quartic-sum-coeff-fortytwo",
+      "module": "Unsorry.FaulhaberQuarticSumCoeffFortytwo"
+    },
+    {
+      "goal": "faulhaber-quartic-sum-coeff-four",
+      "module": "Unsorry.FaulhaberQuarticSumCoeffFour"
+    },
+    {
+      "goal": "faulhaber-quartic-sum-coeff-fourteen",
+      "module": "Unsorry.FaulhaberQuarticSumCoeffFourteen"
+    },
+    {
+      "goal": "faulhaber-quartic-sum-coeff-nine",
+      "module": "Unsorry.FaulhaberQuarticSumCoeffNine"
+    },
+    {
+      "goal": "faulhaber-quartic-sum-coeff-nineteen",
+      "module": "Unsorry.FaulhaberQuarticSumCoeffNineteen"
+    },
+    {
+      "goal": "faulhaber-quartic-sum-coeff-one",
+      "module": "Unsorry.FaulhaberQuarticSumCoeffOne"
+    },
+    {
+      "goal": "faulhaber-quartic-sum-coeff-seven",
+      "module": "Unsorry.FaulhaberQuarticSumCoeffSeven"
+    },
+    {
+      "goal": "faulhaber-quartic-sum-coeff-seventeen",
+      "module": "Unsorry.FaulhaberQuarticSumCoeffSeventeen"
+    },
+    {
+      "goal": "faulhaber-quartic-sum-coeff-seventy",
+      "module": "Unsorry.FaulhaberQuarticSumCoeffSeventy"
+    },
+    {
+      "goal": "faulhaber-quartic-sum-coeff-seventyfive",
+      "module": "Unsorry.FaulhaberQuarticSumCoeffSeventyfive"
+    },
+    {
+      "goal": "faulhaber-quartic-sum-coeff-seventyfour",
+      "module": "Unsorry.FaulhaberQuarticSumCoeffSeventyfour"
+    },
+    {
+      "goal": "faulhaber-quartic-sum-coeff-seventyone",
+      "module": "Unsorry.FaulhaberQuarticSumCoeffSeventyone"
+    },
+    {
+      "goal": "faulhaber-quartic-sum-coeff-seventythree",
+      "module": "Unsorry.FaulhaberQuarticSumCoeffSeventythree"
+    },
+    {
+      "goal": "faulhaber-quartic-sum-coeff-seventytwo",
+      "module": "Unsorry.FaulhaberQuarticSumCoeffSeventytwo"
+    },
+    {
+      "goal": "faulhaber-quartic-sum-coeff-six",
+      "module": "Unsorry.FaulhaberQuarticSumCoeffSix"
+    },
+    {
+      "goal": "faulhaber-quartic-sum-coeff-sixteen",
+      "module": "Unsorry.FaulhaberQuarticSumCoeffSixteen"
+    }
+  ]
+}
