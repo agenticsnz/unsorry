@@ -1,0 +1,12 @@
+𝔸5.1.decomp.aime-1983-p9-s1.afnz-zbook-b336@2026-07-01
+γ≔unsorry.decomposition
+⟦Ω:Decomp⟧{parent≜aime-1983-p9-s1; agent≜afnz-zbook-b336}
+⟦Σ:Subs⟧{
+  sub₁≜⟨id≜aime-1983-p9-s1-s1,sha≜78ef59c42f828ac34606523dd9a357aa69b672be4819e2bcbde77b239d22add0⟩
+  sub₂≜⟨id≜aime-1983-p9-s1-s2,sha≜5fb2f8399397154c5e0d9d05c584246882936b777159d7e605e9894185e424ab⟩
+}
+⟦Γ:Edges⟧{
+  Post(sub₁)⊆Pre(parent); Post(sub₂)⊆Pre(parent)
+}
+⟦Λ:Requeue⟧{∀s∈subs:goal(s)≫status≔open}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
