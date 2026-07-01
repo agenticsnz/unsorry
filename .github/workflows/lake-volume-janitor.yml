@@ -1,0 +1,77 @@
+# Survey — and, on a manual validated dispatch, reclaim — the persistent Namespace
+# .lake cache volume Gate A relies on (ADR-046). That volume is fixed-size
+# (observed 50 GB, sitting at its cap) and nothing evicts it, so it fills and
+# `lake exe cache get` ENOSPCs on cold mathlib decompression — the batch-run
+# failure mode (a `replay` shard that lands cold on a full volume dies with "No
+# space left on device", which fails the whole ADR-107 batch).
+#
+# REPORT-ONLY on schedule: it attaches the same volume gate-a uses (a safe
+# concurrent READ), prints capacity in bytes AND inodes (ENOSPC is whichever hits
+# 100% first — mathlib olean trees are millions of tiny files, so inodes usually go
+# first), the du composition, the live toolchain pins, and what is reclaimable —
+# and frees nothing. Building this picture tells the operator whether the fill is
+# reclaimable dupes/stale state (→ --apply) or genuinely-needed live oleans across
+# pins (→ raise the volume cap, or isolate the native-pin suites onto their own
+# volume).
+#
+# --apply MUTATES the SHARED volume and must not race an in-flight gate-a, so it is
+# gated behind a manual workflow_dispatch (apply=true) an operator runs when Gate A
+# is quiet, and only reclaims the safe subset (decompressed-then-redundant
+# mathlib-cache/*.ltar + a git gc — never a live pin's oleans). Non-gating: nothing
+# here blocks a merge; the tool always exits 0.
+name: lake-volume-janitor
+
+on:
+  schedule:
+    - cron: "17 6 * * *" # daily, low-traffic hour (UTC) — report only
+  workflow_dispatch:
+    inputs:
+      apply:
+        description: "Reclaim .ltar + git gc. Run ONLY when Gate A is quiet (shared volume)."
+        default: "false"
+      min_free_gb:
+        description: "With apply: reclaim only when free space is below this many GB"
+        default: "8"
+
+concurrency:
+  # Never let two survey/reclaim passes overlap on the shared volume.
+  group: lake-volume-janitor
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  survey:
+    # The single Namespace profile gate-a uses (the operator maintains exactly one
+    # label, see gate-a.yml), so we attach the SAME persistent .lake volume. If the
+    # label is ever unavailable the job simply doesn't run — it is non-gating.
+    runs-on: namespace-profile-unsorry-1
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          ref: main # need lean-toolchain + targets/*/_verify pins and the tools/ module
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.12"
+      # Attach the same persistent .lake volume gate-a mounts (ADR-046). Read-only
+      # in intent; soft-fail so a missing/detached volume degrades to "nothing to
+      # survey" rather than a red run.
+      - name: Attach the Namespace .lake cache volume
+        continue-on-error: true
+        uses: namespacelabs/nscloud-cache-action@15799a6b54e5765f85b2aac25b3f0df43ed571c0 # v1.4.3
+        with:
+          path: ${{ github.workspace }}/.lake
+      - name: Survey (report-only) or reclaim (manual --apply)
+        env:
+          APPLY: ${{ github.event.inputs.apply }}
+          MIN_FREE_GB: ${{ github.event.inputs.min_free_gb }}
+        run: |
+          set -euo pipefail
+          args=(--root .)
+          if [ "${APPLY:-false}" = "true" ]; then
+            echo "::warning::--apply requested: reclaiming the SHARED .lake volume — ensure Gate A is quiet."
+            args+=(--apply --min-free-gb "${MIN_FREE_GB:-8}")
+          fi
+          python3 -m tools.repo.lake_volume "${args[@]}"
