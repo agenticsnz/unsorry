@@ -2,7 +2,7 @@
 
 # Architecture Decision Records
 
-Index of the 114 ADRs in this directory, generated from the `ADR-*.md` headers and kept in sync by the `adr-index` workflow. See [ADR-001](ADR-001-Adopt-Development-Protocols.md) and [the development protocols](../protocols.md) for the WH(Y) format and process.
+Index of the 115 ADRs in this directory, generated from the `ADR-*.md` headers and kept in sync by the `adr-index` workflow. See [ADR-001](ADR-001-Adopt-Development-Protocols.md) and [the development protocols](../protocols.md) for the WH(Y) format and process.
 
 | ADR | Title | Status | Date |
 |-----|-------|--------|------|
@@ -120,3 +120,4 @@ Index of the 114 ADRs in this directory, generated from the `ADR-*.md` headers a
 | [ADR-112](ADR-112-Bounded-Retry-For-Flaked-Required-Gate.md) | Bounded Auto-Retry for PRs Blocked by a Flaked Required Gate | Accepted | 2026-06-29 |
 | [ADR-113](ADR-113-Multiple-Batches-Per-Dispatch-Pass.md) | Multiple batches per dispatch pass, prefer batches over singletons (amends ADR-107) | Proposed | 2026-06-29 |
 | [ADR-114](ADR-114-Rebase-First-Recovery-For-Base-Stale-Flaked-Gates.md) | Rebase-First Recovery When a Flaked-Gate PR Is Behind Its Base | Proposed | 2026-06-30 |
+| [ADR-115](ADR-115-Recompose-Self-Retry-And-Assembly-Prompt.md) | Recompose Self-Retry and Assembly Prompt Hardening | Accepted | 2026-07-01 |
