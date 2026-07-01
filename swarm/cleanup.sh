@@ -34,6 +34,13 @@
 # may be mid-proof and gc may race a live checkout — unless --force is given.
 #
 # Exit codes: 0 ok · 2 usage / config error.
+#
+# shellcheck disable=SC2009,SC2317,SC2030,SC2031
+# File-wide, before the first command so it applies globally (newer shellcheck in
+# CI does not honour the per-line directives below at their nesting depth): SC2009
+# is the deliberate `ps` fallback for hosts without pgrep; SC2317/SC2030/SC2031 are
+# self_test false positives — its checks run indirectly and its subshells mutate
+# RECLAIMED/INODES by design (the accumulators are read back in THIS shell).
 set -euo pipefail
 
 WORKDIR="${UNSORRY_WORKDIR:-$HOME/.unsorry/work}"
