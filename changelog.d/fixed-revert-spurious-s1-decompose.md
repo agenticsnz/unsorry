@@ -1,0 +1,1 @@
+Reverts the spurious decomposition of `aime-1983-p9-s1` (#7133). The trivial positivity sub-lemma was decomposed only because a benchmark-flow path-guard bug rejected the provider's scratch file and reported a failure; the fix is in the harness. This restores `aime-1983-p9-s1` to `open` and removes the bogus sub-lemma tree so it re-proves directly at the suite pin.
