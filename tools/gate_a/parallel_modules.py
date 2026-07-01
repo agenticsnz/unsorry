@@ -791,12 +791,26 @@ def audit_shard(
             Command(("lake", "exe", "axiom_audit", *shard_library), f"library audit shard {shard_index}")
         )
     if shard_goals:
-        commands.append(
-            Command(
-                ("lake", "exe", "axiom_audit", "--allow-sorry", *shard_goals),
-                f"goal audit shard {shard_index}",
-            )
+        # Goals are flat/un-namespaced (ADR-018 freezes the .lean), so two benchmark
+        # goals can share a top-level helper name — e.g. `answer` across the IMO
+        # answer-blank goals — that collides on a SINGLE axiom_audit import ("already
+        # contains '<name>'"). The serial `audit` path guards this with
+        # collision_free_chunks; the sharded path must too, or two clashing goals that
+        # split_evenly co-located in one shard fail the import (the #7117 full-audit
+        # break). Pack the shard's goals into collision-free groups, each its own
+        # import (chunks=1 → greedy first-fit, a new group opens ONLY on a real name
+        # clash, so the common no-clash shard stays a single call). Soundness-neutral:
+        # a decl's axioms depend on its own import closure, not how it is batched.
+        goal_chunks = collision_free_chunks(
+            shard_goals, lambda module: module_top_level_names(root, module), 1
         )
+        for chunk_index, chunk in enumerate(goal_chunks, 1):
+            commands.append(
+                Command(
+                    ("lake", "exe", "axiom_audit", "--allow-sorry", *chunk),
+                    f"goal audit shard {shard_index} chunk {chunk_index}",
+                )
+            )
     # Serial within a shard: one mathlib-resident audit process at a time (cross-
     # *runner* parallelism is the shard matrix; intra-runner concurrency OOMs).
     results = run_commands(commands, 1, runner)
