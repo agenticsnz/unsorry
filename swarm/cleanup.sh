@@ -154,6 +154,7 @@ swarm_running() {
   if command -v pgrep >/dev/null 2>&1; then
     pgrep -f 'swarm/(run|agent|supervise)\.sh' >/dev/null 2>&1
   else
+    # shellcheck disable=SC2009  # deliberate ps fallback for hosts without pgrep
     ps -eo args 2>/dev/null | grep -Eq '[s]warm/(run|agent|supervise)\.sh'
   fi
 }
@@ -361,6 +362,8 @@ self_test() {
   # populates BOTH the byte and inode totals; --apply removes it while the
   # claims-branch keeper survives. Runs against a fake WORKDIR; ROOT points at a
   # non-git temp dir so the prune / worktree-list steps are no-ops.
+  # shellcheck disable=SC2317,SC2030  # dispatched indirectly via chk (not dead code);
+  # the RECLAIMED/INODES resets are per-test isolation inside this ( ) subshell.
   functional_worktree() (
     WORKDIR="$tmp/work"; ROOT="$tmp/root"; FORCE=1
     mkdir -p "$WORKDIR/prove-g-a1" "$WORKDIR/claims-branch" "$ROOT"
@@ -379,6 +382,7 @@ self_test() {
   # Functional: an inode hog whose name dodges the prefix allowlist is surfaced
   # (Pass 3 note), never silently reported as "(none)". ROOT is non-git so the
   # worktree-list pass is empty and the unknown dir falls through to the note.
+  # shellcheck disable=SC2317  # dispatched indirectly via chk (not dead code)
   functional_unmatched() (
     WORKDIR="$tmp/work2"; ROOT="$tmp/root2"; FORCE=1; APPLY=0
     mkdir -p "$WORKDIR/mystery-hog" "$ROOT"
@@ -420,6 +424,8 @@ main() {
   clean_caches;    echo
   if [ "$DEEP" = 1 ]; then clean_deep; echo; clean_object_store; echo; fi
 
+  # shellcheck disable=SC2031  # RECLAIMED/INODES accumulate in THIS shell (see the
+  # RECLAIMED=$((…)) sites); the only subshell writes are the hermetic self-tests.
   if [ "$APPLY" = 1 ]; then
     printf 'Total freed: %s across %s inodes\n' "$(human "$RECLAIMED")" "$INODES"
   else
