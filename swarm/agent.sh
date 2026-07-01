@@ -3216,6 +3216,23 @@ suite_context_for_goal() {
   python3 -m tools.intake.suite_context "$1" --root "$2" 2>/dev/null
 }
 
+# The library dir `proved-deps` (ADR-014) reads for <goal> under prove worktree <prwt>.
+# <sctx> is suite_context_for_goal's output (empty = organic). For a BENCHMARK goal the
+# decomposition sub-lemmas were proved + staged at the SUITE pin, so their modules and
+# index live in the suite library (<verify_dir>/library, field 3 of sctx) — a benchmark
+# recompose must read there to surface them (ADR-116). An organic goal keeps the repo
+# library, byte-identical to before. Pure string composition — split out so --self-test
+# can exercise the seam without a lake build.
+proved_deps_library_dir() {
+  local prwt="$1" sctx="$2" vdir
+  if [ -n "$sctx" ]; then
+    vdir="$(printf '%s' "$sctx" | cut -f3)"
+    printf '%s' "$prwt/$vdir/library"
+  else
+    printf '%s' "$prwt/library"
+  fi
+}
+
 prove_local_verify() {
   local root="$1" camel="$2" lib_target="${3:-UnsorryLibrary}" do_audit="${4:-1}"
   # ``library`` is relative to <root>: the repo root for an organic goal, the suite
@@ -3311,9 +3328,13 @@ run_proof() {
   # ADR-014 dependency reuse: surface this goal's PROVED dependencies (declared
   # deps + the subs of its own decomposition) as importable library modules, so
   # merged work compounds instead of being re-proved.
+  # ADR-116: for a benchmark goal the library dir is the SUITE library (subs staged at
+  # the suite pin live there), reusing the already-resolved $sctx; organic goals keep
+  # "$prwt/library" byte-identical. goals/ and decompositions/ stay repo-side.
   local deps_prompt="" deps_lines
   deps_lines="$(py_helper proved-deps "$prwt/goals/$goal.aisp" "$prwt/goals" \
-    "$prwt/library" "$prwt/decompositions" 2>/dev/null)" || deps_lines=""
+    "$(proved_deps_library_dir "$prwt" "$sctx")" "$prwt/decompositions" 2>/dev/null)" \
+    || deps_lines=""
   if [ -n "$deps_lines" ]; then
     deps_prompt="
 
@@ -6081,6 +6102,21 @@ test_suite_context_for_goal() {
   return "$rc"
 }
 
+test_proved_deps_library_dir() {
+  # ADR-116: proved-deps reads the SUITE library for a benchmark recompose (subs staged
+  # at the suite pin live there), and the repo library for an organic goal. Pure string
+  # seam — no lake/network. $sctx is suite_context_for_goal's TSV (field 3 = verify_dir).
+  local prwt="/prove/wt" sctx got rc=0
+  sctx="$(printf 'leanprover/lean4:v4.24.0\trev24\ttargets/minif2f-v1/_verify\tMinif2fV1')"
+  got="$(proved_deps_library_dir "$prwt" "$sctx")"
+  [ "$got" = "/prove/wt/targets/minif2f-v1/_verify/library" ] \
+    || { log "  benchmark deps lib wrong: [$got]"; rc=1; }
+  # organic goal: empty context → repo library, byte-identical to pre-ADR-116.
+  got="$(proved_deps_library_dir "$prwt" "")"
+  [ "$got" = "/prove/wt/library" ] || { log "  organic deps lib wrong: [$got]"; rc=1; }
+  return "$rc"
+}
+
 test_open_pr_claim_guard() {
   local rc
   # ADR-017: an open prove PR for exactly this goal → skip it (rc 0). gh is
@@ -6734,6 +6770,7 @@ run_self_tests() {
     test_goal_rewrite
     test_seed_library_cache
     test_suite_context_for_goal
+    test_proved_deps_library_dir
     test_convergence_rewrite
     test_record_validation
     test_require_main_checkout
