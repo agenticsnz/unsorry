@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜faulhaber-quintic-sum-coeff-sixty
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/faulhaber-quintic-sum-coeff-sixty.md
+  src≜packages/unsorry-archive-0108/backlog/faulhaber-quintic-sum-coeff-sixty.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/faulhaber-quintic-sum-coeff-sixty.lean
+  lean≜packages/unsorry-archive-0108/goals/faulhaber-quintic-sum-coeff-sixty.lean
   sha≜885bbbaf21ede468ccc234589022e13a1d404c87f2dbc559c23c5d639a502632
   aff≜0
 }
