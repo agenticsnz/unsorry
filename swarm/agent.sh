@@ -2939,6 +2939,27 @@ cli_health_probe() {
   esac
 }
 
+# ADR-016 observability: a provider call's output is captured to the prove
+# worktree's prove-attempt-<n>.log, but prove_goal removes that worktree on EVERY
+# exit — so an infrastructure abort (CLI died fast + health probe failed) would
+# otherwise discard the only record of WHY the CLI failed, leaving the operator
+# with just "infrastructure failure" and nothing to diagnose (auth/quota/network).
+# Before that worktree is gone, copy the log to a stable path under UNSORRY_WORKDIR
+# and echo its tail to the agent log so the reason is visible in the console.
+surface_infra_log() {
+  local attempt_log="$1" dest="${UNSORRY_WORKDIR:-$HOME/.unsorry/work}/last-infra-failure.log"
+  if [ ! -s "$attempt_log" ]; then
+    log "  no $UNSORRY_PROVIDER output was captured before it died — nothing to preserve"
+    return 0
+  fi
+  if cp -f "$attempt_log" "$dest" 2>/dev/null; then
+    log "  $UNSORRY_PROVIDER output preserved at $dest"
+  fi
+  log "  --- last 20 lines of the failed $UNSORRY_PROVIDER call ---"
+  tail -n 20 "$attempt_log" 2>/dev/null | while IFS= read -r _l; do log "  | $_l"; done
+  log "  --- end (see $dest for the full log) ---"
+}
+
 # Check if a specific Claude model is available.
 # Returns 0 if available, 1 otherwise.
 claude_model_available() {
@@ -3417,6 +3438,7 @@ Fix the module so both pass. Write the corrected $target."
         probe_rc=0; cli_health_probe || probe_rc=$?
         if [ "$(classify_call_failure "$dur" "$UNSORRY_FASTFAIL" "$probe_rc")" = infra ]; then
           log "$UNSORRY_PROVIDER call for $goal died in ${dur}s and the health probe failed — infrastructure failure, aborting cycle (ADR-016)"
+          surface_infra_log "$attempt_log"
           return 2
         fi
       fi
@@ -6087,6 +6109,29 @@ test_infra_failure_classifier() {
   [ "$got" = real ] || { log "  boundary: want 'real', got '$got'"; return 1; }
 }
 
+test_surface_infra_log() {
+  # ADR-016 observability: an infra abort preserves the failed provider log to a
+  # stable path AND echoes its tail (the prove worktree with the original log is
+  # removed on exit). Local UNSORRY_WORKDIR so the copy lands in the fixture.
+  local tmp rc=0
+  tmp="$(mktemp -d "$SESSION_TMP/infra-log.XXXXXX")" || return 1
+  local UNSORRY_WORKDIR="$tmp"
+  printf 'Error: not authenticated\nRun claude login.\n' > "$tmp/prove-attempt-1.log"
+  surface_infra_log "$tmp/prove-attempt-1.log" 2>"$tmp/agentlog"
+  [ -f "$tmp/last-infra-failure.log" ] \
+    || { log "  infra log not preserved to a stable path"; rc=1; }
+  grep -q 'not authenticated' "$tmp/last-infra-failure.log" 2>/dev/null \
+    || { log "  preserved log has the wrong content"; rc=1; }
+  grep -q 'not authenticated' "$tmp/agentlog" \
+    || { log "  the CLI error tail was not surfaced to the agent log"; rc=1; }
+  # A missing/empty log degrades gracefully — no crash, a clear note.
+  surface_infra_log "$tmp/absent.log" 2>"$tmp/agentlog2" \
+    || { log "  a missing log must not error"; rc=1; }
+  grep -qi 'nothing to preserve' "$tmp/agentlog2" \
+    || { log "  the missing-log note is absent"; rc=1; }
+  return "$rc"
+}
+
 test_seed_library_cache() {
   local warm prwt rc
   warm="$(mktemp -d)"; prwt="$(mktemp -d)"
@@ -6866,6 +6911,7 @@ run_self_tests() {
     test_model_effort_policy
     test_effort_ladder
     test_infra_failure_classifier
+    test_surface_infra_log
     test_open_pr_claim_guard
     test_parse_github_nwo
     test_fork_pr_head_ref
