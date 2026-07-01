@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜faulhaber-quartic-sum-coeff-fiftyeight
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/faulhaber-quartic-sum-coeff-fiftyeight.md
+  src≜packages/unsorry-archive-0104/backlog/faulhaber-quartic-sum-coeff-fiftyeight.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/faulhaber-quartic-sum-coeff-fiftyeight.lean
+  lean≜packages/unsorry-archive-0104/goals/faulhaber-quartic-sum-coeff-fiftyeight.lean
   sha≜c677490d7aeec1d2acec51de5a476438668bcd69ab0c8a64ccd29646a7b559a6
   aff≜0
 }

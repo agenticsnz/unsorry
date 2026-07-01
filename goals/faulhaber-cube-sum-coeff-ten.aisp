@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜faulhaber-cube-sum-coeff-ten
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/faulhaber-cube-sum-coeff-ten.md
+  src≜packages/unsorry-archive-0104/backlog/faulhaber-cube-sum-coeff-ten.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/faulhaber-cube-sum-coeff-ten.lean
+  lean≜packages/unsorry-archive-0104/goals/faulhaber-cube-sum-coeff-ten.lean
   sha≜015285bb19120b28c58e56cffb755ec466590ab812d3ebd48db97ad5cd92c245
   aff≜0
 }

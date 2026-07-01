@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜faulhaber-cube-sum-coeff-thirtyfive
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/faulhaber-cube-sum-coeff-thirtyfive.md
+  src≜packages/unsorry-archive-0104/backlog/faulhaber-cube-sum-coeff-thirtyfive.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/faulhaber-cube-sum-coeff-thirtyfive.lean
+  lean≜packages/unsorry-archive-0104/goals/faulhaber-cube-sum-coeff-thirtyfive.lean
   sha≜0576c238a419665ee5260629f86fe0abdd9e06f2c48b3d6f74dffa1d5fec8ef6
   aff≜0
 }
