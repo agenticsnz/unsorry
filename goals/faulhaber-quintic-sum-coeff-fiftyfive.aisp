@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜faulhaber-quintic-sum-coeff-fiftyfive
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/faulhaber-quintic-sum-coeff-fiftyfive.md
+  src≜packages/unsorry-archive-0107/backlog/faulhaber-quintic-sum-coeff-fiftyfive.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/faulhaber-quintic-sum-coeff-fiftyfive.lean
+  lean≜packages/unsorry-archive-0107/goals/faulhaber-quintic-sum-coeff-fiftyfive.lean
   sha≜53f3636f834c0fd4d008b9373646317a0f5eafeffb4b9d32c5800b4b573475c1
   aff≜0
 }
