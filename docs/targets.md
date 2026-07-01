@@ -4,7 +4,7 @@
 
 The unsorry worklist: theorems that are **already proven but not yet in mathlib**, vetted for absence and stated in Lean, waiting for an agent or a human to prove them. Claim one, open a PR, let the gates decide (see [Running an agent](../README.md#running-an-agent) and [ADR-012](adrs/ADR-012-Backlog-Sourcing.md)).
 
-**229 open · 4769 proved · 5015 total prove-goals.**
+**238 open · 4760 proved · 5015 total prove-goals.**
 
 | Goal | Status | Diff | Upstream | Source | Reference |
 |------|--------|:----:|----------|--------|-----------|
@@ -126,6 +126,7 @@ The unsorry worklist: theorems that are **already proven but not yet in mathlib*
 | `imo2025p4` — imo-v1 benchmark obligation IMO2025P4 | open | 4 | — | imo-v1 benchmark suite | github.com/jsm28/IMOLean |
 | `imo2025p5` — imo-v1 benchmark obligation IMO2025P5 | open | 4 | — | imo-v1 benchmark suite | github.com/jsm28/IMOLean |
 | `imo2025p6` — imo-v1 benchmark obligation IMO2025P6 | open | 4 | — | imo-v1 benchmark suite | github.com/jsm28/IMOLean |
+| `putnam-1962-a1-s1` — putnam-1962-a1-s1 | open | 1 | — | — | — |
 | `putnam-1962-a1-s2-s1` — putnam-1962-a1-s2-s1 | open | 1 | — | — | — |
 | `putnam-1962-a1-s2-s2` — putnam-1962-a1-s2-s2 | open | 1 | — | — | — |
 | `putnam-1962-a1-s2-s3` — putnam-1962-a1-s2-s3 | open | 1 | — | — | — |
@@ -137,6 +138,7 @@ The unsorry worklist: theorems that are **already proven but not yet in mathlib*
 | `putnam-1962-a4` — putnam-v1 benchmark obligation putnam_1962_a4 | open | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
 | `putnam-1962-a6` — putnam-v1 benchmark obligation putnam_1962_a6 | open | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
 | `putnam-1962-b1` — putnam-v1 benchmark obligation putnam_1962_b1 | open | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
+| `putnam-1962-b5-s1` — putnam-1962-b5-s1 | open | 1 | — | — | — |
 | `putnam-1962-b5-s2` — putnam-1962-b5-s2 | open | 1 | — | — | — |
 | `putnam-1962-b5-s3` — putnam-1962-b5-s3 | open | 1 | — | — | — |
 | `putnam-1962-b5-s4` — putnam-1962-b5-s4 | open | 1 | — | — | — |
@@ -169,11 +171,15 @@ The unsorry worklist: theorems that are **already proven but not yet in mathlib*
 | `putnam-1965-b2` — putnam-v1 benchmark obligation putnam_1965_b2 | open | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
 | `putnam-1965-b3` — putnam-v1 benchmark obligation putnam_1965_b3 | open | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
 | `putnam-1965-b4` — putnam-v1 benchmark obligation putnam_1965_b4 | open | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
+| `putnam-1965-b6-s1` — putnam-1965-b6-s1 | open | 1 | — | — | — |
+| `putnam-1965-b6-s2` — putnam-1965-b6-s2 | open | 1 | — | — | — |
+| `putnam-1965-b6-s3` — putnam-1965-b6-s3 | open | 1 | — | — | — |
 | `putnam-1965-b6-s4-s1` — putnam-1965-b6-s4-s1 | open | 1 | — | — | — |
 | `putnam-1965-b6-s4-s2` — putnam-1965-b6-s4-s2 | open | 1 | — | — | — |
 | `putnam-1965-b6-s4-s3` — putnam-1965-b6-s4-s3 | open | 1 | — | — | — |
 | `putnam-1966-a1-s1` — putnam-1966-a1-s1 | open | 1 | — | — | — |
 | `putnam-1966-a1-s2` — putnam-1966-a1-s2 | open | 1 | — | — | — |
+| `putnam-1966-a1-s3` — putnam-1966-a1-s3 | open | 1 | — | — | — |
 | `putnam-1966-a2` — putnam-v1 benchmark obligation putnam_1966_a2 | open | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
 | `putnam-1966-a4` — putnam-v1 benchmark obligation putnam_1966_a4 | open | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
 | `putnam-1966-a5` — putnam-v1 benchmark obligation putnam_1966_a5 | open | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
@@ -181,6 +187,8 @@ The unsorry worklist: theorems that are **already proven but not yet in mathlib*
 | `putnam-1966-a6-s2` — putnam-1966-a6-s2 | open | 1 | — | — | — |
 | `putnam-1966-a6-s3` — putnam-1966-a6-s3 | open | 1 | — | — | — |
 | `putnam-1966-a6-s4` — putnam-1966-a6-s4 | open | 1 | — | — | — |
+| `putnam-1966-b1-s1` — putnam-1966-b1-s1 | open | 1 | — | — | — |
+| `putnam-1966-b1-s2` — putnam-1966-b1-s2 | open | 1 | — | — | — |
 | `putnam-1966-b1-s3-s1` — putnam-1966-b1-s3-s1 | open | 1 | — | — | — |
 | `putnam-1966-b1-s3-s2` — putnam-1966-b1-s3-s2 | open | 1 | — | — | — |
 | `putnam-1966-b1-s3-s3` — putnam-1966-b1-s3-s3 | open | 1 | — | — | — |
@@ -201,6 +209,7 @@ The unsorry worklist: theorems that are **already proven but not yet in mathlib*
 | `putnam-1967-a5-s1` — putnam-1967-a5-s1 | open | 1 | — | — | — |
 | `putnam-1967-a5-s2` — putnam-1967-a5-s2 | open | 1 | — | — | — |
 | `putnam-1967-a5-s3` — putnam-1967-a5-s3 | open | 1 | — | — | — |
+| `putnam-1967-a5-s4` — putnam-1967-a5-s4 | open | 1 | — | — | — |
 | `putnam-1967-a6` — putnam-v1 benchmark obligation putnam_1967_a6 | open | 4 | — | putnam-v1 benchmark suite | github.com/trishullab/PutnamBench |
 | `putnam-1967-b1` — putnam-v1 benchmark obligation putnam_1967_b1 | open | 4 | — | putnam-v1 benchmark suite | github.com/trishullab/PutnamBench |
 | `putnam-1967-b2` — putnam-v1 benchmark obligation putnam_1967_b2 | open | 4 | — | putnam-v1 benchmark suite | github.com/trishullab/PutnamBench |
@@ -4115,23 +4124,14 @@ The unsorry worklist: theorems that are **already proven but not yet in mathlib*
 | `prod-range-one-sub-recip-succ-sq` — The product of (1 − 1/(k+1)²) for k from 1 to n equals (n+2)/(2(n+1)). | proved | 2 | — | #400 Identity Engine (ADR-043) — telescoping family; promoted from candidate backlog (#610). | The product of (1 − 1/(k+1)²) for k from 1 to n equals (n+2)/(2(n+1)). Not a named mathlib lemma in this form. |
 | `product-le-quarter-of-sum-one` — For nonneg reals a,b with a+b=1, ab ≤ 1/4. | proved | 2 | — | Classic real inequality (library-growth batch, #400 plan Phase 3). The project had almost no inequalities; this seeds the SOS/nlinarith family. | For nonneg reals a,b with a+b=1, ab ≤ 1/4. mathlib has the abstract Cauchy–Schwarz / power-mean lemmas but not this concrete polynomial form as a named lemma. |
 | `product-of-two-sums-of-squares-ge-square-of-cross` — A product of two sums of squares is at least the square of the antisymmetric cross term (Lagrange consequence). | proved | 2 | — | #400 Identity Engine (ADR-043) — algebraic identity family; promoted from candidate backlog (#610). | A product of two sums of squares is at least the square of the antisymmetric cross term (Lagrange consequence). Not a named mathlib lemma in this form. |
-| `putnam-1962-a1-s1` — putnam-1962-a1-s1 | proved | 1 | — | — | — |
 | `putnam-1962-a5` — putnam-v1 benchmark obligation putnam_1962_a5 | proved | 4 | [packet-ready](upstream/putnam-1962-a5.md) | putnam-v1 benchmark suite | github.com/trishullab/PutnamBench |
 | `putnam-1962-b2` — putnam-v1 benchmark obligation putnam_1962_b2 | proved | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
 | `putnam-1962-b3` — putnam-v1 benchmark obligation putnam_1962_b3 | proved | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
-| `putnam-1962-b5-s1` — putnam-1962-b5-s1 | proved | 1 | — | — | — |
 | `putnam-1963-b1` — putnam-v1 benchmark obligation putnam_1963_b1 | proved | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
 | `putnam-1964-a4` — putnam-v1 benchmark obligation putnam_1964_a4 | proved | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
 | `putnam-1965-a1` — putnam-v1 benchmark obligation putnam_1965_a1 | proved | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
 | `putnam-1965-b5` — putnam-v1 benchmark obligation putnam_1965_b5 | proved | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
-| `putnam-1965-b6-s1` — putnam-1965-b6-s1 | proved | 1 | — | — | — |
-| `putnam-1965-b6-s2` — putnam-1965-b6-s2 | proved | 1 | — | — | — |
-| `putnam-1965-b6-s3` — putnam-1965-b6-s3 | proved | 1 | — | — | — |
-| `putnam-1966-a1-s3` — putnam-1966-a1-s3 | proved | 1 | — | — | — |
 | `putnam-1966-a3` — putnam-v1 benchmark obligation putnam_1966_a3 | proved | 4 | — | putnam-v1 benchmark suite | - **Absence:** imported benchmark statement (absent from the library) |
-| `putnam-1966-b1-s1` — putnam-1966-b1-s1 | proved | 1 | — | — | — |
-| `putnam-1966-b1-s2` — putnam-1966-b1-s2 | proved | 1 | — | — | — |
-| `putnam-1967-a5-s4` — putnam-1967-a5-s4 | proved | 1 | — | — | — |
 | `qm-am-three-var` — For all real a,b,c, (a+b+c)² ≤ 3(a²+b²+c²) — the QM–AM (power-mean) inequality for three reals. | proved | 2 | — | Classic real inequality (library-growth batch, #400 plan Phase 3). The project had almost no inequalities; this seeds the SOS/nlinarith family. | For all real a,b,c, (a+b+c)² ≤ 3(a²+b²+c²) — the QM–AM (power-mean) inequality for three reals. mathlib has the abstract Cauchy–Schwarz / power-mean lemmas but not this concrete polynomial form as a named lemma. |
 | `quad-form-divides-cube-sum` — The quadratic a²-ab+b² divides the sum of cubes a³+b³. | proved | 1 | — | #400 Identity Engine (ADR-043) — algebraic identity family; promoted from candidate backlog (#610). | The quadratic a²-ab+b² divides the sum of cubes a³+b³. Not a named mathlib lemma in this form. |
 | `quad-form-ge-three-quarter-sq` — The quadratic form a^2+ab+b^2 is at least three quarters of (a+b)^2. | proved | 2 | — | #400 Identity Engine (ADR-043) — inequality (SOS) family; promoted from candidate backlog (#610). | The quadratic form a^2+ab+b^2 is at least three quarters of (a+b)^2. Not a named mathlib lemma in this form. |
