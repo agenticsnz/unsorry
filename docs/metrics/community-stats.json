@@ -5439,7 +5439,7 @@
         "index_files_added": 215,
         "missing_solver_provenance": 0,
         "profile_url": null,
-        "sample_add_commit": "0cac2af7c4a6df992e03a53ccdbd43f69472517f",
+        "sample_add_commit": "a355b4d08fa145a0b0cdc7fe57c313fcd98ebcd5",
         "sample_add_date": "2026-06-23",
         "solver_credit": false,
         "solver_provenance_proofs": 215
@@ -5786,10 +5786,10 @@
     },
     "goals": 5023,
     "status_counts": {
-      "archived": 3627,
+      "archived": 3661,
       "blocked": 16,
       "open": 225,
-      "proved": 1146,
+      "proved": 1112,
       "translated": 9
     }
   },
