@@ -150,27 +150,40 @@ def open_batch_goals(prs) -> list:
     return goals
 
 
-def recover_action(conclusion, jobs) -> str:
+def recover_action(conclusion, jobs, infra_flake=False, attempt=1, max_attempts=3) -> str:
     """What to do with a batch PR's latest ``gate-a`` run.
 
     ``conclusion`` is the gate-a check conclusion; ``jobs`` its per-job
-    conclusions (the ADR-105 shape). Returns:
+    conclusions (the ADR-105 shape). ``infra_flake`` is True when the failed run's
+    logs carry a transient-infrastructure signature (an ENOSPC on the shared
+    ``.lake`` volume — a ``replay`` shard that landed cold on a full volume and
+    died decompressing mathlib, NOT a bad proof); ``attempt`` is the run's
+    ``run_attempt`` (1 = original), bounding the flake reruns. Returns:
 
       ``none``       green / still running / non-failure ⇒ leave it (auto-merge
                      fires on success).
-      ``rerun``      failed ONLY via a cancelled leg (the firehose cascade) ⇒
-                     re-run, do not split.
-      ``redispatch`` a GENUINE failure (a bad proof, a policy block) ⇒ close the
-                     batch and dispatch its constituents singly to isolate it.
+      ``rerun``      failed ONLY via a cancelled leg (the firehose cascade), OR an
+                     infra flake still within its ``max_attempts`` budget ⇒ re-run
+                     the batch, do not split.
+      ``redispatch`` a GENUINE failure (a bad proof, a policy block), or an infra
+                     flake past the attempt budget ⇒ close the batch and dispatch
+                     its constituents singly to isolate it.
     """
     concl = (conclusion or "").lower()
     if concl in ("", "success", "neutral", "skipped"):
         return "none"
     if concl == "cancelled":
         return "rerun"
-    # failure / timed_out / action_required / stale: genuine unless it is purely a
-    # cancelled-leg cascade of an otherwise-fine run.
-    return "rerun" if gate_failure_is_cancellation(jobs) else "redispatch"
+    if gate_failure_is_cancellation(jobs):
+        return "rerun"
+    # A transient infra flake (a full-volume ENOSPC on a replay shard) is not a bad
+    # proof — rerun the whole batch instead of discarding it into K singletons and
+    # re-verifying each from scratch. BOUNDED by run_attempt so a volume that stays
+    # full doesn't loop: past the budget, fall through to redispatch and isolate.
+    if infra_flake and int(attempt) < int(max_attempts):
+        return "rerun"
+    # failure / timed_out / action_required / stale: a genuine per-proof failure.
+    return "redispatch"
 
 
 # ---------------------------------------------------------------------------
@@ -249,7 +262,21 @@ def main(argv=None) -> int:
             jobs = json.load(sys.stdin)
         except json.JSONDecodeError:
             jobs = []
-        print(recover_action(_opt("--conclusion", ""), jobs if isinstance(jobs, list) else []))
+        try:
+            attempt = int(_opt("--attempt", "1"))
+        except ValueError:
+            attempt = 1
+        try:
+            max_attempts = int(_opt("--max-attempts", "3"))
+        except ValueError:
+            max_attempts = 3
+        print(recover_action(
+            _opt("--conclusion", ""),
+            jobs if isinstance(jobs, list) else [],
+            infra_flake="--infra-flake" in rest,
+            attempt=attempt,
+            max_attempts=max_attempts,
+        ))
         return 0
 
     print(

@@ -79,9 +79,10 @@ jobs:
               [ "$acted" -ge "$cap" ] && break
               [ -z "$num" ] && continue
               # Latest gate-a run for this PR head; only act on a COMPLETED run.
-              rid=""; concl=""
-              read -r rid concl < <(gh api "repos/$REPO/actions/workflows/gate-a.yml/runs?head_sha=$sha" \
-                    --jq '.workflow_runs | sort_by(.created_at) | last | select(.status=="completed") | "\(.id) \(.conclusion)"' 2>/dev/null) || true
+              # run_attempt bounds the infra-flake reruns below (recover_action).
+              rid=""; concl=""; attempt=1
+              read -r rid concl attempt < <(gh api "repos/$REPO/actions/workflows/gate-a.yml/runs?head_sha=$sha" \
+                    --jq '.workflow_runs | sort_by(.created_at) | last | select(.status=="completed") | "\(.id) \(.conclusion) \(.run_attempt)"' 2>/dev/null) || true
               [ -z "${rid:-}" ] && continue
               # A GREEN but UNARMED batch PR lost its creation-time --merge arm and
               # would strand: finalization-recovery skips prove-batch( titles, so the
@@ -98,11 +99,23 @@ jobs:
               fi
               jobs=$(gh api "repos/$REPO/actions/runs/$rid/jobs?per_page=100" \
                     --jq '[.jobs[] | {name,conclusion}]' 2>/dev/null || echo '[]')
-              action=$(printf '%s' "$jobs" | python3 -m tools.dispatch.batch recover --conclusion "${concl:-}")
+              # A transient full-volume ENOSPC on a replay shard (a shard that landed
+              # cold on the full shared .lake volume and died decompressing mathlib)
+              # is NOT a bad proof — it should rerun the batch, not split it into K
+              # singletons that each re-verify from scratch. Detect the disk-full
+              # signature in the failed step logs; recover_action reruns it BOUNDED by
+              # run_attempt so a persistently-full volume still isolates after the cap.
+              recover_args=(--conclusion "${concl:-}" --attempt "${attempt:-1}")
+              if [ "$concl" != success ] \
+                 && gh run view "$rid" --repo "$REPO" --log-failed 2>/dev/null \
+                    | grep -qiE 'No space left on device|os error 28|Decompression error: leantar'; then
+                recover_args+=(--infra-flake)
+              fi
+              action=$(printf '%s' "$jobs" | python3 -m tools.dispatch.batch recover "${recover_args[@]}")
               case "$action" in
                 none) continue ;;
                 rerun)
-                  if [ -z "${APPLY}" ]; then echo "  would rerun gate-a for batch #$num (run $rid, cancellation cascade)"; acted=$((acted+1)); continue; fi
+                  if [ -z "${APPLY}" ]; then echo "  would rerun gate-a for batch #$num (run $rid, flake: cancellation or infra ENOSPC)"; acted=$((acted+1)); continue; fi
                   if gh run rerun "$rid" --repo "$REPO" 2>/dev/null; then
                     gh pr merge "$num" --repo "$REPO" --auto --merge 2>/dev/null || true
                     echo "  reran gate-a for batch #$num (run $rid) + re-armed"
