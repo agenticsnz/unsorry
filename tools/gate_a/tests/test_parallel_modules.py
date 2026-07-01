@@ -615,6 +615,37 @@ def test_audit_shards_partition_covers_incremental_scope_exactly_once(tmp_path):
     assert union == {"Unsorry.A", "Unsorry.ABinding", "Unsorry.B", "goals.one"}
 
 
+def test_audit_shard_splits_goals_sharing_a_top_level_name(tmp_path):
+    # ADR-018 freezes goal .lean files, so two benchmark goals can share a top-level
+    # decl name (the IMO answer-blank `answer` collision, #7117). Within ONE shard
+    # they must go to SEPARATE axiom_audit imports, or the single import fails with
+    # "environment already contains 'answer'". The serial `audit` guards this with
+    # collision_free_chunks; the sharded path must too.
+    (tmp_path / "goals").mkdir()
+    (tmp_path / "goals" / "g_a.lean").write_text("def answer : Nat := sorry\n")
+    (tmp_path / "goals" / "g_b.lean").write_text("def answer : Int := sorry\n")
+    (tmp_path / "goals" / "g_c.lean").write_text("theorem g_c : True := trivial\n")
+
+    goal_calls: list[list[str]] = []  # goal modules per axiom_audit --allow-sorry call
+
+    def runner(argv, **_kw):
+        argv = tuple(argv)
+        if argv[:3] == ("lake", "exe", "axiom_audit") and "--allow-sorry" in argv:
+            mods = [a for a in argv[3:] if a != "--allow-sorry"]
+            goal_calls.append(mods)
+            return completed(argv, stdout=json.dumps([{"decl": m, "axioms": []} for m in mods]))
+        return completed(argv)
+
+    # shard_total=1 so all three goals land in one shard, forcing the intra-shard split
+    assert audit_shard(tmp_path, 0, 1, tmp_path / "out.json", runner) == 0
+    # the two goals that both declare `answer` never share an import
+    for call in goal_calls:
+        assert not {"goals.g_a", "goals.g_b"} <= set(call), f"colliding goals co-imported: {call}"
+    # coverage preserved: every goal still audited exactly once
+    audited = sorted(m for call in goal_calls for m in call)
+    assert audited == ["goals.g_a", "goals.g_b", "goals.g_c"]
+
+
 def test_plan_audit_shards_full(tmp_path):
     _many_lib(tmp_path, 8)
     _make_goals(tmp_path, ["g0", "g1"])
