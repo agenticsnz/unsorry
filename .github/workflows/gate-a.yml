@@ -167,6 +167,16 @@ jobs:
           if [ "${{ steps.ns_lake_cache.outputs.cache-hit }}" != "true" ]; then
             echo "::warning::Namespace .lake cache MISS on this profile — Gate A cold-builds mathlib + the library (slow, #1921). Check the volume is attached (ADR-046)."
           fi
+          # Volume capacity, bytes AND inodes: the .lake cache lives on a fixed
+          # persistent Namespace volume (ADR-046) that fills over time (mathlib
+          # oleans across pins are millions of tiny files), and `lake exe cache get`
+          # ENOSPCs when it must decompress into a full volume — the batch-run
+          # failure this diagnostic exists to make visible. `du` alone (bytes only)
+          # can't show it: mkdir/leantar fail with ENOSPC while df still reports
+          # free *bytes* when the filesystem is out of *inodes*, so print both.
+          echo "--- .lake volume capacity (df: bytes then inodes) ---"
+          df -h .lake 2>/dev/null || df -h . || true
+          df -i .lake 2>/dev/null || df -i . || true
           du -sh .lake .lake/packages .lake/build 2>/dev/null || true
 
       # GitHub-cache fallback for the local oleans — NON-Namespace only. On a
@@ -360,6 +370,16 @@ jobs:
           if [ "${{ steps.ns_lake_cache.outputs.cache-hit }}" != "true" ]; then
             echo "::warning::Namespace .lake cache MISS on this profile — Gate A cold-builds mathlib + the library (slow, #1921). Check the volume is attached (ADR-046)."
           fi
+          # Volume capacity, bytes AND inodes: the .lake cache lives on a fixed
+          # persistent Namespace volume (ADR-046) that fills over time (mathlib
+          # oleans across pins are millions of tiny files), and `lake exe cache get`
+          # ENOSPCs when it must decompress into a full volume — the batch-run
+          # failure this diagnostic exists to make visible. `du` alone (bytes only)
+          # can't show it: mkdir/leantar fail with ENOSPC while df still reports
+          # free *bytes* when the filesystem is out of *inodes*, so print both.
+          echo "--- .lake volume capacity (df: bytes then inodes) ---"
+          df -h .lake 2>/dev/null || df -h . || true
+          df -i .lake 2>/dev/null || df -i . || true
           du -sh .lake .lake/packages .lake/build 2>/dev/null || true
 
       # Cold-volume fallback (ADR-045): when the Namespace .lake volume MISSED
@@ -707,6 +727,16 @@ jobs:
           if [ "${{ steps.ns_lake_cache.outputs.cache-hit }}" != "true" ]; then
             echo "::warning::Namespace .lake cache MISS on this profile — Gate A cold-builds mathlib + the library (slow, #1921). Check the volume is attached (ADR-046)."
           fi
+          # Volume capacity, bytes AND inodes: the .lake cache lives on a fixed
+          # persistent Namespace volume (ADR-046) that fills over time (mathlib
+          # oleans across pins are millions of tiny files), and `lake exe cache get`
+          # ENOSPCs when it must decompress into a full volume — the batch-run
+          # failure this diagnostic exists to make visible. `du` alone (bytes only)
+          # can't show it: mkdir/leantar fail with ENOSPC while df still reports
+          # free *bytes* when the filesystem is out of *inodes*, so print both.
+          echo "--- .lake volume capacity (df: bytes then inodes) ---"
+          df -h .lake 2>/dev/null || df -h . || true
+          df -i .lake 2>/dev/null || df -i . || true
           du -sh .lake .lake/packages .lake/build 2>/dev/null || true
 
       # Cold-volume fallback (ADR-045): when the Namespace .lake volume MISSED,
