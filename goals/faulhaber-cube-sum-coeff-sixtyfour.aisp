@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜faulhaber-cube-sum-coeff-sixtyfour
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/faulhaber-cube-sum-coeff-sixtyfour.md
+  src≜packages/unsorry-archive-0103/backlog/faulhaber-cube-sum-coeff-sixtyfour.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/faulhaber-cube-sum-coeff-sixtyfour.lean
+  lean≜packages/unsorry-archive-0103/goals/faulhaber-cube-sum-coeff-sixtyfour.lean
   sha≜13124a5627ca6122c9bfbf940b3bd5ff86506a3350a667301627ba453710cafe
   aff≜0
 }

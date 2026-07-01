@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜faulhaber-cube-sum-coeff-fourteen
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/faulhaber-cube-sum-coeff-fourteen.md
+  src≜packages/unsorry-archive-0103/backlog/faulhaber-cube-sum-coeff-fourteen.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/faulhaber-cube-sum-coeff-fourteen.lean
+  lean≜packages/unsorry-archive-0103/goals/faulhaber-cube-sum-coeff-fourteen.lean
   sha≜e51460d85a4bf4c7d04103256f5ee5ee9dd948f4f89bd7b3603631b781de8ef5
   aff≜0
 }
