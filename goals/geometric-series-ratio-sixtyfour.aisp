@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜geometric-series-ratio-sixtyfour
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/geometric-series-ratio-sixtyfour.md
+  src≜packages/unsorry-archive-0112/backlog/geometric-series-ratio-sixtyfour.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/geometric-series-ratio-sixtyfour.lean
+  lean≜packages/unsorry-archive-0112/goals/geometric-series-ratio-sixtyfour.lean
   sha≜e5596fb247df03bd4f43ea0e64351e0354c29c6df0fd6715f264fb46018978e7
   aff≜0
 }

@@ -1,0 +1,155 @@
+{
+  "block_id": "unsorry-archive-0112",
+  "target_size": 40,
+  "proof_count": 34,
+  "status": "frozen",
+  "source_commit": "1d1c4b49ea88f7321f8375f5608bd4c23688c87b",
+  "validation_commit": null,
+  "pins": {
+    "lean_toolchain": "leanprover/lean4:v4.30.0",
+    "mathlib": "v4.30.0"
+  },
+  "notes": [
+    "ADR-041 proof archive block 0112.",
+    "Whole decomposition trees + standalone proved goals only (invariant A).",
+    "Active goal records remain as archived metadata pointing at this package."
+  ],
+  "goals": [
+    {
+      "goal": "geometric-series-ratio-fortyfour",
+      "module": "Unsorry.GeometricSeriesRatioFortyfour"
+    },
+    {
+      "goal": "geometric-series-ratio-fortynine",
+      "module": "Unsorry.GeometricSeriesRatioFortynine"
+    },
+    {
+      "goal": "geometric-series-ratio-fortyone",
+      "module": "Unsorry.GeometricSeriesRatioFortyone"
+    },
+    {
+      "goal": "geometric-series-ratio-fortyseven",
+      "module": "Unsorry.GeometricSeriesRatioFortyseven"
+    },
+    {
+      "goal": "geometric-series-ratio-fortysix",
+      "module": "Unsorry.GeometricSeriesRatioFortysix"
+    },
+    {
+      "goal": "geometric-series-ratio-fortythree",
+      "module": "Unsorry.GeometricSeriesRatioFortythree"
+    },
+    {
+      "goal": "geometric-series-ratio-fortytwo",
+      "module": "Unsorry.GeometricSeriesRatioFortytwo"
+    },
+    {
+      "goal": "geometric-series-ratio-four",
+      "module": "Unsorry.GeometricSeriesRatioFour"
+    },
+    {
+      "goal": "geometric-series-ratio-fourteen",
+      "module": "Unsorry.GeometricSeriesRatioFourteen"
+    },
+    {
+      "goal": "geometric-series-ratio-nine",
+      "module": "Unsorry.GeometricSeriesRatioNine"
+    },
+    {
+      "goal": "geometric-series-ratio-nineteen",
+      "module": "Unsorry.GeometricSeriesRatioNineteen"
+    },
+    {
+      "goal": "geometric-series-ratio-seven",
+      "module": "Unsorry.GeometricSeriesRatioSeven"
+    },
+    {
+      "goal": "geometric-series-ratio-seventeen",
+      "module": "Unsorry.GeometricSeriesRatioSeventeen"
+    },
+    {
+      "goal": "geometric-series-ratio-seventy",
+      "module": "Unsorry.GeometricSeriesRatioSeventy"
+    },
+    {
+      "goal": "geometric-series-ratio-seventyeight",
+      "module": "Unsorry.GeometricSeriesRatioSeventyeight"
+    },
+    {
+      "goal": "geometric-series-ratio-seventyfive",
+      "module": "Unsorry.GeometricSeriesRatioSeventyfive"
+    },
+    {
+      "goal": "geometric-series-ratio-seventyfour",
+      "module": "Unsorry.GeometricSeriesRatioSeventyfour"
+    },
+    {
+      "goal": "geometric-series-ratio-seventynine",
+      "module": "Unsorry.GeometricSeriesRatioSeventynine"
+    },
+    {
+      "goal": "geometric-series-ratio-seventyone",
+      "module": "Unsorry.GeometricSeriesRatioSeventyone"
+    },
+    {
+      "goal": "geometric-series-ratio-seventyseven",
+      "module": "Unsorry.GeometricSeriesRatioSeventyseven"
+    },
+    {
+      "goal": "geometric-series-ratio-seventysix",
+      "module": "Unsorry.GeometricSeriesRatioSeventysix"
+    },
+    {
+      "goal": "geometric-series-ratio-seventythree",
+      "module": "Unsorry.GeometricSeriesRatioSeventythree"
+    },
+    {
+      "goal": "geometric-series-ratio-seventytwo",
+      "module": "Unsorry.GeometricSeriesRatioSeventytwo"
+    },
+    {
+      "goal": "geometric-series-ratio-six",
+      "module": "Unsorry.GeometricSeriesRatioSix"
+    },
+    {
+      "goal": "geometric-series-ratio-sixteen",
+      "module": "Unsorry.GeometricSeriesRatioSixteen"
+    },
+    {
+      "goal": "geometric-series-ratio-sixty",
+      "module": "Unsorry.GeometricSeriesRatioSixty"
+    },
+    {
+      "goal": "geometric-series-ratio-sixtyeight",
+      "module": "Unsorry.GeometricSeriesRatioSixtyeight"
+    },
+    {
+      "goal": "geometric-series-ratio-sixtyfive",
+      "module": "Unsorry.GeometricSeriesRatioSixtyfive"
+    },
+    {
+      "goal": "geometric-series-ratio-sixtyfour",
+      "module": "Unsorry.GeometricSeriesRatioSixtyfour"
+    },
+    {
+      "goal": "geometric-series-ratio-sixtynine",
+      "module": "Unsorry.GeometricSeriesRatioSixtynine"
+    },
+    {
+      "goal": "geometric-series-ratio-sixtyone",
+      "module": "Unsorry.GeometricSeriesRatioSixtyone"
+    },
+    {
+      "goal": "geometric-series-ratio-sixtyseven",
+      "module": "Unsorry.GeometricSeriesRatioSixtyseven"
+    },
+    {
+      "goal": "geometric-series-ratio-sixtysix",
+      "module": "Unsorry.GeometricSeriesRatioSixtysix"
+    },
+    {
+      "goal": "geometric-series-ratio-sixtythree",
+      "module": "Unsorry.GeometricSeriesRatioSixtythree"
+    }
+  ]
+}
