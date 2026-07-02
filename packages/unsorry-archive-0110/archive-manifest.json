@@ -1,0 +1,155 @@
+{
+  "block_id": "unsorry-archive-0110",
+  "target_size": 40,
+  "proof_count": 34,
+  "status": "frozen",
+  "source_commit": "a996e2a659c5dd2680787eae517bac8f43911fd4",
+  "validation_commit": null,
+  "pins": {
+    "lean_toolchain": "leanprover/lean4:v4.30.0",
+    "mathlib": "v4.30.0"
+  },
+  "notes": [
+    "ADR-041 proof archive block 0110.",
+    "Whole decomposition trees + standalone proved goals only (invariant A).",
+    "Active goal records remain as archived metadata pointing at this package."
+  ],
+  "goals": [
+    {
+      "goal": "faulhaber-square-sum-coeff-fourteen",
+      "module": "Unsorry.FaulhaberSquareSumCoeffFourteen"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-nine",
+      "module": "Unsorry.FaulhaberSquareSumCoeffNine"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-nineteen",
+      "module": "Unsorry.FaulhaberSquareSumCoeffNineteen"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-one",
+      "module": "Unsorry.FaulhaberSquareSumCoeffOne"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-seven",
+      "module": "Unsorry.FaulhaberSquareSumCoeffSeven"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-seventeen",
+      "module": "Unsorry.FaulhaberSquareSumCoeffSeventeen"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-seventy",
+      "module": "Unsorry.FaulhaberSquareSumCoeffSeventy"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-seventyfive",
+      "module": "Unsorry.FaulhaberSquareSumCoeffSeventyfive"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-seventyfour",
+      "module": "Unsorry.FaulhaberSquareSumCoeffSeventyfour"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-seventyone",
+      "module": "Unsorry.FaulhaberSquareSumCoeffSeventyone"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-seventythree",
+      "module": "Unsorry.FaulhaberSquareSumCoeffSeventythree"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-seventytwo",
+      "module": "Unsorry.FaulhaberSquareSumCoeffSeventytwo"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-six",
+      "module": "Unsorry.FaulhaberSquareSumCoeffSix"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-sixteen",
+      "module": "Unsorry.FaulhaberSquareSumCoeffSixteen"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-sixty",
+      "module": "Unsorry.FaulhaberSquareSumCoeffSixty"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-sixtyeight",
+      "module": "Unsorry.FaulhaberSquareSumCoeffSixtyeight"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-sixtyfive",
+      "module": "Unsorry.FaulhaberSquareSumCoeffSixtyfive"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-sixtyfour",
+      "module": "Unsorry.FaulhaberSquareSumCoeffSixtyfour"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-sixtynine",
+      "module": "Unsorry.FaulhaberSquareSumCoeffSixtynine"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-sixtyone",
+      "module": "Unsorry.FaulhaberSquareSumCoeffSixtyone"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-sixtyseven",
+      "module": "Unsorry.FaulhaberSquareSumCoeffSixtyseven"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-sixtysix",
+      "module": "Unsorry.FaulhaberSquareSumCoeffSixtysix"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-sixtythree",
+      "module": "Unsorry.FaulhaberSquareSumCoeffSixtythree"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-sixtytwo",
+      "module": "Unsorry.FaulhaberSquareSumCoeffSixtytwo"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-ten",
+      "module": "Unsorry.FaulhaberSquareSumCoeffTen"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-thirteen",
+      "module": "Unsorry.FaulhaberSquareSumCoeffThirteen"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-thirty",
+      "module": "Unsorry.FaulhaberSquareSumCoeffThirty"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-thirtyeight",
+      "module": "Unsorry.FaulhaberSquareSumCoeffThirtyeight"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-thirtyfive",
+      "module": "Unsorry.FaulhaberSquareSumCoeffThirtyfive"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-thirtyfour",
+      "module": "Unsorry.FaulhaberSquareSumCoeffThirtyfour"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-thirtynine",
+      "module": "Unsorry.FaulhaberSquareSumCoeffThirtynine"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-thirtyone",
+      "module": "Unsorry.FaulhaberSquareSumCoeffThirtyone"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-thirtyseven",
+      "module": "Unsorry.FaulhaberSquareSumCoeffThirtyseven"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-thirtysix",
+      "module": "Unsorry.FaulhaberSquareSumCoeffThirtysix"
+    }
+  ]
+}
