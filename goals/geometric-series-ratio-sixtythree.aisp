@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜geometric-series-ratio-sixtythree
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/geometric-series-ratio-sixtythree.md
+  src≜packages/unsorry-archive-0112/backlog/geometric-series-ratio-sixtythree.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/geometric-series-ratio-sixtythree.lean
+  lean≜packages/unsorry-archive-0112/goals/geometric-series-ratio-sixtythree.lean
   sha≜9f40f628e910103a80ed33249205c79dc9940f5b848824158d0219ceb814d75c
   aff≜0
 }
