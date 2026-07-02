@@ -5263,8 +5263,8 @@
         "index_files_added": 215,
         "missing_solver_provenance": 0,
         "profile_url": null,
-        "sample_add_commit": "675b192777b02e1257080b2c5fd4d1bc2413b299",
-        "sample_add_date": "2026-06-23",
+        "sample_add_commit": "9d8abcf3a675d9669c9979b791a9aee300071e7d",
+        "sample_add_date": "2026-06-15",
         "solver_credit": false,
         "solver_provenance_proofs": 215
       },
@@ -5610,10 +5610,10 @@
     },
     "goals": 5025,
     "status_counts": {
-      "archived": 3865,
+      "archived": 3899,
       "blocked": 17,
       "open": 238,
-      "proved": 896,
+      "proved": 862,
       "translated": 9
     }
   },
