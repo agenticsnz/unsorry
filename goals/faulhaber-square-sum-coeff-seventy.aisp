@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜faulhaber-square-sum-coeff-seventy
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/faulhaber-square-sum-coeff-seventy.md
+  src≜packages/unsorry-archive-0110/backlog/faulhaber-square-sum-coeff-seventy.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/faulhaber-square-sum-coeff-seventy.lean
+  lean≜packages/unsorry-archive-0110/goals/faulhaber-square-sum-coeff-seventy.lean
   sha≜e97d06742e5a3dadc2ddc6ca41e825cdb6bdf1940d32988f08154d722e24269b
   aff≜0
 }
