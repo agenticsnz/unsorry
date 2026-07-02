@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜geometric-series-ratio-fiftyone
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/geometric-series-ratio-fiftyone.md
+  src≜packages/unsorry-archive-0111/backlog/geometric-series-ratio-fiftyone.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/geometric-series-ratio-fiftyone.lean
+  lean≜packages/unsorry-archive-0111/goals/geometric-series-ratio-fiftyone.lean
   sha≜b655499fa05fbc2695a4c4e0bf055adf837a0d6107a55de3942a33717f2765cb
   aff≜0
 }

@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜faulhaber-square-sum-coeff-twelve
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/faulhaber-square-sum-coeff-twelve.md
+  src≜packages/unsorry-archive-0111/backlog/faulhaber-square-sum-coeff-twelve.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/faulhaber-square-sum-coeff-twelve.lean
+  lean≜packages/unsorry-archive-0111/goals/faulhaber-square-sum-coeff-twelve.lean
   sha≜77921621125b2904c3081312a75492bd04cad7d227df2924379773a2b7d07aee
   aff≜0
 }

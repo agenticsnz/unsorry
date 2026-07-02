@@ -1,0 +1,155 @@
+{
+  "block_id": "unsorry-archive-0111",
+  "target_size": 40,
+  "proof_count": 34,
+  "status": "frozen",
+  "source_commit": "e05b62d8c992d05070ddeee7919825d6c5511b5e",
+  "validation_commit": null,
+  "pins": {
+    "lean_toolchain": "leanprover/lean4:v4.30.0",
+    "mathlib": "v4.30.0"
+  },
+  "notes": [
+    "ADR-041 proof archive block 0111.",
+    "Whole decomposition trees + standalone proved goals only (invariant A).",
+    "Active goal records remain as archived metadata pointing at this package."
+  ],
+  "goals": [
+    {
+      "goal": "faulhaber-square-sum-coeff-thirtythree",
+      "module": "Unsorry.FaulhaberSquareSumCoeffThirtythree"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-thirtytwo",
+      "module": "Unsorry.FaulhaberSquareSumCoeffThirtytwo"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-three",
+      "module": "Unsorry.FaulhaberSquareSumCoeffThree"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-twelve",
+      "module": "Unsorry.FaulhaberSquareSumCoeffTwelve"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-twenty",
+      "module": "Unsorry.FaulhaberSquareSumCoeffTwenty"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-twentyeight",
+      "module": "Unsorry.FaulhaberSquareSumCoeffTwentyeight"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-twentyfive",
+      "module": "Unsorry.FaulhaberSquareSumCoeffTwentyfive"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-twentyfour",
+      "module": "Unsorry.FaulhaberSquareSumCoeffTwentyfour"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-twentynine",
+      "module": "Unsorry.FaulhaberSquareSumCoeffTwentynine"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-twentyone",
+      "module": "Unsorry.FaulhaberSquareSumCoeffTwentyone"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-twentyseven",
+      "module": "Unsorry.FaulhaberSquareSumCoeffTwentyseven"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-twentysix",
+      "module": "Unsorry.FaulhaberSquareSumCoeffTwentysix"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-twentythree",
+      "module": "Unsorry.FaulhaberSquareSumCoeffTwentythree"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-twentytwo",
+      "module": "Unsorry.FaulhaberSquareSumCoeffTwentytwo"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-two",
+      "module": "Unsorry.FaulhaberSquareSumCoeffTwo"
+    },
+    {
+      "goal": "geometric-series-ratio-eight",
+      "module": "Unsorry.GeometricSeriesRatioEight"
+    },
+    {
+      "goal": "geometric-series-ratio-eighteen",
+      "module": "Unsorry.GeometricSeriesRatioEighteen"
+    },
+    {
+      "goal": "geometric-series-ratio-eighty",
+      "module": "Unsorry.GeometricSeriesRatioEighty"
+    },
+    {
+      "goal": "geometric-series-ratio-eleven",
+      "module": "Unsorry.GeometricSeriesRatioEleven"
+    },
+    {
+      "goal": "geometric-series-ratio-fifteen",
+      "module": "Unsorry.GeometricSeriesRatioFifteen"
+    },
+    {
+      "goal": "geometric-series-ratio-fifty",
+      "module": "Unsorry.GeometricSeriesRatioFifty"
+    },
+    {
+      "goal": "geometric-series-ratio-fiftyeight",
+      "module": "Unsorry.GeometricSeriesRatioFiftyeight"
+    },
+    {
+      "goal": "geometric-series-ratio-fiftyfive",
+      "module": "Unsorry.GeometricSeriesRatioFiftyfive"
+    },
+    {
+      "goal": "geometric-series-ratio-fiftyfour",
+      "module": "Unsorry.GeometricSeriesRatioFiftyfour"
+    },
+    {
+      "goal": "geometric-series-ratio-fiftynine",
+      "module": "Unsorry.GeometricSeriesRatioFiftynine"
+    },
+    {
+      "goal": "geometric-series-ratio-fiftyone",
+      "module": "Unsorry.GeometricSeriesRatioFiftyone"
+    },
+    {
+      "goal": "geometric-series-ratio-fiftyseven",
+      "module": "Unsorry.GeometricSeriesRatioFiftyseven"
+    },
+    {
+      "goal": "geometric-series-ratio-fiftysix",
+      "module": "Unsorry.GeometricSeriesRatioFiftysix"
+    },
+    {
+      "goal": "geometric-series-ratio-fiftythree",
+      "module": "Unsorry.GeometricSeriesRatioFiftythree"
+    },
+    {
+      "goal": "geometric-series-ratio-fiftytwo",
+      "module": "Unsorry.GeometricSeriesRatioFiftytwo"
+    },
+    {
+      "goal": "geometric-series-ratio-five",
+      "module": "Unsorry.GeometricSeriesRatioFive"
+    },
+    {
+      "goal": "geometric-series-ratio-forty",
+      "module": "Unsorry.GeometricSeriesRatioForty"
+    },
+    {
+      "goal": "geometric-series-ratio-fortyeight",
+      "module": "Unsorry.GeometricSeriesRatioFortyeight"
+    },
+    {
+      "goal": "geometric-series-ratio-fortyfive",
+      "module": "Unsorry.GeometricSeriesRatioFortyfive"
+    }
+  ]
+}
