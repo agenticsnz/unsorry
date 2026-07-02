@@ -1,0 +1,155 @@
+{
+  "block_id": "unsorry-archive-0113",
+  "target_size": 40,
+  "proof_count": 34,
+  "status": "frozen",
+  "source_commit": "4bbe72f99b98bd3eb2dcb7df10937435c79f3909",
+  "validation_commit": null,
+  "pins": {
+    "lean_toolchain": "leanprover/lean4:v4.30.0",
+    "mathlib": "v4.30.0"
+  },
+  "notes": [
+    "ADR-041 proof archive block 0113.",
+    "Whole decomposition trees + standalone proved goals only (invariant A).",
+    "Active goal records remain as archived metadata pointing at this package."
+  ],
+  "goals": [
+    {
+      "goal": "geometric-series-ratio-sixtytwo",
+      "module": "Unsorry.GeometricSeriesRatioSixtytwo"
+    },
+    {
+      "goal": "geometric-series-ratio-ten",
+      "module": "Unsorry.GeometricSeriesRatioTen"
+    },
+    {
+      "goal": "geometric-series-ratio-thirteen",
+      "module": "Unsorry.GeometricSeriesRatioThirteen"
+    },
+    {
+      "goal": "geometric-series-ratio-thirty",
+      "module": "Unsorry.GeometricSeriesRatioThirty"
+    },
+    {
+      "goal": "geometric-series-ratio-thirtyeight",
+      "module": "Unsorry.GeometricSeriesRatioThirtyeight"
+    },
+    {
+      "goal": "geometric-series-ratio-thirtyfive",
+      "module": "Unsorry.GeometricSeriesRatioThirtyfive"
+    },
+    {
+      "goal": "geometric-series-ratio-thirtyfour",
+      "module": "Unsorry.GeometricSeriesRatioThirtyfour"
+    },
+    {
+      "goal": "geometric-series-ratio-thirtynine",
+      "module": "Unsorry.GeometricSeriesRatioThirtynine"
+    },
+    {
+      "goal": "geometric-series-ratio-thirtyone",
+      "module": "Unsorry.GeometricSeriesRatioThirtyone"
+    },
+    {
+      "goal": "geometric-series-ratio-thirtyseven",
+      "module": "Unsorry.GeometricSeriesRatioThirtyseven"
+    },
+    {
+      "goal": "geometric-series-ratio-thirtysix",
+      "module": "Unsorry.GeometricSeriesRatioThirtysix"
+    },
+    {
+      "goal": "geometric-series-ratio-thirtythree",
+      "module": "Unsorry.GeometricSeriesRatioThirtythree"
+    },
+    {
+      "goal": "geometric-series-ratio-thirtytwo",
+      "module": "Unsorry.GeometricSeriesRatioThirtytwo"
+    },
+    {
+      "goal": "geometric-series-ratio-three",
+      "module": "Unsorry.GeometricSeriesRatioThree"
+    },
+    {
+      "goal": "geometric-series-ratio-twelve",
+      "module": "Unsorry.GeometricSeriesRatioTwelve"
+    },
+    {
+      "goal": "geometric-series-ratio-twenty",
+      "module": "Unsorry.GeometricSeriesRatioTwenty"
+    },
+    {
+      "goal": "geometric-series-ratio-twentyeight",
+      "module": "Unsorry.GeometricSeriesRatioTwentyeight"
+    },
+    {
+      "goal": "geometric-series-ratio-twentyfive",
+      "module": "Unsorry.GeometricSeriesRatioTwentyfive"
+    },
+    {
+      "goal": "geometric-series-ratio-twentyfour",
+      "module": "Unsorry.GeometricSeriesRatioTwentyfour"
+    },
+    {
+      "goal": "geometric-series-ratio-twentynine",
+      "module": "Unsorry.GeometricSeriesRatioTwentynine"
+    },
+    {
+      "goal": "geometric-series-ratio-twentyone",
+      "module": "Unsorry.GeometricSeriesRatioTwentyone"
+    },
+    {
+      "goal": "geometric-series-ratio-twentyseven",
+      "module": "Unsorry.GeometricSeriesRatioTwentyseven"
+    },
+    {
+      "goal": "geometric-series-ratio-twentysix",
+      "module": "Unsorry.GeometricSeriesRatioTwentysix"
+    },
+    {
+      "goal": "geometric-series-ratio-twentythree",
+      "module": "Unsorry.GeometricSeriesRatioTwentythree"
+    },
+    {
+      "goal": "geometric-series-ratio-twentytwo",
+      "module": "Unsorry.GeometricSeriesRatioTwentytwo"
+    },
+    {
+      "goal": "geometric-series-ratio-two",
+      "module": "Unsorry.GeometricSeriesRatioTwo"
+    },
+    {
+      "goal": "gzmod-102-pow-nineteen-sub-pow-three",
+      "module": "Unsorry.Gzmod102PowNineteenSubPowThree"
+    },
+    {
+      "goal": "gzmod-102-pow-twenty-sub-pow-four",
+      "module": "Unsorry.Gzmod102PowTwentySubPowFour"
+    },
+    {
+      "goal": "gzmod-102-pow-twentyone-sub-pow-five",
+      "module": "Unsorry.Gzmod102PowTwentyoneSubPowFive"
+    },
+    {
+      "goal": "gzmod-102-pow-twentytwo-sub-pow-six",
+      "module": "Unsorry.Gzmod102PowTwentytwoSubPowSix"
+    },
+    {
+      "goal": "gzmod-105-pow-eighteen-sub-pow-six",
+      "module": "Unsorry.Gzmod105PowEighteenSubPowSix"
+    },
+    {
+      "goal": "gzmod-105-pow-fifteen-sub-pow-three",
+      "module": "Unsorry.Gzmod105PowFifteenSubPowThree"
+    },
+    {
+      "goal": "gzmod-105-pow-seventeen-sub-pow-five",
+      "module": "Unsorry.Gzmod105PowSeventeenSubPowFive"
+    },
+    {
+      "goal": "gzmod-105-pow-sixteen-sub-pow-four",
+      "module": "Unsorry.Gzmod105PowSixteenSubPowFour"
+    }
+  ]
+}
