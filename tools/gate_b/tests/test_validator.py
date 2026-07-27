@@ -102,6 +102,87 @@ def test_archived_goal_accepts_archive_index_artifact(tmp_path: Path):
     assert validate_tree(tmp_path) == []
 
 
+def test_proved_goal_accepts_suite_verify_index_artifact(tmp_path: Path):
+    # ADR-099/ADR-116: a benchmark obligation (and, via the decomposition graph, its
+    # sub-lemmas) proves at the SUITE's pin, so its module and its index entry land in
+    # targets/<suite>/_verify/library/, not the repo library. The leaderboard already
+    # counts those (tools/leaderboard/registered_targets.py globs
+    # targets/*/_verify/library/index); Gate B resolved the index only in the repo
+    # library and in archive packages, so it reported GB006/GB020 against a perfectly
+    # good suite-pin proof and the harness discarded it.
+    goal = "aime-1983-p9-s2"
+    lean = "theorem aime_1983_p9_amgm_cleared (y : Nat) : y = y := by sorry\n"
+    sha = statement_sha(lean)
+    (tmp_path / "goals").mkdir()
+    (tmp_path / "proof-runs").mkdir()
+    suite_index = tmp_path / "targets" / "minif2f-v1" / "_verify" / "library" / "index"
+    suite_index.mkdir(parents=True)
+    (tmp_path / "goals" / f"{goal}.lean").write_text(lean, encoding="utf-8")
+    (tmp_path / "backlog").mkdir()
+    (tmp_path / "backlog" / f"{goal}.md").write_text("Sub-lemma\n", encoding="utf-8")
+    (tmp_path / "goals" / f"{goal}.aisp").write_text(
+        f"""𝔸5.1.goal.{goal}@2026-07-27
+γ≔unsorry.goal
+⟦Ω:Goal⟧{{id≜{goal}; phase≜prove; status≜proved; difficulty≜1}}
+⟦Σ:Source⟧{{src≜backlog/{goal}.md}}
+⟦Γ:Deps⟧{{deps≜⟨⟩}}
+⟦Λ:Artifact⟧{{lean≜goals/{goal}.lean; sha≜{sha}}}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
+""",
+        encoding="utf-8",
+    )
+    (suite_index / f"{sha}.aisp").write_text(
+        f"""𝔸5.1.lemma.{sha[:12]}@2026-07-27
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{{sha≜{sha}; goal≜{goal}; name≜aime_1983_p9_amgm_cleared}}
+⟦Σ:Source⟧{{src≜goals/{goal}.lean}}
+⟦Γ:Tags⟧{{tags≜⟨⟩}}
+⟦Λ:Meta⟧{{use≜0; aff≜0}}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
+""",
+        encoding="utf-8",
+    )
+    (tmp_path / "proof-runs" / f"{goal}.agent-x.20260727t000000000000z-1234abcd.aisp").write_text(
+        f"""𝔸5.1.run.{goal}.agent-x.20260727t000000000000z-1234abcd@2026-07-27
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{{id≜20260727t000000000000z-1234abcd; goal≜{goal}; agent≜agent-x; outcome≜proved}}
+⟦Π:Provenance⟧{{solver≜octocat; provider≜claude; model≜fable; effort≜high}}
+⟦Γ:Goal⟧{{goal≜{goal}}}
+⟦Λ:Metrics⟧{{attempts≜1; solve_s≜12; ended≜2026-07-27T00:00:00Z; lessons≜0}}
+⟦Σ:Artifact⟧{{sha≜{sha}}}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
+""",
+        encoding="utf-8",
+    )
+
+    assert validate_tree(tmp_path) == []
+
+
+def test_suite_verify_index_entries_are_validated(tmp_path: Path):
+    # The suite index must not merely be tolerated — it must be SCANNED. An index
+    # file whose filename stem is not its sha≜ is malformed wherever it lives; before
+    # this fix such a file under targets/*/_verify/library/index was never read at
+    # all, so a bad artifact could ride into main unnoticed.
+    suite_index = tmp_path / "targets" / "minif2f-v1" / "_verify" / "library" / "index"
+    suite_index.mkdir(parents=True)
+    (suite_index / f"{'0' * 64}.aisp").write_text(
+        f"""𝔸5.1.lemma.{'0' * 12}@2026-07-27
+γ≔unsorry.lemma.index
+⟦Ω:Lemma⟧{{sha≜{'1' * 64}; goal≜some-goal; name≜some_thm}}
+⟦Σ:Source⟧{{src≜goals/some-goal.lean}}
+⟦Γ:Tags⟧{{tags≜⟨⟩}}
+⟦Λ:Meta⟧{{use≜0; aff≜0}}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
+""",
+        encoding="utf-8",
+    )
+    report = validate_tree(tmp_path)
+    assert any(
+        v.code == "GB006" and "does not match index filename stem" in v.message
+        for v in report
+    ), f"suite index was not validated: {report}"
+
+
 def test_claims_valid_is_clean_while_live():
     assert run_validate(CLAIMS_VALID, at=AT_LIVE) == []
 
