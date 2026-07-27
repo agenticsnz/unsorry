@@ -1,0 +1,1 @@
+Agent skill configuration is now recorded in `docs/agents/` — `issue-tracker.md` (GitHub issues via `gh`), `triage-labels.md` (the five canonical triage roles), and `domain.md` (single-context layout, plus this repo's ADR and spec conventions from `docs/protocols.md` §1–2). Engineering skills read these files instead of assuming their own defaults.
