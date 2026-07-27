@@ -3274,14 +3274,21 @@ proved_deps_library_dir() {
 
 prove_local_verify() {
   local root="$1" camel="$2" lib_target="${3:-UnsorryLibrary}" do_audit="${4:-1}"
-  # ``library`` is relative to <root>: the repo root for an organic goal, the suite
-  # _verify project for a benchmark goal. The repo axiom_audit exe is absent in a suite
-  # package, so do_audit=0 there — Gate A's gate-a-benchmark leg (--wfail + forbidden
-  # tokens) verifies at the suite pin instead (ADR-099 §2).
+  # <repo_root> is where `python3 -m tools.…` resolves from and <lib_rel> is the
+  # library to check, relative to it. They default to <root>/library so an organic
+  # goal's 4-arg call is byte-identical to before. The repo axiom_audit exe is absent
+  # in a suite package, so do_audit=0 there — Gate A's gate-a-benchmark leg (--wfail
+  # + forbidden tokens) verifies at the suite pin instead (ADR-099 §2).
+  local repo_root="${5:-$root}" lib_rel="${6:-library}"
+  # Steps 1–2 run in the BUILD dir (the suite _verify project for a benchmark goal);
+  # step 3 must run in the REPO ROOT. `python3 -m tools.…` resolves `tools` from cwd,
+  # and a suite _verify project has no `tools/` — running it in the build dir died
+  # with ModuleNotFoundError, failing every suite-pin proof however correct (ADR-116).
   ( cd "$root" \
     && lake build "$lib_target" --wfail \
-    && { [ "$do_audit" != 1 ] || lake exe axiom_audit "Unsorry.$camel"; } \
-    && python3 -m tools.gate_a.check_library_options library ) >/dev/null 2>&1
+    && { [ "$do_audit" != 1 ] || lake exe axiom_audit "Unsorry.$camel"; } ) >/dev/null 2>&1 \
+  && ( cd "$repo_root" \
+    && python3 -m tools.gate_a.check_library_options "$lib_rel" ) >/dev/null 2>&1
 }
 
 # ADR-009 recompose hardening. Print a prompt block iff <goal> is a recompose-
@@ -3465,7 +3472,7 @@ Fix the module so both pass. Write the corrected $target."
     # --wfail build below (and by Gate A in CI), so a proof of a weakened or
     # vacuous statement under the goal's name fails here, not just in review.
     write_binding_module "$prwt" "$goal" "$camel" "$lib_rel" || { err="(could not emit binding obligation)"; continue; }
-    if prove_local_verify "$build_dir" "$camel" "$lib_target" "$do_audit"; then
+    if prove_local_verify "$build_dir" "$camel" "$lib_target" "$do_audit" "$prwt" "$lib_rel"; then
       # ADR-074/096 import-narrowing + kernel-diverse confirm are repo-pin-only
       # best-effort/advisory passes; skip them for a benchmark goal (its module
       # lives in the suite package, at the suite pin) — they never gate the proof.
@@ -3478,8 +3485,15 @@ Fix the module so both pass. Write the corrected $target."
       return 0
     fi
     log "local verification of $goal failed (attempt $attempt)"
-    err="$( ( cd "$build_dir" && lake build "$lib_target" --wfail \
-      && { [ "$do_audit" != 1 ] || lake exe axiom_audit "Unsorry.$camel"; } ) 2>&1 | tail -n 40 )"
+    # The lesson fed to the next rung (and persisted by ADR-024) must cover the SAME
+    # three steps prove_local_verify gates on. Omitting step 3 meant a step-3 failure
+    # reported the step-1 build's output — "Build completed successfully" handed back
+    # as the reason the attempt failed, an unfalsifiable instruction the model cannot
+    # act on. Observed on every aime-1983-p9-s2 attempt before the ADR-116 path fix.
+    err="$( { ( cd "$build_dir" && lake build "$lib_target" --wfail \
+        && { [ "$do_audit" != 1 ] || lake exe axiom_audit "Unsorry.$camel"; } ) \
+      && ( cd "$prwt" && python3 -m tools.gate_a.check_library_options "$lib_rel" ); \
+      } 2>&1 | tail -n 40 )"
   done
   PROOF_SOLVE_SECONDS=$(( $(date +%s) - proof_started ))
   # ADR-024: the final attempt's verifier output becomes this run's lesson,
@@ -6199,6 +6213,49 @@ test_proved_deps_library_dir() {
   return "$rc"
 }
 
+test_local_verify_runs_tools_from_repo_root() {
+  # ADR-116 regression: prove_local_verify's step 3 (check_library_options) is a
+  # `python3 -m tools.…` call, so it only resolves with the REPO ROOT as cwd.
+  # For a benchmark goal <root> is the suite _verify project, which has no
+  # `tools/` — the check died with ModuleNotFoundError and EVERY suite-pin proof
+  # failed local verification no matter how correct it was. Assert the seam runs
+  # the module from the repo root and points it at <lib_rel>, per the documented
+  # contract above prove_local_verify ("check_library_options <root>/library").
+  # lake and python are stubbed — the suite stays hermetic.
+  local rc=0 got
+  lake() { return 0; }
+  python3() {
+    # Record cwd + args exactly as the real call would see them.
+    printf '%s|%s\n' "$PWD" "$*" >> "$_LV_TRACE"
+    return 0
+  }
+  _LV_TRACE="$(mktemp)"
+  _LV_ROOT="$(mktemp -d)"
+
+  # benchmark goal: build dir is the suite project, repo root is the worktree.
+  mkdir -p "$_LV_ROOT/targets/minif2f-v1/_verify"
+  prove_local_verify "$_LV_ROOT/targets/minif2f-v1/_verify" Aime1983P9S2 Minif2fV1 0 \
+    "$_LV_ROOT" "targets/minif2f-v1/_verify/library" || rc=1
+  got="$(tail -n 1 "$_LV_TRACE")"
+  case "$got" in
+    "$_LV_ROOT|-m tools.gate_a.check_library_options targets/minif2f-v1/_verify/library") ;;
+    *) log "  benchmark check_library_options ran wrong: [$got]"; rc=1 ;;
+  esac
+
+  # organic goal: 4-arg call must stay byte-identical to pre-ADR-116 behaviour.
+  : > "$_LV_TRACE"
+  prove_local_verify "$_LV_ROOT" SomeModule UnsorryLibrary 0 || rc=1
+  got="$(tail -n 1 "$_LV_TRACE")"
+  case "$got" in
+    "$_LV_ROOT|-m tools.gate_a.check_library_options library") ;;
+    *) log "  organic check_library_options ran wrong: [$got]"; rc=1 ;;
+  esac
+
+  rm -f "$_LV_TRACE"; rm -rf "$_LV_ROOT"
+  unset -f lake python3; unset _LV_TRACE _LV_ROOT
+  return "$rc"
+}
+
 test_open_pr_claim_guard() {
   local rc
   # ADR-017: an open prove PR for exactly this goal → skip it (rc 0). gh is
@@ -6853,6 +6910,7 @@ run_self_tests() {
     test_seed_library_cache
     test_suite_context_for_goal
     test_proved_deps_library_dir
+    test_local_verify_runs_tools_from_repo_root
     test_convergence_rewrite
     test_record_validation
     test_require_main_checkout
