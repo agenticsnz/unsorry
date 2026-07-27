@@ -1,0 +1,13 @@
+𝔸5.1.decomp.aime-1983-p9-s2.e65e194c4579-7e63@2026-07-27
+γ≔unsorry.decomposition
+⟦Ω:Decomp⟧{parent≜aime-1983-p9-s2; agent≜e65e194c4579-7e63}
+⟦Σ:Subs⟧{
+  sub₁≜⟨id≜aime-1983-p9-s2-s1,sha≜500268b20da8cbfc7a818f037c81cadc3df28ef4bc727d02b2a7b8c1849ebbee⟩
+  sub₂≜⟨id≜aime-1983-p9-s2-s2,sha≜51d763bee88ed3f93a8f40af4491e1fba7b4944159b5148c182a85aa05ac99b9⟩
+  sub₃≜⟨id≜aime-1983-p9-s2-s3,sha≜a8aff810c3872ee955872e740e7791b28bbfad04ee89103f7b063bcbb7c1e311⟩
+}
+⟦Γ:Edges⟧{
+  Post(sub₁)⊆Pre(parent); Post(sub₂)⊆Pre(parent); Post(sub₃)⊆Pre(parent)
+}
+⟦Λ:Requeue⟧{∀s∈subs:goal(s)≫status≔open}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
