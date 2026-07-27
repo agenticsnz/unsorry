@@ -24,3 +24,17 @@ The optional Svelte `{@html}` protocol (§13) does not apply — there is no fro
 - **Merges to `main` are autonomous** once required checks (Gate A soundness, Gate B hygiene) are green — `gh pr merge --auto --squash`, no required reviewers (ADR-005). Never use admin bypass as a normal path.
 - **mathlib4 is pinned to release tags** and never built from source; toolchain bumps only in dedicated PRs (ADR-002).
 - **Coordination artifacts are AISP**; the load-bearing validator is in-repo (`tools/gate_b/`, lands with its implementation PR), upstream `aisp-validator` is advisory only (ADR-003).
+
+## Agent skills
+
+### Issue tracker
+
+Issues live as GitHub issues in `agenticsnz/unsorry`, managed via the `gh` CLI. See [`docs/agents/issue-tracker.md`](docs/agents/issue-tracker.md).
+
+### Triage labels
+
+The five canonical triage roles, each label string equal to its name. See [`docs/agents/triage-labels.md`](docs/agents/triage-labels.md).
+
+### Domain docs
+
+Single-context. ADRs live in `docs/adrs/` as `ADR-NNN-Title.md` in enhanced WH(Y) format, with paired specs in `docs/adrs/specs/` — per [`docs/protocols.md`](docs/protocols.md) §1–2, which override any ADR convention a skill ships with. See [`docs/agents/domain.md`](docs/agents/domain.md).
