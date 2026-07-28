@@ -4,34 +4,34 @@
 
 Verified output comes from active `library/index` records plus archived index records only after their active copy has been retired; append-only terminal-run telemetry comes from `proof-runs/`. Rates cover only logged runs and never guess historical failures from Git history. Timing is contributor-reported local proof plus verification time.
 
-**4750 verified proofs · 4441 attributed · 309 historical/unknown · 409 logged terminal runs.**
+**4750 verified proofs · 4441 attributed · 309 historical/unknown · 408 logged terminal runs.**
 
 ## Efficiency Baseline
 
 | Metric | Value |
 |--------|------:|
-| Successful terminal runs | 38 |
+| Successful terminal runs | 37 |
 | Failed terminal runs | 371 |
 | Decomposed after failure | 35 |
 | Failed without decomposition | 336 |
-| Run success rate | 9.3% |
-| Provider attempts | 537 |
+| Run success rate | 9.1% |
+| Provider attempts | 536 |
 | Failed attempts | 499 |
-| Attempt yield | 7.1% |
+| Attempt yield | 6.9% |
 | Recorded run time | 122h 31m |
-| Median / p90 run time | 8m 52s / 32m 11s |
-| Verified successes per recorded hour | 0.31 |
-| Proofs with run telemetry | 38 (0.8%) |
+| Median / p90 run time | 8m 56s / 32m 11s |
+| Verified successes per recorded hour | 0.30 |
+| Proofs with run telemetry | 37 (0.8%) |
 
 ## Work Queue
 
-**5026 goals · 4001 archived · 16 blocked · 235 open · 765 proved · 9 translated.**
+**5026 goals · 4035 archived · 16 blocked · 235 open · 731 proved · 9 translated.**
 
 ## Efficiency by Difficulty
 
 | Difficulty | Runs | Successes | Run success | Failed attempts | Median time |
 |-----------:|-----:|----------:|------------:|----------------:|------------:|
-| 1 | 178 | 19 | 10.7% | 233 | 8m 48s |
+| 1 | 177 | 18 | 10.2% | 233 | 8m 50s |
 | 2 | 113 | 5 | 4.4% | 125 | 6m 48s |
 | 3 | 67 | 3 | 4.5% | 73 | 9m 24s |
 | 4 | 49 | 11 | 22.4% | 66 | 23m 39s |
@@ -59,7 +59,7 @@ Rank uses Score (difficulty points + dispatch credit). Explicit `solver≜...` p
 | Rank | Contributor | Proof credit | Explicit | Inferred | Runs | Run success | Difficulty points | Dispatch (0.9 ea) | Score |
 |-----:|-------------|-------------:|---------:|---------:|-----:|------------:|------------------:|------------------:|------:|
 | 1 | [@cgbarlow](https://github.com/cgbarlow) | 119 | 72 | 47 | 296 | 6.1% | 215 | 2898.0 | 314275 |
-| 2 | [@ohdearquant](https://github.com/ohdearquant) | 2375 | 2374 | 1 | 1 | 100.0% | 2378 | 0.0 | 297175 |
+| 2 | [@ohdearquant](https://github.com/ohdearquant) | 2375 | 2374 | 1 | 0 | — | 2378 | 0.0 | 297175 |
 | 3 | [@chat-bit-01](https://github.com/chat-bit-01) | 2023 | 1776 | 247 | 4 | 100.0% | 2354 | 20.7 | 288045 |
 | 4 | [@ruvnet](https://github.com/ruvnet) | 160 | 160 | 0 | 0 | — | 429 | 0.0 | 46900 |
 | 5 | [@perttu](https://github.com/perttu) | 41 | 37 | 4 | 27 | 14.8% | 87 | 202.5 | 29975 |
@@ -78,7 +78,7 @@ Git add-author attribution covers 4750 of 4750 proof index files. It is used onl
 
 | Provider / model | Verified proofs | Runs | Run success | Failed attempts | Solvers | Median time | Successes / recorded hour |
 |------------------|----------------:|-----:|------------:|----------------:|--------:|------------:|-------------------------:|
-| `python / sympy` | 2373 | 1 | 100.0% | 0 | 1 | 0s | — |
+| `python / sympy` | 2373 | 0 | — | 0 | 1 | — | — |
 | `lean / ring` | 1119 | 0 | — | 0 | 1 | — | — |
 | `lean / decide` | 653 | 0 | — | 0 | 1 | — | — |
 | `openrouter / unknown` | 160 | 0 | — | 0 | 1 | — | — |
