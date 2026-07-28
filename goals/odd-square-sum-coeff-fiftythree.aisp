@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜odd-square-sum-coeff-fiftythree
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/odd-square-sum-coeff-fiftythree.md
+  src≜packages/unsorry-archive-0115/backlog/odd-square-sum-coeff-fiftythree.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/odd-square-sum-coeff-fiftythree.lean
+  lean≜packages/unsorry-archive-0115/goals/odd-square-sum-coeff-fiftythree.lean
   sha≜29e3be05857320d86e0619091bf128c30e0703b1cda560b8f31cf396a5b61d88
   aff≜0
 }
