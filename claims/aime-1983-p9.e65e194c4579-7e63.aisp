@@ -1,0 +1,7 @@
+𝔸5.1.claim.aime-1983-p9.e65e194c4579-7e63@2026-07-28
+γ≔unsorry.claim
+⟦Ω:Claim⟧{goal≜aime-1983-p9; agent≜e65e194c4579-7e63}
+⟦Σ:Times⟧{ts≜2026-07-28T00:41:01Z; ttl≜7200}
+⟦Γ:Expiry⟧{now>ts+ttl⇒expired}
+⟦Λ:Release⟧{release≜λ_.rm(self)}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
