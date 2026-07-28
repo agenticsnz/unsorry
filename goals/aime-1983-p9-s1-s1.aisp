@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜aime-1983-p9-s1-s1
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜1
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,8 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/aime-1983-p9-s1-s1.lean
-  sha≜∅
+  sha≜78ef59c42f828ac34606523dd9a357aa69b672be4819e2bcbde77b239d22add0
+  aff≜1
   depth≜2
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
