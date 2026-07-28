@@ -4,13 +4,69 @@
   "generated_at": "2026-07-02T15:40:30Z",
   "pr_status_known": true,
   "summary": {
-    "queued_submissions": 1,
-    "waiting": 1,
-    "in_flight": 0,
-    "distinct_goals": 1,
-    "solvers": 1
+    "queued_submissions": 5,
+    "waiting": 4,
+    "in_flight": 1,
+    "distinct_goals": 5,
+    "solvers": 3
   },
   "solvers": [
+    {
+      "solver": null,
+      "github": null,
+      "display_name": "Chris Barlow",
+      "profile_url": null,
+      "submissions": 3,
+      "waiting": 3,
+      "in_flight": 0,
+      "distinct_goals": 3,
+      "queued": [
+        {
+          "goal": "aime-1983-p9-s1-s1",
+          "branch": "queued/prove/aime-1983-p9-s1-s1/e65e194c4579-7e63-7527f5",
+          "sha": "c6ee47c65",
+          "model": null,
+          "date": "2026-07-28",
+          "state": "waiting"
+        },
+        {
+          "goal": "aime-1983-p9-s1-s2",
+          "branch": "queued/prove/aime-1983-p9-s1-s2/e65e194c4579-7e63-766d45",
+          "sha": "5a7674099",
+          "model": null,
+          "date": "2026-07-28",
+          "state": "waiting"
+        },
+        {
+          "goal": "aime-1983-p9-s3",
+          "branch": "queued/prove/aime-1983-p9-s3/e65e194c4579-7e63-8272a9",
+          "sha": "3668e0b86",
+          "model": null,
+          "date": "2026-07-28",
+          "state": "waiting"
+        }
+      ]
+    },
+    {
+      "solver": "cgbarlow",
+      "github": "cgbarlow",
+      "display_name": "@cgbarlow",
+      "profile_url": "https://github.com/cgbarlow",
+      "submissions": 1,
+      "waiting": 0,
+      "in_flight": 1,
+      "distinct_goals": 1,
+      "queued": [
+        {
+          "goal": "aime-1983-p9-s2",
+          "branch": "queued/prove/aime-1983-p9-s2/e65e194c4579-7e63-e75f04",
+          "sha": "3640b986e",
+          "model": null,
+          "date": "2026-07-28",
+          "state": "in-flight"
+        }
+      ]
+    },
     {
       "solver": "ohdearquant",
       "github": "ohdearquant",
