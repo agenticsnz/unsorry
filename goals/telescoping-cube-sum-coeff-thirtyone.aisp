@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜telescoping-cube-sum-coeff-thirtyone
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/telescoping-cube-sum-coeff-thirtyone.md
+  src≜packages/unsorry-archive-0122/backlog/telescoping-cube-sum-coeff-thirtyone.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/telescoping-cube-sum-coeff-thirtyone.lean
+  lean≜packages/unsorry-archive-0122/goals/telescoping-cube-sum-coeff-thirtyone.lean
   sha≜9006e5635ebdad3a6692d8e7dcf9a3bd65a10b9c7e5e6591c3c75055ec116737
   aff≜0
 }
