@@ -42,6 +42,22 @@ With `ubuntu-latest`, every `*_volume` output becomes `false`, which:
   (`if: …_volume != 'true'`),
 - **skips** `Publish library oleans to fallback cache` (`if: … && …_volume == 'true'`).
 
+### `.github/workflows/gate-a.yml` — `gate-a-prepare` timeout
+
+`timeout-minutes: 45` → `120`, matching the cap `gate-a-replay`, `gate-a-archive` and
+`gate-a-benchmark` already use.
+
+A cold `lake build UnsorryLibrary --wfail` does not fit in 45 minutes on the 4-vCPU
+GitHub-hosted lane. Measured on this change's own PR: `[9150/10062]` (~91%) still
+compiling cleanly at ~6s/module when the cap cancelled the job — no error, no disk
+exhaustion, no memory pressure, purely wall clock.
+
+The cancellation is self-perpetuating, which is why the cap must move rather than the
+run simply being retried: `actions/cache` saves in a post-step that does not run on a
+cancelled job, so a timed-out cold build seeds nothing and the next run starts cold
+too. One completed cold run breaks the cycle; from then on ADR-045 incrementality
+keeps the warm path to minutes.
+
 ### Out of scope for this change
 
 Three workflows keep the `namespace-profile-unsorry-1` label and will accumulate queued

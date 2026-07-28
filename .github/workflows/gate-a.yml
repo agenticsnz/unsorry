@@ -134,12 +134,17 @@ jobs:
     # once before the audit/replay jobs start in parallel.
     if: needs.detect.outputs.admitted == 'true' && needs.detect.outputs.lean == 'true'
     runs-on: ${{ needs.detect.outputs.prepare_profile }}
-    # 45 min, not 30: a COLD library build (~21 min and growing — no warm
-    # `.lake/build` cache, e.g. first run on a new cache prefix after a
-    # toolchain/mathlib bump) plus the cheap checks overran the old 30-min cap
-    # and the job was killed (#573). The ADR-045 cache keeps the warm path to
-    # ~minutes; this only adds headroom for the rare cold path.
-    timeout-minutes: 45
+    # 120 min, not 45: a COLD library build (no warm `.lake/build` cache — first
+    # run on a new cache prefix after a toolchain/mathlib bump, or after the
+    # ADR-117 move off the Namespace volume) plus the cheap checks. 30 was raised
+    # to 45 when the job was killed on Namespace hardware (#573); on the 4-vCPU
+    # GitHub-hosted lane 45 is not enough either — a cold run reached
+    # `[9150/10062]`, ~91%, still compiling cleanly at ~6s/module when the cap
+    # killed it, taking the ADR-045 cache save down with it and guaranteeing the
+    # next run started cold too. 120 matches the cap the other heavy Gate A jobs
+    # (replay, archive, benchmark) already use. The warm path stays ~minutes;
+    # this is headroom for the rare cold one, not an expected duration.
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:

@@ -60,9 +60,13 @@ gates to unblock merges (destroys the soundness bar Gate A exists to enforce),
 so proofs merge again, with the cache path degrading automatically rather than
 silently losing incrementality,
 **accepting that** a PR touching `library/**` or `goals/**/*.lean` with a cold
-`actions/cache` faces a full cold library build against the existing 45-minute
-`gate-a-prepare` cap on 4 vCPU — slower than the Namespace lane and possibly requiring
-a cap increase or a seeded cache — and that the three scheduled workflows still
+`actions/cache` faces a full cold library build slower than the Namespace lane — this
+materialised immediately on this ADR's own PR, which reached `[9150/10062]` (~91%,
+still compiling cleanly at ~6s/module) when the 45-minute `gate-a-prepare` cap killed
+it, and a cancelled job saves no cache, so every retry would have started cold again;
+the cap is therefore raised to the 120 minutes the other heavy Gate A jobs already
+use, and once one cold run completes the ADR-045 cache makes the warm path ~minutes —
+and that the three scheduled workflows still
 pinned to the Namespace label (`gate-a-full-replay`, `independent-check-backstop`,
 `lake-volume-janitor`) will accumulate queued runs until dispositioned separately;
 none of them gates a merge, and `lake-volume-janitor` is meaningless without the
