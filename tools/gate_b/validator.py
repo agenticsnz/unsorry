@@ -1,8 +1,11 @@
 """Gate B — the in-repo deterministic validator (ADR-003, SPEC-003-A/B/C/D).
 
 Validates the six coordination-record surfaces of a tree root:
-``goals/``, ``claims/``, ``translations/``, ``decompositions/`` and
-``library/index/``, plus append-only ``proof-runs/`` telemetry. Absent
+``goals/``, ``claims/``, ``translations/``, ``decompositions/`` and the proof
+indices — ``library/index/`` plus each suite's
+``targets/<suite>/_verify/library/index/`` (ADR-099/ADR-116: a benchmark
+obligation and its sub-lemmas prove at the suite's own pin, so their index
+entries live there) — plus append-only ``proof-runs/`` telemetry. Absent
 directories are vacuously valid; nothing else in the tree is ever scanned.
 Hygiene only — Gate B can reject records, never admit anything into the
 library (that is Gate A's job).
@@ -114,8 +117,25 @@ def _safe_relative(value: str) -> bool:
     return bool(parts) and not Path(value).is_absolute() and ".." not in parts
 
 
+def _suite_index_dirs(root: Path) -> list[Path]:
+    """Per-suite proof indices under ``targets/<suite>/_verify/library/index``.
+
+    ADR-099/ADR-116: a benchmark obligation — and, through the decomposition graph,
+    its sub-lemmas — proves at the *suite's* toolchain+mathlib pin, so its module and
+    its index entry live in the suite verification package rather than the repo
+    library. Mirrors ``tools.leaderboard.registered_targets._proved_goal_ids``, which
+    already counts these as proved.
+    """
+    targets = root / "targets"
+    if not targets.is_dir():
+        return []
+    return sorted(targets.glob("*/_verify/library/index"))
+
+
 def _proof_index_exists(root: Path, sha: str) -> bool:
     if (root / "library" / "index" / f"{sha}.aisp").is_file():
+        return True
+    if any((d / f"{sha}.aisp").is_file() for d in _suite_index_dirs(root)):
         return True
     packages = root / "packages"
     if not packages.is_dir():
@@ -735,10 +755,14 @@ def validate_tree(
                 path, record, known_goals if goals_available else None, report
             )
 
-    for path in _aisp_files(root / "library" / "index"):
-        record = _read_record(path, report)
-        if record is not None:
-            _validate_index(path, record, report)
+    # The repo library's index, plus each suite verification package's own index —
+    # a suite-pin proof's entry must be VALIDATED, not merely tolerated by
+    # _proof_index_exists, or a malformed artifact would ride in unread (ADR-116).
+    for index_dir in [root / "library" / "index", *_suite_index_dirs(root)]:
+        for path in _aisp_files(index_dir):
+            record = _read_record(path, report)
+            if record is not None:
+                _validate_index(path, record, report)
 
     for path in _aisp_files(root / "proof-runs"):
         record = _read_record(path, report)
