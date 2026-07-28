@@ -1,0 +1,155 @@
+{
+  "block_id": "unsorry-archive-0115",
+  "target_size": 40,
+  "proof_count": 34,
+  "status": "frozen",
+  "source_commit": "f23af6590824c2dcf0052002d349c5b109c78ac4",
+  "validation_commit": null,
+  "pins": {
+    "lean_toolchain": "leanprover/lean4:v4.30.0",
+    "mathlib": "v4.30.0"
+  },
+  "notes": [
+    "ADR-041 proof archive block 0115.",
+    "Whole decomposition trees + standalone proved goals only (invariant A).",
+    "Active goal records remain as archived metadata pointing at this package."
+  ],
+  "goals": [
+    {
+      "goal": "gself-pow-three-pow-nineteen-add-pow-sixteen",
+      "module": "Unsorry.GselfPowThreePowNineteenAddPowSixteen"
+    },
+    {
+      "goal": "gzmod-192-pow-twentythree-sub-pow-seven",
+      "module": "Unsorry.Gzmod192PowTwentythreeSubPowSeven"
+    },
+    {
+      "goal": "gzmod-192-pow-twentytwo-sub-pow-six",
+      "module": "Unsorry.Gzmod192PowTwentytwoSubPowSix"
+    },
+    {
+      "goal": "gzmod-204-pow-nineteen-sub-pow-three",
+      "module": "Unsorry.Gzmod204PowNineteenSubPowThree"
+    },
+    {
+      "goal": "gzmod-204-pow-twenty-sub-pow-four",
+      "module": "Unsorry.Gzmod204PowTwentySubPowFour"
+    },
+    {
+      "goal": "gzmod-204-pow-twentyone-sub-pow-five",
+      "module": "Unsorry.Gzmod204PowTwentyoneSubPowFive"
+    },
+    {
+      "goal": "gzmod-204-pow-twentytwo-sub-pow-six",
+      "module": "Unsorry.Gzmod204PowTwentytwoSubPowSix"
+    },
+    {
+      "goal": "odd-square-sum-coeff-eight",
+      "module": "Unsorry.OddSquareSumCoeffEight"
+    },
+    {
+      "goal": "odd-square-sum-coeff-eighteen",
+      "module": "Unsorry.OddSquareSumCoeffEighteen"
+    },
+    {
+      "goal": "odd-square-sum-coeff-eighty",
+      "module": "Unsorry.OddSquareSumCoeffEighty"
+    },
+    {
+      "goal": "odd-square-sum-coeff-eleven",
+      "module": "Unsorry.OddSquareSumCoeffEleven"
+    },
+    {
+      "goal": "odd-square-sum-coeff-fifteen",
+      "module": "Unsorry.OddSquareSumCoeffFifteen"
+    },
+    {
+      "goal": "odd-square-sum-coeff-fifty",
+      "module": "Unsorry.OddSquareSumCoeffFifty"
+    },
+    {
+      "goal": "odd-square-sum-coeff-fiftyeight",
+      "module": "Unsorry.OddSquareSumCoeffFiftyeight"
+    },
+    {
+      "goal": "odd-square-sum-coeff-fiftyfive",
+      "module": "Unsorry.OddSquareSumCoeffFiftyfive"
+    },
+    {
+      "goal": "odd-square-sum-coeff-fiftyfour",
+      "module": "Unsorry.OddSquareSumCoeffFiftyfour"
+    },
+    {
+      "goal": "odd-square-sum-coeff-fiftynine",
+      "module": "Unsorry.OddSquareSumCoeffFiftynine"
+    },
+    {
+      "goal": "odd-square-sum-coeff-fiftyone",
+      "module": "Unsorry.OddSquareSumCoeffFiftyone"
+    },
+    {
+      "goal": "odd-square-sum-coeff-fiftyseven",
+      "module": "Unsorry.OddSquareSumCoeffFiftyseven"
+    },
+    {
+      "goal": "odd-square-sum-coeff-fiftysix",
+      "module": "Unsorry.OddSquareSumCoeffFiftysix"
+    },
+    {
+      "goal": "odd-square-sum-coeff-fiftythree",
+      "module": "Unsorry.OddSquareSumCoeffFiftythree"
+    },
+    {
+      "goal": "odd-square-sum-coeff-fiftytwo",
+      "module": "Unsorry.OddSquareSumCoeffFiftytwo"
+    },
+    {
+      "goal": "odd-square-sum-coeff-five",
+      "module": "Unsorry.OddSquareSumCoeffFive"
+    },
+    {
+      "goal": "odd-square-sum-coeff-forty",
+      "module": "Unsorry.OddSquareSumCoeffForty"
+    },
+    {
+      "goal": "odd-square-sum-coeff-fortyeight",
+      "module": "Unsorry.OddSquareSumCoeffFortyeight"
+    },
+    {
+      "goal": "odd-square-sum-coeff-fortyfive",
+      "module": "Unsorry.OddSquareSumCoeffFortyfive"
+    },
+    {
+      "goal": "odd-square-sum-coeff-fortyfour",
+      "module": "Unsorry.OddSquareSumCoeffFortyfour"
+    },
+    {
+      "goal": "odd-square-sum-coeff-fortynine",
+      "module": "Unsorry.OddSquareSumCoeffFortynine"
+    },
+    {
+      "goal": "odd-square-sum-coeff-fortyone",
+      "module": "Unsorry.OddSquareSumCoeffFortyone"
+    },
+    {
+      "goal": "odd-square-sum-coeff-fortyseven",
+      "module": "Unsorry.OddSquareSumCoeffFortyseven"
+    },
+    {
+      "goal": "odd-square-sum-coeff-fortysix",
+      "module": "Unsorry.OddSquareSumCoeffFortysix"
+    },
+    {
+      "goal": "odd-square-sum-coeff-fortythree",
+      "module": "Unsorry.OddSquareSumCoeffFortythree"
+    },
+    {
+      "goal": "odd-square-sum-coeff-fortytwo",
+      "module": "Unsorry.OddSquareSumCoeffFortytwo"
+    },
+    {
+      "goal": "odd-square-sum-coeff-four",
+      "module": "Unsorry.OddSquareSumCoeffFour"
+    }
+  ]
+}
