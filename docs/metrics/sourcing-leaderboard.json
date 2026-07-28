@@ -59,16 +59,16 @@
     },
     {
       "avatar_url": null,
-      "difficulty_points": 46,
+      "difficulty_points": 47,
       "display_name": "unsorry-batch",
       "earliest_sourced": "2026-06-29",
       "git_author": "unsorry-batch <unsorry-batch@users.noreply.github.com>",
       "github": null,
-      "latest_sourced": "2026-06-30",
+      "latest_sourced": "2026-07-28",
       "open": 0,
       "profile_url": null,
-      "proved": 0,
-      "sourced_goals": 46,
+      "proved": 1,
+      "sourced_goals": 47,
       "sourcer": null
     },
     {
@@ -115,8 +115,8 @@
     }
   ],
   "totals": {
-    "difficulty_points": 6427,
-    "sourced_goals": 5025,
+    "difficulty_points": 6428,
+    "sourced_goals": 5026,
     "sourcers": 8
   }
 }
