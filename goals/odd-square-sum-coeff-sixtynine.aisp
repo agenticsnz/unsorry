@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜odd-square-sum-coeff-sixtynine
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/odd-square-sum-coeff-sixtynine.md
+  src≜packages/unsorry-archive-0116/backlog/odd-square-sum-coeff-sixtynine.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/odd-square-sum-coeff-sixtynine.lean
+  lean≜packages/unsorry-archive-0116/goals/odd-square-sum-coeff-sixtynine.lean
   sha≜d43ebd201b2469a71fd96109b3a76b414b88e4194b96f80fbda8b179b48368eb
   aff≜0
 }
