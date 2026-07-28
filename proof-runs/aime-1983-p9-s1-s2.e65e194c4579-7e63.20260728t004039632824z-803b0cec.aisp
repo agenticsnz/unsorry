@@ -1,0 +1,8 @@
+𝔸5.1.run.aime-1983-p9-s1-s2.e65e194c4579-7e63.20260728t004039632824z-803b0cec@2026-07-28
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260728t004039632824z-803b0cec; goal≜aime-1983-p9-s1-s2; agent≜e65e194c4579-7e63; outcome≜proved}
+⟦Π:Provenance⟧{solver≜cgbarlow; provider≜claude; model≜fable; effort≜high}
+⟦Γ:Goal⟧{goal≜aime-1983-p9-s1-s2}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜208; ended≜2026-07-28T00:40:39Z; lessons≜0}
+⟦Σ:Artifact⟧{sha≜5fb2f8399397154c5e0d9d05c584246882936b777159d7e605e9894185e424ab}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
