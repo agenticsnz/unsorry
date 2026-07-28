@@ -1,14 +1,14 @@
 {
   "schema_version": 1,
   "source": "queued/prove/* refs + library/index provenance",
-  "generated_at": "2026-07-02T15:40:30Z",
+  "generated_at": "2026-07-28T04:19:58Z",
   "pr_status_known": true,
   "summary": {
-    "queued_submissions": 5,
-    "waiting": 4,
-    "in_flight": 1,
-    "distinct_goals": 5,
-    "solvers": 3
+    "queued_submissions": 3,
+    "waiting": 3,
+    "in_flight": 0,
+    "distinct_goals": 3,
+    "solvers": 1
   },
   "solvers": [
     {
@@ -43,46 +43,6 @@
           "sha": "3668e0b86",
           "model": null,
           "date": "2026-07-28",
-          "state": "waiting"
-        }
-      ]
-    },
-    {
-      "solver": "cgbarlow",
-      "github": "cgbarlow",
-      "display_name": "@cgbarlow",
-      "profile_url": "https://github.com/cgbarlow",
-      "submissions": 1,
-      "waiting": 0,
-      "in_flight": 1,
-      "distinct_goals": 1,
-      "queued": [
-        {
-          "goal": "aime-1983-p9-s2",
-          "branch": "queued/prove/aime-1983-p9-s2/e65e194c4579-7e63-e75f04",
-          "sha": "3640b986e",
-          "model": null,
-          "date": "2026-07-28",
-          "state": "in-flight"
-        }
-      ]
-    },
-    {
-      "solver": "ohdearquant",
-      "github": "ohdearquant",
-      "display_name": "@ohdearquant",
-      "profile_url": "https://github.com/ohdearquant",
-      "submissions": 1,
-      "waiting": 1,
-      "in_flight": 0,
-      "distinct_goals": 1,
-      "queued": [
-        {
-          "goal": "gself-pow-three-pow-nineteen-add-pow-sixteen",
-          "branch": "queued/prove/gself-pow-three-pow-nineteen-add-pow-sixteen/mac-158f-521edf",
-          "sha": "7566173cb",
-          "model": "template-ring-cofactor",
-          "date": "2026-06-30",
           "state": "waiting"
         }
       ]
