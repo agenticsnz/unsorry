@@ -304,12 +304,30 @@ from tools.lean_sig import (  # noqa: E402
 
 
 def _proved_goals(library_dir: str) -> set[str]:
-    """Goal ids that already have a merged proof: any library/index/<sha>.aisp
-    whose `goal≜` names them. The index entry is the authoritative 'proved'
-    marker (a goal is proved iff it has an index entry)."""
+    """Goal ids that already have a merged proof: any `index/<sha>.aisp` whose
+    `goal≜` names them. The index entry is the authoritative 'proved' marker (a
+    goal is proved iff it has an index entry).
+
+    Two index namespaces, not one. A benchmark obligation and — via the
+    decomposition graph — its sub-lemmas prove at their SUITE's pin (ADR-099 /
+    ADR-116), so their entries land in `targets/<suite>/_verify/library/index`,
+    never in the repo `library/index`. Every unblock/recompose call site passes
+    the repo library, so reading only that namespace made a parent whose subs
+    were all proved at the suite pin look permanently unproved: it stayed
+    `blocked`, `recompose-candidate` said no, the ADR-115 assembly steering never
+    fired and the ADR-034 demote floor never engaged. Union both, mirroring
+    `tools.leaderboard.registered_targets._proved_goal_ids` and Gate B's
+    `_proof_index_exists`. Sibling suites are found relative to the library's
+    parent, so a hermetic tmp tree with no `targets/` is unaffected."""
     proved: set[str] = set()
-    index_dir = Path(library_dir) / "index"
-    if index_dir.is_dir():
+    lib = Path(library_dir)
+    index_dirs = [lib / "index"]
+    targets = lib.parent / "targets"
+    if targets.is_dir():
+        index_dirs.extend(sorted(targets.glob("*/_verify/library/index")))
+    for index_dir in index_dirs:
+        if not index_dir.is_dir():
+            continue
         for path in sorted(index_dir.glob("*.aisp")):
             record = parse_record(path.read_text(encoding="utf-8"))
             goal = record.fields.get("goal")
@@ -5902,6 +5920,51 @@ test_unblockable_detection() {
   [ "$got" = "parent" ] || { log "  all subs proved ⇒ unblockable; got '$got'"; return 1; }
 }
 
+test_unblockable_sees_suite_pinned_proofs() {
+  # ADR-116 regression: a benchmark sub-lemma's index entry lands in
+  # targets/<suite>/_verify/library/index, not the repo library/index. Every
+  # unblock/recompose call site passes the REPO library, so `_proved_goals` saw
+  # none of them: a blocked parent whose subs were all proved at the suite pin
+  # stayed blocked forever and its recompose could never be reached. Mirrors what
+  # tools/leaderboard/registered_targets.py and Gate B's _proof_index_exists
+  # already do — the repo index plus every targets/*/_verify/library/index.
+  local tree got sha1 sha2 suite
+  tree="$(mktemp -d "$SESSION_TMP/unblock-suite.XXXXXX")" || return 1
+  suite="$tree/targets/minif2f-v1/_verify/library/index"
+  mkdir -p "$tree/goals" "$tree/decompositions" "$tree/library/index" "$tree/backlog" "$suite" || return 1
+  make_prove_goal "$tree" bench "theorem b (a c : Nat) : a + c = c + a" || return 1
+  py_helper rewrite-goal "$tree/goals/bench.aisp" blocked || return 1
+  make_prove_goal "$tree" bench-s1 "theorem bs1 (n : Nat) : n + 0 = n" || return 1
+  make_prove_goal "$tree" bench-s2 "theorem bs2 (a c : Nat) : a + (c + 1) = (a + c) + 1" || return 1
+  py_helper render-decomp bench agent-x \
+    bench-s1 "$(py_helper lean-stmt "$tree/goals/bench-s1.lean")" \
+    bench-s2 "$(py_helper lean-stmt "$tree/goals/bench-s2.lean")" \
+    > "$tree/decompositions/bench.agent-x.aisp" || return 1
+
+  # Both subs proved, but ONLY at the suite pin — the repo library/index is empty.
+  sha1="$(py_helper lean-sha "$tree/goals/bench-s1.lean")" || return 1
+  sha2="$(py_helper lean-sha "$tree/goals/bench-s2.lean")" || return 1
+  py_helper render-index "$sha1" bench-s1 bs1 "$(py_helper lean-stmt "$tree/goals/bench-s1.lean")" \
+    > "$suite/$sha1.aisp" || return 1
+  py_helper render-index "$sha2" bench-s2 bs2 "$(py_helper lean-stmt "$tree/goals/bench-s2.lean")" \
+    > "$suite/$sha2.aisp" || return 1
+
+  # The call site passes the REPO library; the suite index must still be seen.
+  got="$(py_helper unblockable "$tree/goals" "$tree/decompositions" "$tree/library")"
+  [ "$got" = "bench" ] || { log "  suite-pinned subs not seen as proved; got '$got'"; return 1; }
+
+  # ...and the same parent must read as a recompose candidate (ADR-115 steering,
+  # ADR-034 demote floor) through the repo-library call site too.
+  py_helper recompose-candidate bench "$tree/decompositions" "$tree/library" >/dev/null \
+    || { log "  suite-pinned parent is not a recompose candidate"; return 1; }
+
+  # A sub proved NOWHERE must still leave the parent blocked — the union must not
+  # turn into "any index anywhere counts".
+  rm -f "$suite/$sha2.aisp"
+  got="$(py_helper unblockable "$tree/goals" "$tree/decompositions" "$tree/library")"
+  [ -z "$got" ] || { log "  one sub unproved must not unblock; got '$got'"; return 1; }
+}
+
 test_recompose_fail_floors_at_viability() {
   # ADR-034 / #388: a failed recompose of a parent whose subs are all proved
   # floors the demote at τ_v (parent stays selectable); an ordinary leaf fail is
@@ -6960,6 +7023,7 @@ run_self_tests() {
     test_decomp_caps_and_depth
     test_has_decomposition
     test_unblockable_detection
+    test_unblockable_sees_suite_pinned_proofs
     test_recompose_fail_floors_at_viability
     test_recompose_prompt_hint
     test_recompose_self_retry_rearm
