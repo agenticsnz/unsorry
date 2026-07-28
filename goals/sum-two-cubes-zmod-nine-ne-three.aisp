@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-two-cubes-zmod-nine-ne-three
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-two-cubes-zmod-nine-ne-three.md
+  src≜packages/unsorry-archive-0120/backlog/sum-two-cubes-zmod-nine-ne-three.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-two-cubes-zmod-nine-ne-three.lean
+  lean≜packages/unsorry-archive-0120/goals/sum-two-cubes-zmod-nine-ne-three.lean
   sha≜d3492ec23922e093bc16249d67302d4c341c5d2784e5e230acfd90d4d10d6a5b
   aff≜0
 }
