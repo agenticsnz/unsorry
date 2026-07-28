@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-two-cubes-zmod-fourteen-ne-four
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-two-cubes-zmod-fourteen-ne-four.md
+  src≜packages/unsorry-archive-0119/backlog/sum-two-cubes-zmod-fourteen-ne-four.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-two-cubes-zmod-fourteen-ne-four.lean
+  lean≜packages/unsorry-archive-0119/goals/sum-two-cubes-zmod-fourteen-ne-four.lean
   sha≜936f9695c92ed230f6a391f64d4cd92ee048519c06f5808a8440741ca5979b06
   aff≜0
 }

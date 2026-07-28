@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜shift-square-sum-coeff-thirtyseven
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/shift-square-sum-coeff-thirtyseven.md
+  src≜packages/unsorry-archive-0119/backlog/shift-square-sum-coeff-thirtyseven.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/shift-square-sum-coeff-thirtyseven.lean
+  lean≜packages/unsorry-archive-0119/goals/shift-square-sum-coeff-thirtyseven.lean
   sha≜e094b0173b48d93cc94b5f5f8fc175ba81e5681496b6746d2cc3a41e63591a7f
   aff≜0
 }
