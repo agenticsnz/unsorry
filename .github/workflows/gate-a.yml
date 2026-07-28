@@ -91,12 +91,23 @@ jobs:
           # keeping three lanes populated by hand kept leaving a lane at zero
           # runners, which hangs the whole run (a stage with no runner queues
           # forever) and stalls every merge. Route all Gate A stages to one pool
-          # so any Namespace runner serves any stage regardless of workload mix —
-          # the operator maintains exactly ONE label: namespace-profile-unsorry-1.
-          prepare=namespace-profile-unsorry-1
-          audit=namespace-profile-unsorry-1
-          replay=namespace-profile-unsorry-1
-          archive=namespace-profile-unsorry-1
+          # so any runner serves any stage regardless of workload mix — the
+          # operator maintains exactly ONE label.
+          #
+          # ADR-117: that label is now GitHub-hosted `ubuntu-latest`. The
+          # namespace.so trial ended, leaving ZERO runners on
+          # namespace-profile-unsorry-1, and the hazard named above went live —
+          # every Lean-touching job queued forever while non-Lean PRs sailed
+          # through (detect's `lean` filter skips the heavy jobs), so the outage
+          # stayed invisible until the first proof PR. This repo is public, so
+          # GitHub-hosted runners are free and unlimited. The cache follows
+          # automatically: the classifier below sees a non-`namespace-*` label,
+          # sets every *_volume output false, and that flips each job off the
+          # Namespace .lake volume and onto the ADR-045 actions/cache path.
+          prepare=ubuntu-latest
+          audit=ubuntu-latest
+          replay=ubuntu-latest
+          archive=ubuntu-latest
 
           echo "prepare=$prepare" >> "$GITHUB_OUTPUT"
           echo "audit=$audit" >> "$GITHUB_OUTPUT"
