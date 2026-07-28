@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜odd-square-sum-coeff-twentyseven
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/odd-square-sum-coeff-twentyseven.md
+  src≜packages/unsorry-archive-0117/backlog/odd-square-sum-coeff-twentyseven.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/odd-square-sum-coeff-twentyseven.lean
+  lean≜packages/unsorry-archive-0117/goals/odd-square-sum-coeff-twentyseven.lean
   sha≜5a7bcff2ab543bf2e4f5c81788d518209aaaf4f4c1f6b1e0cda51d97cd670d08
   aff≜0
 }
