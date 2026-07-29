@@ -73,3 +73,33 @@ def test_sorted_output(tmp_path):
         _prove(root, g)
         _backlog(root, g, absence=True)
     assert eligible(root) == ["alpha-lemma", "zeta-lemma"]
+
+
+def test_suite_pinned_benchmark_is_never_packet_eligible(tmp_path):
+    """A benchmark obligation must not be proposed as a mathlib contribution.
+
+    It is excluded by namespace, not by the absence rule, because a benchmark
+    obligation DOES carry a `backlog/<id>.md` with an `Absence:` field — it was
+    sourced like any other goal. When `targets_board._proved` was made
+    suite-aware without this guard, upstream eligibility went 0 -> 3, offering
+    aime-1983-p9, amc12a-2003-p24 and amc12a-2008-p15 to mathlib (#7191 audit).
+    """
+    from tools.upstream.eligible import eligible
+
+    (tmp_path / "goals").mkdir(parents=True, exist_ok=True)
+    (tmp_path / "backlog").mkdir(parents=True, exist_ok=True)
+    sha = "b" * 64
+    idx = tmp_path / "targets" / "minif2f-v1" / "_verify" / "library" / "index"
+    idx.mkdir(parents=True, exist_ok=True)
+    (idx / f"{sha}.aisp").write_text(
+        f"𝔸5.1.lemma.{sha[:12]}@2026-07-29\nγ≔unsorry.lemma.index\n"
+        f"⟦Ω:Lemma⟧{{sha≜{sha}; goal≜bench-goal; name≜bench_goal}}\n"
+        "⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩\n",
+        encoding="utf-8",
+    )
+    # Sourced like any other goal: it HAS the absence field.
+    (tmp_path / "backlog" / "bench-goal.md").write_text(
+        "# bench-goal\n\n- **Absence:** not found in mathlib at rev abc123\n",
+        encoding="utf-8",
+    )
+    assert eligible(tmp_path) == [], "a suite-pinned benchmark reached the upstream pipeline"

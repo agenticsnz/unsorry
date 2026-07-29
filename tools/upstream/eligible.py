@@ -23,12 +23,23 @@ from typing import List
 
 # Same project, single source of truth for provenance parsing (protocol §13);
 # the underscore is a module-internal hint, not an API boundary we redraw here.
+from tools import proof_index
 from tools.sourcing.targets_board import _backlog_fields, _proved
 
 
 def eligible(root: Path) -> List[str]:
     out: List[str] = []
+    # A goal proved at a SUITE's pin is a curated benchmark obligation (or one of
+    # its decomposition helpers) — a competition problem statement, not a mathlib
+    # contribution candidate. It is excluded here rather than by criterion 2,
+    # because a benchmark obligation DOES carry a `backlog/<id>.md` with an
+    # `Absence:` field: it was sourced like any other goal. Measured when the
+    # board's `_proved` became suite-aware without this guard, eligibility went
+    # 0 -> 3 — aime-1983-p9, amc12a-2003-p24, amc12a-2008-p15 (#7191 audit).
+    suite_proved = proof_index.suite_proved_goals(root)
     for goal in sorted(_proved(root)):
+        if goal in suite_proved:
+            continue
         fields = _backlog_fields(root, goal)
         if "absence" not in fields:  # keys are lowercased by the parser
             continue
