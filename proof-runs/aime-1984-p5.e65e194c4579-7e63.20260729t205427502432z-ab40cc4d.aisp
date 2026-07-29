@@ -1,0 +1,9 @@
+𝔸5.1.run.aime-1984-p5.e65e194c4579-7e63.20260729t205427502432z-ab40cc4d@2026-07-29
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20260729t205427502432z-ab40cc4d; goal≜aime-1984-p5; agent≜e65e194c4579-7e63; outcome≜failed}
+⟦Π:Provenance⟧{solver≜cgbarlow; provider≜claude; model≜fable; effort≜max}
+⟦Γ:Goal⟧{goal≜aime-1984-p5}
+⟦Λ:Metrics⟧{attempts≜3; solve_s≜2115; ended≜2026-07-29T20:54:27Z; lessons≜0}
+⟦Σ:Artifact⟧{sha≜∅}
+⟦Δ:Lesson⟧{sig≜(no file was written at targets/minif2f-v1/_verify/library/Unsorry/Aime1984P5.lean)}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
