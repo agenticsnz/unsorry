@@ -37,6 +37,79 @@ def _make_proved(tree: Path, goal: str, decl: str, proof: str = "by sorry",
     )
 
 
+def _make_proved_at_suite(tree: Path, goal: str, decl: str, proof: str = "by sorry",
+                          suite: str = "minif2f-v1", status: str = "proved"):
+    """A proof made at a SUITE's pin: module and index entry live in the suite
+    verification package, never in the repo library (ADR-099/ADR-116)."""
+    lib = tree / "targets" / suite / "_verify" / "library"
+    (tree / "goals").mkdir(parents=True, exist_ok=True)
+    (lib / "Unsorry").mkdir(parents=True, exist_ok=True)
+    (lib / "index").mkdir(parents=True, exist_ok=True)
+    (tree / "goals" / f"{goal}.lean").write_text(
+        f"{decl} := by sorry\n", encoding="utf-8")
+    (tree / "goals" / f"{goal}.aisp").write_text(
+        f"⟦Ω:Goal⟧{{id≜{goal}; phase≜prove; status≜{status}; difficulty≜1}}\n",
+        encoding="utf-8",
+    )
+    (lib / "Unsorry" / f"{camel_name(goal)}.lean").write_text(
+        f"import Mathlib\n\n{decl} := {proof}\n", encoding="utf-8")
+    sha = "1" * 64
+    name = theorem_name(decl + " := by sorry")
+    (lib / "index" / f"{sha}.aisp").write_text(
+        f"𝔸5.1.lemma.{sha[:12]}@2026-07-29\nγ≔unsorry.lemma.index\n"
+        f"⟦Ω:Lemma⟧{{sha≜{sha}; goal≜{goal}; name≜{name}}}\n"
+        f"⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩\n",
+        encoding="utf-8",
+    )
+    return lib
+
+
+def test_suite_pinned_proof_gets_a_binding(tmp_path):
+    """ADR-011 must bind benchmark proofs too (#7191).
+
+    `check_in_proof` DELETES the agent's own binding before opening the PR, on
+    the understanding that Gate A regenerates it. For a suite-pinned proof that
+    regeneration never happened — the generator read only `library/index` — so
+    statement identity was verified on the proving agent's machine and nowhere
+    else. A weakened restatement under the goal's name would have passed.
+    """
+    lib = _make_proved_at_suite(
+        tmp_path, "bench-goal",
+        "theorem bench_goal (a b : Nat) : a + b = b + a",
+        proof="Nat.add_comm a b")
+    assert generate(tmp_path) == 0
+    binding = lib / "Unsorry" / "BenchGoalBinding.lean"
+    assert binding.is_file(), "no binding generated for a suite-pinned proof"
+    text = binding.read_text(encoding="utf-8")
+    assert "import Unsorry.BenchGoal" in text
+    assert "theorem bench_goal_binding_check" in text
+    # It must land in the SUITE library, beside its module — not the repo one.
+    assert not (tmp_path / "library" / "Unsorry" / "BenchGoalBinding.lean").exists()
+
+
+def test_suite_binding_asserts_the_goal_type_not_the_modules(tmp_path):
+    """The binding restates the GOAL's type, so a weaker module fails to inhabit it."""
+    lib = _make_proved_at_suite(
+        tmp_path, "weak-goal",
+        "theorem weak_goal (a b : Nat) : a + b = b + a",
+        proof="Nat.add_comm a b")
+    assert generate(tmp_path) == 0
+    text = (lib / "Unsorry" / "WeakGoalBinding.lean").read_text(encoding="utf-8")
+    assert foralltype("theorem weak_goal (a b : Nat) : a + b = b + a := by sorry") in text
+
+
+def test_clean_removes_suite_bindings_too(tmp_path):
+    lib = _make_proved_at_suite(
+        tmp_path, "bench-goal",
+        "theorem bench_goal (a b : Nat) : a + b = b + a",
+        proof="Nat.add_comm a b")
+    generate(tmp_path)
+    assert (lib / "Unsorry" / "BenchGoalBinding.lean").is_file()
+    clean(tmp_path)
+    assert not (lib / "Unsorry" / "BenchGoalBinding.lean").exists(), \
+        "suite binding survived clean — it would be committed as stale glue"
+
+
 def test_generate_writes_canonical_binding(tmp_path):
     _make_proved(tmp_path, "nat-add-comm-thm",
                  "theorem nat_add_comm_thm (a b : Nat) : a + b = b + a",

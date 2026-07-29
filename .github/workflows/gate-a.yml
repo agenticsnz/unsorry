@@ -993,6 +993,17 @@ jobs:
 
       # BASE_SHA mirrors the archive job; an empty/zero base validates ALL benchmark
       # verification packages (never relies on implicit git-diff-of-zero-sha behaviour).
+      # ADR-011 (#7191): regenerate the kernel binding obligations BEFORE the suite
+      # build, so Gate A — not the proving agent — decides what "proved this
+      # statement" means for a benchmark proof too. check_in_proof deletes the
+      # agent's own binding before opening the PR precisely because Gate A is meant
+      # to regenerate it; for suite-pinned proofs that regeneration never happened,
+      # so statement identity was verified only on the agent's machine. The suite
+      # lakefile globs `Unsorry.+`, so the step below builds these with --wfail and
+      # a weakened restatement under the goal's name fails to inhabit the goal type.
+      - name: Generate statement-binding obligations (ADR-011)
+        run: python3 -m tools.gate_a.check_statement_binding generate .
+
       - name: Validate changed benchmark suites (ADR-099)
         env:
           BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || (github.event_name == 'push' && github.event.before || '') }}
