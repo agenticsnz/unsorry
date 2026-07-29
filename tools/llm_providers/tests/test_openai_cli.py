@@ -13,7 +13,12 @@ chat-completion responses; `run_tool` writes to a real temp workdir.
 import json
 
 import pytest
-import requests
+
+# These tests monkeypatch `requests.post`, so they genuinely need the optional
+# dependency — but a bare `import requests` turns its absence into a COLLECTION
+# ERROR for the whole module. Skip instead, so `python3 -m pytest tools -q` still
+# reports every test that does not need it (cf. the provider's import guard).
+requests = pytest.importorskip("requests")
 
 from tools.llm_providers import openai_cli
 

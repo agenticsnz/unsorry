@@ -11,11 +11,23 @@ import time
 from typing import Optional
 
 
+# A missing optional dependency must NOT be fatal at import time. `sys.exit(1)`
+# here aborted the interpreter during module import, which took pytest's whole
+# COLLECTION phase down with it — `python3 -m pytest tools -q`, the command
+# CLAUDE.md documents, died with `INTERNALERROR ... SystemExit: 1` on any machine
+# without `requests`, reporting nothing about the ~1200 tests that do not need it.
+# CI never caught it because gate-b runs three narrower paths. Defer the failure
+# to construction instead, where OpenAIProvider actually needs a session; the CLI
+# maps OpenAIError to a clean exit 1, so the operator sees the same message.
 try:
     import requests
-except ImportError:
-    print("Error: requests library required. Install with: pip install requests", file=sys.stderr)
-    sys.exit(1)
+except ImportError:  # pragma: no cover - only on an install without requests
+    requests = None
+
+_REQUESTS_MISSING = (
+    "the 'requests' library is required for the OpenAI provider. "
+    "Install with: pip install requests"
+)
 
 
 class OpenAIError(Exception):
@@ -56,6 +68,8 @@ class OpenAIProvider:
             api_key: OpenAI API key (defaults to OPENAI_API_KEY env var)
             base_url: API base URL (defaults to OpenAI's endpoint)
         """
+        if requests is None:
+            raise OpenAIError(_REQUESTS_MISSING)
         self.api_key = api_key or os.environ.get("OPENAI_API_KEY")
         if not self.api_key:
             raise OpenAIError("OPENAI_API_KEY environment variable required")
