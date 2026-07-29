@@ -2,7 +2,7 @@
 
 # Architecture Decision Records
 
-Index of the 117 ADRs in this directory, generated from the `ADR-*.md` headers and kept in sync by the `adr-index` workflow. See [ADR-001](ADR-001-Adopt-Development-Protocols.md) and [the development protocols](../protocols.md) for the WH(Y) format and process.
+Index of the 118 ADRs in this directory, generated from the `ADR-*.md` headers and kept in sync by the `adr-index` workflow. See [ADR-001](ADR-001-Adopt-Development-Protocols.md) and [the development protocols](../protocols.md) for the WH(Y) format and process.
 
 | ADR | Title | Status | Date |
 |-----|-------|--------|------|
@@ -123,3 +123,4 @@ Index of the 117 ADRs in this directory, generated from the `ADR-*.md` headers a
 | [ADR-115](ADR-115-Recompose-Self-Retry-And-Assembly-Prompt.md) | Recompose Self-Retry and Assembly Prompt Hardening | Accepted | 2026-07-01 |
 | [ADR-116](ADR-116-Suite-Aware-Decomposition.md) | Suite-Aware Decomposition (Sub-Lemmas Inherit the Benchmark Pin) | Accepted | 2026-07-01 |
 | [ADR-117](ADR-117-GitHub-Hosted-Gate-A-Runners.md) | GitHub-Hosted Gate A Runners (Namespace Trial Ended) | Accepted | 2026-07-28 |
+| [ADR-118](ADR-118-Check-In-Failure-Is-Not-Goal-Evidence.md) | A Check-In Failure Is Not Evidence About the Goal | Accepted | 2026-07-29 |

@@ -1,6 +1,6 @@
 {
   "generated_by": "python3 -m tools.adr_index --write",
-  "count": 117,
+  "count": 118,
   "adrs": [
     {
       "id": "ADR-001",
@@ -937,6 +937,14 @@
       "status": "Accepted",
       "date": "2026-07-28",
       "file": "ADR-117-GitHub-Hosted-Gate-A-Runners.md"
+    },
+    {
+      "id": "ADR-118",
+      "number": 118,
+      "title": "A Check-In Failure Is Not Evidence About the Goal",
+      "status": "Accepted",
+      "date": "2026-07-29",
+      "file": "ADR-118-Check-In-Failure-Is-Not-Goal-Evidence.md"
     }
   ]
 }
