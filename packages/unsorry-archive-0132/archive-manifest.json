@@ -1,0 +1,155 @@
+{
+  "block_id": "unsorry-archive-0132",
+  "target_size": 40,
+  "proof_count": 34,
+  "status": "frozen",
+  "source_commit": "378946f7421d78be8faf9bd1d7f572eb7e4a8739",
+  "validation_commit": null,
+  "pins": {
+    "lean_toolchain": "leanprover/lean4:v4.30.0",
+    "mathlib": "v4.30.0"
+  },
+  "notes": [
+    "ADR-041 proof archive block 0132.",
+    "Whole decomposition trees + standalone proved goals only (invariant A).",
+    "Active goal records remain as archived metadata pointing at this package."
+  ],
+  "goals": [
+    {
+      "goal": "telescoping-square-sum-coeff-twentytwo",
+      "module": "Unsorry.TelescopingSquareSumCoeffTwentytwo"
+    },
+    {
+      "goal": "telescoping-square-sum-coeff-two",
+      "module": "Unsorry.TelescopingSquareSumCoeffTwo"
+    },
+    {
+      "goal": "faulhaber-cube-sum-coeff-eighty",
+      "module": "Unsorry.FaulhaberCubeSumCoeffEighty"
+    },
+    {
+      "goal": "faulhaber-cube-sum-coeff-seventyeight",
+      "module": "Unsorry.FaulhaberCubeSumCoeffSeventyeight"
+    },
+    {
+      "goal": "faulhaber-cube-sum-coeff-seventynine",
+      "module": "Unsorry.FaulhaberCubeSumCoeffSeventynine"
+    },
+    {
+      "goal": "faulhaber-cube-sum-coeff-seventyseven",
+      "module": "Unsorry.FaulhaberCubeSumCoeffSeventyseven"
+    },
+    {
+      "goal": "faulhaber-cube-sum-coeff-seventysix",
+      "module": "Unsorry.FaulhaberCubeSumCoeffSeventysix"
+    },
+    {
+      "goal": "faulhaber-quartic-sum-coeff-eighty",
+      "module": "Unsorry.FaulhaberQuarticSumCoeffEighty"
+    },
+    {
+      "goal": "faulhaber-quartic-sum-coeff-seventyeight",
+      "module": "Unsorry.FaulhaberQuarticSumCoeffSeventyeight"
+    },
+    {
+      "goal": "faulhaber-quartic-sum-coeff-seventynine",
+      "module": "Unsorry.FaulhaberQuarticSumCoeffSeventynine"
+    },
+    {
+      "goal": "faulhaber-quartic-sum-coeff-seventyseven",
+      "module": "Unsorry.FaulhaberQuarticSumCoeffSeventyseven"
+    },
+    {
+      "goal": "faulhaber-quartic-sum-coeff-seventysix",
+      "module": "Unsorry.FaulhaberQuarticSumCoeffSeventysix"
+    },
+    {
+      "goal": "faulhaber-quintic-sum-coeff-eighty",
+      "module": "Unsorry.FaulhaberQuinticSumCoeffEighty"
+    },
+    {
+      "goal": "faulhaber-quintic-sum-coeff-seventyeight",
+      "module": "Unsorry.FaulhaberQuinticSumCoeffSeventyeight"
+    },
+    {
+      "goal": "faulhaber-quintic-sum-coeff-seventynine",
+      "module": "Unsorry.FaulhaberQuinticSumCoeffSeventynine"
+    },
+    {
+      "goal": "faulhaber-quintic-sum-coeff-seventyseven",
+      "module": "Unsorry.FaulhaberQuinticSumCoeffSeventyseven"
+    },
+    {
+      "goal": "faulhaber-quintic-sum-coeff-seventysix",
+      "module": "Unsorry.FaulhaberQuinticSumCoeffSeventysix"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-eighty",
+      "module": "Unsorry.FaulhaberSquareSumCoeffEighty"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-seventyeight",
+      "module": "Unsorry.FaulhaberSquareSumCoeffSeventyeight"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-seventynine",
+      "module": "Unsorry.FaulhaberSquareSumCoeffSeventynine"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-seventyseven",
+      "module": "Unsorry.FaulhaberSquareSumCoeffSeventyseven"
+    },
+    {
+      "goal": "faulhaber-square-sum-coeff-seventysix",
+      "module": "Unsorry.FaulhaberSquareSumCoeffSeventysix"
+    },
+    {
+      "goal": "gzmod-102-pow-twentyfive-sub-pow-nine",
+      "module": "Unsorry.Gzmod102PowTwentyfiveSubPowNine"
+    },
+    {
+      "goal": "gzmod-102-pow-twentyfour-sub-pow-eight",
+      "module": "Unsorry.Gzmod102PowTwentyfourSubPowEight"
+    },
+    {
+      "goal": "gzmod-102-pow-twentysix-sub-pow-ten",
+      "module": "Unsorry.Gzmod102PowTwentysixSubPowTen"
+    },
+    {
+      "goal": "gzmod-102-pow-twentythree-sub-pow-seven",
+      "module": "Unsorry.Gzmod102PowTwentythreeSubPowSeven"
+    },
+    {
+      "goal": "gzmod-105-pow-nineteen-sub-pow-seven",
+      "module": "Unsorry.Gzmod105PowNineteenSubPowSeven"
+    },
+    {
+      "goal": "gzmod-105-pow-twenty-sub-pow-eight",
+      "module": "Unsorry.Gzmod105PowTwentySubPowEight"
+    },
+    {
+      "goal": "gzmod-105-pow-twentyone-sub-pow-nine",
+      "module": "Unsorry.Gzmod105PowTwentyoneSubPowNine"
+    },
+    {
+      "goal": "gzmod-105-pow-twentytwo-sub-pow-ten",
+      "module": "Unsorry.Gzmod105PowTwentytwoSubPowTen"
+    },
+    {
+      "goal": "gzmod-108-pow-twentyeight-sub-pow-ten",
+      "module": "Unsorry.Gzmod108PowTwentyeightSubPowTen"
+    },
+    {
+      "goal": "gzmod-108-pow-twentyfive-sub-pow-seven",
+      "module": "Unsorry.Gzmod108PowTwentyfiveSubPowSeven"
+    },
+    {
+      "goal": "gzmod-108-pow-twentyseven-sub-pow-nine",
+      "module": "Unsorry.Gzmod108PowTwentysevenSubPowNine"
+    },
+    {
+      "goal": "gzmod-108-pow-twentysix-sub-pow-eight",
+      "module": "Unsorry.Gzmod108PowTwentysixSubPowEight"
+    }
+  ]
+}
