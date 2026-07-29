@@ -4,7 +4,7 @@
 
 The unsorry worklist: theorems that are **already proven but not yet in mathlib**, vetted for absence and stated in Lean, waiting for an agent or a human to prove them. Claim one, open a PR, let the gates decide (see [Running an agent](../README.md#running-an-agent) and [ADR-012](adrs/ADR-012-Backlog-Sourcing.md)).
 
-**233 open · 4767 proved · 5016 total prove-goals.**
+**232 open · 4768 proved · 5016 total prove-goals.**
 
 | Goal | Status | Diff | Upstream | Source | Reference |
 |------|--------|:----:|----------|--------|-----------|
@@ -49,7 +49,6 @@ The unsorry worklist: theorems that are **already proven but not yet in mathlib*
 | `amc12a-2002-p12` — minif2f-v1 benchmark obligation amc12a_2002_p12 | open | 4 | — | minif2f-v1 benchmark suite | github.com/yangky11/miniF2F-lean4 |
 | `amc12a-2002-p21` — minif2f-v1 benchmark obligation amc12a_2002_p21 | open | 4 | — | minif2f-v1 benchmark suite | github.com/yangky11/miniF2F-lean4 |
 | `amc12a-2003-p1` — minif2f-v1 benchmark obligation amc12a_2003_p1 | open | 4 | — | minif2f-v1 benchmark suite | github.com/yangky11/miniF2F-lean4 |
-| `amc12a-2003-p24` — minif2f-v1 benchmark obligation amc12a_2003_p24 | open | 4 | — | minif2f-v1 benchmark suite | github.com/yangky11/miniF2F-lean4 |
 | `amc12a-2003-p25` — minif2f-v1 benchmark obligation amc12a_2003_p25 | open | 4 | — | minif2f-v1 benchmark suite | github.com/yangky11/miniF2F-lean4 |
 | `amc12a-2008-p15` — minif2f-v1 benchmark obligation amc12a_2008_p15 | open | 4 | — | minif2f-v1 benchmark suite | github.com/yangky11/miniF2F-lean4 |
 | `amc12a-2008-p2` — minif2f-v1 benchmark obligation amc12a_2008_p2 | open | 4 | — | minif2f-v1 benchmark suite | github.com/yangky11/miniF2F-lean4 |
@@ -363,6 +362,7 @@ The unsorry worklist: theorems that are **already proven but not yet in mathlib*
 | `am-hm-two-var-s1` — am-hm-two-var-s1 | proved | 1 | — | — | — |
 | `am-hm-two-var-s2` — am-hm-two-var-s2 | proved | 1 | — | — | — |
 | `am-hm-two-var-s3` — am-hm-two-var-s3 | proved | 1 | — | — | — |
+| `amc12a-2003-p24` — minif2f-v1 benchmark obligation amc12a_2003_p24 | proved | 4 | — | minif2f-v1 benchmark suite | github.com/yangky11/miniF2F-lean4 |
 | `amgm-four-cross-three-var` — The sum of fourth powers dominates the sum of squared pairwise products. | proved | 3 | — | #400 Identity Engine (ADR-043) — inequality (SOS) family; promoted from candidate backlog (#610). | The sum of fourth powers dominates the sum of squared pairwise products. Not a named mathlib lemma in this form. |
 | `amgm-prod-half-sum-le-cubes` — Twice ab(a+b) is at most twice the sum of cubes for nonnegative reals. | proved | 3 | — | #400 Identity Engine (ADR-043) — inequality (SOS) family; promoted from candidate backlog (#610). | Twice ab(a+b) is at most twice the sum of cubes for nonnegative reals. Not a named mathlib lemma in this form. |
 | `and-comm-imp` — Conjunction commutes. | proved | 1 | — | — | — |
