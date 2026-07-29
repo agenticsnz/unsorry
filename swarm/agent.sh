@@ -1893,15 +1893,17 @@ open_pr_worktree() {
 # Print a Gate B rejection's actual violations, bounded. A tree that fails Gate B
 # blocks its own submission, and under #7159 that used to destroy a verified proof;
 # whoever reads the log needs the rule ids, not just the fact of failure.
+# NB: the parameter is `report`, not `out` — `out` is declared `local -a` in
+# batch_build_worktree, and shellcheck's file-scope tracking then reads any
+# `local out="$1"` as an array assigned a string (SC2178/SC2128).
 surface_gate_b_violations() {
-  local out="$1"
-  [ -n "$out" ] || return 0
+  local report="$1" n
+  [ -n "$report" ] || return 0
   log "   --- Gate B violations ---"
-  printf '%s\n' "$out" | head -n 20 | while IFS= read -r line; do
+  printf '%s\n' "$report" | head -n 20 | while IFS= read -r line; do
     [ -n "$line" ] && log "   | $line"
   done
-  local n
-  n="$(printf '%s\n' "$out" | wc -l)"
+  n="$(printf '%s\n' "$report" | wc -l)"
   [ "$n" -gt 20 ] && log "   | ... $((n - 20)) more"
   log "   --- end ---"
   return 0
