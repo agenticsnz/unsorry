@@ -1,8 +1,11 @@
 # SPEC-116-A: Suite-Aware Decomposition
 
-Implements: [ADR-116](../ADR-116-Suite-Aware-Decomposition.md) · Status: Proposed · Updated: 2026-07-01
+Implements: [ADR-116](../ADR-116-Suite-Aware-Decomposition.md) · Status: Accepted · Updated: 2026-07-29
 
-> **Design-only.** Describes the behaviour to build; no code ships with the ADR PR.
+> **Implemented and piloted.** The behaviour below shipped in #7129 and closed its motivating case
+> end to end (`aime-1983-p9`, #7151–#7154). Three defects the spec did not anticipate were found and
+> fixed during the pilot — #7156, #7158, #7166 — all of them in *readers* of proof state rather than
+> in the prove/recompose paths specified here. See ADR-116's Pilot Outcome section.
 
 ## Behaviour
 

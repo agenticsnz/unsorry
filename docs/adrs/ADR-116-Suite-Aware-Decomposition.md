@@ -6,11 +6,12 @@
 | **Initiative** | unsorry swarm reliability — benchmark decomposition |
 | **Proposed By** | unsorry maintainers |
 | **Date** | 2026-07-01 |
-| **Status** | Proposed |
+| **Status** | Accepted |
 
-> **Design-only ADR.** This records the decision and its spec (SPEC-116-A) for review. No
-> behaviour ships with this PR; implementation follows in a separate PR once the design is
-> signed off.
+> **Ratified on the strength of a completed pilot (#7151–#7154).** The implementation landed in
+> #7129 and has now closed a real benchmark obligation end to end: `aime-1983-p9` and all five of
+> its sub-lemmas are `proved` on `main`, kernel-verified at the minif2f-v1 pin. See
+> [Pilot Outcome](#pilot-outcome-2026-07-29) for what the pilot confirmed and what it corrected.
 
 ## Context
 
@@ -63,7 +64,8 @@ recompose is possible and Gate-A-consistent, without altering the curated obliga
 **accepting that** sub-lemmas proved at the repo pin *before* this change (e.g. `aime-1983-p9`'s) are
 unusable at the suite pin and require a one-time re-open + re-prove migration, that a helper module
 lives in the suite `_verify` library without being a counted obligation (so `gate-a-benchmark` must
-verify the whole suite library, not only registered obligations — confirmed during implementation),
+verify the whole suite library, not only registered obligations — asserted here as "confirmed during
+implementation", and **actually** confirmed by the pilot; see [Pilot Outcome](#pilot-outcome-2026-07-29)),
 and that decomposition depth stays bounded by the existing ADR-009 cap.
 
 ## Options Considered
@@ -89,13 +91,77 @@ Guard decompose-on-failure to skip suite goals. **Rejected here** (it is the saf
 Option 1 proves infeasible): sound and minimal, but abandons decomposition for benchmark problems a
 model cannot prove whole — the exact case decomposition exists for.
 
+## Pilot Outcome (2026-07-29)
+
+`aime-1983-p9` — the motivating case — is `proved` on `main` with all five sub-lemmas, kernel-verified
+at the minif2f-v1 pin. Tracked as #7151–#7154 under map #7148.
+
+### Confirmed
+
+- **Decomposition-descendant resolution works, transitively.** `-s2` resolved to the suite context
+  from the decomposition graph alone (`skeleton.aisp` registers zero `aime-1983-p9-s*`), and `-s1-s1`
+  resolved at **depth 2**. The `top ∪ obligations ∪ descendants` membership rule holds as specified.
+- **`gate-a-benchmark` verifies the whole suite library.** This ADR asserted it was "confirmed during
+  implementation"; it was not observed until this pilot. It now is — the gate built the
+  non-obligation helper `Unsorry.Aime1983P9S2`, and later all six modules of the finished tree in one
+  `lake build Minif2fV1 --wfail` (`kernel-verified 6 proof module(s) at the suite pin`). The suite
+  lakefile's `globs = ["Unsorry.+"]` is what sweeps helpers in.
+- **The curated benchmark is untouched.** `skeleton.aisp` stayed byte-identical (sha256
+  `737b8c7f…ef7f`, 244 obligations) from before the first proof through the final merge, and
+  `library/Unsorry/` gained zero modules. Options 2 and 3 remain correctly rejected.
+- **Recompose assembles rather than re-proves.** Both recomposes — nested (`-s1` from its two subs)
+  and parent (`aime-1983-p9` from `-s1`/`-s3`) — imported the suite-local helpers and composed them,
+  each on **attempt 1 at effort `high`**. `proved-deps` reading the suite library is what made the
+  lemmas visible; the same call against the repo library returns nothing.
+
+### Corrected
+
+- **The design specified the prove and recompose paths, but not the consumers of "is this goal
+  proved?".** Each such consumer resolves proof state through an *index*, and each had to learn about
+  suite indices independently — discovered one failure at a time, in production:
+
+  | Consumer | Outcome |
+  |---|---|
+  | `tools.leaderboard.registered_targets._proved_goal_ids` | already suite-aware before this ADR |
+  | Gate B `_proof_index_exists` + index scan | blind → **#7158** |
+  | `swarm/agent.sh` `_proved_goals` (unblock sweep, `recompose-candidate`, ADR-115 steering, ADR-034 floor) | blind → **#7166** |
+
+  Gate B's blindness was the more damaging: `queue_pr_tree` refuses to push a tree failing Gate B and
+  the caller maps that onto the prove-failed path, so a correct, kernel-verified proof was **discarded
+  and the goal spuriously decomposed** — permanent under ADR-018. That mechanism outlives this ADR and
+  is tracked separately in #7159. `_proved_goals`' blindness silently disabled four things at once,
+  leaving `-s1` unreachable with both dependencies proved.
+
+  **Lesson for future suite-scoped work:** enumerate every reader of the artifact, not just its
+  writers. A second index namespace is a cross-cutting change, not a localised one.
+
+- **Making the build dir differ from the repo root exposed a latent defect.** `prove_local_verify` ran
+  `python3 -m tools.gate_a.check_library_options` inside the *build* dir, which had always been the
+  repo root; for a benchmark goal it is the suite `_verify` project, which has no `tools/`. Every
+  suite-pin proof failed local verification however correct (**#7156**). This is drift from that
+  function's own documented contract rather than a flaw in this design, but it was this ADR that made
+  it reachable.
+
+- **ADR-115's retry did not become productive — its prompt did.** The Dependencies table below
+  predicted the ADR-115 *retry* would start paying off once assembly was possible. Both recomposes
+  closed on the first attempt at the first effort rung with `lessons≜0`, so the retry ladder never
+  fired and remains untested. The plausible reading is that the failure ADR-115 diagnosed was never a
+  glue-writing failure at all: the model was being asked to assemble sub-proofs that could not compile
+  at the suite pin — the very defect this ADR fixes. ADR-115's *assembly prompt* is what earned its
+  keep here.
+
+### Unchanged by the pilot
+
+The migration consequence held as written: pre-change repo-pinned subs were re-opened and re-proved at
+the suite pin, and every leaf closed on attempt 1. Decomposition depth stayed inside the ADR-009 cap.
+
 ## Dependencies
 | Relationship | ADR ID | Title | Notes |
 |--------------|--------|-------|-------|
 | Refines | ADR-009 | Goal Decomposition | Makes decompose/recompose suite-aware |
 | Refines | ADR-099 | Suite-Pin Benchmark Verification | Sub-lemmas inherit the obligation's pin |
 | Relates To | ADR-110 | Native-Pin Benchmark Ingestion | Must NOT mutate the curated `skeleton.aisp` obligation set |
-| Relates To | ADR-115 | Recompose Self-Retry | Its retry becomes productive for benchmark recompose once assembly is possible |
+| Relates To | ADR-115 | Recompose Self-Retry | Its *assembly prompt* is what closed both recomposes; its retry never fired (see Pilot Outcome) |
 | Relates To | ADR-010 | Affinity-Gap Selection | Unchanged; helper subs rank like ordinary goals |
 
 ## References
@@ -104,8 +170,11 @@ model cannot prove whole — the exact case decomposition exists for.
 | REF-1 | Suite-aware decomposition spec | Specification | specs/SPEC-116-A-Suite-Aware-Decomposition.md |
 | REF-2 | Per-suite mathlib pin for benchmark ingestion | ADR | ADR-099-Per-Suite-Mathlib-Pin-For-Benchmark-Ingestion.md |
 | REF-3 | Stuck benchmark recompose (motivating case) | Issue | <https://github.com/agenticsnz/unsorry/issues/388> |
+| REF-4 | Suite-aware decomposition pilot (ratifying evidence) | Issue | <https://github.com/agenticsnz/unsorry/issues/7148> |
+| REF-5 | Motivating case closed end to end | PR | <https://github.com/agenticsnz/unsorry/pull/7178> |
 
 ## Status History
 | Status | Approver | Date |
 |--------|----------|------|
 | Proposed | unsorry maintainers | 2026-07-01 |
+| Accepted | unsorry maintainers | 2026-07-29 |
