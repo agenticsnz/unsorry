@@ -67,6 +67,17 @@
         "run_id": "20260701t041542402834z-de760a1c",
         "solve_s": 1462,
         "verification": "—"
+      },
+      {
+        "contributor": "cgbarlow",
+        "ended": "2026-07-29T02:09:26Z",
+        "goal": "aime-1983-p9",
+        "model": "claude/fable",
+        "outcome": "proved",
+        "passed": true,
+        "run_id": "20260729t020926685799z-19ea2773",
+        "solve_s": 255,
+        "verification": "kernel"
       }
     ],
     "putnam-v1": [
