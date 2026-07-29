@@ -17,6 +17,8 @@ import re
 import sys
 from pathlib import Path
 
+from tools import proof_index
+
 _FIELD_RE = re.compile(r"^-\s*\*\*(?P<key>[A-Za-z ]+):\*\*\s*(?P<val>.+?)\s*$", re.MULTILINE)
 _STATUS_RE = re.compile(r"status≜(\w+)")
 _PHASE_RE = re.compile(r"phase≜(\w+)")
@@ -26,18 +28,19 @@ _SRC_RE = re.compile(r"src≜([^}\s]+)")
 
 
 def _proved(root: Path) -> set[str]:
-    proved: set[str] = set()
-    indices = [root / "library" / "index"]
-    packages = root / "packages"
-    if packages.is_dir():
-        indices.extend(sorted(packages.glob("unsorry-archive-*/library/index")))
-    for index in indices:
-        if index.is_dir():
-            for entry in index.glob("*.aisp"):
-                m = _GOAL_RE.search(entry.read_text(encoding="utf-8"))
-                if m:
-                    proved.add(m.group(1))
-    return proved
+    """Goal ids the board should show as proved — all three index namespaces.
+
+    Previously repo + archives only, so a benchmark obligation proved at its
+    suite's pin (ADR-099/ADR-116) never showed as proved on `docs/targets.md`.
+    `tools.leaderboard.registered_targets._proved_goal_ids`, whose docstring says
+    it *mirrors this function*, had already been made suite-aware — the two had
+    silently diverged.
+
+    NOTE for anyone extending this: `tools.upstream.eligible` consumes this set,
+    and a benchmark obligation satisfies every other packet criterion. It excludes
+    the suite namespace explicitly; do not "simplify" that away.
+    """
+    return proof_index.proved_goals(root)
 
 
 def _backlog_fields(root: Path, goal: str, goal_text: str | None = None) -> dict[str, str]:
