@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜telescoping-quintic-sum-coeff-fiftyfour
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/telescoping-quintic-sum-coeff-fiftyfour.md
+  src≜packages/unsorry-archive-0125/backlog/telescoping-quintic-sum-coeff-fiftyfour.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/telescoping-quintic-sum-coeff-fiftyfour.lean
+  lean≜packages/unsorry-archive-0125/goals/telescoping-quintic-sum-coeff-fiftyfour.lean
   sha≜4d06496751eec5a954f3ad7be76a9d801011163496de5c6d8e3b0f75db1890a6
   aff≜0
 }
