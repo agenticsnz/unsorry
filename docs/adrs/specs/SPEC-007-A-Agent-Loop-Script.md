@@ -138,6 +138,13 @@ The two cases never collide in practice (different namespaces of content) and ea
 
 ## Quality bar
 
+> **Advisory, not gate-enforced.** The `agent-lint` workflow runs this bar on every PR, but it is
+> **not a required status check** — `main`'s branch protection requires only `gate-a` and `gate-b`.
+> A PR whose `agent-lint` is red can therefore still auto-merge (ADR-005), and has: #7180 landed
+> with a shellcheck regression, fixed in #7182. Treat the bar below as the standard this script is
+> held to and a signal to read before merging — not as something that will stop you. Run
+> `shellcheck swarm/agent.sh` locally; CI will tell you, but it will not block you.
+
 - `bash` with `set -euo pipefail`; shellcheck-clean (CI job installs shellcheck).
 - Pure functions (`agent-id` generation/validation, claim rendering, candidate filtering and sweep detection given a fixture tree, goal-record status rewrite, convergence rewrite; plus the prove helpers: CamelCase module naming, Lean statement/name extraction, index-sha derivation, prove-candidate filtering, "already proved ⇒ not a candidate", goal→proved rewrite, index-entry rendering) factored so `--self-test` exercises them hermetically (temp dirs, injected clock; no network, no claude, **no lake**). A real `lake` build is exercised only in the live prove smoke / CI, never in `--self-test`.
 - All git interactions with `origin` are confined to: fetch/pull, push to `claims`, push of `feature/goal-*` branches, `gh pr` calls. The script never pushes to `main`.
@@ -147,7 +154,7 @@ The two cases never collide in practice (different namespaces of content) and ea
 
 ## Acceptance criteria
 
-1. `--self-test` green; shellcheck clean; `bash -n` clean.
+1. `--self-test` green; shellcheck clean; `bash -n` clean. (Reported by `agent-lint`, which is **advisory** — see the Quality bar note above.)
 2. `--dry-run --translate-only` on the repo prints a candidate goal and claims nothing.
 3. A full `--once --translate-only --goal <id>` run on a real goal produces: a claim on the claims branch, a translation PR that passes Gate B, a release commit — observable end-to-end (this is exercised live in the Stage-2 trial, W2).
 4. With two translations present and matching, the goal record on the PR branch carries `status≜translated` and the correct `sha`.
