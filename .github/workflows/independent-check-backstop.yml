@@ -42,7 +42,8 @@ concurrency:
 jobs:
   backstop:
     name: independent-check backstop (observe-only)
-    runs-on: namespace-profile-unsorry-1
+    # ADR-117: GitHub-hosted; mathlib comes from lean-action's GitHub cache.
+    runs-on: ubuntu-latest
     timeout-minutes: 180
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
@@ -53,16 +54,12 @@ jobs:
           python-version: "3.12"
 
       # Build the library so lean4export/leanchecker run against a resident env.
-      - name: Namespace .lake cache volume
-        id: ns_lake_cache
-        continue-on-error: true
-        uses: namespacelabs/nscloud-cache-action@15799a6b54e5765f85b2aac25b3f0df43ed571c0 # v1.4.3
-        with:
-          path: ${{ github.workspace }}/.lake
+      # ADR-117: mathlib + the local build come from lean-action's GitHub cache;
+      # the Namespace .lake volume went with the trial.
       - name: Build (lean-action, mathlib binary cache)
         uses: leanprover/lean-action@38fbc41a8c28c4cbaec22d7f7de508ec2e7c0dd9 # v1.5.0
         with:
-          use-github-cache: ${{ steps.ns_lake_cache.outputs.cache-hit != 'true' }}
+          use-github-cache: true
           build-args: "UnsorryLibrary"
 
       # Build lean4export + nanoda via the SAME bootstrap contributors use

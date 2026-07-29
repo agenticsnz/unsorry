@@ -21,9 +21,14 @@
 # here blocks a merge; the tool always exits 0.
 name: lake-volume-janitor
 
+# PARKED (ADR-117). Everything above describes the Namespace `.lake` cache volume.
+# The namespace.so trial ended and Gate A moved to GitHub-hosted runners, so that
+# volume no longer exists and there is nothing here to survey or reclaim — every
+# scheduled run queued forever against `namespace-profile-unsorry-1`, which has
+# zero runners. The daily cron is removed; `workflow_dispatch` is kept so this
+# comes straight back if Namespace returns. Nothing else about it needs to change:
+# it is inherently Namespace-specific, not merely Namespace-hosted.
 on:
-  schedule:
-    - cron: "17 6 * * *" # daily, low-traffic hour (UTC) — report only
   workflow_dispatch:
     inputs:
       apply:

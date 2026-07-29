@@ -48,7 +48,9 @@ env:
 jobs:
   full-replay:
     name: gate-a-full-replay
-    runs-on: namespace-profile-unsorry-1
+    # ADR-117: GitHub-hosted. The Namespace .lake volume is gone with the trial,
+    # so this uses lean-action's GitHub-cache path instead (see below).
+    runs-on: ubuntu-latest
     # Generous: a serial full replay of the whole library in small chunks is the
     # slowest path; the small chunk trades wall-clock for memory headroom.
     timeout-minutes: 180
@@ -57,20 +59,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Namespace .lake cache volume (ADR-046): mathlib oleans + the local build
-      # persist on the runner's attached disk, so `lake exe cache get` finds
-      # mathlib present. Soft-fails (continue-on-error) if no volume is attached.
-      - name: Namespace .lake cache volume
-        id: ns_lake_cache
-        continue-on-error: true
-        uses: namespacelabs/nscloud-cache-action@15799a6b54e5765f85b2aac25b3f0df43ed571c0 # v1.4.3
-        with:
-          path: ${{ github.workspace }}/.lake
-
-      - name: Namespace .lake cache diagnostics
-        run: |
-          echo "nscloud cache-hit=${{ steps.ns_lake_cache.outputs.cache-hit }}"
-          du -sh .lake .lake/packages .lake/build 2>/dev/null || true
+      # ADR-117: the Namespace .lake volume no longer exists, so mathlib + the
+      # local build come from lean-action's GitHub cache (`use-github-cache: true`
+      # below). That flag was already conditional on the Namespace cache missing,
+      # so this is the branch that was always taken once the trial ended — only
+      # the dead volume step and its diagnostics are gone.
 
       # Best-effort swap so leanchecker pages cold mathlib regions instead of
       # OOMing on the constrained routine runner (same pattern as gate-a-replay). Namespace
@@ -96,7 +89,7 @@ jobs:
       - name: Build (lean-action, mathlib binary cache)
         uses: leanprover/lean-action@38fbc41a8c28c4cbaec22d7f7de508ec2e7c0dd9 # v1.5.0
         with:
-          use-github-cache: ${{ steps.ns_lake_cache.outputs.cache-hit != 'true' }}
+          use-github-cache: true
           build-args: "UnsorryGoals"
 
       - name: Generate statement-binding obligations
