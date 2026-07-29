@@ -14,9 +14,16 @@ name: independent-check-backstop
 #     red. Escalation to red-on-disagreement is deferred to after the §4 gates.
 #   - Coexists with the contributor-side check (SPEC-096-A §5a): both paths run
 #     the same scoped-export + nanoda check; neither changes the other.
+# PARKED (ADR-117). The daily cron queued forever against
+# `namespace-profile-unsorry-1` — zero runners since the namespace.so trial ended.
+# Lowest-stakes of the three parked workflows: this is observe-only, non-gating and
+# admits nothing (ADR-049's leanchecker gate remains the sole truth oracle), so its
+# absence costs a defense-in-depth signal, not soundness. Retargeting is plausible —
+# the work is bounded by `max_modules` (default 30) rather than being a full-library
+# build — but the job attaches `nscloud-cache-action`, which is Namespace-only, so
+# it needs the same volume-vs-actions/cache treatment gate-a.yml got, not a label
+# swap. `workflow_dispatch` is kept.
 on:
-  schedule:
-    - cron: "0 14 * * *" # daily 14:00 UTC (~02:00 NZT, off-peak)
   workflow_dispatch:
     inputs:
       since:

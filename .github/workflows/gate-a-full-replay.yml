@@ -23,10 +23,18 @@ name: gate-a-full-replay
 # flag it for a human.
 
 on:
-  schedule:
-    # Daily at 04:11 UTC (off the hour, like upstream-packets, to avoid the
-    # cron-spike GitHub deprioritises). workflow_dispatch for on-demand re-runs.
-    - cron: "11 4 * * *"
+  # PARKED (ADR-117) — and this one is a real reduction in defense-in-depth, not
+  # housekeeping. The daily cron is removed because it queued forever against
+  # `namespace-profile-unsorry-1`, which has had zero runners since the
+  # namespace.so trial ended; the backstop was ALREADY dead, the cron only made it
+  # look alive. Until it is retargeted, the residual ADR-048 Phase 2 bookkeeping
+  # risk this workflow exists to cover is uncovered.
+  #
+  # Retargeting is not a label swap: the job attaches `nscloud-cache-action`, which
+  # only works on a Namespace runner, and a FULL replay + FULL axiom audit over the
+  # whole active library on a 4-vCPU GitHub-hosted runner needs a cost assessment
+  # against the 180-minute cap before it is trusted to run unattended (a cold
+  # library build alone took ~50 min there — ADR-117). Run it on demand meanwhile.
   workflow_dispatch: {}
 
 permissions:
