@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜telescoping-square-sum-coeff-fortytwo
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/telescoping-square-sum-coeff-fortytwo.md
+  src≜packages/unsorry-archive-0130/backlog/telescoping-square-sum-coeff-fortytwo.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/telescoping-square-sum-coeff-fortytwo.lean
+  lean≜packages/unsorry-archive-0130/goals/telescoping-square-sum-coeff-fortytwo.lean
   sha≜98f6f84b25a816d6778393af79998b26eb68b137103ae7e664f310ad48c85fbf
   aff≜0
 }

@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜telescoping-square-sum-coeff-seventyeight
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/telescoping-square-sum-coeff-seventyeight.md
+  src≜packages/unsorry-archive-0130/backlog/telescoping-square-sum-coeff-seventyeight.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/telescoping-square-sum-coeff-seventyeight.lean
+  lean≜packages/unsorry-archive-0130/goals/telescoping-square-sum-coeff-seventyeight.lean
   sha≜eae4269c925f575573d8ee984ddb1386b1ebb1d01afa1dd84eb0ebb90eeda21b
   aff≜0
 }
