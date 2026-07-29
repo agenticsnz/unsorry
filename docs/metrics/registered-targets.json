@@ -1142,7 +1142,7 @@
           "difficulty": 4,
           "id": "amc12a-2003-p24",
           "run_snippet": "./swarm/run.sh --goal amc12a-2003-p24",
-          "status": "open"
+          "status": "proved"
         },
         {
           "credit": "credited",
@@ -2556,16 +2556,16 @@
       "license": "MIT",
       "mathlib_pin": "f897ebcf72cd16f89ab4577d0c826cd14afaafc7",
       "pass_at": {},
-      "proved": 1,
+      "proved": 2,
       "run_snippet": "./swarm/run.sh --goal minif2f-v1-suite",
       "stats": {
-        "best_solve_s": 255,
+        "best_solve_s": 246,
         "contributors": 1,
         "failed_runs": 6,
-        "median_solve_s": 255,
-        "success_rate": 0.1429,
-        "successful_runs": 1,
-        "total_runs": 7,
+        "median_solve_s": 250,
+        "success_rate": 0.25,
+        "successful_runs": 2,
+        "total_runs": 8,
         "worst_solve_s": 255
       },
       "supplier": "yangky11",
