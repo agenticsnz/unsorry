@@ -890,7 +890,7 @@
           "difficulty": 4,
           "id": "aime-1990-p2",
           "run_snippet": "./swarm/run.sh --goal aime-1990-p2",
-          "status": "open"
+          "status": "proved"
         },
         {
           "credit": "credited",
@@ -2556,16 +2556,16 @@
       "license": "MIT",
       "mathlib_pin": "f897ebcf72cd16f89ab4577d0c826cd14afaafc7",
       "pass_at": {},
-      "proved": 3,
+      "proved": 4,
       "run_snippet": "./swarm/run.sh --goal minif2f-v1-suite",
       "stats": {
         "best_solve_s": 246,
         "contributors": 1,
         "failed_runs": 8,
-        "median_solve_s": 255,
-        "success_rate": 0.2727,
-        "successful_runs": 3,
-        "total_runs": 11,
+        "median_solve_s": 260,
+        "success_rate": 0.3333,
+        "successful_runs": 4,
+        "total_runs": 12,
         "worst_solve_s": 2179
       },
       "supplier": "yangky11",

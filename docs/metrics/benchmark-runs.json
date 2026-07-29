@@ -122,6 +122,17 @@
         "run_id": "20260729t210615893272z-dbeb5620",
         "solve_s": 509,
         "verification": "—"
+      },
+      {
+        "contributor": "cgbarlow",
+        "ended": "2026-07-29T21:11:11Z",
+        "goal": "aime-1990-p2",
+        "model": "claude/fable",
+        "outcome": "proved",
+        "passed": true,
+        "run_id": "20260729t211111205044z-f8e08920",
+        "solve_s": 265,
+        "verification": "kernel"
       }
     ],
     "putnam-v1": [
