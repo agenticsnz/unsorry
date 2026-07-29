@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜telescoping-quartic-sum-coeff-ten
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/telescoping-quartic-sum-coeff-ten.md
+  src≜packages/unsorry-archive-0124/backlog/telescoping-quartic-sum-coeff-ten.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/telescoping-quartic-sum-coeff-ten.lean
+  lean≜packages/unsorry-archive-0124/goals/telescoping-quartic-sum-coeff-ten.lean
   sha≜2bccd54ef6a8c432120751cd459ada06969a1e0417810be16e09d74b35e8759b
   aff≜0
 }
