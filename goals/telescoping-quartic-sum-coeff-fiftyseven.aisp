@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜telescoping-quartic-sum-coeff-fiftyseven
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/telescoping-quartic-sum-coeff-fiftyseven.md
+  src≜packages/unsorry-archive-0123/backlog/telescoping-quartic-sum-coeff-fiftyseven.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/telescoping-quartic-sum-coeff-fiftyseven.lean
+  lean≜packages/unsorry-archive-0123/goals/telescoping-quartic-sum-coeff-fiftyseven.lean
   sha≜4dd0a5aaed76f5b75f120a1b282090d7d0b64f1cd8e957aa700f9ef3bdb7bfbb
   aff≜0
 }

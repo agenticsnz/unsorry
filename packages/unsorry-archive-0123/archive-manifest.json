@@ -1,0 +1,155 @@
+{
+  "block_id": "unsorry-archive-0123",
+  "target_size": 40,
+  "proof_count": 34,
+  "status": "frozen",
+  "source_commit": "acade8336bef0f60c4653480fab5be8aec6c3552",
+  "validation_commit": null,
+  "pins": {
+    "lean_toolchain": "leanprover/lean4:v4.30.0",
+    "mathlib": "v4.30.0"
+  },
+  "notes": [
+    "ADR-041 proof archive block 0123.",
+    "Whole decomposition trees + standalone proved goals only (invariant A).",
+    "Active goal records remain as archived metadata pointing at this package."
+  ],
+  "goals": [
+    {
+      "goal": "telescoping-quartic-sum-coeff-fiftyone",
+      "module": "Unsorry.TelescopingQuarticSumCoeffFiftyone"
+    },
+    {
+      "goal": "telescoping-quartic-sum-coeff-fiftyseven",
+      "module": "Unsorry.TelescopingQuarticSumCoeffFiftyseven"
+    },
+    {
+      "goal": "telescoping-quartic-sum-coeff-fiftysix",
+      "module": "Unsorry.TelescopingQuarticSumCoeffFiftysix"
+    },
+    {
+      "goal": "telescoping-quartic-sum-coeff-fiftythree",
+      "module": "Unsorry.TelescopingQuarticSumCoeffFiftythree"
+    },
+    {
+      "goal": "telescoping-quartic-sum-coeff-fiftytwo",
+      "module": "Unsorry.TelescopingQuarticSumCoeffFiftytwo"
+    },
+    {
+      "goal": "telescoping-quartic-sum-coeff-five",
+      "module": "Unsorry.TelescopingQuarticSumCoeffFive"
+    },
+    {
+      "goal": "telescoping-quartic-sum-coeff-forty",
+      "module": "Unsorry.TelescopingQuarticSumCoeffForty"
+    },
+    {
+      "goal": "telescoping-quartic-sum-coeff-fortyeight",
+      "module": "Unsorry.TelescopingQuarticSumCoeffFortyeight"
+    },
+    {
+      "goal": "telescoping-quartic-sum-coeff-fortyfive",
+      "module": "Unsorry.TelescopingQuarticSumCoeffFortyfive"
+    },
+    {
+      "goal": "telescoping-quartic-sum-coeff-fortyfour",
+      "module": "Unsorry.TelescopingQuarticSumCoeffFortyfour"
+    },
+    {
+      "goal": "telescoping-quartic-sum-coeff-fortynine",
+      "module": "Unsorry.TelescopingQuarticSumCoeffFortynine"
+    },
+    {
+      "goal": "telescoping-quartic-sum-coeff-fortyone",
+      "module": "Unsorry.TelescopingQuarticSumCoeffFortyone"
+    },
+    {
+      "goal": "telescoping-quartic-sum-coeff-fortyseven",
+      "module": "Unsorry.TelescopingQuarticSumCoeffFortyseven"
+    },
+    {
+      "goal": "telescoping-quartic-sum-coeff-fortysix",
+      "module": "Unsorry.TelescopingQuarticSumCoeffFortysix"
+    },
+    {
+      "goal": "telescoping-quartic-sum-coeff-fortythree",
+      "module": "Unsorry.TelescopingQuarticSumCoeffFortythree"
+    },
+    {
+      "goal": "telescoping-quartic-sum-coeff-fortytwo",
+      "module": "Unsorry.TelescopingQuarticSumCoeffFortytwo"
+    },
+    {
+      "goal": "telescoping-quartic-sum-coeff-four",
+      "module": "Unsorry.TelescopingQuarticSumCoeffFour"
+    },
+    {
+      "goal": "telescoping-quartic-sum-coeff-fourteen",
+      "module": "Unsorry.TelescopingQuarticSumCoeffFourteen"
+    },
+    {
+      "goal": "telescoping-quartic-sum-coeff-nine",
+      "module": "Unsorry.TelescopingQuarticSumCoeffNine"
+    },
+    {
+      "goal": "telescoping-quartic-sum-coeff-nineteen",
+      "module": "Unsorry.TelescopingQuarticSumCoeffNineteen"
+    },
+    {
+      "goal": "telescoping-quartic-sum-coeff-one",
+      "module": "Unsorry.TelescopingQuarticSumCoeffOne"
+    },
+    {
+      "goal": "telescoping-quartic-sum-coeff-seven",
+      "module": "Unsorry.TelescopingQuarticSumCoeffSeven"
+    },
+    {
+      "goal": "telescoping-quartic-sum-coeff-seventeen",
+      "module": "Unsorry.TelescopingQuarticSumCoeffSeventeen"
+    },
+    {
+      "goal": "telescoping-quartic-sum-coeff-seventy",
+      "module": "Unsorry.TelescopingQuarticSumCoeffSeventy"
+    },
+    {
+      "goal": "telescoping-quartic-sum-coeff-seventyeight",
+      "module": "Unsorry.TelescopingQuarticSumCoeffSeventyeight"
+    },
+    {
+      "goal": "telescoping-quartic-sum-coeff-seventyfive",
+      "module": "Unsorry.TelescopingQuarticSumCoeffSeventyfive"
+    },
+    {
+      "goal": "telescoping-quartic-sum-coeff-seventyfour",
+      "module": "Unsorry.TelescopingQuarticSumCoeffSeventyfour"
+    },
+    {
+      "goal": "telescoping-quartic-sum-coeff-seventynine",
+      "module": "Unsorry.TelescopingQuarticSumCoeffSeventynine"
+    },
+    {
+      "goal": "telescoping-quartic-sum-coeff-seventyone",
+      "module": "Unsorry.TelescopingQuarticSumCoeffSeventyone"
+    },
+    {
+      "goal": "telescoping-quartic-sum-coeff-seventyseven",
+      "module": "Unsorry.TelescopingQuarticSumCoeffSeventyseven"
+    },
+    {
+      "goal": "telescoping-quartic-sum-coeff-seventysix",
+      "module": "Unsorry.TelescopingQuarticSumCoeffSeventysix"
+    },
+    {
+      "goal": "telescoping-quartic-sum-coeff-seventythree",
+      "module": "Unsorry.TelescopingQuarticSumCoeffSeventythree"
+    },
+    {
+      "goal": "telescoping-quartic-sum-coeff-seventytwo",
+      "module": "Unsorry.TelescopingQuarticSumCoeffSeventytwo"
+    },
+    {
+      "goal": "telescoping-quartic-sum-coeff-six",
+      "module": "Unsorry.TelescopingQuarticSumCoeffSix"
+    }
+  ]
+}

@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜telescoping-quartic-sum-coeff-fortyeight
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/telescoping-quartic-sum-coeff-fortyeight.md
+  src≜packages/unsorry-archive-0123/backlog/telescoping-quartic-sum-coeff-fortyeight.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/telescoping-quartic-sum-coeff-fortyeight.lean
+  lean≜packages/unsorry-archive-0123/goals/telescoping-quartic-sum-coeff-fortyeight.lean
   sha≜c26ec88462993987f7f665da099b9304b3e20c540e39ba1b6d375f01ee3f5446
   aff≜0
 }
