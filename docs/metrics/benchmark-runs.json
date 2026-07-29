@@ -89,6 +89,17 @@
         "run_id": "20260729t052023670575z-085f6dc9",
         "solve_s": 246,
         "verification": "kernel"
+      },
+      {
+        "contributor": "cgbarlow",
+        "ended": "2026-07-29T06:48:20Z",
+        "goal": "amc12a-2008-p15",
+        "model": "claude/fable",
+        "outcome": "proved",
+        "passed": true,
+        "run_id": "20260729t064820148658z-0ad82b14",
+        "solve_s": 2179,
+        "verification": "kernel"
       }
     ],
     "putnam-v1": [
