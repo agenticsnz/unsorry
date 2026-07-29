@@ -4,32 +4,11 @@
   "generated_at": "2026-07-29T06:58:23Z",
   "pr_status_known": true,
   "summary": {
-    "queued_submissions": 1,
-    "waiting": 1,
+    "queued_submissions": 0,
+    "waiting": 0,
     "in_flight": 0,
-    "distinct_goals": 1,
-    "solvers": 1
+    "distinct_goals": 0,
+    "solvers": 0
   },
-  "solvers": [
-    {
-      "solver": null,
-      "github": null,
-      "display_name": "Chris Barlow",
-      "profile_url": null,
-      "submissions": 1,
-      "waiting": 1,
-      "in_flight": 0,
-      "distinct_goals": 1,
-      "queued": [
-        {
-          "goal": "amc12a-2008-p15",
-          "branch": "queued/prove/amc12a-2008-p15/e65e194c4579-7e63-57a8fb",
-          "sha": "6feb906c6",
-          "model": null,
-          "date": "2026-07-29",
-          "state": "waiting"
-        }
-      ]
-    }
-  ]
+  "solvers": []
 }
