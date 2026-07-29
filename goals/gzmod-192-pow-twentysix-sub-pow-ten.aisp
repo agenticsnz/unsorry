@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜gzmod-192-pow-twentysix-sub-pow-ten
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/gzmod-192-pow-twentysix-sub-pow-ten.md
+  src≜packages/unsorry-archive-0133/backlog/gzmod-192-pow-twentysix-sub-pow-ten.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/gzmod-192-pow-twentysix-sub-pow-ten.lean
+  lean≜packages/unsorry-archive-0133/goals/gzmod-192-pow-twentysix-sub-pow-ten.lean
   sha≜544916012c558d1a606ca8ff87c883a63b3806c122cfda730aaed986163802d0
   aff≜0
 }
