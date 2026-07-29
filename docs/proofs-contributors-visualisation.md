@@ -6,9 +6,9 @@ A visualiser for the swarm's proof graph (issue #371): every prove-goal, its sta
 
 > An **interactive** version — pan/zoom, click-to-detail panel, filterable table — is generated alongside this file at [`docs/proofs-contributors-visualisation.html`](proofs-contributors-visualisation.html) (open it locally or via GitHub Pages; the browser renders it, GitHub shows the source).
 
-**5026 goals — 235 open · 16 blocked · 9 translated · 459 proved · 4307 archived.** 20 decomposition families shown below; standalone goals (no lineage) are folded into one summary cluster per status — the interactive page expands a cluster into its goals on click, and every goal is listed individually in the table.
+**5026 goals — 234 open · 16 blocked · 9 translated · 460 proved · 4307 archived.** 20 decomposition families shown below; standalone goals (no lineage) are folded into one summary cluster per status — the interactive page expands a cluster into its goals on click, and every goal is listed individually in the table.
 
-Solving agent, PR and the GitHub user who merged it are resolved from the `prove(…)` merge commits (455 of 459 proved goals carry a per-goal prove-PR; the rest predate that convention and are left blank). The **solver** shows the recorded AISP login only — never guessed (ADR-023), so a goal with no recorded solver shows “—”; **merged by** is the GitHub user who landed the PR (who merged it, not who solved it), shown in its own column so the two are never conflated. The model comes from recorded provenance only.
+Solving agent, PR and the GitHub user who merged it are resolved from the `prove(…)` merge commits (456 of 460 proved goals carry a per-goal prove-PR; the rest predate that convention and are left blank). The **solver** shows the recorded AISP login only — never guessed (ADR-023), so a goal with no recorded solver shows “—”; **merged by** is the GitHub user who landed the PR (who merged it, not who solved it), shown in its own column so the two are never conflated. The model comes from recorded provenance only.
 
 ## Dependency lineage
 
@@ -26,8 +26,8 @@ flowchart LR
   class g_aime_1983_p9 open;
   click g_aime_1983_p9 "https://github.com/agenticsnz/unsorry/blob/main/goals/aime-1983-p9.lean" "aime-1983-p9 — open"
   g_aime_1983_p9_s1["aime-1983-p9-s1"]
-  class g_aime_1983_p9_s1 open;
-  click g_aime_1983_p9_s1 "https://github.com/agenticsnz/unsorry/blob/main/goals/aime-1983-p9-s1.lean" "aime-1983-p9-s1 — open"
+  class g_aime_1983_p9_s1 proved;
+  click g_aime_1983_p9_s1 "https://github.com/agenticsnz/unsorry/blob/main/goals/aime-1983-p9-s1.lean" "aime-1983-p9-s1 — proved"
   g_aime_1983_p9_s1_s1["aime-1983-p9-s1-s1"]
   class g_aime_1983_p9_s1_s1 proved;
   click g_aime_1983_p9_s1_s1 "https://github.com/agenticsnz/unsorry/blob/main/goals/aime-1983-p9-s1-s1.lean" "aime-1983-p9-s1-s1 — proved"
@@ -343,7 +343,6 @@ Legend: proved #c6f6d5 · open #e2e8f0 · blocked #feebc8 · flagged #fed7d7 · 
 | Goal | Status | Difficulty | Agent | Solver / model | Merged by | PR | Proved |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | [`aime-1983-p9`](https://github.com/agenticsnz/unsorry/blob/main/goals/aime-1983-p9.lean) | open | 4 | — | — | — | — | — |
-| [`aime-1983-p9-s1`](https://github.com/agenticsnz/unsorry/blob/main/goals/aime-1983-p9-s1.lean) | open | 1 | afnz-zbook-b336 | — | Chris Barlow | [#7107](https://github.com/agenticsnz/unsorry/pull/7107) | 2026-06-30 |
 | [`aime-1984-p15`](https://github.com/agenticsnz/unsorry/blob/main/goals/aime-1984-p15.lean) | open | 4 | — | — | — | — | — |
 | [`aime-1984-p5`](https://github.com/agenticsnz/unsorry/blob/main/goals/aime-1984-p5.lean) | open | 4 | — | — | — | — | — |
 | [`aime-1987-p8`](https://github.com/agenticsnz/unsorry/blob/main/goals/aime-1987-p8.lean) | open | 4 | — | — | — | — | — |
@@ -602,6 +601,7 @@ Legend: proved #c6f6d5 · open #e2e8f0 · blocked #feebc8 · flagged #fed7d7 · 
 | [`nat-mul-one`](https://github.com/agenticsnz/unsorry/blob/main/goals/nat-mul-one.lean) | translated | — | — | — | — | — | — |
 | [`nat-product-order`](https://github.com/agenticsnz/unsorry/blob/main/goals/nat-product-order.lean) | translated | — | — | — | — | — | — |
 | [`nat-zero-identity-add`](https://github.com/agenticsnz/unsorry/blob/main/goals/nat-zero-identity-add.lean) | translated | — | — | — | — | — | — |
+| [`aime-1983-p9-s1`](https://github.com/agenticsnz/unsorry/blob/main/goals/aime-1983-p9-s1.lean) | proved | 1 | e65e194c4579-7e63 | cgbarlow · `fable` | Chris Barlow | [#7177](https://github.com/agenticsnz/unsorry/pull/7177) | 2026-07-29 |
 | [`aime-1983-p9-s1-s1`](https://github.com/agenticsnz/unsorry/blob/main/goals/aime-1983-p9-s1-s1.lean) | proved | 1 | e65e194c4579-7e63 | cgbarlow · `fable` | Chris Barlow | [#7163](https://github.com/agenticsnz/unsorry/pull/7163) | 2026-07-28 |
 | [`aime-1983-p9-s1-s2`](https://github.com/agenticsnz/unsorry/blob/main/goals/aime-1983-p9-s1-s2.lean) | proved | 1 | e65e194c4579-7e63 | cgbarlow · `fable` | Chris Barlow | [#7164](https://github.com/agenticsnz/unsorry/pull/7164) | 2026-07-28 |
 | [`aime-1983-p9-s2`](https://github.com/agenticsnz/unsorry/blob/main/goals/aime-1983-p9-s2.lean) | proved | 1 | e65e194c4579-7e63 | cgbarlow · `fable` | Chris Barlow | [#7160](https://github.com/agenticsnz/unsorry/pull/7160) | 2026-07-28 |
