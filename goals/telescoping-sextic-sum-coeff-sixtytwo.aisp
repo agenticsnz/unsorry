@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜telescoping-sextic-sum-coeff-sixtytwo
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/telescoping-sextic-sum-coeff-sixtytwo.md
+  src≜packages/unsorry-archive-0129/backlog/telescoping-sextic-sum-coeff-sixtytwo.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/telescoping-sextic-sum-coeff-sixtytwo.lean
+  lean≜packages/unsorry-archive-0129/goals/telescoping-sextic-sum-coeff-sixtytwo.lean
   sha≜018ea790b01c3d50b43a692d6c63802c966ff601b3c301b13d5f9d62a207d8c0
   aff≜0
 }
