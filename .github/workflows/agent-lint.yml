@@ -7,6 +7,11 @@ jobs:
   agent-lint:
     # SPEC-007-A quality bar: shellcheck-clean, bash -n clean, hermetic
     # self-test green (temp dirs + injected clock; no network, no claude).
+    #
+    # ADVISORY, by decision: this is NOT a required status check. main's branch
+    # protection requires only gate-a and gate-b, so a PR with this job red can
+    # still auto-merge (ADR-005) — and has (#7180, fixed in #7182). It reports;
+    # it does not block. Read it before merging swarm/ changes.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
