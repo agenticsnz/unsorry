@@ -121,5 +121,5 @@ Index of the 117 ADRs in this directory, generated from the `ADR-*.md` headers a
 | [ADR-113](ADR-113-Multiple-Batches-Per-Dispatch-Pass.md) | Multiple batches per dispatch pass, prefer batches over singletons (amends ADR-107) | Proposed | 2026-06-29 |
 | [ADR-114](ADR-114-Rebase-First-Recovery-For-Base-Stale-Flaked-Gates.md) | Rebase-First Recovery When a Flaked-Gate PR Is Behind Its Base | Proposed | 2026-06-30 |
 | [ADR-115](ADR-115-Recompose-Self-Retry-And-Assembly-Prompt.md) | Recompose Self-Retry and Assembly Prompt Hardening | Accepted | 2026-07-01 |
-| [ADR-116](ADR-116-Suite-Aware-Decomposition.md) | Suite-Aware Decomposition (Sub-Lemmas Inherit the Benchmark Pin) | Proposed | 2026-07-01 |
+| [ADR-116](ADR-116-Suite-Aware-Decomposition.md) | Suite-Aware Decomposition (Sub-Lemmas Inherit the Benchmark Pin) | Accepted | 2026-07-01 |
 | [ADR-117](ADR-117-GitHub-Hosted-Gate-A-Runners.md) | GitHub-Hosted Gate A Runners (Namespace Trial Ended) | Accepted | 2026-07-28 |

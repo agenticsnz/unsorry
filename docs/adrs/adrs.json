@@ -926,7 +926,7 @@
       "id": "ADR-116",
       "number": 116,
       "title": "Suite-Aware Decomposition (Sub-Lemmas Inherit the Benchmark Pin)",
-      "status": "Proposed",
+      "status": "Accepted",
       "date": "2026-07-01",
       "file": "ADR-116-Suite-Aware-Decomposition.md"
     },
