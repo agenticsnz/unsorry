@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜amc12a-2003-p24
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜4
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/amc12a-2003-p24.lean
-  sha≜∅
-  aff≜-20
+  sha≜482fdb4388fc12265b1b027e2e03df946c6937017167173ef5848c785eac703a
+  aff≜-19
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
