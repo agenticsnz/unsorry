@@ -1890,6 +1890,23 @@ open_pr_worktree() {
   git worktree add -q -B "$branch" "$prwt" origin/main
 }
 
+# Print a Gate B rejection's actual violations, bounded. A tree that fails Gate B
+# blocks its own submission, and under #7159 that used to destroy a verified proof;
+# whoever reads the log needs the rule ids, not just the fact of failure.
+surface_gate_b_violations() {
+  local out="$1"
+  [ -n "$out" ] || return 0
+  log "   --- Gate B violations ---"
+  printf '%s\n' "$out" | head -n 20 | while IFS= read -r line; do
+    [ -n "$line" ] && log "   | $line"
+  done
+  local n
+  n="$(printf '%s\n' "$out" | wc -l)"
+  [ "$n" -gt 20 ] && log "   | ... $((n - 20)) more"
+  log "   --- end ---"
+  return 0
+}
+
 # Robustly enrol a freshly-created PR for autonomous merge (ADR-005). `gh pr merge
 # --auto` arms a not-yet-green PR so GitHub merges it once the gates pass — but it
 # is REJECTED ("in clean status") when the PR is ALREADY mergeable (gates passed in
@@ -1909,14 +1926,19 @@ arm_or_merge_pr() {
 # Gate-B-validate the tree, commit the given paths (title doubles as the
 # commit message), push, open an auto-merge PR, clean up the worktree.
 submit_pr_tree() {
-  local prwt="$1" branch="$2" title="$3" body="$4"
+  local prwt="$1" branch="$2" title="$3" body="$4" gate_b_violations
   shift 4
   # NB: the goals/library change here is NOT accompanied by a docs/targets.md or
   # docs/leaderboard regen. Both are generated artifacts refreshed POST-MERGE by
   # the targets-board / proofs-visualisation workflows (ADR-036, #415) —
   # regenerating them in-PR made every concurrent goal PR conflict on them.
-  if ! python3 -m tools.gate_b validate "$prwt" >/dev/null; then
+  # Surface the violations. They used to be discarded (`>/dev/null`), so a Gate B
+  # rejection of a valid proof tree said only "fails Gate B" — the #7158 cause
+  # (an index the validator could not resolve) took a manual re-run to find, and
+  # the caller meanwhile destroyed the proof (#7159).
+  if ! gate_b_violations="$(python3 -m tools.gate_b validate "$prwt" 2>&1)"; then
     log "PR tree on $branch fails Gate B — not pushing"
+    surface_gate_b_violations "$gate_b_violations"
     return 1
   fi
   git -C "$prwt" add "$@" || return 1
@@ -1957,10 +1979,11 @@ submit_pr_tree() {
 }
 
 queue_pr_tree() {
-  local prwt="$1" branch="$2" title="$3"
+  local prwt="$1" branch="$2" title="$3" gate_b_violations
   shift 3
-  if ! python3 -m tools.gate_b validate "$prwt" >/dev/null; then
+  if ! gate_b_violations="$(python3 -m tools.gate_b validate "$prwt" 2>&1)"; then
     log "queued tree on $branch fails Gate B — not pushing"
+    surface_gate_b_violations "$gate_b_violations"
     return 1
   fi
   git -C "$prwt" add "$@" || return 1
@@ -3803,7 +3826,7 @@ check_in_proof() {
 # design doc's decomposition path is Phase-2). Returns 0 on a clean cycle.
 prove_goal() {
   local goal="$1"
-  local camel prwt branch ok=0 prc=0 drc=0
+  local camel prwt branch ok=0 prc=0 drc=0 crc=0
   camel="$(py_helper camel-name "$goal")" || return 1
   if [ "$UNSORRY_SUBMIT_MODE" = queue ]; then
     branch="$(queued_prove_branch "$goal")" || return 1
@@ -3817,6 +3840,8 @@ prove_goal() {
   if [ "$prc" -eq 0 ]; then
     if check_in_proof "$goal" "$prwt" "$camel"; then
       ok=1
+    else
+      crc=1
     fi
   fi
   git worktree remove --force "$prwt" >/dev/null 2>&1 || true
@@ -3838,6 +3863,21 @@ prove_goal() {
   # about the goal — release with no event, no decomposition, no demote.
   if [ "$prc" -eq 2 ]; then
     log "infrastructure failure while proving $goal — claim released, no penalty (ADR-016)"
+    return 2
+  fi
+  # #7159: run_proof SUCCEEDED — the proof was generated, built at the pin and
+  # statement-bound — and only check_in_proof failed, i.e. the tree would not
+  # submit (Gate B rejected it, the push lost a race, the PR could not open).
+  # That is zero evidence about the goal, exactly as ADR-016 treats a CLI that
+  # never ran. Routing it through the prove-failed path below made ADR-009
+  # decompose an ALREADY-PROVED goal and mint sub-goals that ADR-018 makes
+  # permanent, while discarding a kernel-verified proof (observed on
+  # aime-1983-p9-s2). Never decompose, never demote, never emit prove-failed;
+  # report the no-penalty class so supervise backs off and surfaces it instead
+  # of spinning. The proof itself is reproducible — the goal is still unproved
+  # and stays claimable at full affinity.
+  if [ "$crc" -ne 0 ]; then
+    log "check-in of $goal failed AFTER its proof verified locally — submission-side, not goal evidence: claim released, no penalty, no decomposition (#7159)"
     return 2
   fi
   emit_event prove-failed "$goal"
@@ -6478,6 +6518,76 @@ test_fork_open_pr_dedup_targets_upstream() {
   return 0
 }
 
+test_checkin_failure_does_not_decompose() {
+  # #7159: a proof that VERIFIED LOCALLY but could not be checked in (e.g. its
+  # tree failed Gate B) is zero evidence about the goal — the model did its job.
+  # Routing that submission-side failure through the prove-failed path made
+  # ADR-009 decompose an already-proved goal, minting sub-goals that ADR-018
+  # makes permanent, while discarding a kernel-verified proof. Observed on
+  # aime-1983-p9-s2 (#7151). Assert: no decompose, no demote, no prove-failed.
+  # Runs in a subshell so the stubs — all script-defined functions — cannot
+  # leak into later tests.
+  (
+    local decomposed=0 demoted=0 events="" rc=0
+    feature_branch() { printf 'feature/x'; }
+    queued_prove_branch() { printf 'queued/x'; }
+    open_pr_worktree() { return 0; }
+    run_proof() { return 0; }                     # proof verified locally
+    check_in_proof() { return 1; }                # ...but the tree would not submit
+    release_claim() { return 0; }
+    release_goal_lock() { return 0; }
+    emit_event() { events="$events $1"; }
+    decompose_goal() { decomposed=1; return 0; }
+    demote_goal() { demoted=1; return 0; }
+    check_in_failed_run_only() { return 0; }
+    git() { return 0; }
+    local PROVE_DECOMPOSE=1 UNSORRY_SUBMIT_MODE=queue UNSORRY_WORKDIR=/tmp UNSORRY_ATTEMPTS=3
+
+    prove_goal some-goal || rc=$?
+
+    [ "$decomposed" -eq 0 ] || { log "  a verified proof was decomposed on check-in failure"; exit 1; }
+    [ "$demoted" -eq 0 ] || { log "  a verified proof was demoted on check-in failure"; exit 1; }
+    case "$events" in
+      *prove-failed*) log "  prove-failed emitted for a proof that verified locally"; exit 1 ;;
+    esac
+    # Reported as the no-penalty class so supervise backs off and surfaces it
+    # rather than spinning or treating it as evidence about the goal.
+    [ "$rc" -eq 2 ] || { log "  check-in failure should return 2 (no-penalty), got $rc"; exit 1; }
+    exit 0
+  )
+}
+
+test_prove_failure_still_decomposes() {
+  # Complement of the guard above: a GENUINE prove failure (no verified proof was
+  # produced) must still decompose. The #7159 fix must not disable ADR-009's
+  # actual trigger.
+  (
+    local decomposed=0 events="" rc=0
+    feature_branch() { printf 'feature/x'; }
+    queued_prove_branch() { printf 'queued/x'; }
+    open_pr_worktree() { return 0; }
+    run_proof() { return 1; }                     # genuine prove failure
+    check_in_proof() { return 1; }
+    release_claim() { return 0; }
+    release_goal_lock() { return 0; }
+    emit_event() { events="$events $1"; }
+    decompose_goal() { decomposed=1; return 0; }
+    demote_goal() { return 0; }
+    check_in_failed_run_only() { return 0; }
+    git() { return 0; }
+    local PROVE_DECOMPOSE=1 UNSORRY_SUBMIT_MODE=queue UNSORRY_WORKDIR=/tmp UNSORRY_ATTEMPTS=3
+
+    prove_goal some-goal || rc=$?
+
+    [ "$decomposed" -eq 1 ] || { log "  a genuine prove failure did NOT decompose"; exit 1; }
+    case "$events" in
+      *prove-failed*) ;;
+      *) log "  prove-failed not emitted for a genuine prove failure"; exit 1 ;;
+    esac
+    exit 0
+  )
+}
+
 test_decompose_open_prove_guard() {
   local rc
   gh() { printf 'prove(parent-goal): theorem_name by agent-a\n'; }
@@ -7006,6 +7116,8 @@ run_self_tests() {
     test_lean_sha_determinism
     test_prove_candidate_filtering
     test_decompose_open_prove_guard
+    test_checkin_failure_does_not_decompose
+    test_prove_failure_still_decomposes
     test_local_prove_auto_selection
     test_already_proved_excluded
     test_goal_proved_rewrite
