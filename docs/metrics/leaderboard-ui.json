@@ -99,8 +99,8 @@
       "attempt_yield": 0.0632,
       "avatar_url": "https://github.com/cgbarlow.png?size=96",
       "badges": {
-        "difficulty": 215,
-        "proofs": 119,
+        "difficulty": 220,
+        "proofs": 124,
         "success_rate_percent": 7.33
       },
       "credit_source_summary": "explicit + inferred",
@@ -108,12 +108,12 @@
         "explicit-solver",
         "inferred-git-add-author"
       ],
-      "credited_proofs": 119,
-      "difficulty_points": 215,
+      "credited_proofs": 124,
+      "difficulty_points": 220,
       "dispatch_points": 2898.0,
       "dispatch_proofs": 3220,
       "display_name": "@cgbarlow",
-      "explicit_solver_proofs": 72,
+      "explicit_solver_proofs": 77,
       "failed_attempts": 326,
       "github": "cgbarlow",
       "inferred_git_proofs": 47,
@@ -122,10 +122,10 @@
       "rank": 4,
       "run_success_rate": 0.0733,
       "runs": 300,
-      "score": 314275,
+      "score": 314900,
       "solver": "cgbarlow",
       "successes": 22,
-      "verified_proofs": 119
+      "verified_proofs": 124
     },
     {
       "attempt_yield": 0.058,
@@ -468,6 +468,12 @@
       "verified_proofs": 7
     },
     {
+      "provider_model": "claude / fable",
+      "run_success_rate": 1.0,
+      "runs": 8,
+      "verified_proofs": 5
+    },
+    {
       "provider_model": "manual / gpt-5.5",
       "run_success_rate": null,
       "runs": 0,
@@ -492,12 +498,6 @@
       "verified_proofs": 0
     },
     {
-      "provider_model": "claude / fable",
-      "run_success_rate": 1.0,
-      "runs": 8,
-      "verified_proofs": 0
-    },
-    {
       "provider_model": "codex / gpt-5.3-codex-spark",
       "run_success_rate": 0.0,
       "runs": 1,
@@ -513,11 +513,11 @@
   "schema_version": 1,
   "score_policy": "rank by score desc; score = difficulty_points * 100 + credited_proofs * 25 + dispatch_points * 100 (dispatch_points = 0.9 flat for each proof PR you opened/landed for another contributor; self-dispatch excluded — the system does not run without dispatchers)",
   "summary": {
-    "attributed_proofs": 4441,
+    "attributed_proofs": 4446,
     "attribution_gap_count": 309,
     "credited_contributors": 9,
-    "credited_proofs": 4749,
-    "explicit_solver_proofs": 4441,
+    "credited_proofs": 4754,
+    "explicit_solver_proofs": 4446,
     "git_attributed_index_files": 4750,
     "historical_contributors": 10,
     "historical_unknown_proofs": 309,
@@ -525,7 +525,7 @@
     "proof_run_coverage": 0.0086,
     "terminal_runs": 412,
     "uncredited_proofs": 1,
-    "verified_proofs": 4750
+    "verified_proofs": 4755
   },
   "timelines": {
     "default": "merge",
@@ -2041,9 +2041,34 @@
         "t": "2026-06-30T10:00:00Z"
       },
       {
-        "cumulative_proofs": 4760,
+        "cumulative_proofs": 4761,
+        "proofs": 2,
+        "t": "2026-06-30T21:00:00Z"
+      },
+      {
+        "cumulative_proofs": 4762,
         "proofs": 1,
+        "t": "2026-06-30T23:00:00Z"
+      },
+      {
+        "cumulative_proofs": 4765,
+        "proofs": 3,
         "t": "2026-07-28T01:00:00Z"
+      },
+      {
+        "cumulative_proofs": 4766,
+        "proofs": 1,
+        "t": "2026-07-29T02:00:00Z"
+      },
+      {
+        "cumulative_proofs": 4767,
+        "proofs": 1,
+        "t": "2026-07-29T05:00:00Z"
+      },
+      {
+        "cumulative_proofs": 4768,
+        "proofs": 1,
+        "t": "2026-07-29T06:00:00Z"
       }
     ],
     "solve": [
@@ -2116,6 +2141,16 @@
         "cumulative_proofs": 4762,
         "proofs": 28,
         "t": "2026-06-25"
+      },
+      {
+        "cumulative_proofs": 4766,
+        "proofs": 4,
+        "t": "2026-07-28"
+      },
+      {
+        "cumulative_proofs": 4770,
+        "proofs": 4,
+        "t": "2026-07-29"
       }
     ]
   }

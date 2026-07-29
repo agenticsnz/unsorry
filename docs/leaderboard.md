@@ -4,7 +4,7 @@
 
 Verified output comes from active `library/index` records plus archived index records only after their active copy has been retired; append-only terminal-run telemetry comes from `proof-runs/`. Rates cover only logged runs and never guess historical failures from Git history. Timing is contributor-reported local proof plus verification time.
 
-**4750 verified proofs · 4441 attributed · 309 historical/unknown · 412 logged terminal runs.**
+**4755 verified proofs · 4446 attributed · 309 historical/unknown · 412 logged terminal runs.**
 
 ## Efficiency Baseline
 
@@ -58,7 +58,7 @@ Rank uses Score (difficulty points + dispatch credit). Explicit `solver≜...` p
 
 | Rank | Contributor | Proof credit | Explicit | Inferred | Runs | Run success | Difficulty points | Dispatch (0.9 ea) | Score |
 |-----:|-------------|-------------:|---------:|---------:|-----:|------------:|------------------:|------------------:|------:|
-| 1 | [@cgbarlow](https://github.com/cgbarlow) | 119 | 72 | 47 | 300 | 7.3% | 215 | 2898.0 | 314275 |
+| 1 | [@cgbarlow](https://github.com/cgbarlow) | 124 | 77 | 47 | 300 | 7.3% | 220 | 2898.0 | 314900 |
 | 2 | [@ohdearquant](https://github.com/ohdearquant) | 2375 | 2374 | 1 | 0 | — | 2378 | 0.0 | 297175 |
 | 3 | [@chat-bit-01](https://github.com/chat-bit-01) | 2023 | 1776 | 247 | 4 | 100.0% | 2354 | 20.7 | 288045 |
 | 4 | [@ruvnet](https://github.com/ruvnet) | 160 | 160 | 0 | 0 | — | 429 | 0.0 | 46900 |
@@ -70,9 +70,9 @@ Rank uses Score (difficulty points + dispatch credit). Explicit `solver≜...` p
 
 ## Attribution Notes
 
-**4441 explicit solver credits · 308 inferred git credits · 1 uncredited proof records.**
+**4446 explicit solver credits · 308 inferred git credits · 1 uncredited proof records.**
 
-Git add-author attribution covers 4750 of 4750 proof index files. It is used only where explicit `solver≜` provenance is missing.
+Git add-author attribution covers 4750 of 4755 proof index files. It is used only where explicit `solver≜` provenance is missing.
 
 ## Providers and Models
 
@@ -86,11 +86,11 @@ Git add-author attribution covers 4750 of 4750 proof index files. It is used onl
 | `codex / unknown` | 39 | 75 | 5.3% | 111 | 2 | 7m 35s | 0.35 |
 | `openai / leanstral-2603` | 21 | 201 | 0.0% | 205 | 1 | 6m 30s | 0.00 |
 | `gemini / gemini-3.1-pro-preview` | 7 | 2 | 0.0% | 6 | 1 | 10m 59s | 0.00 |
+| `claude / fable` | 5 | 8 | 100.0% | 1 | 1 | 3m 47s | 7.44 |
 | `manual / gpt-5.5` | 4 | 0 | — | 0 | 1 | — | — |
 | `claude / sonnet` | 1 | 0 | — | 0 | 1 | — | — |
 | `claude / unknown` | 1 | 0 | — | 0 | 1 | — | — |
 | `openai / jackcloudman/Leanstral-2603-GGUF` | 0 | 47 | 0.0% | 47 | 1 | 31m 57s | 0.00 |
-| `claude / fable` | 0 | 8 | 100.0% | 1 | 1 | 3m 47s | 7.44 |
 | `codex / gpt-5.3-codex-spark` | 0 | 1 | 0.0% | 3 | 1 | 1m 34s | 0.00 |
 | `openai / leanstral-2603-sovereign` | 0 | 1 | 0.0% | 1 | 1 | 1m 22s | 0.00 |
 
