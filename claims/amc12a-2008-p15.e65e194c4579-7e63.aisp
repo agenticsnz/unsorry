@@ -1,7 +1,0 @@
-𝔸5.1.claim.amc12a-2008-p15.e65e194c4579-7e63@2026-07-29
-γ≔unsorry.claim
-⟦Ω:Claim⟧{goal≜amc12a-2008-p15; agent≜e65e194c4579-7e63}
-⟦Σ:Times⟧{ts≜2026-07-29T06:11:56Z; ttl≜7200}
-⟦Γ:Expiry⟧{now>ts+ttl⇒expired}
-⟦Λ:Release⟧{release≜λ_.rm(self)}
-⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
