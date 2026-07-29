@@ -4,7 +4,7 @@
 
 The unsorry worklist: theorems that are **already proven but not yet in mathlib**, vetted for absence and stated in Lean, waiting for an agent or a human to prove them. Claim one, open a PR, let the gates decide (see [Running an agent](../README.md#running-an-agent) and [ADR-012](adrs/ADR-012-Backlog-Sourcing.md)).
 
-**231 open · 4769 proved · 5016 total prove-goals.**
+**230 open · 4770 proved · 5016 total prove-goals.**
 
 | Goal | Status | Diff | Upstream | Source | Reference |
 |------|--------|:----:|----------|--------|-----------|
@@ -13,7 +13,6 @@ The unsorry worklist: theorems that are **already proven but not yet in mathlib*
 | `aime-1987-p8` — minif2f-v1 benchmark obligation aime_1987_p8 | open | 4 | — | minif2f-v1 benchmark suite | github.com/yangky11/miniF2F-lean4 |
 | `aime-1988-p3` — minif2f-v1 benchmark obligation aime_1988_p3 | open | 4 | — | minif2f-v1 benchmark suite | github.com/yangky11/miniF2F-lean4 |
 | `aime-1988-p4` — minif2f-v1 benchmark obligation aime_1988_p4 | open | 4 | — | minif2f-v1 benchmark suite | github.com/yangky11/miniF2F-lean4 |
-| `aime-1990-p2` — minif2f-v1 benchmark obligation aime_1990_p2 | open | 4 | — | minif2f-v1 benchmark suite | github.com/yangky11/miniF2F-lean4 |
 | `aime-1991-p1` — minif2f-v1 benchmark obligation aime_1991_p1 | open | 4 | — | minif2f-v1 benchmark suite | github.com/yangky11/miniF2F-lean4 |
 | `aime-1991-p6` — minif2f-v1 benchmark obligation aime_1991_p6 | open | 4 | — | minif2f-v1 benchmark suite | github.com/yangky11/miniF2F-lean4 |
 | `aime-1994-p4` — minif2f-v1 benchmark obligation aime_1994_p4 | open | 4 | — | minif2f-v1 benchmark suite | github.com/yangky11/miniF2F-lean4 |
@@ -264,6 +263,7 @@ The unsorry worklist: theorems that are **already proven but not yet in mathlib*
 | `aime-1983-p9-s1-s2` — aime-1983-p9-s1-s2 | proved | 1 | — | — | — |
 | `aime-1983-p9-s2` — aime-1983-p9-s2 | proved | 1 | — | — | — |
 | `aime-1983-p9-s3` — aime-1983-p9-s3 | proved | 1 | — | — | — |
+| `aime-1990-p2` — minif2f-v1 benchmark obligation aime_1990_p2 | proved | 4 | — | minif2f-v1 benchmark suite | github.com/yangky11/miniF2F-lean4 |
 | `alt-geometric-ratio-eight` — An alternating geometric series closed form (ratio -8): (8+1) times the sum over k in range n of (-8)^k equals 1 - (-8)^n. | proved | 1 | — | self-seeded alternating-geometric identity family. | geometric telescoping with ratio -r; proved by induction on n. |
 | `alt-geometric-ratio-eighteen` — An alternating geometric series closed form (ratio -18): (18+1) times the sum over k in range n of (-18)^k equals 1 - (-18)^n. | proved | 1 | — | self-seeded alternating-geometric identity family. | geometric telescoping with ratio -r; proved by induction on n. |
 | `alt-geometric-ratio-eighty` — An alternating geometric series closed form (ratio -80): (80+1) times the sum over k in range n of (-80)^k equals 1 - (-80)^n. | proved | 1 | — | self-seeded alternating-geometric identity family. | geometric telescoping with ratio -r; proved by induction on n. |
