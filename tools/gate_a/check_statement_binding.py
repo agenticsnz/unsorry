@@ -2,8 +2,10 @@
 obligation for every proved goal, so Gate A — not the contributor — controls
 what "proved this statement" means.
 
-For each `library/index/<sha>.aisp` (a proved goal `<g>`), this writes
-`library/Unsorry/<Camel>Binding.lean`:
+For each proof index entry (a proved goal `<g>`), this writes a binding beside the
+module it binds — `library/Unsorry/<Camel>Binding.lean` for a repo-pinned proof, and
+`targets/<suite>/_verify/library/Unsorry/<Camel>Binding.lean` for one proved at a
+suite pin (ADR-099/ADR-116):
 
     import Unsorry.<Camel>
     <open commands of goals/<g>.lean, if any>
@@ -59,14 +61,39 @@ def _module_declaring(unsorry_dir: Path, name: str) -> str | None:
     return None
 
 
+def proof_libraries(tree: Path) -> list[Path]:
+    """Every library whose index marks proofs Gate A must bind.
+
+    The repo `library/`, plus each suite verification package. A benchmark
+    obligation — and, through the decomposition graph, its sub-lemmas — proves at
+    its SUITE's own toolchain+mathlib pin (ADR-099/ADR-116), so both its module and
+    its index entry live in `targets/<suite>/_verify/library/` and never reach the
+    repo library. Reading only the repo index meant no binding was ever generated
+    for such a proof, and since `check_in_proof` DELETES the agent's own binding
+    before the PR (`swarm/agent.sh`), statement identity went unverified by Gate A
+    entirely — the inversion ADR-011 exists to prevent (#7191).
+    """
+    libraries = [tree / "library"]
+    targets = tree / "targets"
+    if targets.is_dir():
+        libraries.extend(
+            sorted(index.parent for index in targets.glob("*/_verify/library/index"))
+        )
+    return [lib for lib in libraries if (lib / "index").is_dir()]
+
+
 def proved_goals(tree: Path):
-    """Yield goal ids that have a library/index entry (the proved marker)."""
-    index_dir = tree / "library" / "index"
-    if index_dir.is_dir():
-        for entry in sorted(index_dir.glob("*.aisp")):
+    """Yield ``(goal id, owning library)`` for every proof index entry.
+
+    The library is carried with the goal because the binding must be written beside
+    the module it binds — a suite proof's module is only importable from inside its
+    own suite package.
+    """
+    for library in proof_libraries(tree):
+        for entry in sorted((library / "index").glob("*.aisp")):
             m = _GOAL_RE.search(entry.read_text(encoding="utf-8"))
             if m:
-                yield m.group(1)
+                yield m.group(1), library
 
 
 def goal_status(tree: Path, goal: str) -> str | None:
@@ -79,8 +106,8 @@ def goal_status(tree: Path, goal: str) -> str | None:
 
 def generate(tree: Path) -> int:
     errors = 0
-    unsorry_dir = tree / "library" / "Unsorry"
-    for goal in proved_goals(tree):
+    for goal, library in proved_goals(tree):
+        unsorry_dir = library / "Unsorry"
         if goal_status(tree, goal) == "archived":
             print(f"skipped {goal}: archived proof package owns the binding")
             continue
@@ -138,7 +165,11 @@ def generate(tree: Path) -> int:
 
 def clean(tree: Path) -> int:
     removed = 0
-    for path in (tree / "library" / "Unsorry").glob(f"*{BINDING_SUFFIX}"):
+    for path in sorted(
+        p
+        for library in proof_libraries(tree)
+        for p in (library / "Unsorry").glob(f"*{BINDING_SUFFIX}")
+    ):
         path.unlink()
         removed += 1
     print(f"removed {removed} binding module(s)")
