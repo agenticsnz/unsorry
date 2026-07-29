@@ -41,6 +41,26 @@ def _index(root: Path, sha: str, goal: str, provenance: str = "") -> None:
     )
 
 
+def _suite_index(root: Path, sha: str, goal: str, provenance: str = "",
+                 suite: str = "minif2f-v1") -> None:
+    """A proof made at a SUITE's pin — its index entry lives in the suite package.
+
+    ADR-099/ADR-116: a benchmark obligation, and via the decomposition graph its
+    sub-lemmas, prove at the suite's own toolchain+mathlib pin, so the entry never
+    reaches the repo `library/index`.
+    """
+    path = root / "targets" / suite / "_verify" / "library" / "index"
+    path.mkdir(parents=True, exist_ok=True)
+    (path / f"{sha}.aisp").write_text(
+        f"𝔸5.1.lemma.{sha[:12]}@2026-07-29\n"
+        "γ≔unsorry.lemma.index\n"
+        f"⟦Ω:Lemma⟧{{sha≜{sha}; goal≜{goal}; name≜{goal}}}\n"
+        f"{provenance}"
+        "⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩\n",
+        encoding="utf-8",
+    )
+
+
 def _archive_index(root: Path, sha: str, goal: str, provenance: str = "") -> None:
     path = root / "packages" / "unsorry-archive-0001" / "library" / "index"
     path.mkdir(parents=True, exist_ok=True)
@@ -1099,3 +1119,37 @@ def test_separate_top_level_calls_re_read_the_tree(tmp_path):
     assert main(["--write", str(tmp_path)]) == 0
     stats_path = tmp_path / "docs" / "metrics" / "community-stats.json"
     assert json.loads(stats_path.read_text())["coverage"]["verified_proofs"] == 2
+
+
+def test_suite_pinned_proof_is_indexed_and_credited(tmp_path):
+    """A proof made at a suite pin must reach the board with its solver credit.
+
+    `proof_index_paths` read only `library/index` and the archive packages, so every
+    benchmark proof — the whole aime-1983-p9 tree, for one — was invisible to the
+    attribution pipeline. The public goal page fell back to "Attribution inferred
+    from git history (no explicit solver credit)" and the per-proof pages 404'd,
+    even though the suite index entry carries full `⟦Π:Provenance⟧`.
+
+    `tools.leaderboard.registered_targets._proved_goal_ids` had always globbed
+    `targets/*/_verify/library/index`; this is the same corpus, read consistently.
+    """
+    _goal(tmp_path, "bench-goal", 4, status="proved")
+    _suite_index(
+        tmp_path, "c" * 64, "bench-goal",
+        provenance="⟦Π:Provenance⟧{solver≜octocat; agent≜agent-x; provider≜claude; model≜fable}\n",
+    )
+    found = {p.stem for p in generate.proof_index_paths(tmp_path)}
+    assert "c" * 64 in found, "suite-pinned proof missing from the index corpus"
+
+    data = proofs(tmp_path)
+    assert any(getattr(p, "goal", None) == "bench-goal" for p in data), \
+        "suite-pinned proof absent from the proofs dataset the board renders"
+
+
+def test_suite_index_does_not_duplicate_an_active_entry(tmp_path):
+    """Same sha in both namespaces must be counted once, as archives already are."""
+    _goal(tmp_path, "dual-goal", 3, status="proved")
+    _index(tmp_path, "d" * 64, "dual-goal")
+    _suite_index(tmp_path, "d" * 64, "dual-goal")
+    paths = generate.proof_index_paths(tmp_path)
+    assert len(paths) == 1, f"expected one entry for a duplicated sha, got {paths}"

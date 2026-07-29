@@ -220,21 +220,46 @@ def goals(root: Path) -> list[Goal]:
 
 
 def proof_index_paths(root: Path) -> list[Path]:
+    """Every proof index entry the board should credit, deduplicated by sha.
+
+    Three namespaces, not one. Besides the repo `library/index` and the immutable
+    archive packages, a benchmark obligation — and, through the decomposition graph,
+    its sub-lemmas — proves at its SUITE's own toolchain+mathlib pin (ADR-099 /
+    ADR-116), so its entry lands in `targets/<suite>/_verify/library/index` and never
+    reaches the repo library. Omitting that namespace made every such proof invisible
+    to attribution: the public goal page reported "Attribution inferred from git
+    history (no explicit solver credit)" and the per-proof pages had no entry to
+    render, even though the suite index entry carries full `⟦Π:Provenance⟧`.
+
+    `tools.leaderboard.registered_targets._proved_goal_ids` has always globbed the
+    suite indices; this reads the same corpus, so the board's "proved" tally and its
+    credit come from one definition rather than two.
+    """
     paths = []
-    active_shas = set()
+    seen_shas = set()
     active = root / "library" / "index"
     if active.is_dir():
         active_paths = sorted(active.glob("*.aisp"))
         paths.extend(active_paths)
-        active_shas = {path.stem for path in active_paths}
+        seen_shas = {path.stem for path in active_paths}
+
+    def _extend(index: Path) -> None:
+        if not index.is_dir():
+            return
+        for path in sorted(index.glob("*.aisp")):
+            if path.stem in seen_shas:
+                continue
+            seen_shas.add(path.stem)
+            paths.append(path)
+
+    targets = root / "targets"
+    if targets.is_dir():
+        for index in sorted(targets.glob("*/_verify/library/index")):
+            _extend(index)
     packages = root / "packages"
     if packages.is_dir():
         for index in sorted(packages.glob("unsorry-archive-*/library/index")):
-            if index.is_dir():
-                paths.extend(
-                    path for path in index.glob("*.aisp")
-                    if path.stem not in active_shas
-                )
+            _extend(index)
     return sorted(paths)
 
 
