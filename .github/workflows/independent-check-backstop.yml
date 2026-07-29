@@ -14,16 +14,9 @@ name: independent-check-backstop
 #     red. Escalation to red-on-disagreement is deferred to after the §4 gates.
 #   - Coexists with the contributor-side check (SPEC-096-A §5a): both paths run
 #     the same scoped-export + nanoda check; neither changes the other.
-# PARKED (ADR-117). The daily cron queued forever against
-# `namespace-profile-unsorry-1` — zero runners since the namespace.so trial ended.
-# Lowest-stakes of the three parked workflows: this is observe-only, non-gating and
-# admits nothing (ADR-049's leanchecker gate remains the sole truth oracle), so its
-# absence costs a defense-in-depth signal, not soundness. Retargeting is plausible —
-# the work is bounded by `max_modules` (default 30) rather than being a full-library
-# build — but the job attaches `nscloud-cache-action`, which is Namespace-only, so
-# it needs the same volume-vs-actions/cache treatment gate-a.yml got, not a label
-# swap. `workflow_dispatch` is kept.
 on:
+  schedule:
+    - cron: "0 14 * * *" # daily 14:00 UTC (~02:00 NZT, off-peak)
   workflow_dispatch:
     inputs:
       since:
@@ -49,7 +42,8 @@ concurrency:
 jobs:
   backstop:
     name: independent-check backstop (observe-only)
-    runs-on: namespace-profile-unsorry-1
+    # ADR-117: GitHub-hosted; mathlib comes from lean-action's GitHub cache.
+    runs-on: ubuntu-latest
     timeout-minutes: 180
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
@@ -60,16 +54,12 @@ jobs:
           python-version: "3.12"
 
       # Build the library so lean4export/leanchecker run against a resident env.
-      - name: Namespace .lake cache volume
-        id: ns_lake_cache
-        continue-on-error: true
-        uses: namespacelabs/nscloud-cache-action@15799a6b54e5765f85b2aac25b3f0df43ed571c0 # v1.4.3
-        with:
-          path: ${{ github.workspace }}/.lake
+      # ADR-117: mathlib + the local build come from lean-action's GitHub cache;
+      # the Namespace .lake volume went with the trial.
       - name: Build (lean-action, mathlib binary cache)
         uses: leanprover/lean-action@38fbc41a8c28c4cbaec22d7f7de508ec2e7c0dd9 # v1.5.0
         with:
-          use-github-cache: ${{ steps.ns_lake_cache.outputs.cache-hit != 'true' }}
+          use-github-cache: true
           build-args: "UnsorryLibrary"
 
       # Build lean4export + nanoda via the SAME bootstrap contributors use
