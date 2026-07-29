@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜telescoping-quintic-sum-coeff-twentynine
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/telescoping-quintic-sum-coeff-twentynine.md
+  src≜packages/unsorry-archive-0127/backlog/telescoping-quintic-sum-coeff-twentynine.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/telescoping-quintic-sum-coeff-twentynine.lean
+  lean≜packages/unsorry-archive-0127/goals/telescoping-quintic-sum-coeff-twentynine.lean
   sha≜0468dbb7b27efef664b94a00bde912d9f5291793b48661290d03cd9cf43ba954
   aff≜0
 }
