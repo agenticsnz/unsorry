@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜telescoping-quintic-sum-coeff-seventysix
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/telescoping-quintic-sum-coeff-seventysix.md
+  src≜packages/unsorry-archive-0126/backlog/telescoping-quintic-sum-coeff-seventysix.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/telescoping-quintic-sum-coeff-seventysix.lean
+  lean≜packages/unsorry-archive-0126/goals/telescoping-quintic-sum-coeff-seventysix.lean
   sha≜8398e98b7f696429c309150306648fc36bd2150f5def604308020c6795f59ed8
   aff≜0
 }
