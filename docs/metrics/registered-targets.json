@@ -2561,11 +2561,11 @@
       "stats": {
         "best_solve_s": 246,
         "contributors": 1,
-        "failed_runs": 6,
+        "failed_runs": 7,
         "median_solve_s": 255,
-        "success_rate": 0.3333,
+        "success_rate": 0.3,
         "successful_runs": 3,
-        "total_runs": 9,
+        "total_runs": 10,
         "worst_solve_s": 2179
       },
       "supplier": "yangky11",
