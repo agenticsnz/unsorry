@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜gzmod-340-pow-twenty-sub-pow-four
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/gzmod-340-pow-twenty-sub-pow-four.md
+  src≜packages/unsorry-archive-0134/backlog/gzmod-340-pow-twenty-sub-pow-four.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/gzmod-340-pow-twenty-sub-pow-four.lean
+  lean≜packages/unsorry-archive-0134/goals/gzmod-340-pow-twenty-sub-pow-four.lean
   sha≜7fa6e02d318951657d19073d14f5cca5b24fe039a13199ddc435c4910480952d
   aff≜0
 }

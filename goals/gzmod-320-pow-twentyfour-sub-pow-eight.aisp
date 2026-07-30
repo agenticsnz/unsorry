@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜gzmod-320-pow-twentyfour-sub-pow-eight
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/gzmod-320-pow-twentyfour-sub-pow-eight.md
+  src≜packages/unsorry-archive-0134/backlog/gzmod-320-pow-twentyfour-sub-pow-eight.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/gzmod-320-pow-twentyfour-sub-pow-eight.lean
+  lean≜packages/unsorry-archive-0134/goals/gzmod-320-pow-twentyfour-sub-pow-eight.lean
   sha≜3940ccbf0468cb47a90401e5703af68a2c6938ba3fe59b4af64d6d6d7c66a0f6
   aff≜0
 }
