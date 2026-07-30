@@ -6,7 +6,7 @@ A visualiser for the swarm's proof graph (issue #371): every prove-goal, its sta
 
 > An **interactive** version — pan/zoom, click-to-detail panel, filterable table — is generated alongside this file at [`docs/proofs-contributors-visualisation.html`](proofs-contributors-visualisation.html) (open it locally or via GitHub Pages; the browser renders it, GitHub shows the source).
 
-**5026 goals — 230 open · 16 blocked · 9 translated · 56 proved · 4715 archived.** 20 decomposition families shown below; standalone goals (no lineage) are folded into one summary cluster per status — the interactive page expands a cluster into its goals on click, and every goal is listed individually in the table.
+**5026 goals — 228 open · 16 blocked · 2 flagged · 9 translated · 56 proved · 4715 archived.** 20 decomposition families shown below; standalone goals (no lineage) are folded into one summary cluster per status — the interactive page expands a cluster into its goals on click, and every goal is listed individually in the table.
 
 Solving agent, PR and the GitHub user who merged it are resolved from the `prove(…)` merge commits (52 of 56 proved goals carry a per-goal prove-PR; the rest predate that convention and are left blank). The **solver** shows the recorded AISP login only — never guessed (ADR-023), so a goal with no recorded solver shows “—”; **merged by** is the GitHub user who landed the PR (who merged it, not who solved it), shown in its own column so the two are never conflated. The model comes from recorded provenance only.
 
@@ -326,8 +326,10 @@ flowchart LR
   g_sq_add_sq_eq_three_mul_sq_s4_s3 --> g_sq_add_sq_eq_three_mul_sq_s4_s3_s1
   g_sq_add_sq_eq_three_mul_sq_s4_s3 --> g_sq_add_sq_eq_three_mul_sq_s4_s3_s2
   g_sq_add_sq_eq_three_mul_sq_s4_s3 --> g_sq_add_sq_eq_three_mul_sq_s4_s3_s3
-  cluster_open(["open · 187"])
+  cluster_open(["open · 185"])
   class cluster_open open;
+  cluster_flagged(["flagged · 2"])
+  class cluster_flagged flagged;
   cluster_translated(["translated · 9"])
   class cluster_translated translated;
   cluster_proved(["proved · 36"])
@@ -343,9 +345,7 @@ Legend: proved #c6f6d5 · open #e2e8f0 · blocked #feebc8 · flagged #fed7d7 · 
 | Goal | Status | Difficulty | Agent | Solver / model | Merged by | PR | Proved |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | [`aime-1984-p15`](https://github.com/agenticsnz/unsorry/blob/main/goals/aime-1984-p15.lean) | open | 4 | — | — | — | — | — |
-| [`aime-1984-p5`](https://github.com/agenticsnz/unsorry/blob/main/goals/aime-1984-p5.lean) | open | 4 | — | — | — | — | — |
 | [`aime-1987-p8`](https://github.com/agenticsnz/unsorry/blob/main/goals/aime-1987-p8.lean) | open | 4 | — | — | — | — | — |
-| [`aime-1988-p3`](https://github.com/agenticsnz/unsorry/blob/main/goals/aime-1988-p3.lean) | open | 4 | — | — | — | — | — |
 | [`aime-1988-p4`](https://github.com/agenticsnz/unsorry/blob/main/goals/aime-1988-p4.lean) | open | 4 | — | — | — | — | — |
 | [`aime-1991-p1`](https://github.com/agenticsnz/unsorry/blob/main/goals/aime-1991-p1.lean) | open | 4 | — | — | — | — | — |
 | [`aime-1991-p6`](https://github.com/agenticsnz/unsorry/blob/main/goals/aime-1991-p6.lean) | open | 4 | — | — | — | — | — |
@@ -588,6 +588,8 @@ Legend: proved #c6f6d5 · open #e2e8f0 · blocked #feebc8 · flagged #fed7d7 · 
 | [`sq-add-sq-eq-three-mul-sq`](https://github.com/agenticsnz/unsorry/blob/main/goals/sq-add-sq-eq-three-mul-sq.lean) | blocked | 4 | — | — | — | — | — |
 | [`sq-add-sq-eq-three-mul-sq-s4`](https://github.com/agenticsnz/unsorry/blob/main/goals/sq-add-sq-eq-three-mul-sq-s4.lean) | blocked | 1 | — | — | — | — | — |
 | [`sq-add-sq-eq-three-mul-sq-s4-s3`](https://github.com/agenticsnz/unsorry/blob/main/goals/sq-add-sq-eq-three-mul-sq-s4-s3.lean) | blocked | 1 | — | — | — | — | — |
+| [`aime-1984-p5`](https://github.com/agenticsnz/unsorry/blob/main/goals/aime-1984-p5.lean) | flagged | 4 | — | — | — | — | — |
+| [`aime-1988-p3`](https://github.com/agenticsnz/unsorry/blob/main/goals/aime-1988-p3.lean) | flagged | 4 | — | — | — | — | — |
 | [`nat-add-assoc`](https://github.com/agenticsnz/unsorry/blob/main/goals/nat-add-assoc.lean) | translated | — | — | — | — | — | — |
 | [`nat-add-zero`](https://github.com/agenticsnz/unsorry/blob/main/goals/nat-add-zero.lean) | translated | — | — | — | — | — | — |
 | [`nat-le-refl`](https://github.com/agenticsnz/unsorry/blob/main/goals/nat-le-refl.lean) | translated | — | — | — | — | — | — |
