@@ -4,37 +4,37 @@
 
 Verified output comes from active `library/index` records plus archived index records only after their active copy has been retired; append-only terminal-run telemetry comes from `proof-runs/`. Rates cover only logged runs and never guess historical failures from Git history. Timing is contributor-reported local proof plus verification time.
 
-**4755 verified proofs · 4446 attributed · 309 historical/unknown · 415 logged terminal runs.**
+**4755 verified proofs · 4446 attributed · 309 historical/unknown · 399 logged terminal runs.**
 
 ## Efficiency Baseline
 
 | Metric | Value |
 |--------|------:|
-| Successful terminal runs | 42 |
+| Successful terminal runs | 26 |
 | Failed terminal runs | 373 |
 | Decomposed after failure | 35 |
 | Failed without decomposition | 338 |
-| Run success rate | 10.1% |
-| Provider attempts | 548 |
-| Failed attempts | 506 |
-| Attempt yield | 7.7% |
-| Recorded run time | 124h 11m |
-| Median / p90 run time | 8m 50s / 32m 12s |
-| Verified successes per recorded hour | 0.34 |
-| Proofs with run telemetry | 42 (0.9%) |
+| Run success rate | 6.5% |
+| Provider attempts | 530 |
+| Failed attempts | 504 |
+| Attempt yield | 4.9% |
+| Recorded run time | 119h 18m |
+| Median / p90 run time | 8m 50s / 32m 11s |
+| Verified successes per recorded hour | 0.22 |
+| Proofs with run telemetry | 26 (0.5%) |
 
 ## Work Queue
 
-**5026 goals · 4715 archived · 16 blocked · 2 flagged · 228 open · 56 proved · 9 translated.**
+**5026 goals · 4747 archived · 16 blocked · 2 flagged · 228 open · 24 proved · 9 translated.**
 
 ## Efficiency by Difficulty
 
 | Difficulty | Runs | Successes | Run success | Failed attempts | Median time |
 |-----------:|-----:|----------:|------------:|----------------:|------------:|
-| 1 | 178 | 19 | 10.7% | 233 | 8m 48s |
-| 2 | 113 | 5 | 4.4% | 125 | 6m 48s |
+| 1 | 174 | 15 | 8.6% | 233 | 8m 56s |
+| 2 | 109 | 1 | 0.9% | 125 | 6m 54s |
 | 3 | 67 | 3 | 4.5% | 73 | 9m 24s |
-| 4 | 55 | 15 | 27.3% | 73 | 21m 39s |
+| 4 | 47 | 7 | 14.9% | 71 | 19m 4s |
 | 5 | 2 | 0 | 0.0% | 2 | 31m 25s |
 
 ## Unresolved Effort
@@ -58,14 +58,14 @@ Rank uses Score (difficulty points + dispatch credit). Explicit `solver≜...` p
 
 | Rank | Contributor | Proof credit | Explicit | Inferred | Runs | Run success | Difficulty points | Dispatch (0.9 ea) | Score |
 |-----:|-------------|-------------:|---------:|---------:|-----:|------------:|------------------:|------------------:|------:|
-| 1 | [@cgbarlow](https://github.com/cgbarlow) | 124 | 77 | 47 | 303 | 7.6% | 220 | 2898.0 | 314900 |
+| 1 | [@cgbarlow](https://github.com/cgbarlow) | 124 | 77 | 47 | 300 | 6.7% | 220 | 2898.0 | 314900 |
 | 2 | [@ohdearquant](https://github.com/ohdearquant) | 2375 | 2374 | 1 | 0 | — | 2378 | 0.0 | 297175 |
-| 3 | [@chat-bit-01](https://github.com/chat-bit-01) | 2023 | 1776 | 247 | 4 | 100.0% | 2354 | 20.7 | 288045 |
+| 3 | [@chat-bit-01](https://github.com/chat-bit-01) | 2023 | 1776 | 247 | 0 | — | 2354 | 20.7 | 288045 |
 | 4 | [@ruvnet](https://github.com/ruvnet) | 160 | 160 | 0 | 0 | — | 429 | 0.0 | 46900 |
 | 5 | [@perttu](https://github.com/perttu) | 41 | 37 | 4 | 27 | 14.8% | 87 | 202.5 | 29975 |
 | 6 | [@adam91holt](https://github.com/adam91holt) | 19 | 19 | 0 | 56 | 0.0% | 46 | 0.0 | 5075 |
 | 7 | [@binto](https://github.com/binto) | 9 | 0 | 9 | 0 | — | 19 | 0.0 | 2125 |
-| 8 | [@Rauxon](https://github.com/Rauxon) | 2 | 2 | 0 | 25 | 44.0% | 2 | 0.0 | 250 |
+| 8 | [@Rauxon](https://github.com/Rauxon) | 2 | 2 | 0 | 16 | 12.5% | 2 | 0.0 | 250 |
 | 9 | [@yarcles](https://github.com/yarcles) | 1 | 1 | 0 | 0 | — | 1 | 0.0 | 125 |
 
 ## Attribution Notes
@@ -82,7 +82,7 @@ Git add-author attribution covers 4750 of 4755 proof index files. It is used onl
 | `lean / ring` | 1119 | 0 | — | 0 | 1 | — | — |
 | `lean / decide` | 653 | 0 | — | 0 | 1 | — | — |
 | `openrouter / unknown` | 160 | 0 | — | 0 | 1 | — | — |
-| `claude / opus` | 63 | 77 | 37.7% | 126 | 6 | 14m 12s | 0.83 |
+| `claude / opus` | 63 | 61 | 21.3% | 124 | 6 | 14m 12s | 0.43 |
 | `codex / unknown` | 39 | 75 | 5.3% | 111 | 2 | 7m 35s | 0.35 |
 | `openai / leanstral-2603` | 21 | 201 | 0.0% | 205 | 1 | 6m 30s | 0.00 |
 | `gemini / gemini-3.1-pro-preview` | 7 | 2 | 0.0% | 6 | 1 | 10m 59s | 0.00 |
