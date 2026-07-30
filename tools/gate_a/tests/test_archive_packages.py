@@ -1,3 +1,4 @@
+import json
 import subprocess
 import sys
 from pathlib import Path
@@ -9,6 +10,7 @@ from tools.gate_a.archive_packages import (
     default_targets,
     forbidden_tokens,
     only_index_metadata_changed,
+    shareable_packages_dir,
     validate_archive_package,
     validate_changed,
 )
@@ -257,3 +259,116 @@ def test_archive_provenance_rejects_net_new_proof(tmp_path: Path):
     _git(repo, "add", "-A")
     _git(repo, "commit", "-q", "-m", "net-new")
     assert archive_proof_provenance(repo, package, base) == 1
+
+
+# --- #7209: share the repo's dependency tree instead of cloning one per package ---
+#
+# On a scheduled (base-less) full run every archive package used to run
+# `lake exe cache get` + `lake build` in its own Lake project, each cloning its
+# own mathlib. With 134 archive packages that exhausts the runner disk before
+# the second package finishes ("No space left on device", run 30520185283).
+# Every archive is a snapshot of the active repo, so their dependency pins are
+# identical to it and the clone is pure duplication.
+
+
+def _manifest(root: Path, *, mathlib_rev: str, toolchain: str = "leanprover/lean4:v4.30.0"):
+    (root / "lake-manifest.json").write_text(
+        json.dumps({"packages": [{"name": "mathlib", "rev": mathlib_rev}]}),
+        encoding="utf-8",
+    )
+    (root / "lean-toolchain").write_text(f"{toolchain}\n", encoding="utf-8")
+
+
+def _shareable_repo(tmp_path: Path, *, archive_rev: str, repo_rev: str = "c5ea0035",
+                    archive_toolchain: str = "leanprover/lean4:v4.30.0") -> Path:
+    package = _archive(tmp_path)
+    _manifest(tmp_path, mathlib_rev=repo_rev)
+    _manifest(package, mathlib_rev=archive_rev, toolchain=archive_toolchain)
+    (tmp_path / ".lake" / "packages" / "mathlib").mkdir(parents=True)
+    return package
+
+
+def test_shareable_when_pins_match(tmp_path: Path):
+    package = _shareable_repo(tmp_path, archive_rev="c5ea0035")
+    assert shareable_packages_dir(tmp_path, package) == tmp_path / ".lake" / "packages"
+
+
+def test_not_shareable_when_mathlib_rev_differs(tmp_path: Path):
+    # A toolchain bump splits the set. Building an archive against the wrong
+    # mathlib must never happen silently — fall back to its own clone.
+    package = _shareable_repo(tmp_path, archive_rev="deadbeef")
+    assert shareable_packages_dir(tmp_path, package) is None
+
+
+def test_not_shareable_when_toolchain_differs(tmp_path: Path):
+    package = _shareable_repo(
+        tmp_path, archive_rev="c5ea0035", archive_toolchain="leanprover/lean4:v4.24.0"
+    )
+    assert shareable_packages_dir(tmp_path, package) is None
+
+
+def test_not_shareable_when_repo_tree_absent(tmp_path: Path):
+    package = _archive(tmp_path)
+    _manifest(tmp_path, mathlib_rev="c5ea0035")
+    _manifest(package, mathlib_rev="c5ea0035")
+    assert shareable_packages_dir(tmp_path, package) is None
+
+
+def test_validate_links_shared_tree_and_skips_cache_fetch(tmp_path: Path):
+    package = _shareable_repo(tmp_path, archive_rev="c5ea0035")
+    calls: list[tuple[str, ...]] = []
+    linked: list[bool] = []
+
+    def runner(argv, **_kwargs):
+        argv = tuple(argv)
+        calls.append(argv)
+        if argv[:2] == ("lake", "build"):
+            link = package / ".lake" / "packages"
+            linked.append(link.is_symlink() and link.resolve() == (tmp_path / ".lake" / "packages").resolve())
+        return completed(argv)
+
+    assert validate_archive_package(tmp_path, package, runner) == 0
+
+    assert linked == [True], "the shared tree must be linked in while lake build runs"
+    # The whole point: no per-package mathlib fetch.
+    assert ("lake", "exe", "cache", "get") not in calls
+    assert ("lake", "build", "UnsorryArchive0001", "--wfail") in calls
+
+
+def test_validate_removes_the_link_afterwards(tmp_path: Path):
+    package = _shareable_repo(tmp_path, archive_rev="c5ea0035")
+
+    def runner(argv, **_kwargs):
+        return completed(tuple(argv))
+
+    assert validate_archive_package(tmp_path, package, runner) == 0
+    assert not (package / ".lake" / "packages").exists()
+    # and the shared tree itself survives — removing the link must never
+    # recurse into the repo's real dependency tree.
+    assert (tmp_path / ".lake" / "packages" / "mathlib").is_dir()
+
+
+def test_validate_removes_the_link_when_build_fails(tmp_path: Path):
+    package = _shareable_repo(tmp_path, archive_rev="c5ea0035")
+
+    def runner(argv, **_kwargs):
+        argv = tuple(argv)
+        return completed(argv, returncode=1 if argv[:2] == ("lake", "build") else 0)
+
+    assert validate_archive_package(tmp_path, package, runner) == 1
+    assert not (package / ".lake" / "packages").exists()
+    assert (tmp_path / ".lake" / "packages" / "mathlib").is_dir()
+
+
+def test_unshareable_package_still_fetches_its_own_cache(tmp_path: Path):
+    package = _shareable_repo(tmp_path, archive_rev="deadbeef")
+    calls: list[tuple[str, ...]] = []
+
+    def runner(argv, **_kwargs):
+        argv = tuple(argv)
+        calls.append(argv)
+        return completed(argv)
+
+    assert validate_archive_package(tmp_path, package, runner) == 0
+    assert ("lake", "exe", "cache", "get") in calls
+    assert not (package / ".lake" / "packages").exists()

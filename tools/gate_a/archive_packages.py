@@ -7,6 +7,7 @@ Lake packages, so active-library replay/audit scoping does not see their
 from __future__ import annotations
 
 import argparse
+import json
 import re
 import subprocess
 import sys
@@ -197,6 +198,69 @@ def archive_proof_provenance(
     return 0
 
 
+def _dependency_pins(root: Path) -> tuple[str, frozenset[tuple[str, str]]] | None:
+    """(toolchain, {(dep name, rev)}) for a Lake project, or None if unreadable."""
+    toolchain = root / "lean-toolchain"
+    manifest = root / "lake-manifest.json"
+    if not toolchain.is_file() or not manifest.is_file():
+        return None
+    try:
+        packages = json.loads(manifest.read_text(encoding="utf-8")).get("packages", [])
+        pins = frozenset(
+            (str(p.get("name")), str(p.get("rev"))) for p in packages if p.get("name")
+        )
+    except (json.JSONDecodeError, AttributeError, TypeError):
+        return None
+    if not pins:
+        return None
+    return toolchain.read_text(encoding="utf-8").strip(), pins
+
+
+def shareable_packages_dir(repo_root: Path, package_root: Path) -> Path | None:
+    """The repo's own ``.lake/packages``, when this archive can safely reuse it.
+
+    An archive package is a *snapshot* of the active repo (ADR-041), so it pins
+    the same toolchain and the same dependency revisions. Building each one in
+    its own Lake project therefore clones and builds an identical mathlib per
+    package — with 134 archives that exhausts the runner disk long before the
+    set is covered, which is what killed the first full-replay run ever to reach
+    this step ("No space left on device", run 30520185283, #7209). The
+    ``base``-driven fast-path above already documents the same hazard for wide
+    metadata PRs (#3218); a base-less scheduled run has no fast-path and hits it
+    unconditionally.
+
+    Reuse is gated on an EXACT match of toolchain and every dependency pin. A
+    toolchain bump splits the archive set from the active repo, and building an
+    archive against a mathlib it was not verified with must never happen
+    silently — on any mismatch this returns None and the package falls back to
+    its own clone, which is slow but correct.
+    """
+    shared = repo_root / ".lake" / "packages"
+    if not shared.is_dir():
+        return None
+    repo_pins = _dependency_pins(repo_root)
+    archive_pins = _dependency_pins(package_root)
+    if repo_pins is None or archive_pins is None or repo_pins != archive_pins:
+        return None
+    return shared
+
+
+def _link_shared_tree(package_root: Path, shared: Path) -> Path | None:
+    """Point the package's dependency dir at ``shared``. Returns the link made."""
+    link = package_root / ".lake" / "packages"
+    if link.exists() or link.is_symlink():
+        return None  # a real tree (or link) is already there — leave it alone
+    link.parent.mkdir(parents=True, exist_ok=True)
+    link.symlink_to(shared, target_is_directory=True)
+    return link
+
+
+def _unlink_shared_tree(link: Path | None) -> None:
+    """Remove the link only. Never recurse — the target is the repo's real tree."""
+    if link is not None and link.is_symlink():
+        link.unlink()
+
+
 def validate_archive_package(
     repo_root: Path,
     package_root: Path,
@@ -274,10 +338,21 @@ def validate_archive_package(
     modules = module_names(package_root, "library")
     targets = default_targets(package_root)
     build_argv = ("lake", "build", *targets, "--wfail") if targets else ("lake", "build", "--wfail")
+    # #7209: reuse the repo's already-built dependency tree when the pins match
+    # exactly, instead of cloning a private mathlib per package.
+    shared = shareable_packages_dir(repo_root, package_root)
+    link: Path | None = None
     try:
-        cache = run_step(f"{rel} Mathlib cache", ("lake", "exe", "cache", "get"), cwd=package_root, runner=runner)
-        if cache != 0:
-            return cache
+        if shared is not None:
+            link = _link_shared_tree(package_root, shared)
+        if link is not None:
+            print(f"[archive] {rel}: sharing the repo dependency tree (pins match) — no mathlib fetch")
+        else:
+            cache = run_step(
+                f"{rel} Mathlib cache", ("lake", "exe", "cache", "get"), cwd=package_root, runner=runner
+            )
+            if cache != 0:
+                return cache
         build = run_step(f"{rel} Lake build", build_argv, cwd=package_root, runner=runner)
         if build != 0:
             return build
@@ -291,6 +366,7 @@ def validate_archive_package(
         # --wfail` above stays as packaging sanity (an archive package is a new
         # Lake project, so confirm it still compiles cleanly).
     finally:
+        _unlink_shared_tree(link)
         run_step(
             f"{rel} clean generated bindings",
             (sys.executable, "-m", "tools.gate_a.check_statement_binding", "clean", str(rel)),
