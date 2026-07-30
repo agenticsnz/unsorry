@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜putnam-1962-a5
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜4
 }
 ⟦Σ:Source⟧{
-  src≜backlog/putnam-1962-a5.md
+  src≜packages/unsorry-archive-0136/backlog/putnam-1962-a5.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/putnam-1962-a5.lean
+  lean≜packages/unsorry-archive-0136/goals/putnam-1962-a5.lean
   sha≜ae6c11503923526d34b18d95dcec4d58cc8b95f23d136a617bff6ff4f2b5a208
   aff≜-19
 }

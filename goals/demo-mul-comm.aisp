@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜demo-mul-comm
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/demo-mul-comm.md
+  src≜packages/unsorry-archive-0136/backlog/demo-mul-comm.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/demo-mul-comm.lean
+  lean≜packages/unsorry-archive-0136/goals/demo-mul-comm.lean
   sha≜54bbe975708daa8364c188dba660e58d63774c8fa31238a8662b3be15b86c8dc
   aff≜-19
 }

@@ -1,0 +1,20 @@
+𝔸5.1.goal.demo-add-comm@2026-06-24
+γ≔unsorry.goal
+⟦Ω:Goal⟧{
+  id≜demo-add-comm
+  phase≜prove
+  status≜proved
+  difficulty≜1
+}
+⟦Σ:Source⟧{
+  src≜backlog/demo-add-comm.md
+}
+⟦Γ:Deps⟧{
+  deps≜⟨⟩
+}
+⟦Λ:Artifact⟧{
+  lean≜goals/demo-add-comm.lean
+  sha≜15c6c4e03a58be028d3e6dad36640cae2e3fcd43cd4934076f3f30fd0b4d57e4
+  aff≜-19
+}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩

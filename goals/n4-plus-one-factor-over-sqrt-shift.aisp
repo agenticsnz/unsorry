@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜n4-plus-one-factor-over-sqrt-shift
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/n4-plus-one-factor-over-sqrt-shift.md
+  src≜packages/unsorry-archive-0136/backlog/n4-plus-one-factor-over-sqrt-shift.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/n4-plus-one-factor-over-sqrt-shift.lean
+  lean≜packages/unsorry-archive-0136/goals/n4-plus-one-factor-over-sqrt-shift.lean
   sha≜cb1a907cbef8ad253e2442f3609c807dd88feb96fc89dd1cf4f8f3569976515c
   aff≜-19
 }
