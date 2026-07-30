@@ -4,14 +4,12 @@
 
 The unsorry worklist: theorems that are **already proven but not yet in mathlib**, vetted for absence and stated in Lean, waiting for an agent or a human to prove them. Claim one, open a PR, let the gates decide (see [Running an agent](../README.md#running-an-agent) and [ADR-012](adrs/ADR-012-Backlog-Sourcing.md)).
 
-**230 open · 4770 proved · 5016 total prove-goals.**
+**228 open · 4770 proved · 5016 total prove-goals.**
 
 | Goal | Status | Diff | Upstream | Source | Reference |
 |------|--------|:----:|----------|--------|-----------|
 | `aime-1984-p15` — minif2f-v1 benchmark obligation aime_1984_p15 | open | 4 | — | minif2f-v1 benchmark suite | github.com/yangky11/miniF2F-lean4 |
-| `aime-1984-p5` — minif2f-v1 benchmark obligation aime_1984_p5 | open | 4 | — | minif2f-v1 benchmark suite | github.com/yangky11/miniF2F-lean4 |
 | `aime-1987-p8` — minif2f-v1 benchmark obligation aime_1987_p8 | open | 4 | — | minif2f-v1 benchmark suite | github.com/yangky11/miniF2F-lean4 |
-| `aime-1988-p3` — minif2f-v1 benchmark obligation aime_1988_p3 | open | 4 | — | minif2f-v1 benchmark suite | github.com/yangky11/miniF2F-lean4 |
 | `aime-1988-p4` — minif2f-v1 benchmark obligation aime_1988_p4 | open | 4 | — | minif2f-v1 benchmark suite | github.com/yangky11/miniF2F-lean4 |
 | `aime-1991-p1` — minif2f-v1 benchmark obligation aime_1991_p1 | open | 4 | — | minif2f-v1 benchmark suite | github.com/yangky11/miniF2F-lean4 |
 | `aime-1991-p6` — minif2f-v1 benchmark obligation aime_1991_p6 | open | 4 | — | minif2f-v1 benchmark suite | github.com/yangky11/miniF2F-lean4 |
@@ -254,6 +252,8 @@ The unsorry worklist: theorems that are **already proven but not yet in mathlib*
 | `sq-add-sq-eq-three-mul-sq` — The Diophantine equation $x^2 + y^2 = 3z^2$ has only the trivial solution $x=y=z=0$ in integers. | blocked | 4 | — | elementary number theory | Classic infinite descent argument modulo 3 showing that $3 \mid x$ and $3 \mid y$, which leads to infinite descent. |
 | `sq-add-sq-eq-three-mul-sq-s4` — sq-add-sq-eq-three-mul-sq-s4 | blocked | 1 | — | — | — |
 | `sq-add-sq-eq-three-mul-sq-s4-s3` — sq-add-sq-eq-three-mul-sq-s4-s3 | blocked | 1 | — | — | — |
+| `aime-1984-p5` — minif2f-v1 benchmark obligation aime_1984_p5 | flagged | 4 | — | minif2f-v1 benchmark suite | github.com/yangky11/miniF2F-lean4 |
+| `aime-1988-p3` — minif2f-v1 benchmark obligation aime_1988_p3 | flagged | 4 | — | minif2f-v1 benchmark suite | github.com/yangky11/miniF2F-lean4 |
 | `abc-nine-le-sum-times-pairsum` — For nonnegative reals nine times abc is at most (a+b+c)(ab+bc+ca). | proved | 3 | — | #400 Identity Engine (ADR-043) — inequality (SOS) family; promoted from candidate backlog (#610). | For nonnegative reals nine times abc is at most (a+b+c)(ab+bc+ca). Not a named mathlib lemma in this form. |
 | `abstract-regular-polyhedron-classification` — For an abstract regular polyhedron — V vertices, E edges, F faces that are p-gons, vertices of degree q — with the two handshakes p·F = 2E and q·V = 2E and Euler's relation V + F = E + 2, the pair (p, q) is one of the five Platonic Schläfli pairs {(3,3),(3,4),(4,3),(3,5),(5,3)}. The classification (⟹) half of Freek #50 in combinatorial/Euler form. | proved | 3 | — | Freek 100 (#50), combinatorial form (ADR-031 / SPEC-031-A, Track 1) | The classification half of 'there are exactly five Platonic solids', reusing the proved `platonic_schlafli_pairs` as keystone (Euler + handshake ⟹ 1/p+1/q > 1/2 ⟹ the five pairs). Coxeter, Regular Polytopes, Ch. 1. NOT the geometric Freek #50 (that is Track 2, gated on a mathlib polytope face lattice + Euler–Poincaré). |
 | `abstract-regular-polyhedron-realizable-iff` — The Track-1 **existence-biconditional**: for p, q ≥ 3, the pair (p,q) is a Platonic Schläfli pair {(3,3),(3,4),(4,3),(3,5),(5,3)} **iff** it is realizable by an abstract regular polyhedron (∃ V E F > 0 with p·F=2E, q·V=2E, V+F=E+2). | proved | 4 | — | The capstone of Freek #50's combinatorial classification (ADR-031, Track 1) — the labelled combinatorial/Euler form, explicitly NOT the geometric #50. | ⟹ is the existence direction (`platonic-pairs-realizable`); ⟸ is the proved classification (`abstract-regular-polyhedron-classification`). Composing them gives the biconditional. mathlib has neither. |
