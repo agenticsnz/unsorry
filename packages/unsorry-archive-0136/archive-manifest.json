@@ -1,0 +1,147 @@
+{
+  "block_id": "unsorry-archive-0136",
+  "target_size": 40,
+  "proof_count": 32,
+  "status": "frozen",
+  "source_commit": "30f6b1d23955d75d5246ebe5fa7f6d372a0ed4d7",
+  "validation_commit": null,
+  "pins": {
+    "lean_toolchain": "leanprover/lean4:v4.30.0",
+    "mathlib": "v4.30.0"
+  },
+  "notes": [
+    "ADR-041 proof archive block 0136.",
+    "Whole decomposition trees + standalone proved goals only (invariant A).",
+    "Active goal records remain as archived metadata pointing at this package."
+  ],
+  "goals": [
+    {
+      "goal": "demo-add-comm",
+      "module": "Unsorry.DemoAddComm"
+    },
+    {
+      "goal": "demo-mul-comm",
+      "module": "Unsorry.DemoMulComm"
+    },
+    {
+      "goal": "demo-two-add-two",
+      "module": "Unsorry.DemoTwoAddTwo"
+    },
+    {
+      "goal": "demo-le-refl",
+      "module": "Unsorry.DemoLeRefl"
+    },
+    {
+      "goal": "gzmod-2-pow-eight-sub-pow-four",
+      "module": "Unsorry.Gzmod2PowEightSubPowFour"
+    },
+    {
+      "goal": "gzmod-2-pow-eight-sub-pow-three",
+      "module": "Unsorry.Gzmod2PowEightSubPowThree"
+    },
+    {
+      "goal": "gzmod-2-pow-eleven-sub-pow-three",
+      "module": "Unsorry.Gzmod2PowElevenSubPowThree"
+    },
+    {
+      "goal": "gzmod-2-pow-fifteen-sub-pow-three",
+      "module": "Unsorry.Gzmod2PowFifteenSubPowThree"
+    },
+    {
+      "goal": "gzmod-2-pow-five-sub-pow-three",
+      "module": "Unsorry.Gzmod2PowFiveSubPowThree"
+    },
+    {
+      "goal": "gzmod-2-pow-fourteen-sub-pow-three",
+      "module": "Unsorry.Gzmod2PowFourteenSubPowThree"
+    },
+    {
+      "goal": "gzmod-2-pow-nine-sub-pow-three",
+      "module": "Unsorry.Gzmod2PowNineSubPowThree"
+    },
+    {
+      "goal": "gzmod-2-pow-seven-sub-pow-four",
+      "module": "Unsorry.Gzmod2PowSevenSubPowFour"
+    },
+    {
+      "goal": "gzmod-2-pow-seven-sub-pow-three",
+      "module": "Unsorry.Gzmod2PowSevenSubPowThree"
+    },
+    {
+      "goal": "gzmod-2-pow-six-sub-pow-four",
+      "module": "Unsorry.Gzmod2PowSixSubPowFour"
+    },
+    {
+      "goal": "gzmod-2-pow-six-sub-pow-three",
+      "module": "Unsorry.Gzmod2PowSixSubPowThree"
+    },
+    {
+      "goal": "gzmod-2-pow-ten-sub-pow-three",
+      "module": "Unsorry.Gzmod2PowTenSubPowThree"
+    },
+    {
+      "goal": "gzmod-2-pow-thirteen-sub-pow-three",
+      "module": "Unsorry.Gzmod2PowThirteenSubPowThree"
+    },
+    {
+      "goal": "gzmod-2-pow-twelve-sub-pow-three",
+      "module": "Unsorry.Gzmod2PowTwelveSubPowThree"
+    },
+    {
+      "goal": "telescoping-square-sum-coeff-five",
+      "module": "Unsorry.TelescopingSquareSumCoeffFive"
+    },
+    {
+      "goal": "telescoping-square-sum-coeff-three",
+      "module": "Unsorry.TelescopingSquareSumCoeffThree"
+    },
+    {
+      "goal": "putnam-1963-b1",
+      "module": "Unsorry.Putnam1963B1"
+    },
+    {
+      "goal": "putnam-1964-a4",
+      "module": "Unsorry.Putnam1964A4"
+    },
+    {
+      "goal": "putnam-1965-a1",
+      "module": "Unsorry.Putnam1965A1"
+    },
+    {
+      "goal": "putnam-1965-b5",
+      "module": "Unsorry.Putnam1965B5"
+    },
+    {
+      "goal": "putnam-1966-a3",
+      "module": "Unsorry.Putnam1966A3"
+    },
+    {
+      "goal": "putnam-1962-b2",
+      "module": "Unsorry.Putnam1962B2"
+    },
+    {
+      "goal": "putnam-1962-b3",
+      "module": "Unsorry.Putnam1962B3"
+    },
+    {
+      "goal": "putnam-1962-a5",
+      "module": "Unsorry.Putnam1962A5"
+    },
+    {
+      "goal": "quartic-x4-plus-x2-plus-one-dvd-by-minus-factor",
+      "module": "Unsorry.QuarticX4PlusX2PlusOneDvdByMinusFactor"
+    },
+    {
+      "goal": "n4-plus-one-factor-over-sqrt-shift",
+      "module": "Unsorry.N4PlusOneFactorOverSqrtShift"
+    },
+    {
+      "goal": "sextic-x6-plus-x3-plus-one-composite-shift",
+      "module": "Unsorry.SexticX6PlusX3PlusOneCompositeShift"
+    },
+    {
+      "goal": "sum-two-squares-zmod-four-ne-three",
+      "module": "Unsorry.SumTwoSquaresZmodFourNeThree"
+    }
+  ]
+}

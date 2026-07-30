@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sextic-x6-plus-x3-plus-one-composite-shift
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜2
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sextic-x6-plus-x3-plus-one-composite-shift.md
+  src≜packages/unsorry-archive-0136/backlog/sextic-x6-plus-x3-plus-one-composite-shift.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sextic-x6-plus-x3-plus-one-composite-shift.lean
+  lean≜packages/unsorry-archive-0136/goals/sextic-x6-plus-x3-plus-one-composite-shift.lean
   sha≜c1c1554faebab3b3b138eb458e0c52191dea946f2a149735804028c4c76e4264
   aff≜-19
 }
