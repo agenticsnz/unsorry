@@ -1,0 +1,155 @@
+{
+  "block_id": "unsorry-archive-0135",
+  "target_size": 40,
+  "proof_count": 34,
+  "status": "frozen",
+  "source_commit": "35ab07398d14fa0af5496306646df9c91cb95340",
+  "validation_commit": null,
+  "pins": {
+    "lean_toolchain": "leanprover/lean4:v4.30.0",
+    "mathlib": "v4.30.0"
+  },
+  "notes": [
+    "ADR-041 proof archive block 0135.",
+    "Whole decomposition trees + standalone proved goals only (invariant A).",
+    "Active goal records remain as archived metadata pointing at this package."
+  ],
+  "goals": [
+    {
+      "goal": "sum-two-cubes-zmod-eighteen-ne-twelve",
+      "module": "Unsorry.SumTwoCubesZmodEighteenNeTwelve"
+    },
+    {
+      "goal": "sum-two-cubes-zmod-fourteen-ne-eleven",
+      "module": "Unsorry.SumTwoCubesZmodFourteenNeEleven"
+    },
+    {
+      "goal": "sum-two-cubes-zmod-fourteen-ne-ten",
+      "module": "Unsorry.SumTwoCubesZmodFourteenNeTen"
+    },
+    {
+      "goal": "sum-two-cubes-zmod-twentyone-ne-eighteen",
+      "module": "Unsorry.SumTwoCubesZmodTwentyoneNeEighteen"
+    },
+    {
+      "goal": "sum-two-cubes-zmod-twentyone-ne-eleven",
+      "module": "Unsorry.SumTwoCubesZmodTwentyoneNeEleven"
+    },
+    {
+      "goal": "sum-two-cubes-zmod-twentyone-ne-four",
+      "module": "Unsorry.SumTwoCubesZmodTwentyoneNeFour"
+    },
+    {
+      "goal": "sum-two-cubes-zmod-twentyone-ne-seventeen",
+      "module": "Unsorry.SumTwoCubesZmodTwentyoneNeSeventeen"
+    },
+    {
+      "goal": "sum-two-cubes-zmod-twentyone-ne-ten",
+      "module": "Unsorry.SumTwoCubesZmodTwentyoneNeTen"
+    },
+    {
+      "goal": "sum-two-cubes-zmod-twentyone-ne-three",
+      "module": "Unsorry.SumTwoCubesZmodTwentyoneNeThree"
+    },
+    {
+      "goal": "sum-two-squares-zmod-eight-ne-seven",
+      "module": "Unsorry.SumTwoSquaresZmodEightNeSeven"
+    },
+    {
+      "goal": "sum-two-squares-zmod-eight-ne-three",
+      "module": "Unsorry.SumTwoSquaresZmodEightNeThree"
+    },
+    {
+      "goal": "sum-two-squares-zmod-eighteen-ne-fifteen",
+      "module": "Unsorry.SumTwoSquaresZmodEighteenNeFifteen"
+    },
+    {
+      "goal": "sum-two-squares-zmod-eighteen-ne-six",
+      "module": "Unsorry.SumTwoSquaresZmodEighteenNeSix"
+    },
+    {
+      "goal": "sum-two-squares-zmod-eighteen-ne-three",
+      "module": "Unsorry.SumTwoSquaresZmodEighteenNeThree"
+    },
+    {
+      "goal": "sum-two-squares-zmod-eighteen-ne-twelve",
+      "module": "Unsorry.SumTwoSquaresZmodEighteenNeTwelve"
+    },
+    {
+      "goal": "sum-two-squares-zmod-nine-ne-three",
+      "module": "Unsorry.SumTwoSquaresZmodNineNeThree"
+    },
+    {
+      "goal": "sum-two-squares-zmod-sixteen-ne-eleven",
+      "module": "Unsorry.SumTwoSquaresZmodSixteenNeEleven"
+    },
+    {
+      "goal": "sum-two-squares-zmod-sixteen-ne-fifteen",
+      "module": "Unsorry.SumTwoSquaresZmodSixteenNeFifteen"
+    },
+    {
+      "goal": "sum-two-squares-zmod-sixteen-ne-fourteen",
+      "module": "Unsorry.SumTwoSquaresZmodSixteenNeFourteen"
+    },
+    {
+      "goal": "sum-two-squares-zmod-sixteen-ne-twelve",
+      "module": "Unsorry.SumTwoSquaresZmodSixteenNeTwelve"
+    },
+    {
+      "goal": "sum-two-squares-zmod-twenty-ne-eleven",
+      "module": "Unsorry.SumTwoSquaresZmodTwentyNeEleven"
+    },
+    {
+      "goal": "sum-two-squares-zmod-twenty-ne-fifteen",
+      "module": "Unsorry.SumTwoSquaresZmodTwentyNeFifteen"
+    },
+    {
+      "goal": "sum-two-squares-zmod-twenty-ne-nineteen",
+      "module": "Unsorry.SumTwoSquaresZmodTwentyNeNineteen"
+    },
+    {
+      "goal": "sum-two-squares-zmod-twenty-ne-seven",
+      "module": "Unsorry.SumTwoSquaresZmodTwentyNeSeven"
+    },
+    {
+      "goal": "sum-two-squares-zmod-twenty-ne-three",
+      "module": "Unsorry.SumTwoSquaresZmodTwentyNeThree"
+    },
+    {
+      "goal": "sum-two-squares-zmod-twentyfour-ne-eleven",
+      "module": "Unsorry.SumTwoSquaresZmodTwentyfourNeEleven"
+    },
+    {
+      "goal": "sum-two-squares-zmod-twentyfour-ne-fifteen",
+      "module": "Unsorry.SumTwoSquaresZmodTwentyfourNeFifteen"
+    },
+    {
+      "goal": "sum-two-squares-zmod-twentyfour-ne-fourteen",
+      "module": "Unsorry.SumTwoSquaresZmodTwentyfourNeFourteen"
+    },
+    {
+      "goal": "sum-two-squares-zmod-twentyfour-ne-nineteen",
+      "module": "Unsorry.SumTwoSquaresZmodTwentyfourNeNineteen"
+    },
+    {
+      "goal": "sum-two-squares-zmod-twentyfour-ne-seven",
+      "module": "Unsorry.SumTwoSquaresZmodTwentyfourNeSeven"
+    },
+    {
+      "goal": "sum-two-squares-zmod-twentyfour-ne-six",
+      "module": "Unsorry.SumTwoSquaresZmodTwentyfourNeSix"
+    },
+    {
+      "goal": "sum-two-squares-zmod-twentyfour-ne-three",
+      "module": "Unsorry.SumTwoSquaresZmodTwentyfourNeThree"
+    },
+    {
+      "goal": "sum-two-squares-zmod-twentyfour-ne-twentythree",
+      "module": "Unsorry.SumTwoSquaresZmodTwentyfourNeTwentythree"
+    },
+    {
+      "goal": "sum-two-squares-zmod-twentyfour-ne-twentytwo",
+      "module": "Unsorry.SumTwoSquaresZmodTwentyfourNeTwentytwo"
+    }
+  ]
+}

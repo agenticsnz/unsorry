@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-two-cubes-zmod-twentyone-ne-eleven
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-two-cubes-zmod-twentyone-ne-eleven.md
+  src≜packages/unsorry-archive-0135/backlog/sum-two-cubes-zmod-twentyone-ne-eleven.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-two-cubes-zmod-twentyone-ne-eleven.lean
+  lean≜packages/unsorry-archive-0135/goals/sum-two-cubes-zmod-twentyone-ne-eleven.lean
   sha≜69148d184f5170af16bf8e989f7567417382dea7fcfaa45be42b40dfb14bb30d
   aff≜0
 }
