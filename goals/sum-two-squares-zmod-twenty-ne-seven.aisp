@@ -3,17 +3,17 @@
 ⟦Ω:Goal⟧{
   id≜sum-two-squares-zmod-twenty-ne-seven
   phase≜prove
-  status≜proved
+  status≜archived
   difficulty≜1
 }
 ⟦Σ:Source⟧{
-  src≜backlog/sum-two-squares-zmod-twenty-ne-seven.md
+  src≜packages/unsorry-archive-0135/backlog/sum-two-squares-zmod-twenty-ne-seven.md
 }
 ⟦Γ:Deps⟧{
   deps≜⟨⟩
 }
 ⟦Λ:Artifact⟧{
-  lean≜goals/sum-two-squares-zmod-twenty-ne-seven.lean
+  lean≜packages/unsorry-archive-0135/goals/sum-two-squares-zmod-twenty-ne-seven.lean
   sha≜cbd06deaf2a805186be062cf393ed959a5d3bf6ea0d0f99f0b1155b5cf083051
   aff≜0
 }
