@@ -5371,8 +5371,8 @@
         "index_files_added": 3339,
         "missing_solver_provenance": 47,
         "profile_url": "https://github.com/cgbarlow",
-        "sample_add_commit": "9c28ce912d18bcf19215c5dcdf4dafc485940b8b",
-        "sample_add_date": "2026-06-25",
+        "sample_add_commit": "504091ef411a16dd27593a1d97d18c4d54e8a171",
+        "sample_add_date": "2026-06-13",
         "solver_credit": false,
         "solver_provenance_proofs": 3292
       },
@@ -5798,10 +5798,10 @@
     },
     "goals": 5026,
     "status_counts": {
-      "archived": 4681,
+      "archived": 4715,
       "blocked": 16,
       "open": 230,
-      "proved": 90,
+      "proved": 56,
       "translated": 9
     }
   },
