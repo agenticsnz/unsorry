@@ -1,0 +1,8 @@
+𝔸5.1.run.brualdi-ch4-59.agy-brualdi-01.20261123t030309178457z-348678db@2026-11-23
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20261123t030309178457z-348678db; goal≜brualdi-ch4-59; agent≜agy-brualdi-01; outcome≜proved}
+⟦Π:Provenance⟧{solver≜mikeskim; provider≜gemini; effort≜high}
+⟦Γ:Goal⟧{goal≜brualdi-ch4-59}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜778; ended≜2026-11-23T03:03:09Z; lessons≜0}
+⟦Σ:Artifact⟧{sha≜96342e4ebf38670bce108337dc6f7d6388d64a9e2eaa079bf01fa27191b8d908}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
