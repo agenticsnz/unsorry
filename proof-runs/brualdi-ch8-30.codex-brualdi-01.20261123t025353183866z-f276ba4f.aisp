@@ -1,0 +1,8 @@
+𝔸5.1.run.brualdi-ch8-30.codex-brualdi-01.20261123t025353183866z-f276ba4f@2026-11-23
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20261123t025353183866z-f276ba4f; goal≜brualdi-ch8-30; agent≜codex-brualdi-01; outcome≜proved}
+⟦Π:Provenance⟧{solver≜mikeskim; provider≜codex; model≜gpt-6-astra; effort≜xhigh}
+⟦Γ:Goal⟧{goal≜brualdi-ch8-30}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜55; ended≜2026-11-23T02:53:53Z; lessons≜0}
+⟦Σ:Artifact⟧{sha≜319da069d7470a4768279880c2542b333832c3a19a946cf839bdd3298e5b1038}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
