@@ -1,0 +1,8 @@
+𝔸5.1.run.putnam-1962-b5-s1.inov8ru-orchestrator.20261126t221642647781z-c6f4fd4c@2026-11-26
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20261126t221642647781z-c6f4fd4c; goal≜putnam-1962-b5-s1; agent≜inov8ru-orchestrator; outcome≜proved}
+⟦Π:Provenance⟧{solver≜inov8ru; provider≜llamacpp; model≜goedel-prover-v2-8b}
+⟦Γ:Goal⟧{goal≜putnam-1962-b5-s1}
+⟦Λ:Metrics⟧{attempts≜6; solve_s≜1500; ended≜2026-11-26T22:16:42Z}
+⟦Σ:Artifact⟧{sha≜fd6fa72d62be0369080225816ca5d73bcfacb7c4f66951ce8e8a9c99fc33a641}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
