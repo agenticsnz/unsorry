@@ -1,0 +1,8 @@
+𝔸5.1.run.brualdi-ch11-5.claude-brualdi-01.20261123t025047459040z-dafd79bf@2026-11-23
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20261123t025047459040z-dafd79bf; goal≜brualdi-ch11-5; agent≜claude-brualdi-01; outcome≜proved}
+⟦Π:Provenance⟧{solver≜mikeskim; provider≜claude; model≜fable; effort≜high}
+⟦Γ:Goal⟧{goal≜brualdi-ch11-5}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜34; ended≜2026-11-23T02:50:47Z; lessons≜0}
+⟦Σ:Artifact⟧{sha≜eadd32e9e426b0214a995b262fec253a74001b29233c8e99317e852a14a84ea3}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
