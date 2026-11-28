@@ -1,10 +1,10 @@
 {
   "prove_prs": 749,
-  "fork_prove_prs": 28,
+  "fork_prove_prs": 29,
   "fork_merged": 13,
-  "fork_open": 14,
+  "fork_open": 15,
   "fork_closed_unmerged": 1,
-  "fork_waste_ratio": 0.0357,
+  "fork_waste_ratio": 0.0345,
   "goals_with_multiple_prove_prs": 4,
   "goals_with_fork_collision": 1,
   "estimated_wasted_gate_a_runs": 1,
