@@ -1,0 +1,8 @@
+𝔸5.1.run.sq-add-sq-eq-three-mul-sq.claude-ddching-01.20261128t011121431259z-a3265f3e@2026-11-28
+γ≔unsorry.proof.run
+⟦Ω:Run⟧{id≜20261128t011121431259z-a3265f3e; goal≜sq-add-sq-eq-three-mul-sq; agent≜claude-ddching-01; outcome≜proved}
+⟦Π:Provenance⟧{solver≜DD-Ching; provider≜claude; effort≜max}
+⟦Γ:Goal⟧{goal≜sq-add-sq-eq-three-mul-sq}
+⟦Λ:Metrics⟧{attempts≜1; solve_s≜432; ended≜2026-11-28T01:11:21Z}
+⟦Σ:Artifact⟧{sha≜15d71ce2d3efeb5e83ec48f98fb20c0e6684b8451961d19d2b5f4a1069bb7d69}
+⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
