@@ -3,7 +3,7 @@
 ⟦Ω:Goal⟧{
   id≜brualdi-ch6-21
   phase≜prove
-  status≜open
+  status≜proved
   difficulty≜4
 }
 ⟦Σ:Source⟧{
@@ -14,7 +14,7 @@
 }
 ⟦Λ:Artifact⟧{
   lean≜goals/brualdi-ch6-21.lean
-  sha≜∅
-  aff≜-20
+  sha≜8f01cf1d86d73883161f58fe48b142d2f8594443d0264767c01012281eafc7a4
+  aff≜-19
 }
 ⟦Ε⟧⟨δ≜0.60;τ≜◊⁺⟩
